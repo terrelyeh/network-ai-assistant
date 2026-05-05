@@ -891,60 +891,51 @@
        SLIDE 5 — PRODUCT HERO (mock dashboard)
        ==================================================== -->
   <section class="slide s5" data-slide="5">
-    <span class="tag">Introducing</span>
+    <span class="tag">⭐ Wedge Product · The hook to land you</span>
     <span class="meta-num">05 / 10</span>
 
     <div>
-      <div class="product-name">Network <span class="accent">AI-Assistant</span></div>
-      <div class="product-tagline">Your AI Network Operator. 24×7. Plain English.</div>
+      <div class="product-name">📊 Dashboard <span class="accent">Builder</span></div>
+      <div class="product-tagline">Network insights — by <strong style="color:var(--text);">talking</strong>, not configuring.</div>
     </div>
 
     <div class="dashboard">
       <div class="dashboard-header">
-        <div class="dashboard-title">Today at HQ Office</div>
-        <div class="live-dot">Live · monitoring 47 devices</div>
+        <div class="dashboard-title">User's chat → AI's dashboard</div>
+        <div class="live-dot">Live · 10-second generation</div>
       </div>
 
-      <div class="anomaly">
+      <div class="anomaly" style="border-left: 3px solid var(--accent);">
         <div class="anomaly-head">
-          <div class="anomaly-title"><span class="icon-warn">⚠</span> AP-7F-N3 · Conference Room</div>
-          <div class="anomaly-time">2 min ago</div>
+          <div class="anomaly-title"><span style="color:var(--accent);">💬</span> User</div>
+          <div class="anomaly-time">just now</div>
         </div>
-        <div class="anomaly-desc">3 clients stuck on weak signal (avg RSSI −78 dBm)</div>
-        <div class="anomaly-cause">
-          <span class="tag-cause">Likely cause</span>
-          Cell too large; nearby AP-7F-N4 has stronger signal but clients won't roam
+        <div class="anomaly-desc" style="font-size: 17px; color: var(--text); font-weight: 500;">「I want to see this week's network anomalies」</div>
+      </div>
+
+      <div class="anomaly" style="border-left: 3px solid var(--cyan);">
+        <div class="anomaly-head">
+          <div class="anomaly-title"><span style="color:var(--cyan);">🤖</span> Network AI-Assistant</div>
+          <div class="anomaly-time">9 sec later</div>
+        </div>
+        <div class="anomaly-desc">Built your dashboard with 4 widgets:</div>
+        <div class="anomaly-cause" style="font-family: 'JetBrains Mono', monospace; font-size: 13px;">
+          ① <span style="color:var(--cyan);">KPI</span> · 本週 anomaly 數 (23, ↓ 8%)<br>
+          ② <span style="color:var(--cyan);">Line chart</span> · 7-day trend<br>
+          ③ <span style="color:var(--cyan);">Table</span> · Top 5 problem devices<br>
+          ④ <span style="color:var(--cyan);">Site map</span> · 6 sites health scores
         </div>
         <div class="anomaly-fix">
-          <span class="arrow">→</span> Suggested fix: Lower TX power 23 → 17 dBm
+          <span class="arrow">→</span> Saved as <strong>"Weekly Health"</strong>. Refines: <em>"just say add X"</em>
         </div>
         <div class="anomaly-actions">
-          <button class="btn-ghost">Show evidence</button>
-          <button class="btn-primary">Apply with approval →</button>
+          <button class="btn-ghost">Preview</button>
+          <button class="btn-primary">✓ Save to my dashboards</button>
         </div>
       </div>
 
-      <div class="anomaly">
-        <div class="anomaly-head">
-          <div class="anomaly-title"><span class="icon-warn">⚠</span> Switch SW-1F · port Gi0/12</div>
-          <div class="anomaly-time">14 min ago</div>
-        </div>
-        <div class="anomaly-desc">CRC errors rising — 4× normal rate over last 24h</div>
-        <div class="anomaly-cause">
-          <span class="tag-cause">Likely cause</span>
-          Cable degradation or loose connector
-        </div>
-        <div class="anomaly-fix">
-          <span class="arrow">→</span> Suggested action: Replace cable (requires on-site)
-        </div>
-        <div class="anomaly-actions">
-          <button class="btn-ghost">Show evidence</button>
-          <button class="btn-ghost">Open ticket</button>
-        </div>
-      </div>
-
-      <div style="text-align: center; padding: 12px 0; color: var(--good); font-size: 14px; font-weight: 600;">
-        <span class="icon-good">✓</span> All other 45 devices healthy
+      <div style="text-align: center; padding: 14px 0; color: var(--cyan); font-size: 14px; font-weight: 600;">
+        No PromQL · No drag-drop · No metric names to memorize
       </div>
     </div>
   </section>
@@ -953,41 +944,41 @@
        SLIDE 6 — 90s DEMO STORYBOARD
        ==================================================== -->
   <section class="slide" data-slide="6">
-    <span class="tag">90-second demo</span>
+    <span class="tag">10-second demo · Dashboard Builder</span>
     <span class="meta-num">06 / 10</span>
 
-    <h2 class="h1">Problem → Diagnosis →<br>Fix → <span class="cyan">Verified.</span></h2>
-    <p class="lead" style="margin-top: 16px;">Under 10 minutes. End-to-end.</p>
+    <h2 class="h1">Sentence → Dashboard.<br>Under <span class="cyan">10 seconds.</span></h2>
+    <p class="lead" style="margin-top: 16px;">No PromQL. No metric names. No drag-and-drop.</p>
 
     <div class="grid-4" style="margin-top: 48px;">
       <div class="frame">
         <div class="frame-num">1</div>
-        <div class="frame-stage">AI flagged</div>
-        <div class="frame-quote">"AP-7F has 3 sticky clients on weak signal."</div>
-        <div class="frame-time">⏱ 2 min after issue began</div>
+        <div class="frame-stage">User asks</div>
+        <div class="frame-quote">"我想看本週網路狀況"</div>
+        <div class="frame-time">⏱ 0 sec</div>
       </div>
       <div class="frame">
         <div class="frame-num">2</div>
-        <div class="frame-stage">AI diagnosed</div>
-        <div class="frame-quote">"Cell too large. Evidence: 3 fields cited."</div>
-        <div class="frame-time">⏱ 30 seconds</div>
+        <div class="frame-stage">AI parses</div>
+        <div class="frame-quote">"Found: anomaly count, client trend, top devices, site health"</div>
+        <div class="frame-time">⏱ 2 sec</div>
       </div>
       <div class="frame">
         <div class="frame-num">3</div>
-        <div class="frame-stage">You approved</div>
-        <div class="frame-quote">"Reduce TX power 23 → 17 dBm. One click."</div>
-        <div class="frame-time">⏱ Your decision</div>
+        <div class="frame-stage">AI generates</div>
+        <div class="frame-quote">"4 widgets composed from library. Layout auto."</div>
+        <div class="frame-time">⏱ 8 sec</div>
       </div>
       <div class="frame">
         <div class="frame-num">4</div>
-        <div class="frame-stage">AI verified</div>
-        <div class="frame-quote">"Fix confirmed. Clients roamed. Auto-rollback ready if needed."</div>
-        <div class="frame-time">⏱ 10 min later</div>
+        <div class="frame-stage">User refines</div>
+        <div class="frame-quote">"Add a conf-room trend" → AI adds it. Saved.</div>
+        <div class="frame-time">⏱ ongoing</div>
       </div>
     </div>
 
     <p class="small" style="margin-top: 48px; text-align: center;">
-      No fix? <span class="cyan">Auto-rollback</span> kicks in. You're never stuck with a bad change.
+      Don't like a widget? <span class="cyan">Just say so.</span> AI swaps it. Your dashboard, your words.
     </p>
   </section>
 

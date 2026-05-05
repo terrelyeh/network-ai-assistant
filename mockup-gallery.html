@@ -115,12 +115,57 @@
   }
   .hero .lead strong { color: var(--text); }
 
-  /* Mockup grid */
+  /* Section header */
+  .gallery-section-head {
+    margin-bottom: 18px;
+    padding: 0 4px;
+  }
+  .gallery-section-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 5px;
+    margin-bottom: 8px;
+  }
+  .gallery-section-tag.wedge { background: rgba(251,191,36,0.12); color: var(--warn); border: 1px solid rgba(251,191,36,0.4); }
+  .gallery-section-tag.modes { background: rgba(0,217,197,0.10); color: var(--cyan); border: 1px solid rgba(0,217,197,0.3); }
+  .gallery-section-head h2 {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .gallery-section-head h2 .accent { color: var(--accent); }
+  .gallery-section-head .desc {
+    color: var(--muted);
+    font-size: 14px;
+    margin-top: 6px;
+    max-width: 720px;
+  }
+
+  /* Featured single card (Dashboard Builder wedge) */
+  .featured-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 22px;
+    margin-bottom: 36px;
+  }
+
+  /* Mockup grid (3 modes) */
   .mockup-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 22px;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 18px;
     margin-bottom: 48px;
+  }
+  .section-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 36px 0 24px;
   }
   .mockup-card {
     background: rgba(0,0,0,0.18);
@@ -471,7 +516,7 @@
   <div class="nav-links">
     <a class="nav-link muted-link" href="index.html">🏠 入口</a>
     <a class="nav-link muted-link" href="three-modes.html">🎭 三模式</a>
-    <a class="nav-link muted-link" href="dashboard-builder-demo.html">📈 Demo</a>
+    <a class="nav-link muted-link" href="dashboard-builder-demo.html">📈 Demo</a>    <a class="nav-link muted-link" href="dashboard-builder-product.html">🛍 產品定位</a>
     <a class="nav-link current" href="mockup-gallery.html">🎨 Mockups</a>
     <a class="nav-link muted-link" href="overview-pm-mkt.html">🎯 PM/MKT</a>
     <a class="nav-link muted-link" href="architecture-v2-zh.html">🏗 架構</a>
@@ -483,15 +528,66 @@
 <!-- HERO -->
 <section class="hero">
   <div class="pre">CLICKABLE · INTERACTIVE</div>
-  <h2>4 個 mockup<br>覆蓋<span class="accent">所有 user persona</span></h2>
+  <h2>3 個使用者模式<br>+ 1 個<span class="accent">進入點產品</span></h2>
   <p class="lead">
-    從<strong>非技術員工</strong>的 chat 客服、<strong>SMB IT</strong> 的 cockpit、
-    <strong>Dashboard Builder</strong> 的 4 步驟流程，到 <strong>MSP / Pro 工程師</strong>的進階 console。
-    <br>每個都是可點擊互動的設計示意。
+    <strong>Dashboard Builder</strong> 是<strong style="color:var(--warn);">跨模式 wedge product</strong> — 任何 user 都能用、競爭壓力最弱、最容易 land。
+    <br>另外 3 個 mockup 對應依角色切分的 <strong>Mode A / B / C</strong>，UI 體驗各自不同。
   </p>
 </section>
 
-<!-- 4 MOCKUPS -->
+<!-- WEDGE PRODUCT (featured) -->
+<div class="gallery-section-head">
+  <span class="gallery-section-tag wedge">⭐ Wedge Product · 進入點產品</span>
+  <h2>跨模式 · <span class="accent">land 客戶最快的路徑</span></h2>
+  <p class="desc">
+    不限定 user role — Mode A / B / C 都能用。最容易 demo、TAM 最大、競品最弱。
+    建議 Phase 1 主推這個切入市場，再 expand 到完整 suite。
+  </p>
+</div>
+
+<div class="featured-grid">
+
+  <!-- Dashboard Builder (featured first) -->
+  <a class="mockup-card warn" href="dashboard-builder-flow-mockup.html">
+    <span class="mockup-tag t-feat">⭐ WEDGE PRODUCT · 跨模式</span>
+    <h3>📊 Dashboard Builder</h3>
+    <div class="persona">用<strong>講的</strong>就有 dashboard · 4 步驟互動式流程 · <strong>所有 user 都能用</strong></div>
+
+    <div class="preview" style="min-height:140px;">
+      <div class="pv-flow">
+        <div class="pv-flow-step done"><span class="num">1</span><span>描述需求 · 「我想看本週網路有沒有異常」</span></div>
+        <div class="pv-flow-step done"><span class="num">2</span><span>AI 分析（解析意圖、選 widget）</span></div>
+        <div class="pv-flow-step active"><span class="num">3</span><span>確認 4 個 widgets · KPI / Line / Table / Map</span></div>
+        <div class="pv-flow-step"><span class="num">4</span><span>Dashboard 渲染 + Refine loop</span></div>
+      </div>
+    </div>
+
+    <div class="mockup-tags">
+      <span class="mockup-tag-mini">跨模式</span>
+      <span class="mockup-tag-mini">最低風險（純讀）</span>
+      <span class="mockup-tag-mini">TAM 最大</span>
+      <span class="mockup-tag-mini">藍海競爭</span>
+      <span class="mockup-tag-mini">freemium 友善</span>
+    </div>
+    <div class="mockup-cta">
+      <span class="meta">dashboard-builder-flow-mockup.html · 也見 <a href="dashboard-builder-product.html" style="color:var(--cyan);">產品定位頁</a></span>
+      <span class="open">開啟 mockup <span class="arrow">→</span></span>
+    </div>
+  </a>
+
+</div>
+
+<hr class="section-divider">
+
+<!-- 3 MODES (依角色) -->
+<div class="gallery-section-head">
+  <span class="gallery-section-tag modes">👥 3 Modes · 依角色</span>
+  <h2>同一套後端 · <span class="accent">3 種 UI 體驗</span></h2>
+  <p class="desc">
+    完整 Network AI-Assistant Suite 對 3 種角色提供合適的 UI 與能力範圍 — 員工自助、SMB IT cockpit、MSP Pro Console。
+  </p>
+</div>
+
 <div class="mockup-grid">
 
   <!-- Mode A · Employee Chat -->
@@ -551,33 +647,6 @@
     </div>
   </a>
 
-  <!-- Dashboard Builder Flow -->
-  <a class="mockup-card warn" href="dashboard-builder-flow-mockup.html">
-    <span class="mockup-tag t-feat">FEATURE · ⭐ Mode B 殺手</span>
-    <h3>📊 Dashboard Builder Flow</h3>
-    <div class="persona">用<strong>講的</strong>就有 dashboard · 4 步驟互動式流程</div>
-
-    <div class="preview">
-      <div class="pv-flow">
-        <div class="pv-flow-step done"><span class="num">1</span><span>描述需求 · 「我想看本週網路有沒有異常」</span></div>
-        <div class="pv-flow-step done"><span class="num">2</span><span>AI 分析（解析意圖、選 widget）</span></div>
-        <div class="pv-flow-step active"><span class="num">3</span><span>確認 4 個 widgets · KPI / Line / Table / Map</span></div>
-        <div class="pv-flow-step"><span class="num">4</span><span>Dashboard 渲染 + Refine loop</span></div>
-      </div>
-    </div>
-
-    <div class="mockup-tags">
-      <span class="mockup-tag-mini">4 步驟可點</span>
-      <span class="mockup-tag-mini">AI 思考動畫</span>
-      <span class="mockup-tag-mini">Refine 真會加 widget</span>
-      <span class="mockup-tag-mini">7 widget 渲染</span>
-    </div>
-    <div class="mockup-cta">
-      <span class="meta">dashboard-builder-flow-mockup.html</span>
-      <span class="open">開啟 mockup <span class="arrow">→</span></span>
-    </div>
-  </a>
-
   <!-- Mode C · Pro Console -->
   <a class="mockup-card purple" href="mode-c-pro-mockup.html">
     <span class="mockup-tag t-c">MODE C · Pro / MSP</span>
@@ -614,16 +683,20 @@
 
 <!-- COMPARISON -->
 <section class="compare">
-  <h3>三模式 + 殺手功能對照</h3>
-  <h2>為什麼 4 個 mockup 缺一不可</h2>
+  <h3>3 Modes vs Wedge Product · 對照</h3>
+  <h2>為什麼 wedge 跟 modes <span style="color: var(--accent);">不同軸</span></h2>
+  <p style="color:var(--muted); font-size:14px; margin-bottom:18px; line-height:1.6;">
+    <strong style="color:var(--text);">Modes</strong> 是依「<strong>誰用</strong>」分（A/B/C 對應 employee / SMB IT / Pro）。
+    <strong style="color:var(--text);">Wedge</strong> 是「<strong>賣什麼</strong>」 — Dashboard Builder 跨所有模式都能用。
+  </p>
   <table>
     <thead>
       <tr>
         <th>面向</th>
         <th class="col-a">Mode A · 員工</th>
-        <th class="col-b">Mode B · SMB IT ⭐</th>
-        <th class="col-feat">Dashboard Builder</th>
+        <th class="col-b">Mode B · SMB IT</th>
         <th class="col-c">Mode C · Pro</th>
+        <th class="col-feat">⭐ Dashboard Builder<br><span style="font-weight:400;font-size:10px;text-transform:none;letter-spacing:0;">(跨模式 wedge)</span></th>
       </tr>
     </thead>
     <tbody>
@@ -631,50 +704,64 @@
         <td>主要用戶</td>
         <td>非技術員工</td>
         <td>缺經驗 IT</td>
-        <td>SMB IT（主功能）</td>
         <td>資深網管 / MSP</td>
+        <td><strong>所有 user</strong>（跨模式）</td>
+      </tr>
+      <tr>
+        <td>軸性質</td>
+        <td>依「誰用」</td>
+        <td>依「誰用」</td>
+        <td>依「誰用」</td>
+        <td><strong>依「賣什麼」</strong></td>
       </tr>
       <tr>
         <td>UI 形態</td>
         <td>單一 chat 視窗</td>
         <td>多 panel cockpit</td>
-        <td>4 步驟 wizard</td>
         <td>多 tab 表格 console</td>
+        <td>4 步驟 wizard</td>
       </tr>
       <tr>
         <td>主要互動</td>
         <td>對話</td>
         <td>查看 + chat + 核准</td>
-        <td>描述 → 確認 → 用</td>
         <td>批量選取 + 命令</td>
+        <td>描述 → 確認 → 用</td>
       </tr>
       <tr>
         <td>AI 角色</td>
         <td>客服 / 教練</td>
         <td>副駕駛</td>
-        <td>「翻譯員」</td>
         <td>Agent / 工具</td>
+        <td>「翻譯員」</td>
       </tr>
       <tr>
         <td>寫入動作</td>
         <td>無 (只開單)</td>
         <td>Ring 0/1 + approval</td>
-        <td>Ring 0/1 (save)</td>
         <td>完整 Ring 0/1/2</td>
+        <td>Ring 0/1 (save)</td>
       </tr>
       <tr>
-        <td>Cmd+K</td>
-        <td class="muted">不需要</td>
-        <td>有</td>
-        <td class="muted">不適用</td>
-        <td>核心功能</td>
+        <td>商業角色</td>
+        <td class="muted">附贈 / 包含於 suite</td>
+        <td class="muted">主訂閱 / Suite 核心</td>
+        <td class="muted">Enterprise tier</td>
+        <td><strong style="color:var(--warn);">⭐ Wedge / Land 工具</strong></td>
+      </tr>
+      <tr>
+        <td>競爭 frame</td>
+        <td class="muted">內建客服</td>
+        <td class="muted">vs Mist / Aruba（紅海）</td>
+        <td class="muted">vs Datadog（紅海）</td>
+        <td><strong style="color:var(--warn);">vs Grafana（藍海）</strong></td>
       </tr>
       <tr>
         <td>Demo 焦點</td>
         <td>「不用 call IT」</td>
         <td>「30 秒看完當日狀況」</td>
-        <td>「用講的就有 dashboard」</td>
         <td>「100 sites 批量管理」</td>
+        <td><strong>「用講的就有 dashboard」</strong></td>
       </tr>
     </tbody>
   </table>
@@ -682,11 +769,13 @@
 
 <!-- TIP -->
 <div class="tip">
-  <h3>💡 展示順序建議</h3>
+  <h3>💡 展示順序建議（依 wedge 策略）</h3>
   <p>
-    對 PM/MKT 講故事 → 先 <strong>Mode A</strong>（小白都會用），再 <strong>Dashboard Builder</strong>（殺手 wow），最後 <strong>Mode B</strong>（專業）。
-    <br>對技術買家 → <strong>Mode C</strong>（power）+ <strong>Mode B</strong>（核准流程）。
-    <br>展會 demo → <strong>Mode A → Dashboard Builder</strong>（最容易視覺感受到價值）。
+    <strong>Phase 1 land</strong> → 全部主推 <strong style="color:var(--warn);">Dashboard Builder</strong>（最容易 demo · 最低風險 · TAM 最大）。
+    <br><strong>對 PM/MKT 講故事</strong> → Dashboard Builder（wow）→ Mode A（員工自助降 IT 負擔）→ Mode B（IT 主控台）。
+    <br><strong>對技術買家</strong> → Mode C + Mode B（power + 核准流程）。
+    <br><strong>展會 demo</strong> → 30 秒 Dashboard Builder wow → 視客戶反應展開到 modes。
+    <br><strong>Expand 階段</strong> → 客戶上 Dashboard Builder 後，upsell 到 diagnose / monitor / approval 完整 suite。
   </p>
 </div>
 
