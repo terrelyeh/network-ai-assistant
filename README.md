@@ -1,8 +1,8 @@
-# NetSense AI · Network Management Assistant Proposal
+# Network AI-Assistant · Network Management Assistant Proposal
 
 完整的 AI 網管助理產品提案資料 — **11 個頁面 + 4 個互動 mockup + 1 個 sales deck**。
 
-🔗 **Live Demo**: 部署後此處放 Vercel URL
+🔗 **Live**: https://network-ai-assistant.vercel.app
 
 ## 📂 從哪裡開始
 

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mode B Cockpit — UI Mockup · NetSense AI</title>
+<title>Mode B Cockpit — UI Mockup · Network AI-Assistant</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -989,7 +989,7 @@
   <header class="topbar">
     <div class="brand">
       <span class="dot"></span>
-      <span>NetSense <span class="accent">AI</span></span>
+      <span>Network <span class="accent">AI-Assistant</span></span>
     </div>
 
     <div class="search-bar" onclick="openCmdK()">
@@ -1445,8 +1445,8 @@ function addChatMsg(text, type, isHTML) {
   div.className = 'chat-msg ' + type;
   if (type === 'ai') {
     const prefix = isHTML
-      ? `<div class="ai-prefix">🤖 NetSense AI</div>${text}`
-      : `<div class="ai-prefix">🤖 NetSense AI</div>${text}`;
+      ? `<div class="ai-prefix">🤖 Network AI-Assistant</div>${text}`
+      : `<div class="ai-prefix">🤖 Network AI-Assistant</div>${text}`;
     div.innerHTML = prefix;
   } else {
     div.textContent = text;
