@@ -753,6 +753,12 @@
   <button class="tab" data-scenario="s4">
     <span>跨分點客戶分析</span><span class="mode-badge">MODE B</span>
   </button>
+  <button class="tab" data-scenario="s5">
+    <span>找某台設備的 timeline</span><span class="mode-badge">MODE B</span>
+  </button>
+  <button class="tab" data-scenario="s6">
+    <span>訪客 Wi-Fi 報告</span><span class="mode-badge">MODE B</span>
+  </button>
 </div>
 
 <!-- DEMO -->
@@ -858,6 +864,57 @@
           <div class="msg ai">
             <div class="ai-name">🤖 Network AI-Assistant</div>
             Scheduled ✓ Also exposing as REST endpoint at <code style="font-family:'JetBrains Mono';font-size:11px;background:var(--surface);padding:1px 6px;border-radius:4px;color:var(--cyan);">/api/dashboards/site-churn-202605</code> for your Grafana.
+          </div>
+        </div>
+
+        <!-- ===== Scenario 5: 找某台設備的 timeline ===== -->
+        <div class="scenario s5">
+          <div class="msg user">Sandy 說她筆電 Wi-Fi 過去一週一直斷 — 幫我看她設備的連線 timeline</div>
+          <div class="msg ai">
+            <div class="ai-name">🤖 Network AI-Assistant</div>
+            找到了 — Sandy 的 MacBook (<code style="font-family:'JetBrains Mono';font-size:11px;background:var(--surface);padding:1px 6px;border-radius:4px;color:var(--cyan);">AC:DE:48:F2:1C:9B</code>)。<br>幫您建一個過去 7 天的<strong style="color:var(--text);">設備 timeline</strong>：
+            <ul>
+              <li>連線 / 斷線事件時間軸</li>
+              <li>漫遊歷史（連到哪些 AP、漫遊次數）</li>
+              <li>訊號強度分布</li>
+              <li>異常事件清單（多次重連 / 弱訊號 / 突然斷線）</li>
+              <li>AI 觀察（找 pattern）</li>
+            </ul>
+            <div class="msg-actions">
+              <button class="msg-btn primary">✓ 建立</button>
+              <button class="msg-btn">改要看 30 天</button>
+            </div>
+          </div>
+          <div class="msg user">建立</div>
+          <div class="msg ai">
+            <div class="ai-name">🤖 Network AI-Assistant</div>
+            已建立 ✓ 我看到一個 <strong style="color:var(--accent);">明顯 pattern</strong>：Sandy 每天下午 3 點左右會出現訊號掉到 −78 dBm 的事件 — 對照地點，那時段她在 7F 會議室。<br>那台會議室常用的 <code>AP-7F-N3</code> 上週也被偵測到 sticky client 問題（之前在 cockpit 看過）— <strong>很可能是同一個根因</strong>。要我跑 sticky_client playbook 嗎？
+          </div>
+        </div>
+
+        <!-- ===== Scenario 6: 訪客 Wi-Fi 報告 ===== -->
+        <div class="scenario s6">
+          <div class="msg user">行銷想看上個月訪客 Wi-Fi 用了多少 — 幫我做個報告</div>
+          <div class="msg ai">
+            <div class="ai-name">🤖 Network AI-Assistant</div>
+            這是商業洞察，不只是 IT。給行銷看的<strong style="color:var(--text);">訪客流量分析</strong>通常包含：
+            <ul>
+              <li>每日訪客數 + 趨勢線</li>
+              <li>平均停留時長（reflect 顧客體驗）</li>
+              <li><strong>新訪客 vs 回頭客</strong>比例</li>
+              <li>尖峰時段 heatmap（哪天哪時段最忙）</li>
+              <li>裝置分布（iOS / Android · 影響行銷投放）</li>
+              <li>各分店比較（哪間吸客最強）</li>
+            </ul>
+            <div class="msg-actions">
+              <button class="msg-btn primary">✓ 建立</button>
+              <button class="msg-btn">改要看「平日 vs 週末」</button>
+            </div>
+          </div>
+          <div class="msg user">先建這個版本，再加一個「每店尖峰時段」</div>
+          <div class="msg ai">
+            <div class="ai-name">🤖 Network AI-Assistant</div>
+            已建立 ✓ 也可 export CSV 給行銷直接做 pivot。<br>看到一個<strong style="color:var(--accent);">有趣 insight</strong>：Branch-Taipei 平均停留 28 分鐘但回頭率只 12%（其他店 25-30%）— 可能是位置或服務問題，要幫您查嗎？
           </div>
         </div>
 
@@ -1098,6 +1155,207 @@
         </div>
       </div>
 
+      <!-- ===== Scenario 5: 設備 Timeline ===== -->
+      <div class="scenario s5">
+        <div class="dash-header">
+          <div class="dash-title">💻 Sandy-MacBook · 7 天連線 Timeline</div>
+          <div class="dash-meta"><span class="live"></span> Live · MAC: AC:DE:48:F2:1C:9B</div>
+        </div>
+        <div class="dash-grid" style="grid-template-columns: 1fr 1fr 1fr 1fr;">
+
+          <div class="widget" style="grid-column: span 1;">
+            <div class="widget-title">連線總時長</div>
+            <div class="kpi-value" style="font-size:32px;">42<span style="font-size:14px;color:var(--muted);"> hr</span></div>
+            <div class="kpi-trend">過去 7 天</div>
+          </div>
+          <div class="widget" style="grid-column: span 1;">
+            <div class="widget-title">斷線次數</div>
+            <div class="kpi-value" style="font-size:32px;color:var(--bad);">17</div>
+            <div class="kpi-trend down">較異常 (其他 device 平均 2-3)</div>
+          </div>
+          <div class="widget" style="grid-column: span 1;">
+            <div class="widget-title">漫遊次數</div>
+            <div class="kpi-value" style="font-size:32px;">38</div>
+            <div class="kpi-trend">含 12 次失敗</div>
+          </div>
+          <div class="widget" style="grid-column: span 1;">
+            <div class="widget-title">平均訊號</div>
+            <div class="kpi-value" style="font-size:32px;color:var(--warn);">−68 <span style="font-size:14px;color:var(--muted);">dBm</span></div>
+            <div class="kpi-trend down">下午 3 點 dropping 到 −78</div>
+          </div>
+
+          <div class="widget" style="grid-column: span 4;">
+            <div class="widget-title">7 天連線 / 斷線事件 Timeline</div>
+            <svg class="chart-svg" viewBox="0 0 700 100" preserveAspectRatio="none" style="height:80px;">
+              <!-- background lanes -->
+              <rect x="0" y="40" width="700" height="20" fill="rgba(0,217,197,0.08)"/>
+              <!-- connected segments (cyan) -->
+              <rect x="20" y="40" width="65" height="20" fill="#00d9c5" opacity="0.6"/>
+              <rect x="100" y="40" width="40" height="20" fill="#00d9c5" opacity="0.6"/>
+              <rect x="155" y="40" width="80" height="20" fill="#00d9c5" opacity="0.6"/>
+              <rect x="250" y="40" width="55" height="20" fill="#00d9c5" opacity="0.6"/>
+              <rect x="320" y="40" width="35" height="20" fill="#00d9c5" opacity="0.6"/>
+              <rect x="370" y="40" width="70" height="20" fill="#00d9c5" opacity="0.6"/>
+              <rect x="455" y="40" width="50" height="20" fill="#00d9c5" opacity="0.6"/>
+              <rect x="520" y="40" width="60" height="20" fill="#00d9c5" opacity="0.6"/>
+              <rect x="595" y="40" width="40" height="20" fill="#00d9c5" opacity="0.6"/>
+              <rect x="650" y="40" width="40" height="20" fill="#00d9c5" opacity="0.6"/>
+              <!-- disconnect markers (red) -->
+              <circle cx="92" cy="50" r="4" fill="#ef4444"/>
+              <circle cx="148" cy="50" r="4" fill="#ef4444"/>
+              <circle cx="242" cy="50" r="4" fill="#ef4444"/>
+              <circle cx="312" cy="50" r="4" fill="#ef4444"/>
+              <circle cx="362" cy="50" r="4" fill="#ef4444"/>
+              <circle cx="447" cy="50" r="4" fill="#ef4444"/>
+              <circle cx="512" cy="50" r="4" fill="#ef4444"/>
+              <circle cx="588" cy="50" r="4" fill="#ef4444"/>
+              <circle cx="642" cy="50" r="4" fill="#ef4444"/>
+              <g font-size="10" fill="#64748b" font-family="JetBrains Mono">
+                <text x="0" y="98">週一</text><text x="100" y="98">週二</text><text x="200" y="98">週三</text>
+                <text x="300" y="98">週四</text><text x="400" y="98">週五</text><text x="500" y="98">週六</text>
+                <text x="600" y="98">週日</text>
+              </g>
+              <g font-size="10" fill="#cbd5e1">
+                <text x="5" y="35">連線</text>
+              </g>
+            </svg>
+            <div style="margin-top:6px;font-size:11px;color:var(--dim);font-family:'JetBrains Mono';">
+              青色 = 連線時段 · <span style="color:#ef4444;">●</span> 紅點 = 斷線事件 (共 17 次)
+            </div>
+          </div>
+
+          <div class="widget" style="grid-column: span 2;">
+            <div class="widget-title">漫遊歷史（最近 12 次）</div>
+            <table class="table-w">
+              <thead><tr><th>時間</th><th>從 → 到</th><th>結果</th></tr></thead>
+              <tbody>
+                <tr><td>15:42</td><td>AP-7F-N3 → AP-7F-N4</td><td><span class="badge-mini good">成功</span></td></tr>
+                <tr><td>15:31</td><td>AP-7F-N3 → ✗</td><td><span class="badge-mini bad">失敗 · 斷線</span></td></tr>
+                <tr><td>15:18</td><td>AP-7F-N3 → AP-7F-N4</td><td><span class="badge-mini good">成功</span></td></tr>
+                <tr><td>14:55</td><td>AP-3F-S1 → AP-7F-N3</td><td><span class="badge-mini good">成功</span></td></tr>
+                <tr><td>14:32</td><td>AP-7F-N3 → ✗</td><td><span class="badge-mini bad">失敗 · 訊號弱</span></td></tr>
+                <tr><td>11:08</td><td>AP-3F-S1 → AP-3F-S2</td><td><span class="badge-mini good">成功</span></td></tr>
+                <tr><td>09:15</td><td>(連線)</td><td><span class="badge-mini good">→ AP-3F-S1</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="widget" style="grid-column: span 2;">
+            <div class="widget-title">異常事件 + AI 觀察</div>
+            <div class="alert-row">
+              <div class="ico">🔴</div>
+              <div class="msg-text"><strong>每天 15:00–16:00 訊號掉到 −78 dBm</strong> — 對應地點 7F 會議室</div>
+              <div class="ts">7×</div>
+            </div>
+            <div class="alert-row">
+              <div class="ico">🟡</div>
+              <div class="msg-text">12 次漫遊失敗 — 全發生在 <code>AP-7F-N3</code> 附近</div>
+              <div class="ts">7d</div>
+            </div>
+            <div class="alert-row">
+              <div class="ico">💡</div>
+              <div class="msg-text"><strong>AI 觀察</strong>：與 cockpit 偵測到的 sticky client 案是<strong style="color:var(--accent);">同一個根因</strong> — 修了 <code>AP-7F-N3</code>，Sandy 的問題大概率一起解掉</div>
+              <div class="ts">AI</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ===== Scenario 6: 訪客 Wi-Fi 報告 ===== -->
+      <div class="scenario s6">
+        <div class="dash-header">
+          <div class="dash-title">📊 訪客 Wi-Fi · 上月使用報告</div>
+          <div class="dash-meta"><span class="live"></span> 2026-04-01 → 04-30 · 5 分店</div>
+        </div>
+        <div class="dash-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+
+          <div class="widget" style="grid-column: span 1;">
+            <div class="widget-title">總訪客數（unique）</div>
+            <div class="kpi-value" style="font-size:32px;">12,847</div>
+            <div class="kpi-trend up">↑ 18.3% (vs 3 月)</div>
+          </div>
+          <div class="widget" style="grid-column: span 1;">
+            <div class="widget-title">平均停留時長</div>
+            <div class="kpi-value" style="font-size:32px;">26<span style="font-size:14px;color:var(--muted);"> min</span></div>
+            <div class="kpi-trend">中位數 18 min</div>
+          </div>
+          <div class="widget" style="grid-column: span 1;">
+            <div class="widget-title">回頭客比例</div>
+            <div class="kpi-value" style="font-size:32px;">24<span style="font-size:14px;color:var(--muted);">%</span></div>
+            <div class="kpi-trend up">↑ 3.1pp</div>
+          </div>
+
+          <div class="widget" style="grid-column: span 3;">
+            <div class="widget-title">每日訪客數趨勢（4 月）</div>
+            <svg class="chart-svg" viewBox="0 0 600 100" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="g6" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#00d9c5" stop-opacity="0.4"/>
+                  <stop offset="100%" stop-color="#00d9c5" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <path d="M0,75 L20,72 L40,78 L60,55 L80,50 L100,68 L120,72 L140,40 L160,45 L180,68 L200,72 L220,38 L240,42 L260,65 L280,68 L300,35 L320,40 L340,60 L360,65 L380,30 L400,32 L420,55 L440,58 L460,28 L480,30 L500,52 L520,55 L540,25 L560,28 L580,48 L600,52 L600,100 L0,100 Z" fill="url(#g6)"/>
+              <path d="M0,75 L20,72 L40,78 L60,55 L80,50 L100,68 L120,72 L140,40 L160,45 L180,68 L200,72 L220,38 L240,42 L260,65 L280,68 L300,35 L320,40 L340,60 L360,65 L380,30 L400,32 L420,55 L440,58 L460,28 L480,30 L500,52 L520,55 L540,25 L560,28 L580,48 L600,52" stroke="#00d9c5" stroke-width="2" fill="none"/>
+              <g font-size="10" fill="#64748b" font-family="JetBrains Mono">
+                <text x="0" y="98">04/01</text><text x="195" y="98">04/10</text><text x="395" y="98">04/20</text><text x="565" y="98">04/30</text>
+              </g>
+            </svg>
+            <div style="margin-top:4px;font-size:11px;color:var(--dim);">週末（週六、日）明顯較高 — 平均比平日高 65%</div>
+          </div>
+
+          <div class="widget" style="grid-column: span 2;">
+            <div class="widget-title">尖峰時段 Heatmap（小時 × 星期）</div>
+            <div class="heatmap" style="grid-template-columns: 30px repeat(12, 1fr);">
+              <div class="hm-label">週一</div>
+              <div class="hm-cell l1"></div><div class="hm-cell l1"></div><div class="hm-cell l2"></div><div class="hm-cell l3"></div><div class="hm-cell l3"></div><div class="hm-cell l2"></div><div class="hm-cell l3"></div><div class="hm-cell l4"></div><div class="hm-cell l3"></div><div class="hm-cell l2"></div><div class="hm-cell l1"></div><div class="hm-cell l1"></div>
+              <div class="hm-label">週三</div>
+              <div class="hm-cell l1"></div><div class="hm-cell l2"></div><div class="hm-cell l2"></div><div class="hm-cell l3"></div><div class="hm-cell l4"></div><div class="hm-cell l3"></div><div class="hm-cell l3"></div><div class="hm-cell l4"></div><div class="hm-cell l3"></div><div class="hm-cell l2"></div><div class="hm-cell l2"></div><div class="hm-cell l1"></div>
+              <div class="hm-label">週五</div>
+              <div class="hm-cell l1"></div><div class="hm-cell l2"></div><div class="hm-cell l3"></div><div class="hm-cell l3"></div><div class="hm-cell l4"></div><div class="hm-cell l4"></div><div class="hm-cell l4"></div><div class="hm-cell l5"></div><div class="hm-cell l4"></div><div class="hm-cell l3"></div><div class="hm-cell l2"></div><div class="hm-cell l2"></div>
+              <div class="hm-label">週六</div>
+              <div class="hm-cell l2"></div><div class="hm-cell l3"></div><div class="hm-cell l4"></div><div class="hm-cell l5"></div><div class="hm-cell l5"></div><div class="hm-cell l5"></div><div class="hm-cell l5"></div><div class="hm-cell l5"></div><div class="hm-cell l4"></div><div class="hm-cell l4"></div><div class="hm-cell l3"></div><div class="hm-cell l2"></div>
+              <div class="hm-label">週日</div>
+              <div class="hm-cell l2"></div><div class="hm-cell l3"></div><div class="hm-cell l4"></div><div class="hm-cell l4"></div><div class="hm-cell l5"></div><div class="hm-cell l5"></div><div class="hm-cell l4"></div><div class="hm-cell l4"></div><div class="hm-cell l3"></div><div class="hm-cell l3"></div><div class="hm-cell l2"></div><div class="hm-cell l1"></div>
+            </div>
+            <div style="margin-top:8px;font-size:10px;color:var(--dim);text-align:center;font-family:'JetBrains Mono';">
+              10 AM → 21:00 · 紅 = 訪客最多 · 週六 14–18 點為全週尖峰
+            </div>
+          </div>
+
+          <div class="widget" style="grid-column: span 1;">
+            <div class="widget-title">裝置 OS 分布</div>
+            <div class="bar-list">
+              <div class="bar-row"><div class="lbl">iOS</div><div class="bar-track"><div class="bar-fill" style="width:62%; background:var(--cyan);"></div></div><div class="num">62%</div></div>
+              <div class="bar-row"><div class="lbl">Android</div><div class="bar-track"><div class="bar-fill" style="width:31%; background:var(--accent);"></div></div><div class="num">31%</div></div>
+              <div class="bar-row"><div class="lbl">macOS</div><div class="bar-track"><div class="bar-fill" style="width:5%;"></div></div><div class="num">5%</div></div>
+              <div class="bar-row"><div class="lbl">其他</div><div class="bar-track"><div class="bar-fill" style="width:2%;"></div></div><div class="num">2%</div></div>
+            </div>
+            <div style="margin-top:10px;font-size:11px;color:var(--dim);">
+              💡 行銷可參考：以 iOS 為主的客群
+            </div>
+          </div>
+
+          <div class="widget" style="grid-column: span 3;">
+            <div class="widget-title">各分店比較</div>
+            <table class="table-w">
+              <thead><tr><th>分店</th><th>訪客數</th><th>平均停留</th><th>回頭率</th><th>vs 上月</th></tr></thead>
+              <tbody>
+                <tr><td>HQ-1F (門市)</td><td class="num">3,842</td><td class="num">31 min</td><td class="num">28%</td><td><span class="badge-mini good">+12%</span></td></tr>
+                <tr><td>Branch-Taipei</td><td class="num">3,210</td><td class="num">28 min</td><td><span class="badge-mini bad">12%</span></td><td><span class="badge-mini warn">+3%</span></td></tr>
+                <tr><td>Branch-Kaohsiung</td><td class="num">2,455</td><td class="num">24 min</td><td class="num">26%</td><td><span class="badge-mini good">+18%</span></td></tr>
+                <tr><td>Branch-Taichung</td><td class="num">1,987</td><td class="num">22 min</td><td class="num">25%</td><td><span class="badge-mini good">+9%</span></td></tr>
+                <tr><td>Branch-Hsinchu</td><td class="num">1,353</td><td class="num">19 min</td><td class="num">22%</td><td><span class="badge-mini warn">−2%</span></td></tr>
+              </tbody>
+            </table>
+            <div style="margin-top:6px;font-size:11px;color:var(--accent);">
+              ⚠ Branch-Taipei 回頭率明顯低於其他店（12% vs 22-28%）— 行銷可進一步調查原因
+            </div>
+          </div>
+
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -1234,6 +1492,8 @@
         s2: { t: '場景 2 · AP 負載探索', m: 'B · SMB IT' },
         s3: { t: '場景 3 · 員工查我的會議室 Wi-Fi', m: 'A · 員工' },
         s4: { t: '場景 4 · 跨分點客戶分析（連鎖 / 多 site SMB）', m: 'B · SMB IT' },
+        s5: { t: '場景 5 · 找某台設備的連線 timeline（IT 排錯）', m: 'B · SMB IT' },
+        s6: { t: '場景 6 · 訪客 Wi-Fi 使用報告（給行銷）', m: 'B · SMB IT' },
       };
       document.getElementById('demoTitle').textContent = titles[scenario].t;
       document.getElementById('demoMode').textContent = titles[scenario].m;
