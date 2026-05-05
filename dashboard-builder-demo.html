@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NetSense AI — Dashboard Builder Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-1: #0a1628;
+    --bg-2: #0f1e3a;
+    --surface: rgba(255,255,255,0.04);
+    --surface-2: rgba(255,255,255,0.08);
+    --border: rgba(255,255,255,0.12);
+    --border-strong: rgba(255,255,255,0.22);
+    --text: #f8fafc;
+    --muted: #cbd5e1;
+    --dim: #64748b;
+    --accent: #ff6b35;
+    --cyan: #00d9c5;
+    --good: #10b981;
+    --warn: #fbbf24;
+    --bad: #ef4444;
+    --purple: #a78bfa;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%);
+    color: var(--text);
+    font-family: 'Inter', 'Noto Sans TC', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding: 40px 32px 80px;
+    line-height: 1.55;
+  }
+  .container { max-width: 1640px; margin: 0 auto; }
+
+  header {
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  header .left .tag {
+    color: var(--accent);
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  header h1 { font-size: 36px; font-weight: 800; letter-spacing: -0.02em; }
+  header h1 .accent { color: var(--accent); }
+  header .sub { color: var(--muted); margin-top: 6px; font-size: 15px; }
+
+  .nav-links { display: flex; gap: 7px; flex-wrap: wrap; }
+  .nav-link {
+    color: var(--cyan);
+    text-decoration: none;
+    font-size: 12.5px; font-weight: 600;
+    padding: 7px 12px;
+    background: rgba(0,217,197,0.08);
+    border: 1px solid rgba(0,217,197,0.35);
+    border-radius: 8px;
+    transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .nav-link:hover {
+    background: rgba(0,217,197,0.18);
+    border-color: var(--cyan);
+    transform: translateY(-1px);
+  }
+  .nav-link.muted-link {
+    color: var(--muted); background: var(--surface);
+    border-color: var(--border-strong);
+  }
+  .nav-link.current {
+    background: rgba(255,107,53,0.15);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* HERO */
+  .hero {
+    text-align: center;
+    margin-bottom: 36px;
+    padding: 12px 20px 0;
+  }
+  .hero .pre {
+    color: var(--cyan);
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .hero h2 {
+    font-size: clamp(36px, 5vw, 60px);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+  .hero h2 .accent { color: var(--accent); }
+  .hero h2 .cyan { color: var(--cyan); }
+  .hero .lead {
+    margin-top: 16px;
+    color: var(--muted);
+    font-size: 17px;
+    max-width: 820px;
+    margin-left: auto; margin-right: auto;
+  }
+  .hero .lead strong { color: var(--text); }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .tab {
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    color: var(--muted);
+    padding: 12px 22px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tab:hover {
+    background: var(--surface-2);
+    color: var(--text);
+  }
+  .tab.active {
+    background: rgba(255,107,53,0.15);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .tab .mode-badge {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: var(--surface-2);
+    color: var(--dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+  }
+  .tab.active .mode-badge {
+    background: rgba(255,107,53,0.2);
+    color: var(--accent);
+  }
+
+  /* DEMO SPLIT */
+  .demo {
+    background: rgba(0,0,0,0.25);
+    border: 1px solid var(--border-strong);
+    border-radius: 18px;
+    overflow: hidden;
+    margin-bottom: 48px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+  .demo-header {
+    background: rgba(255,255,255,0.04);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .demo-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .demo-mode {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .demo-mode .mode-pill {
+    background: var(--surface-2);
+    color: var(--accent);
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 11px;
+  }
+  .demo-body {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    min-height: 640px;
+  }
+
+  /* CHAT */
+  .chat {
+    background: var(--bg-2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+  }
+  .chat-msgs {
+    flex: 1;
+    padding: 24px 22px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .msg {
+    max-width: 92%;
+    padding: 12px 16px;
+    border-radius: 16px;
+    font-size: 14px;
+    line-height: 1.55;
+    animation: fadeIn 0.3s ease;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .msg.user {
+    background: var(--accent);
+    color: #fff;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+  }
+  .msg.ai {
+    background: var(--surface-2);
+    color: var(--text);
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+    border: 1px solid var(--border);
+  }
+  .msg.ai .ai-name {
+    font-size: 11px;
+    color: var(--cyan);
+    font-weight: 700;
+    margin-bottom: 4px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .msg.ai ul {
+    list-style: none;
+    margin-top: 8px;
+  }
+  .msg.ai ul li {
+    padding: 3px 0 3px 16px;
+    position: relative;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .msg.ai ul li::before {
+    content: '·';
+    position: absolute;
+    left: 6px;
+    color: var(--cyan);
+    font-weight: 700;
+  }
+  .msg-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .msg-btn {
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .msg-btn.primary {
+    background: var(--cyan);
+    border-color: var(--cyan);
+    color: #042722;
+  }
+  .chat-input {
+    border-top: 1px solid var(--border);
+    padding: 14px 18px;
+    display: flex;
+    gap: 8px;
+    background: rgba(0,0,0,0.18);
+  }
+  .chat-input input {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    pointer-events: none;
+  }
+  .chat-input input::placeholder { color: var(--dim); }
+  .chat-input .send {
+    background: var(--accent);
+    border: none;
+    color: #fff;
+    width: 40px; height: 40px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  /* DASHBOARD */
+  .dash {
+    padding: 24px 28px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+    overflow-y: auto;
+  }
+  .dash-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .dash-title {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .dash-meta {
+    color: var(--dim);
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .dash-meta .live {
+    width: 7px; height: 7px;
+    background: var(--good);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .dash-empty {
+    text-align: center;
+    padding: 100px 20px;
+    color: var(--dim);
+  }
+  .dash-empty .icon { font-size: 48px; margin-bottom: 16px; opacity: 0.4; }
+  .dash-empty h3 { font-size: 18px; color: var(--muted); margin-bottom: 8px; }
+  .dash-empty p { font-size: 14px; }
+
+  .dash-grid {
+    display: grid;
+    gap: 14px;
+  }
+
+  /* Widget base */
+  .widget {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    transition: all 0.2s;
+  }
+  .widget:hover {
+    border-color: var(--border-strong);
+    background: rgba(255,255,255,0.06);
+  }
+  .widget-title {
+    font-size: 12px;
+    color: var(--dim);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+
+  /* KPI widget */
+  .kpi-value {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--text);
+  }
+  .kpi-trend {
+    margin-top: 8px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .kpi-trend.up { color: var(--good); }
+  .kpi-trend.down { color: var(--bad); }
+  .kpi-trend.warn { color: var(--warn); }
+
+  /* Chart widget */
+  .chart-wrap { margin-top: 4px; }
+  .chart-svg { width: 100%; height: 100px; }
+
+  /* Bar list */
+  .bar-list { display: grid; gap: 7px; }
+  .bar-row {
+    display: grid;
+    grid-template-columns: 100px 1fr 50px;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+  }
+  .bar-row .lbl { color: var(--text); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bar-row .num { color: var(--cyan); font-weight: 700; text-align: right; font-family: 'JetBrains Mono', monospace; }
+  .bar-track {
+    height: 8px;
+    background: var(--surface);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+  .bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--cyan), var(--accent));
+    border-radius: 4px;
+  }
+  .bar-fill.warn { background: linear-gradient(90deg, var(--warn), var(--bad)); }
+
+  /* Table widget */
+  .table-w {
+    width: 100%;
+    font-size: 12px;
+  }
+  .table-w th, .table-w td {
+    padding: 6px 8px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .table-w th {
+    color: var(--dim);
+    font-weight: 600;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .table-w td.num { font-family: 'JetBrains Mono', monospace; color: var(--cyan); text-align: right; }
+  .badge-mini {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+  .badge-mini.bad { background: rgba(239,68,68,0.15); color: var(--bad); }
+  .badge-mini.warn { background: rgba(251,191,36,0.15); color: var(--warn); }
+  .badge-mini.good { background: rgba(16,185,129,0.15); color: var(--good); }
+
+  /* Heatmap */
+  .heatmap {
+    display: grid;
+    grid-template-columns: 48px repeat(12, 1fr);
+    gap: 3px;
+    margin-top: 4px;
+  }
+  .hm-label {
+    font-size: 10px;
+    color: var(--dim);
+    align-self: center;
+    text-align: right;
+    padding-right: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .hm-cell {
+    aspect-ratio: 1;
+    border-radius: 2px;
+    background: rgba(0,217,197,0.1);
+  }
+  .hm-cell.l1 { background: rgba(0,217,197,0.15); }
+  .hm-cell.l2 { background: rgba(0,217,197,0.35); }
+  .hm-cell.l3 { background: rgba(251,191,36,0.4); }
+  .hm-cell.l4 { background: rgba(251,191,36,0.65); }
+  .hm-cell.l5 { background: rgba(239,68,68,0.6); }
+
+  /* Status grid */
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 6px;
+  }
+  .status-dot {
+    aspect-ratio: 1;
+    border-radius: 4px;
+    background: var(--good);
+    opacity: 0.7;
+  }
+  .status-dot.warn { background: var(--warn); }
+  .status-dot.bad { background: var(--bad); }
+  .status-dot.off { background: var(--dim); opacity: 0.3; }
+
+  /* Map mock */
+  .site-map {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .site-card {
+    background: var(--surface);
+    border-radius: 8px;
+    padding: 10px;
+    border-left: 3px solid var(--good);
+  }
+  .site-card.warn { border-left-color: var(--warn); }
+  .site-card.bad { border-left-color: var(--bad); }
+  .site-name { font-size: 12px; font-weight: 600; }
+  .site-score { font-size: 18px; font-weight: 800; margin-top: 2px; color: var(--cyan); }
+
+  /* Big button (employee mode) */
+  .big-btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    width: 100%;
+    padding: 16px;
+    border-radius: 12px;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  /* Alerts */
+  .alert-row {
+    display: flex;
+    align-items: start;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .alert-row:last-child { border-bottom: none; }
+  .alert-row .ico { font-size: 14px; flex-shrink: 0; }
+  .alert-row .msg-text { color: var(--text); flex: 1; line-height: 1.4; }
+  .alert-row .ts { color: var(--dim); font-family: 'JetBrains Mono', monospace; font-size: 10px; flex-shrink: 0; }
+
+  /* Scenario hidden by default */
+  .scenario { display: none; }
+  .scenario.active { display: contents; }
+
+  /* SECTIONS BELOW DEMO */
+  .section-title {
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .section-sub {
+    text-align: center;
+    color: var(--muted);
+    margin-bottom: 32px;
+    font-size: 16px;
+  }
+
+  .how-it-works {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 32px;
+    margin-bottom: 40px;
+  }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .step {
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px 20px;
+    position: relative;
+  }
+  .step-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+  .step h4 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+  .step p {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  .step p strong { color: var(--text); }
+
+  /* WIDGET LIBRARY */
+  .widget-lib {
+    background: rgba(0,0,0,0.18);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 32px;
+    margin-bottom: 40px;
+  }
+  .widget-lib-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+  .lib-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 14px;
+    text-align: center;
+  }
+  .lib-icon { font-size: 24px; margin-bottom: 8px; }
+  .lib-name { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+  .lib-desc { font-size: 11px; color: var(--muted); line-height: 1.4; }
+
+  /* COMPARE */
+  .compare {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 32px;
+    margin-bottom: 40px;
+  }
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+  .compare-table th, .compare-table td {
+    padding: 11px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .compare-table th { color: var(--dim); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+  .compare-table th.col-old { color: var(--bad); }
+  .compare-table th.col-new { color: var(--good); }
+  .compare-table td.cross { color: var(--bad); }
+  .compare-table td.check { color: var(--good); }
+
+  /* CTA */
+  .cta {
+    text-align: center;
+    background: linear-gradient(135deg, rgba(0,217,197,0.08), rgba(255,107,53,0.06));
+    border: 1px solid rgba(0,217,197,0.3);
+    border-radius: 18px;
+    padding: 32px;
+  }
+  .cta h3 { font-size: 20px; margin-bottom: 14px; font-weight: 700; }
+  .cta-btns { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+  .cta-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 18px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 14px; font-weight: 600;
+    transition: all 0.2s;
+  }
+  .cta-btn:hover {
+    background: rgba(0,217,197,0.15);
+    border-color: var(--cyan);
+    color: var(--cyan);
+  }
+
+  @media (max-width: 1100px) {
+    .demo-body { grid-template-columns: 1fr; }
+    .chat { border-right: none; border-bottom: 1px solid var(--border); }
+    .steps, .widget-lib-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media print {
+    body { background: white; color: black; padding: 20px; }
+    .nav-links { display: none; }
+    .demo, .how-it-works, .widget-lib, .compare, .cta { background: white; border-color: #ccc; page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <div class="left">
+    <div class="tag">DASHBOARD BUILDER · MODE B 殺手功能 DEMO</div>
+    <h1>📊 用<span class="accent">講的</span>就有儀表板</h1>
+    <div class="sub">不需懂 query / 不需懂 metric / 不需懂視覺設計 — AI 根據需求自動組合 dashboard</div>
+  </div>
+  <div class="nav-links">
+    <a class="nav-link muted-link" href="index.html">🏠 入口</a>
+    <a class="nav-link muted-link" href="three-modes.html">🎭 三模式</a>
+    <a class="nav-link muted-link" href="use-case-matrix.html">📊 使用案例</a>
+    <a class="nav-link current" href="dashboard-builder-demo.html">📈 Dashboard Demo</a>
+    <a class="nav-link muted-link" href="dashboard-builder-implementation.html">🔧 實作指南</a>
+    <a class="nav-link muted-link" href="mockup-gallery.html">🎨 Mockups</a>
+    <a class="nav-link muted-link" href="overview-pm-mkt.html">🎯 PM/MKT</a>
+    <a class="nav-link muted-link" href="architecture-v2-zh.html">🏗 架構</a>
+    <a class="nav-link muted-link" href="playbook-examples.html">📘 Playbook</a>
+    <a class="nav-link muted-link" href="blind-spots.html">⚠ 盲點</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="pre">INTERACTIVE DEMO · 互動式範例</div>
+  <h2>Dashboard Builder<br>是 SMB IT 的<span class="accent">殺手級體驗</span></h2>
+  <p class="lead">
+    傳統儀表板：要懂 PromQL、要找 metric 名稱、要會選 chart 類型、要會排版 — <strong>「設一次就放棄」</strong>。<br>
+    Dashboard Builder：<strong style="color:var(--cyan);">用講的</strong>，AI 從 widget library 組合給您。
+    下面是 4 個真實場景，<strong>點頁籤切換</strong>。
+  </p>
+</section>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" data-scenario="s1">
+    <span>本週健康狀況</span><span class="mode-badge">MODE B</span>
+  </button>
+  <button class="tab" data-scenario="s2">
+    <span>哪些 AP 太忙</span><span class="mode-badge">MODE B</span>
+  </button>
+  <button class="tab" data-scenario="s3">
+    <span>我的會議室 Wi-Fi</span><span class="mode-badge">MODE A</span>
+  </button>
+  <button class="tab" data-scenario="s4">
+    <span>跨 site 客戶分析</span><span class="mode-badge">MODE C</span>
+  </button>
+</div>
+
+<!-- DEMO -->
+<div class="demo">
+  <div class="demo-header">
+    <div class="demo-title" id="demoTitle">場景 1 · 本週健康狀況檢查</div>
+    <div class="demo-mode">
+      使用模式 <span class="mode-pill" id="demoMode">B · SMB IT</span>
+    </div>
+  </div>
+  <div class="demo-body">
+
+    <!-- ============== CHAT ============== -->
+    <div class="chat">
+      <div class="chat-msgs" id="chatMsgs">
+
+        <!-- ===== Scenario 1 ===== -->
+        <div class="scenario s1 active">
+          <div class="msg user">我想看這週網路有沒有什麼異常</div>
+          <div class="msg ai">
+            <div class="ai-name">🤖 NetSense AI</div>
+            好的，幫您建一個「本週健康狀況」儀表板，包含：
+            <ul>
+              <li>本週 anomaly 趨勢（橫條圖）</li>
+              <li>客戶數 week-over-week 變化（KPI）</li>
+              <li>Top 5 問題設備（表格）</li>
+              <li>各 site 健康分數（地圖）</li>
+            </ul>
+            <div class="msg-actions">
+              <button class="msg-btn">先預覽</button>
+              <button class="msg-btn primary">✓ 建立</button>
+            </div>
+          </div>
+          <div class="msg user">建立</div>
+          <div class="msg ai">
+            <div class="ai-name">🤖 NetSense AI</div>
+            已儲存 ✓ 之後從首頁可以直接看。<br>要再加什麼面板隨時跟我說，例如「再加一個會議室趨勢」。
+          </div>
+        </div>
+
+        <!-- ===== Scenario 2 ===== -->
+        <div class="scenario s2">
+          <div class="msg user">我想看哪些 AP 太忙</div>
+          <div class="msg ai">
+            <div class="ai-name">🤖 NetSense AI</div>
+            幫您建「AP 負載」儀表板：
+            <ul>
+              <li>Top 10 最忙 AP（依 client 數）</li>
+              <li>5GHz channel utilization heatmap</li>
+              <li>過載警示（utilization &gt; 80%）</li>
+              <li>建議動作（要加 AP 還是分流？）</li>
+            </ul>
+            <div class="msg-actions">
+              <button class="msg-btn primary">✓ 建立</button>
+            </div>
+          </div>
+          <div class="msg ai">
+            <div class="ai-name">🤖 NetSense AI</div>
+            建好了。我看到 AP-3F-N2 跟 AP-7F-S1 已經連續 3 天 utilization &gt; 85%，<strong style="color:var(--warn);">建議 7 天內加 1 台輔助 AP</strong>。要我列預算估算嗎？
+          </div>
+        </div>
+
+        <!-- ===== Scenario 3 ===== -->
+        <div class="scenario s3">
+          <div class="msg user">我想看我會議室的 Wi-Fi 怎樣</div>
+          <div class="msg ai">
+            <div class="ai-name">🤖 NetSense AI</div>
+            您是 7F 北側會議室嗎？我幫您建一個簡單面板：
+            <ul>
+              <li>訊號強度（即時）</li>
+              <li>過去 1 小時連線狀況</li>
+              <li>「回報問題」按鈕</li>
+            </ul>
+            <div class="msg-actions">
+              <button class="msg-btn primary">✓ 建立</button>
+            </div>
+          </div>
+          <div class="msg ai">
+            <div class="ai-name">🤖 NetSense AI</div>
+            建好了 ✓ 您現在訊號 -62 dBm（良好）。<br>如果之後變差，按下「回報問題」我會幫您聯繫 IT。
+          </div>
+        </div>
+
+        <!-- ===== Scenario 4 ===== -->
+        <div class="scenario s4">
+          <div class="msg user">show top 10 sites by client churn this month, with 5GHz utilization breakdown</div>
+          <div class="msg ai">
+            <div class="ai-name">🤖 NetSense AI</div>
+            Generated. Includes:
+            <ul>
+              <li>Top 10 sites churn ranking (sorted desc)</li>
+              <li>5GHz util stacked bar (per site)</li>
+              <li>Sparkline trend (4-week)</li>
+              <li>Comparison vs last month</li>
+            </ul>
+            Want to schedule weekly auto-email to your team?
+            <div class="msg-actions">
+              <button class="msg-btn primary">✓ Schedule</button>
+              <button class="msg-btn">Export JSON</button>
+            </div>
+          </div>
+          <div class="msg user">Yes, every Monday 9 AM</div>
+          <div class="msg ai">
+            <div class="ai-name">🤖 NetSense AI</div>
+            Scheduled ✓ Also exposing as REST endpoint at <code style="font-family:'JetBrains Mono';font-size:11px;background:var(--surface);padding:1px 6px;border-radius:4px;color:var(--cyan);">/api/dashboards/site-churn-202605</code> for your Grafana.
+          </div>
+        </div>
+
+      </div>
+      <div class="chat-input">
+        <input type="text" placeholder="再加一個...（試試看）">
+        <button class="send">↑</button>
+      </div>
+    </div>
+
+    <!-- ============== DASHBOARD ============== -->
+    <div class="dash" id="dashContent">
+
+      <!-- ===== Scenario 1: 本週健康 ===== -->
+      <div class="scenario s1 active">
+        <div class="dash-header">
+          <div class="dash-title">📊 本週健康狀況</div>
+          <div class="dash-meta"><span class="live"></span> Live · 監測 47 設備</div>
+        </div>
+        <div class="dash-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+          <div class="widget" style="grid-column: span 1;">
+            <div class="widget-title">客戶數 (本週 vs 上週)</div>
+            <div class="kpi-value">847</div>
+            <div class="kpi-trend up">↑ 12.4% (+93)</div>
+          </div>
+          <div class="widget" style="grid-column: span 1;">
+            <div class="widget-title">本週 anomaly 總數</div>
+            <div class="kpi-value">23</div>
+            <div class="kpi-trend down">↓ 8% (-2 vs 上週)</div>
+          </div>
+          <div class="widget" style="grid-column: span 1;">
+            <div class="widget-title">平均健康分數</div>
+            <div class="kpi-value">87</div>
+            <div class="kpi-trend up">↑ 3 (vs 上週)</div>
+          </div>
+
+          <div class="widget" style="grid-column: span 3;">
+            <div class="widget-title">本週 anomaly 趨勢</div>
+            <svg class="chart-svg" viewBox="0 0 600 100" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#ff6b35" stop-opacity="0.4"/>
+                  <stop offset="100%" stop-color="#ff6b35" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <path d="M0,80 L85,60 L170,72 L255,40 L340,55 L425,30 L510,45 L600,50 L600,100 L0,100 Z" fill="url(#g1)"/>
+              <path d="M0,80 L85,60 L170,72 L255,40 L340,55 L425,30 L510,45 L600,50" stroke="#ff6b35" stroke-width="2" fill="none"/>
+              <g font-size="10" fill="#64748b" font-family="JetBrains Mono">
+                <text x="0" y="98">週一</text><text x="85" y="98">週二</text><text x="170" y="98">週三</text>
+                <text x="255" y="98">週四</text><text x="340" y="98">週五</text><text x="425" y="98">週六</text>
+                <text x="510" y="98">週日</text>
+              </g>
+            </svg>
+          </div>
+
+          <div class="widget" style="grid-column: span 2;">
+            <div class="widget-title">Top 5 問題設備</div>
+            <table class="table-w">
+              <thead><tr><th>設備</th><th>類型</th><th>狀態</th></tr></thead>
+              <tbody>
+                <tr><td>AP-7F-N3</td><td>Sticky clients</td><td><span class="badge-mini bad">嚴重</span></td></tr>
+                <tr><td>SW-1F-Gi12</td><td>CRC errors</td><td><span class="badge-mini warn">注意</span></td></tr>
+                <tr><td>AP-3F-S2</td><td>低訊號</td><td><span class="badge-mini warn">注意</span></td></tr>
+                <tr><td>AP-2F-N1</td><td>Reboot loop</td><td><span class="badge-mini bad">嚴重</span></td></tr>
+                <tr><td>SW-2F-Gi24</td><td>埠 down</td><td><span class="badge-mini warn">注意</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="widget" style="grid-column: span 1;">
+            <div class="widget-title">各 site 健康分數</div>
+            <div class="site-map">
+              <div class="site-card"><div class="site-name">HQ</div><div class="site-score">94</div></div>
+              <div class="site-card warn"><div class="site-name">Branch A</div><div class="site-score">76</div></div>
+              <div class="site-card"><div class="site-name">Branch B</div><div class="site-score">88</div></div>
+              <div class="site-card"><div class="site-name">Lab</div><div class="site-score">91</div></div>
+              <div class="site-card bad"><div class="site-name">Warehouse</div><div class="site-score">62</div></div>
+              <div class="site-card"><div class="site-name">Factory</div><div class="site-score">85</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== Scenario 2: AP 負載 ===== -->
+      <div class="scenario s2">
+        <div class="dash-header">
+          <div class="dash-title">🛰 AP 負載儀表板</div>
+          <div class="dash-meta"><span class="live"></span> Live · 47 APs</div>
+        </div>
+        <div class="dash-grid" style="grid-template-columns: 1fr 1fr;">
+          <div class="widget">
+            <div class="widget-title">Top 10 最忙 AP（依 client 數）</div>
+            <div class="bar-list">
+              <div class="bar-row"><div class="lbl">AP-3F-N2</div><div class="bar-track"><div class="bar-fill warn" style="width:95%"></div></div><div class="num">76</div></div>
+              <div class="bar-row"><div class="lbl">AP-7F-S1</div><div class="bar-track"><div class="bar-fill warn" style="width:88%"></div></div><div class="num">71</div></div>
+              <div class="bar-row"><div class="lbl">AP-2F-N4</div><div class="bar-track"><div class="bar-fill" style="width:72%"></div></div><div class="num">58</div></div>
+              <div class="bar-row"><div class="lbl">AP-5F-N1</div><div class="bar-track"><div class="bar-fill" style="width:65%"></div></div><div class="num">52</div></div>
+              <div class="bar-row"><div class="lbl">AP-1F-S3</div><div class="bar-track"><div class="bar-fill" style="width:58%"></div></div><div class="num">47</div></div>
+              <div class="bar-row"><div class="lbl">AP-4F-N2</div><div class="bar-track"><div class="bar-fill" style="width:51%"></div></div><div class="num">41</div></div>
+              <div class="bar-row"><div class="lbl">AP-6F-S1</div><div class="bar-track"><div class="bar-fill" style="width:44%"></div></div><div class="num">35</div></div>
+            </div>
+          </div>
+
+          <div class="widget">
+            <div class="widget-title">過載警示 (util > 80%)</div>
+            <div class="alert-row">
+              <div class="ico">🔴</div>
+              <div class="msg-text"><strong>AP-3F-N2</strong> 5GHz util 92% — 連續 3 天</div>
+              <div class="ts">3d</div>
+            </div>
+            <div class="alert-row">
+              <div class="ico">🔴</div>
+              <div class="msg-text"><strong>AP-7F-S1</strong> 5GHz util 87% — 連續 3 天</div>
+              <div class="ts">3d</div>
+            </div>
+            <div class="alert-row">
+              <div class="ico">🟡</div>
+              <div class="msg-text"><strong>AP-2F-N4</strong> 5GHz util 78% — 偶發尖峰</div>
+              <div class="ts">today</div>
+            </div>
+            <div class="alert-row">
+              <div class="ico">💡</div>
+              <div class="msg-text"><strong>建議</strong>：3F 與 7F 各加 1 台輔助 AP</div>
+              <div class="ts">AI</div>
+            </div>
+          </div>
+
+          <div class="widget" style="grid-column: span 2;">
+            <div class="widget-title">5GHz Channel utilization heatmap (24h)</div>
+            <div class="heatmap">
+              <div class="hm-label">36</div>
+              <div class="hm-cell l1"></div><div class="hm-cell l1"></div><div class="hm-cell l2"></div><div class="hm-cell l3"></div><div class="hm-cell l4"></div><div class="hm-cell l5"></div><div class="hm-cell l4"></div><div class="hm-cell l3"></div><div class="hm-cell l2"></div><div class="hm-cell l2"></div><div class="hm-cell l1"></div><div class="hm-cell l1"></div>
+              <div class="hm-label">44</div>
+              <div class="hm-cell l1"></div><div class="hm-cell l2"></div><div class="hm-cell l3"></div><div class="hm-cell l4"></div><div class="hm-cell l5"></div><div class="hm-cell l5"></div><div class="hm-cell l5"></div><div class="hm-cell l4"></div><div class="hm-cell l3"></div><div class="hm-cell l2"></div><div class="hm-cell l1"></div><div class="hm-cell l1"></div>
+              <div class="hm-label">149</div>
+              <div class="hm-cell l1"></div><div class="hm-cell l1"></div><div class="hm-cell l2"></div><div class="hm-cell l2"></div><div class="hm-cell l3"></div><div class="hm-cell l3"></div><div class="hm-cell l3"></div><div class="hm-cell l2"></div><div class="hm-cell l2"></div><div class="hm-cell l1"></div><div class="hm-cell l1"></div><div class="hm-cell l1"></div>
+              <div class="hm-label">157</div>
+              <div class="hm-cell l1"></div><div class="hm-cell l1"></div><div class="hm-cell l2"></div><div class="hm-cell l3"></div><div class="hm-cell l4"></div><div class="hm-cell l4"></div><div class="hm-cell l3"></div><div class="hm-cell l3"></div><div class="hm-cell l2"></div><div class="hm-cell l2"></div><div class="hm-cell l1"></div><div class="hm-cell l1"></div>
+            </div>
+            <div style="margin-top:8px;font-size:10px;color:var(--dim);text-align:center;font-family:'JetBrains Mono';">
+              channel × 時段 (00:00 → 22:00) · 顏色越紅越忙
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== Scenario 3: 我的會議室 (Employee) ===== -->
+      <div class="scenario s3">
+        <div class="dash-header">
+          <div class="dash-title">📍 我的會議室 · 7F North</div>
+          <div class="dash-meta"><span class="live"></span> Live</div>
+        </div>
+        <div class="dash-grid" style="grid-template-columns: 1fr 1fr;">
+
+          <div class="widget" style="grid-column: span 2;">
+            <div class="widget-title">即時訊號強度</div>
+            <div style="display:flex;align-items:end;gap:16px;">
+              <div class="kpi-value" style="font-size:48px;">−62 <span style="font-size:18px;color:var(--muted);">dBm</span></div>
+              <div class="kpi-trend up" style="margin-bottom:6px;">📶 良好</div>
+            </div>
+            <div style="margin-top:8px;display:flex;gap:3px;">
+              <div style="height:8px;flex:1;background:var(--good);border-radius:2px;"></div>
+              <div style="height:8px;flex:1;background:var(--good);border-radius:2px;"></div>
+              <div style="height:8px;flex:1;background:var(--good);border-radius:2px;"></div>
+              <div style="height:8px;flex:1;background:var(--good);border-radius:2px;opacity:0.4;"></div>
+              <div style="height:8px;flex:1;background:var(--surface);border-radius:2px;"></div>
+            </div>
+          </div>
+
+          <div class="widget" style="grid-column: span 2;">
+            <div class="widget-title">過去 1 小時連線狀況</div>
+            <svg class="chart-svg" viewBox="0 0 600 100" preserveAspectRatio="none" style="height:80px;">
+              <path d="M0,40 L60,38 L120,42 L180,35 L240,33 L300,38 L360,55 L420,48 L480,40 L540,38 L600,40" stroke="#00d9c5" stroke-width="2" fill="none"/>
+              <g font-size="10" fill="#64748b" font-family="JetBrains Mono">
+                <text x="0" y="98">−60min</text><text x="280" y="98">−30min</text><text x="560" y="98">now</text>
+              </g>
+            </svg>
+            <div style="margin-top:6px;font-size:12px;color:var(--muted);">
+              訊號穩定 · 過去 1 小時無斷線 · 平均 −63 dBm
+            </div>
+          </div>
+
+          <div class="widget" style="grid-column: span 2;text-align:center;">
+            <button class="big-btn">🚨 訊號變差？回報問題給 IT</button>
+            <p style="margin-top:8px;font-size:12px;color:var(--dim);">點下後 AI 會先嘗試診斷，無法解決才轉給 IT</p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ===== Scenario 4: Pro / Cross-site ===== -->
+      <div class="scenario s4">
+        <div class="dash-header">
+          <div class="dash-title">📈 Site Churn Analysis · This Month</div>
+          <div class="dash-meta"><span class="live"></span> Live · 28 sites · scheduled weekly</div>
+        </div>
+        <div class="dash-grid" style="grid-template-columns: 2fr 1fr;">
+
+          <div class="widget" style="grid-column: span 2;">
+            <div class="widget-title">Top 10 Sites by Client Churn (vs 上月)</div>
+            <table class="table-w">
+              <thead>
+                <tr><th>Site</th><th>Churn %</th><th>Δ vs 上月</th><th>5GHz Util Avg</th><th>趨勢</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Branch-Taipei-101</td><td class="num">18.4%</td><td><span class="badge-mini bad">+5.2</span></td><td class="num">76%</td><td>📈</td></tr>
+                <tr><td>HQ-3F</td><td class="num">14.2%</td><td><span class="badge-mini warn">+2.1</span></td><td class="num">82%</td><td>📈</td></tr>
+                <tr><td>Lab-R&D</td><td class="num">12.7%</td><td><span class="badge-mini good">−1.3</span></td><td class="num">58%</td><td>📉</td></tr>
+                <tr><td>Branch-NYC</td><td class="num">11.5%</td><td><span class="badge-mini bad">+3.4</span></td><td class="num">71%</td><td>📈</td></tr>
+                <tr><td>Warehouse-A</td><td class="num">10.8%</td><td><span class="badge-mini warn">+0.8</span></td><td class="num">42%</td><td>➡️</td></tr>
+                <tr><td>Branch-LDN</td><td class="num">9.6%</td><td><span class="badge-mini good">−0.5</span></td><td class="num">61%</td><td>📉</td></tr>
+                <tr><td>Office-SG</td><td class="num">8.3%</td><td><span class="badge-mini warn">+1.0</span></td><td class="num">68%</td><td>➡️</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="widget" style="grid-column: span 1;">
+            <div class="widget-title">Avg churn 趨勢 (4 週)</div>
+            <svg class="chart-svg" viewBox="0 0 300 100">
+              <path d="M0,70 L75,65 L150,50 L225,40 L300,35" stroke="#ff6b35" stroke-width="2" fill="none"/>
+              <circle cx="0" cy="70" r="3" fill="#ff6b35"/>
+              <circle cx="75" cy="65" r="3" fill="#ff6b35"/>
+              <circle cx="150" cy="50" r="3" fill="#ff6b35"/>
+              <circle cx="225" cy="40" r="3" fill="#ff6b35"/>
+              <circle cx="300" cy="35" r="4" fill="#ff6b35"/>
+            </svg>
+            <div style="font-size:11px;color:var(--bad);font-weight:600;margin-top:4px;">↑ 持續上升 — 需關注</div>
+          </div>
+
+          <div class="widget" style="grid-column: span 1;">
+            <div class="widget-title">Auto-Schedule 狀態</div>
+            <div style="font-size:13px;color:var(--text);margin:8px 0;">📧 每週一 9 AM email</div>
+            <div style="font-size:11px;color:var(--muted);">下次發送：2026-05-09 (Mon)</div>
+            <div style="font-size:11px;color:var(--muted);">收件人：netops@company.com</div>
+            <div style="font-size:11px;color:var(--cyan);margin-top:8px;font-family:'JetBrains Mono';">REST: /api/dashboards/site-churn-202605</div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="how-it-works">
+  <div class="section-title">🛠 HOW IT WORKS</div>
+  <h2 style="text-align:center;font-size:24px;font-weight:800;letter-spacing:-0.02em;margin-bottom:24px;">
+    從一句話到儀表板 · 4 個步驟
+  </h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <h4>解析意圖</h4>
+      <p>LLM 把自然語言<strong>「我想看 X」</strong>解析成「要查什麼資料、哪些指標、什麼時間範圍」。</p>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <h4>選 widget</h4>
+      <p>從 widget library（限定一組）選最適合的視覺化：KPI、line chart、heatmap、table 等。<strong>LLM 不從零畫圖，只組合既有元件</strong>。</p>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <h4>產生查詢</h4>
+      <p>把意圖轉成具體的 telemetry query（透過 primitive 呼叫）。<strong>LLM 不直接寫 SQL，由 backend 做 query 翻譯</strong>，避免錯誤。</p>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <h4>排版 + 儲存</h4>
+      <p>AI 用 grid layout engine 自動排版，使用者預覽、確認、儲存。後續可以「再加一個...」refine。</p>
+    </div>
+  </div>
+</section>
+
+<!-- WIDGET LIBRARY -->
+<section class="widget-lib">
+  <div class="section-title">🧩 WIDGET LIBRARY</div>
+  <h2 style="text-align:center;font-size:24px;font-weight:800;letter-spacing:-0.02em;margin-bottom:24px;">
+    AI 能組合的 widget 種類（限定 8 種）
+  </h2>
+  <p style="text-align:center;color:var(--muted);font-size:13px;margin-bottom:24px;">
+    限定 widget set 讓 LLM 選擇空間小、準確度高 · 跟 Anthropic Skills 的 progressive disclosure 哲學一致
+  </p>
+  <div class="widget-lib-grid">
+    <div class="lib-card"><div class="lib-icon">📊</div><div class="lib-name">KPI Card</div><div class="lib-desc">單一數字 + 趨勢箭頭</div></div>
+    <div class="lib-card"><div class="lib-icon">📈</div><div class="lib-name">Time Series</div><div class="lib-desc">line / area chart</div></div>
+    <div class="lib-card"><div class="lib-icon">📊</div><div class="lib-name">Bar Chart</div><div class="lib-desc">Top N 排名</div></div>
+    <div class="lib-card"><div class="lib-icon">📋</div><div class="lib-name">Table</div><div class="lib-desc">行/列資料</div></div>
+    <div class="lib-card"><div class="lib-icon">🗺</div><div class="lib-name">Site Map</div><div class="lib-desc">site 健康分布</div></div>
+    <div class="lib-card"><div class="lib-icon">🔥</div><div class="lib-name">Heatmap</div><div class="lib-desc">時間 × 維度</div></div>
+    <div class="lib-card"><div class="lib-icon">⚠</div><div class="lib-name">Alert List</div><div class="lib-desc">告警清單</div></div>
+    <div class="lib-card"><div class="lib-icon">🟢</div><div class="lib-name">Status Grid</div><div class="lib-desc">設備健康燈號</div></div>
+  </div>
+</section>
+
+<!-- COMPARE -->
+<section class="compare">
+  <div class="section-title">🆚 vs 傳統 DASHBOARD 工具</div>
+  <h2 style="text-align:center;font-size:24px;font-weight:800;letter-spacing:-0.02em;margin-bottom:24px;">
+    為什麼這對 SMB IT 是質變
+  </h2>
+  <table class="compare-table">
+    <thead>
+      <tr>
+        <th>面向</th>
+        <th class="col-old">傳統工具 (Grafana / PowerBI / Tableau)</th>
+        <th class="col-new">Dashboard Builder</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>建立方式</td>
+        <td class="cross">手動拖拉、選 metric、選圖表、設參數</td>
+        <td class="check">用講的，AI 自動組合</td>
+      </tr>
+      <tr>
+        <td>知識門檻</td>
+        <td class="cross">需懂 query 語法（PromQL/SQL）</td>
+        <td class="check">不需要任何技術知識</td>
+      </tr>
+      <tr>
+        <td>知道該看什麼</td>
+        <td class="cross">使用者要自己知道</td>
+        <td class="check">AI 主動建議該包含什麼</td>
+      </tr>
+      <tr>
+        <td>視覺設計</td>
+        <td class="cross">使用者自己排版</td>
+        <td class="check">AI 自動 grid 排版</td>
+      </tr>
+      <tr>
+        <td>修改 / refine</td>
+        <td class="cross">每次都要進編輯模式</td>
+        <td class="check">「再加一個 X」就好</td>
+      </tr>
+      <tr>
+        <td>學習曲線</td>
+        <td class="cross">幾小時 ~ 幾天</td>
+        <td class="check">第一次就會用</td>
+      </tr>
+      <tr>
+        <td>對 SMB IT 友善度</td>
+        <td class="cross">「設一次就放棄」</td>
+        <td class="check">每天都會打開用</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <h3>看完想看更多？</h3>
+  <div class="cta-btns">
+    <a class="cta-btn" href="three-modes.html">🎭 三模式定位（Mode B 詳細介紹）</a>
+    <a class="cta-btn" href="use-case-matrix.html">📊 4×3 使用案例矩陣</a>
+    <a class="cta-btn" href="architecture-v2-zh.html">🏗 完整技術架構</a>
+    <a class="cta-btn" href="overview-pm-mkt.html">🎯 PM/MKT 客戶故事</a>
+  </div>
+</section>
+
+</div>
+
+<script>
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const scenario = tab.getAttribute('data-scenario');
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelectorAll('.scenario').forEach(s => {
+        s.classList.toggle('active', s.classList.contains(scenario));
+      });
+      const titles = {
+        s1: { t: '場景 1 · 本週健康狀況檢查', m: 'B · SMB IT' },
+        s2: { t: '場景 2 · AP 負載探索', m: 'B · SMB IT' },
+        s3: { t: '場景 3 · 員工查我的會議室 Wi-Fi', m: 'A · 員工' },
+        s4: { t: '場景 4 · Pro / MSP 跨 site 分析', m: 'C · Pro' },
+      };
+      document.getElementById('demoTitle').textContent = titles[scenario].t;
+      document.getElementById('demoMode').textContent = titles[scenario].m;
+    });
+  });
+</script>
+
+</body>
+</html>

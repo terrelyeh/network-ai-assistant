@@ -1,0 +1,1564 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Builder · 技術實作完整指南</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-1: #0a1628;
+    --bg-2: #0f1e3a;
+    --bg-3: #050d1a;
+    --surface: rgba(255,255,255,0.04);
+    --surface-2: rgba(255,255,255,0.08);
+    --border: rgba(255,255,255,0.12);
+    --border-strong: rgba(255,255,255,0.22);
+    --text: #f8fafc;
+    --muted: #cbd5e1;
+    --dim: #64748b;
+    --accent: #ff6b35;
+    --cyan: #00d9c5;
+    --good: #10b981;
+    --warn: #fbbf24;
+    --bad: #ef4444;
+    --purple: #a78bfa;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%);
+    color: var(--text);
+    font-family: 'Inter', 'Noto Sans TC', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding: 40px 32px 80px;
+    line-height: 1.55;
+  }
+  .container { max-width: 1480px; margin: 0 auto; }
+
+  /* HEADER */
+  header {
+    margin-bottom: 28px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  header .left .tag {
+    color: var(--accent);
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  header h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.02em; }
+  header h1 .accent { color: var(--accent); }
+  header .sub { color: var(--muted); margin-top: 6px; font-size: 14px; }
+
+  .nav-links { display: flex; gap: 7px; flex-wrap: wrap; }
+  .nav-link {
+    color: var(--cyan);
+    text-decoration: none;
+    font-size: 12.5px; font-weight: 600;
+    padding: 7px 12px;
+    background: rgba(0,217,197,0.08);
+    border: 1px solid rgba(0,217,197,0.35);
+    border-radius: 8px;
+    transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .nav-link:hover {
+    background: rgba(0,217,197,0.18);
+    border-color: var(--cyan);
+    transform: translateY(-1px);
+  }
+  .nav-link.muted-link {
+    color: var(--muted); background: var(--surface);
+    border-color: var(--border-strong);
+  }
+  .nav-link.current {
+    background: rgba(255,107,53,0.15);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* TAB NAVIGATION */
+  .tab-nav {
+    display: flex;
+    gap: 4px;
+    background: rgba(0,0,0,0.25);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 6px;
+    margin-bottom: 28px;
+    position: sticky;
+    top: 16px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 50;
+    flex-wrap: wrap;
+  }
+  .tab-button {
+    flex: 1;
+    min-width: 200px;
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    padding: 14px 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .tab-button:hover {
+    background: var(--surface);
+    color: var(--text);
+  }
+  .tab-button.active {
+    background: linear-gradient(135deg, rgba(255,107,53,0.18), rgba(0,217,197,0.10));
+    border: 1px solid rgba(255,107,53,0.4);
+    color: var(--text);
+  }
+  .tab-button .key-hint {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--dim);
+    background: rgba(0,0,0,0.3);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .tab-button.active .key-hint {
+    color: var(--accent);
+    background: rgba(255,107,53,0.2);
+  }
+
+  /* TAB CONTENT */
+  .tab-content { display: none; }
+  .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* TAB HERO */
+  .tab-hero {
+    text-align: center;
+    margin-bottom: 36px;
+    padding: 16px 20px 0;
+  }
+  .tab-hero .badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: rgba(255,107,53,0.15);
+    border: 1px solid rgba(255,107,53,0.4);
+    color: var(--accent);
+    border-radius: 999px;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .tab-hero h2 {
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+  }
+  .tab-hero h2 .accent { color: var(--accent); }
+  .tab-hero h2 .cyan { color: var(--cyan); }
+  .tab-hero .lead {
+    margin-top: 14px;
+    color: var(--muted);
+    font-size: 16px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .tab-hero .lead strong { color: var(--text); }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 32px;
+    background: rgba(0,0,0,0.18);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 32px;
+  }
+  .section h3 {
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .section h2 {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section p {
+    color: var(--muted);
+    margin-bottom: 14px;
+    font-size: 14px;
+    line-height: 1.65;
+  }
+  .section p strong { color: var(--text); }
+  .section ul, .section ol {
+    color: var(--muted);
+    padding-left: 22px;
+    margin-bottom: 14px;
+  }
+  .section li {
+    padding: 4px 0;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .section li strong { color: var(--text); }
+
+  /* TABLE */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    margin: 8px 0 14px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  th {
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  td {
+    color: var(--text);
+  }
+  td.muted { color: var(--muted); }
+  td.code {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--cyan);
+    font-size: 12px;
+  }
+  td.good { color: var(--good); }
+  td.warn { color: var(--warn); }
+  td.bad { color: var(--bad); }
+
+  /* CODE BLOCK */
+  pre {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--cyan);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 12px 0;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--text);
+  }
+  pre .com { color: var(--dim); }
+  pre .key { color: var(--accent); }
+  pre .str { color: var(--cyan); }
+  pre .num { color: var(--purple); }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    background: var(--surface-2);
+    padding: 2px 7px;
+    border-radius: 4px;
+    color: var(--cyan);
+  }
+
+  /* GRID layouts */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 14px; }
+
+  /* CARDS */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 22px;
+  }
+  .card.cyan { border-color: rgba(0,217,197,0.3); background: rgba(0,217,197,0.06); }
+  .card.accent { border-color: rgba(255,107,53,0.3); background: rgba(255,107,53,0.06); }
+  .card.warn { border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.06); }
+  .card.bad { border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.06); }
+  .card-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    margin-bottom: 8px;
+  }
+  .card h4 {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+  }
+  .card p, .card ul {
+    color: var(--muted);
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+
+  /* CALLOUT */
+  .callout {
+    background: linear-gradient(135deg, rgba(0,217,197,0.10), rgba(255,107,53,0.06));
+    border: 1px solid rgba(0,217,197,0.35);
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin: 20px 0;
+  }
+  .callout .label {
+    font-size: 11px;
+    color: var(--cyan);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .callout p {
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0;
+  }
+  .callout p strong { color: var(--cyan); }
+
+  .warn-callout {
+    background: rgba(251,191,36,0.08);
+    border-color: rgba(251,191,36,0.4);
+  }
+  .warn-callout .label { color: var(--warn); }
+  .warn-callout p strong { color: var(--warn); }
+
+  .bad-callout {
+    background: rgba(239,68,68,0.08);
+    border-color: rgba(239,68,68,0.4);
+  }
+  .bad-callout .label { color: var(--bad); }
+  .bad-callout p strong { color: var(--bad); }
+
+  /* DAY PLAN */
+  .day-row {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .day-row:last-child { border-bottom: none; }
+  .day-num {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 13px;
+  }
+  .day-task {
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  .day-task strong { color: var(--cyan); }
+
+  /* CHECKLIST */
+  .check-list { list-style: none !important; padding: 0 !important; }
+  .check-list li {
+    padding: 6px 0 6px 28px;
+    position: relative;
+  }
+  .check-list li::before {
+    content: '☐';
+    position: absolute;
+    left: 4px;
+    color: var(--cyan);
+    font-weight: 700;
+  }
+  .check-list li.done::before {
+    content: '✓';
+    color: var(--good);
+  }
+
+  /* WIDGET CARDS */
+  .widget-card {
+    background: rgba(0,0,0,0.18);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 26px;
+    margin-bottom: 18px;
+  }
+  .widget-card h4 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .widget-card .widget-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    margin-bottom: 8px;
+  }
+  .widget-card .widget-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-top: 12px;
+  }
+  .widget-meta {
+    background: var(--surface-2);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 12.5px;
+  }
+  .widget-meta strong { color: var(--cyan); }
+  .widget-meta .row {
+    padding: 4px 0;
+    color: var(--muted);
+  }
+
+  /* Mini visual mock for widgets */
+  .vis-mock {
+    background: rgba(0,0,0,0.35);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .vis-mock .mini-title {
+    font-size: 10px;
+    color: var(--dim);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .vis-mock .mini-num {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--text);
+  }
+  .vis-mock .mini-trend {
+    font-size: 11px;
+    color: var(--good);
+    margin-top: 4px;
+  }
+
+  /* CTA */
+  .cta {
+    text-align: center;
+    background: linear-gradient(135deg, rgba(0,217,197,0.08), rgba(255,107,53,0.06));
+    border: 1px solid rgba(0,217,197,0.3);
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin-top: 32px;
+  }
+  .cta h3 { font-size: 18px; margin-bottom: 12px; font-weight: 700; }
+  .cta p { color: var(--muted); margin-bottom: 16px; font-size: 14px; }
+
+  @media (max-width: 1100px) {
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .widget-card .widget-grid { grid-template-columns: 1fr; }
+  }
+  @media print {
+    body { background: white; color: black; padding: 20px; }
+    .nav-links, .tab-nav { display: none; }
+    .tab-content { display: block !important; page-break-after: always; }
+    .section, .card, .widget-card, .callout, .cta { background: white; border-color: #ccc; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HEADER -->
+<header>
+  <div class="left">
+    <div class="tag">DASHBOARD BUILDER · 技術實作完整指南</div>
+    <h1>Dashboard Builder — <span class="accent">完整實作指南</span></h1>
+    <div class="sub">4 個 tab：實作路徑 / PoC Spec / Eval Pipeline / Widget Library</div>
+  </div>
+  <div class="nav-links">
+    <a class="nav-link muted-link" href="index.html">🏠 入口</a>
+    <a class="nav-link muted-link" href="three-modes.html">🎭 三模式</a>
+    <a class="nav-link muted-link" href="dashboard-builder-demo.html">📈 Demo</a>
+    <a class="nav-link current" href="dashboard-builder-implementation.html">🔧 實作指南</a>
+    <a class="nav-link muted-link" href="mockup-gallery.html">🎨 Mockups</a>
+    <a class="nav-link muted-link" href="architecture-v2-zh.html">🏗 架構</a>
+    <a class="nav-link muted-link" href="playbook-examples.html">📘 Playbook</a>
+    <a class="nav-link muted-link" href="blind-spots.html">⚠ 盲點</a>
+  </div>
+</header>
+
+<!-- TAB NAVIGATION -->
+<div class="tab-nav">
+  <button class="tab-button active" data-tab="t1">📐 實作路徑 <span class="key-hint">1</span></button>
+  <button class="tab-button" data-tab="t2">🚀 PoC Spec <span class="key-hint">2</span></button>
+  <button class="tab-button" data-tab="t3">✓ Eval Pipeline <span class="key-hint">3</span></button>
+  <button class="tab-button" data-tab="t4">🧩 Widget Library <span class="key-hint">4</span></button>
+</div>
+
+<!-- ==================================================================
+     TAB 1: 實作路徑 (Implementation Path)
+     ================================================================== -->
+<section class="tab-content active" id="t1">
+
+  <div class="tab-hero">
+    <div class="badge">TAB 1 · OVERVIEW</div>
+    <h2>從 0 到 GA 的<span class="accent">完整路徑</span></h2>
+    <p class="lead">
+      高層次架構、tech stack、4 階段 roadmap、風險對策、成本估算、我的具體建議。
+      <strong>給 PM、Tech Lead、經營層看的全景圖</strong>。
+    </p>
+  </div>
+
+  <!-- 高層次流程 -->
+  <div class="section">
+    <h3>核心流程</h3>
+    <h2>🔁 從一句話到儀表板 · 9 個步驟</h2>
+    <pre><span class="com"># 主流程</span>
+使用者輸入 (自然語言)
+    ↓
+<span class="key">[1] 意圖解析</span> · LLM gate 1 (Haiku)
+    ↓ {scope, time_range, metrics, audience}
+<span class="key">[2] Widget 選擇</span> · LLM gate 2 (Sonnet)
+    ↓ [{type, title, data_source}, ...]
+<span class="key">[3] Query 生成</span> · 確定性 (LLM 不直接寫 query)
+    ↓
+<span class="key">[4] 資料取得</span> · 呼叫 primitive + Redis cache
+    ↓
+<span class="key">[5] Layout 排版</span> · grid layout engine
+    ↓
+<span class="key">[6] 渲染預覽</span>
+    ↓
+<span class="key">[7] 使用者確認</span>
+    ↓
+<span class="key">[8] 持久化儲存</span> (Postgres)
+    ↓
+<span class="key">[9] Refine loop</span> ← 「再加一個 X」回到 [2]</pre>
+
+    <div class="callout">
+      <div class="label">⭐ 核心設計原則</div>
+      <p>
+        <strong>① LLM 只在「判斷」用</strong>（解析、選擇）<br>
+        <strong>② 不讓 LLM 寫 SQL</strong>（讓 backend 翻譯，安全 + 可 cache）<br>
+        <strong>③ 限定 widget library 8 種</strong>（避免 hallucination）<br>
+        <strong>④ 二段式 LLM</strong>（Haiku 解析 + Sonnet 選擇，平衡成本）
+      </p>
+    </div>
+  </div>
+
+  <!-- Tech Stack -->
+  <div class="section">
+    <h3>技術棧</h3>
+    <h2>🛠 推薦的 tech stack</h2>
+
+    <table>
+      <thead>
+        <tr><th style="width:18%">層</th><th style="width:18%">元件</th><th style="width:32%">推薦技術</th><th>為什麼</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Frontend</strong></td><td>UI Framework</td><td class="code">React + TypeScript + Tailwind</td><td class="muted">業界標準、快速開發、易找人</td></tr>
+        <tr><td></td><td>UI Components</td><td class="code">shadcn/ui</td><td class="muted">高品質且可客製</td></tr>
+        <tr><td></td><td>Layout 引擎</td><td class="code">react-grid-layout</td><td class="muted">拖拉 / resize 內建</td></tr>
+        <tr><td></td><td>Charts</td><td class="code">Recharts 或 visx</td><td class="muted">輕量、可客製、不需付費</td></tr>
+        <tr><td></td><td>狀態管理</td><td class="code">Zustand + React Query</td><td class="muted">UI state + server cache</td></tr>
+        <tr><td></td><td>即時更新</td><td class="code">WebSocket 或 SSE</td><td class="muted">比 polling 省資源</td></tr>
+        <tr><td><strong>Backend</strong></td><td>API 框架</td><td class="code">FastAPI (Python)</td><td class="muted">配 Anthropic SDK 最順</td></tr>
+        <tr><td></td><td>LLM SDK</td><td class="code">anthropic-python</td><td class="muted">官方 SDK · prompt cache 支援</td></tr>
+        <tr><td></td><td>DB</td><td class="code">PostgreSQL (Supabase / Neon)</td><td class="muted">JSONB 適合存 dashboard spec</td></tr>
+        <tr><td></td><td>Cache</td><td class="code">Redis (Upstash)</td><td class="muted">必備 · 省 token + 加速</td></tr>
+        <tr><td></td><td>Queue</td><td class="code">Celery / BullMQ</td><td class="muted">非同步 widget 生成</td></tr>
+        <tr><td><strong>Infra</strong></td><td>Hosting</td><td class="code">Vercel + Railway / Fly.io</td><td class="muted">前後端分開部署</td></tr>
+        <tr><td></td><td>監控</td><td class="code">Sentry + Anthropic Console</td><td class="muted">錯誤 + LLM call 監控</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 4 Phase Roadmap -->
+  <div class="section">
+    <h3>實作 Roadmap</h3>
+    <h2>📅 4 階段推進</h2>
+
+    <div class="grid-2">
+      <div class="card cyan">
+        <div class="card-num">PHASE 0 · 2 週</div>
+        <h4>🔬 PoC（概念驗證）</h4>
+        <p><strong>目標</strong>：證明「自然語言 → dashboard」可行。<br>
+        <strong>範圍</strong>：3 widget、mock data、單用戶、無持久化。<br>
+        <strong>驗證</strong>：5 個 SMB IT 試用，看是否 get 到價值。</p>
+      </div>
+      <div class="card accent">
+        <div class="card-num">PHASE 1 · 6 週</div>
+        <h4>🚀 MVP（最小可用版本）</h4>
+        <p><strong>目標</strong>：First real users。<br>
+        <strong>範圍</strong>：8 widget 全做、接真實 telemetry、save/load、基本 refine。<br>
+        <strong>驗證</strong>：3 個 design partner 每週實際使用。</p>
+      </div>
+      <div class="card warn">
+        <div class="card-num">PHASE 2 · 6-8 週</div>
+        <h4>🏗 Production（GA-ready）</h4>
+        <p><strong>目標</strong>：對外正式上線。<br>
+        <strong>範圍</strong>：multi-tenant、權限、performance、<strong>eval pipeline</strong>、mobile。<br>
+        <strong>驗證</strong>：100+ users 穩定使用。</p>
+      </div>
+      <div class="card">
+        <div class="card-num">PHASE 3 · 12+ 週</div>
+        <h4>⭐ Differentiate（拉開差距）</h4>
+        <p><strong>目標</strong>：競爭護城河。<br>
+        <strong>範圍</strong>：cross-dashboard insights、export、custom widget plugin、API endpoint。<br>
+        <strong>驗證</strong>：MRR 成長、客戶 NPS &gt; 50。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 風險與對策 -->
+  <div class="section">
+    <h3>主要風險</h3>
+    <h2>⚠ 風險與對策</h2>
+    <table>
+      <thead>
+        <tr><th>風險</th><th>機率</th><th>影響</th><th>對策</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>LLM 產 widget config 出錯</td><td class="warn">高</td><td class="warn">中</td><td>嚴格 JSON schema validation + fallback widget</td></tr>
+        <tr><td>Widget 選錯類型</td><td class="warn">中</td><td class="warn">中</td><td>Few-shot examples + eval 持續監控</td></tr>
+        <tr><td>效能慢（&gt; 10 秒）</td><td class="warn">中</td><td class="bad">高</td><td>Aggressive cache + 兩段 LLM + 平行 query</td></tr>
+        <tr><td>資料隱私（telemetry 餵 LLM）</td><td class="warn">中</td><td class="bad">高</td><td><strong>永遠不傳原始資料給 LLM</strong>，只傳 schema + 意圖</td></tr>
+        <tr><td>LLM 成本失控</td><td class="warn">中</td><td class="warn">中</td><td>Token budget / request、prompt cache、Haiku 為主</td></tr>
+        <tr><td>使用者 refine 越改越亂</td><td class="warn">高</td><td class="warn">中</td><td>提供「重置」+ 版本歷史</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 成本估算 -->
+  <div class="section">
+    <h3>成本估算</h3>
+    <h2>💰 開發 + 營運</h2>
+
+    <div class="grid-2">
+      <div class="card cyan">
+        <h4>一次性開發</h4>
+        <ul>
+          <li>2 工程師 × 14 週（PoC + MVP）≈ <strong>7 人月</strong></li>
+          <li>+ 設計 0.5 人月、PM 0.5 人月</li>
+          <li><strong>合計：~8 人月</strong></li>
+        </ul>
+      </div>
+      <div class="card accent">
+        <h4>Operating · per 100 active users / 月</h4>
+        <ul>
+          <li>LLM API：~$80（5 dashboards/user × $0.04）</li>
+          <li>Hosting：~$80</li>
+          <li>DB + Redis：~$40</li>
+          <li>Monitoring：~$20</li>
+          <li><strong>合計：~$220 / 100 users / 月</strong></li>
+        </ul>
+      </div>
+    </div>
+    <p style="margin-top: 16px;">
+      <strong>規模化</strong>：10,000 users 月 ~$22,000，毛利率仍可達 80%+。
+    </p>
+  </div>
+
+  <!-- 我的建議 -->
+  <div class="section">
+    <h3>我的建議</h3>
+    <h2>✅ 推薦做法 vs ❌ 避免陷阱</h2>
+
+    <div class="grid-2">
+      <div class="card cyan">
+        <h4>✅ 推薦做法</h4>
+        <ul>
+          <li>先 commit Phase 0 PoC（2 週、1-2 人）— 不要先想 production</li>
+          <li>PoC 過了才 hire 第二批人</li>
+          <li><strong>Day 1 就建 eval pipeline</strong>（不要拖）</li>
+          <li>限定 widget library 8 種</li>
+          <li>二段式 LLM</li>
+          <li>大部分 primitive、MCP、ring 系統可重用</li>
+        </ul>
+      </div>
+      <div class="card bad">
+        <h4>❌ 避免陷阱</h4>
+        <ul>
+          <li>讓 LLM 寫 PromQL → 會 hallucinate</li>
+          <li>開放無限 widget 類型 → schema 會崩</li>
+          <li>PoC 就接 production data → 會被 telemetry 結構卡住</li>
+          <li>沒做 eval 就改 prompt → 半年後 AI 退步</li>
+          <li>用 Grafana plugin 走捷徑 → UX 不夠好</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ==================================================================
+     TAB 2: PoC Spec
+     ================================================================== -->
+<section class="tab-content" id="t2">
+
+  <div class="tab-hero">
+    <div class="badge">TAB 2 · POC SPEC</div>
+    <h2>2 週 PoC <span class="accent">具體 Spec</span></h2>
+    <p class="lead">
+      <strong>10 個工作天 · 2 人團隊</strong>。寫到拿給工程師明天就能開始。
+      含 day-by-day 計畫、API 介面、prompt 範例、demo scenarios。
+    </p>
+  </div>
+
+  <!-- Goal & Success -->
+  <div class="section">
+    <h3>目標 & 成功標準</h3>
+    <h2>🎯 PoC 要證明什麼</h2>
+
+    <div class="callout">
+      <div class="label">⭐ 唯一目標</div>
+      <p>證明「<strong>自然語言 → dashboard</strong>」這個核心命題在 SMB IT 身上 work — 不是測試 production 級的可用性。</p>
+    </div>
+
+    <h4 style="margin-top: 20px; margin-bottom: 12px; color: var(--cyan);">成功標準（必須全部達成）</h4>
+    <ul class="check-list">
+      <li>5 個 SMB IT 用 chat 描述需求，AI 都能產出可看的 dashboard</li>
+      <li>Widget 選擇正確率 ≥ 80%</li>
+      <li>從輸入到 dashboard 出現 &lt; 10 秒</li>
+      <li>使用者 refine 一次成功率 ≥ 70%（「再加一個 X」）</li>
+      <li>整個 PoC 跑下來成本 &lt; $50 LLM API 費用</li>
+    </ul>
+
+    <h4 style="margin-top: 20px; margin-bottom: 12px; color: var(--accent);">PoC 不做的事（明確 scope-out）</h4>
+    <ul>
+      <li>❌ 多用戶 / 權限</li>
+      <li>❌ 持久化儲存（每次 refresh 重來）</li>
+      <li>❌ 真實 production telemetry（用 mock data）</li>
+      <li>❌ Mobile 適配</li>
+      <li>❌ 完整 8 widget（只做 3 種）</li>
+      <li>❌ Eval pipeline（這留 Phase 1）</li>
+    </ul>
+  </div>
+
+  <!-- Tech Stack Minimal -->
+  <div class="section">
+    <h3>最小技術棧</h3>
+    <h2>🪛 PoC 用什麼</h2>
+    <pre><span class="com"># Frontend</span>
+React 18 + TypeScript
+Tailwind CSS
+shadcn/ui (Card, Button, Input)
+Recharts (line chart, bar chart only)
+Vite (dev server)
+
+<span class="com"># Backend</span>
+FastAPI (Python 3.11+)
+anthropic 0.40+ (官方 SDK)
+Pydantic v2 (schema validation)
+
+<span class="com"># Storage (PoC 階段)</span>
+in-memory dict (no DB)
+mock telemetry generator (faker library)
+
+<span class="com"># 不用做的</span>
+Postgres / Redis / Auth / WebSocket / Docker</pre>
+
+    <div class="callout warn-callout">
+      <div class="label">⚠ PoC 簡化原則</div>
+      <p><strong>砍到不能再砍</strong>。每加一個依賴就拖慢 1 天。PoC 目的是驗證 LLM 流程，不是建生產系統。</p>
+    </div>
+  </div>
+
+  <!-- Day-by-day plan -->
+  <div class="section">
+    <h3>Day-by-Day 計畫</h3>
+    <h2>📅 10 個工作天</h2>
+
+    <h4 style="color: var(--accent); margin: 8px 0 14px;">WEEK 1 · 基礎建設 + 第一個 widget</h4>
+    <div class="day-row">
+      <div class="day-num">DAY 1</div>
+      <div class="day-task"><strong>專案 setup</strong>：拉 monorepo、React + Tailwind 起手、FastAPI hello world、Anthropic SDK 跑通 1 個 LLM call</div>
+    </div>
+    <div class="day-row">
+      <div class="day-num">DAY 2</div>
+      <div class="day-task"><strong>Mock telemetry</strong>：寫 generator 產假的 client / AP / anomaly 數據（用 faker），expose 為 5 個 mock primitive</div>
+    </div>
+    <div class="day-row">
+      <div class="day-num">DAY 3</div>
+      <div class="day-task"><strong>第一個 widget · KPI Card</strong>：純前端元件，接收 spec JSON 渲染（單一數字 + 趨勢箭頭）</div>
+    </div>
+    <div class="day-row">
+      <div class="day-num">DAY 4</div>
+      <div class="day-task"><strong>Chat UI</strong>：簡單對話介面（input + bubble），先 hard-code AI 回應</div>
+    </div>
+    <div class="day-row">
+      <div class="day-num">DAY 5</div>
+      <div class="day-task"><strong>第一個 prompt</strong>：<code>parse_dashboard_intent.md</code>，輸入「我想看本週客戶數」→ 輸出 JSON intent</div>
+    </div>
+
+    <h4 style="color: var(--accent); margin: 24px 0 14px;">WEEK 2 · 串流程 + demo</h4>
+    <div class="day-row">
+      <div class="day-num">DAY 6</div>
+      <div class="day-task"><strong>第二個 prompt</strong>：<code>select_widgets.md</code>，輸入 intent → 輸出 widget array（限 3 種選 1-3 個）</div>
+    </div>
+    <div class="day-row">
+      <div class="day-num">DAY 7</div>
+      <div class="day-task"><strong>再做 2 個 widget</strong>：Time Series (line) + Table。Schema 統一格式</div>
+    </div>
+    <div class="day-row">
+      <div class="day-num">DAY 8</div>
+      <div class="day-task"><strong>串起來</strong>：input → intent → select → fetch mock data → render dashboard。整個流程跑通 1 個典型問題</div>
+    </div>
+    <div class="day-row">
+      <div class="day-num">DAY 9</div>
+      <div class="day-task"><strong>Refine loop（簡化版）</strong>：「再加一個 X」→ 只生新 widget 加進現有 dashboard</div>
+    </div>
+    <div class="day-row">
+      <div class="day-num">DAY 10</div>
+      <div class="day-task"><strong>內測 + 修 bug</strong>：找 5 個 SMB IT 試用，記錄問題。準備 demo 影片</div>
+    </div>
+  </div>
+
+  <!-- API Endpoints -->
+  <div class="section">
+    <h3>API 介面</h3>
+    <h2>🔌 PoC 階段需要的 endpoint</h2>
+
+    <pre><span class="com"># 1. 生成 dashboard（主要 endpoint）</span>
+<span class="key">POST</span> /api/dashboards/generate
+Request:
+{
+  <span class="str">"prompt"</span>: <span class="str">"我想看本週網路有沒有異常"</span>,
+  <span class="str">"context"</span>: { <span class="str">"site_id"</span>: <span class="str">"demo"</span>, <span class="str">"user_role"</span>: <span class="str">"smb_it"</span> }
+}
+Response:
+{
+  <span class="str">"dashboard_id"</span>: <span class="str">"dash_abc123"</span>,
+  <span class="str">"title"</span>: <span class="str">"本週健康狀況"</span>,
+  <span class="str">"widgets"</span>: [
+    { <span class="str">"id"</span>: <span class="str">"w1"</span>, <span class="str">"type"</span>: <span class="str">"kpi"</span>, <span class="str">"data"</span>: {...}, <span class="str">"position"</span>: {...} },
+    ...
+  ],
+  <span class="str">"intent_debug"</span>: { ... }  <span class="com"># 給開發看 LLM 解析結果</span>
+}
+
+<span class="com"># 2. Refine 既有 dashboard</span>
+<span class="key">POST</span> /api/dashboards/{id}/refine
+Request:
+{
+  <span class="str">"prompt"</span>: <span class="str">"再加一個會議室 client 趨勢"</span>
+}
+Response:
+{
+  <span class="str">"dashboard_id"</span>: <span class="str">"dash_abc123"</span>,
+  <span class="str">"new_widgets"</span>: [ ... ],  <span class="com"># 只回新加的</span>
+  <span class="str">"updated_layout"</span>: [ ... ]
+}
+
+<span class="com"># 3. 取現有 dashboard（PoC 用 in-memory）</span>
+<span class="key">GET</span> /api/dashboards/{id}
+Response: { ... full dashboard ... }</pre>
+  </div>
+
+  <!-- Prompt 範例 -->
+  <div class="section">
+    <h3>Prompt 範例</h3>
+    <h2>💬 兩個關鍵 prompt 的雛形</h2>
+
+    <h4 style="color: var(--cyan); margin: 12px 0 10px;">📄 prompts/parse_dashboard_intent.md</h4>
+    <pre><span class="com"># Role</span>
+You are a dashboard intent parser for a network management product.
+
+<span class="com"># Task</span>
+Parse the user's natural language request into structured intent JSON.
+
+<span class="com"># Schema (strict)</span>
+{
+  <span class="str">"scope"</span>: <span class="str">"single_site" | "multi_site" | "single_device"</span>,
+  <span class="str">"time_range"</span>: <span class="str">"now" | "last_24h" | "last_7d" | "last_30d"</span>,
+  <span class="str">"metrics"</span>: [<span class="str">"client_count" | "anomaly_count" | "ap_load" | ...</span>],
+  <span class="str">"audience"</span>: <span class="str">"smb_it" | "employee" | "pro"</span>,
+  <span class="str">"refine_of"</span>: <span class="str">"none" | dashboard_id</span>  <span class="com"># refine 模式才有</span>
+}
+
+<span class="com"># Few-shot examples</span>
+Input: 「我想看本週網路有沒有異常」
+Output: {<span class="str">"scope"</span>: <span class="str">"single_site"</span>, <span class="str">"time_range"</span>: <span class="str">"last_7d"</span>, <span class="str">"metrics"</span>: [<span class="str">"anomaly_count"</span>, <span class="str">"client_count"</span>], <span class="str">"audience"</span>: <span class="str">"smb_it"</span>, <span class="str">"refine_of"</span>: <span class="str">"none"</span>}
+
+Input: 「哪些 AP 太忙」
+Output: {<span class="str">"scope"</span>: <span class="str">"single_site"</span>, <span class="str">"time_range"</span>: <span class="str">"now"</span>, <span class="str">"metrics"</span>: [<span class="str">"ap_load"</span>], <span class="str">"audience"</span>: <span class="str">"smb_it"</span>, <span class="str">"refine_of"</span>: <span class="str">"none"</span>}
+
+<span class="com"># User input</span>
+{{ user_prompt }}
+
+<span class="com"># Output JSON only:</span></pre>
+
+    <h4 style="color: var(--cyan); margin: 20px 0 10px;">📄 prompts/select_widgets.md</h4>
+    <pre><span class="com"># Role</span>
+You are a dashboard composer. Pick widgets from the library to fulfill user intent.
+
+<span class="com"># Widget Library (限定，不可發明)</span>
+- <span class="key">kpi</span>: 單一數字 + 趨勢。適合：count / rate / score
+- <span class="key">line</span>: 時間序列折線。適合：metric 隨時間變化
+- <span class="key">table</span>: 排序表格。適合：top N、清單
+
+<span class="com"># Task</span>
+Given the intent JSON, return 1-4 widgets array.
+
+<span class="com"># Schema (strict)</span>
+[
+  {
+    <span class="str">"type"</span>: <span class="str">"kpi" | "line" | "table"</span>,
+    <span class="str">"title"</span>: <span class="str">"短中文標題"</span>,
+    <span class="str">"data_source"</span>: { <span class="str">"primitive"</span>: <span class="str">"..."</span>, <span class="str">"params"</span>: {...} },
+    <span class="str">"format"</span>: <span class="str">"number" | "percent" | "bytes"</span>
+  }
+]
+
+<span class="com"># Rules</span>
+- 每個 widget 必須對應一個 metric
+- 多個 metric → 多個 widget
+- KPI 適合「現在的數字」、line 適合「趨勢」、table 適合「列表」
+- Audience = "employee" → 限 1-2 個簡單 widget
+
+<span class="com"># Intent</span>
+{{ intent_json }}
+
+<span class="com"># Output JSON only:</span></pre>
+  </div>
+
+  <!-- Demo Scenarios -->
+  <div class="section">
+    <h3>Demo Scenarios</h3>
+    <h2>🎬 PoC 必須能跑通的 5 個情境</h2>
+
+    <table>
+      <thead>
+        <tr><th style="width:5%">#</th><th style="width:30%">使用者輸入</th><th style="width:25%">預期 widget</th><th>驗證</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>「我想看本週網路狀況」</td><td>KPI × 2 + line × 1</td><td>有 anomaly 趨勢</td></tr>
+        <tr><td>2</td><td>「哪些 AP 太忙」</td><td>table × 1（top 10）</td><td>正確排序</td></tr>
+        <tr><td>3</td><td>「最近 client 數量變化」</td><td>line × 1</td><td>時間軸正確</td></tr>
+        <tr><td>4</td><td>「再加一個會議室趨勢」（refine）</td><td>+1 line widget</td><td>不破壞既有 widget</td></tr>
+        <tr><td>5</td><td>「Show top 5 sites by churn」（英文）</td><td>table × 1</td><td>能處理英文</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Go/No-go 標準 -->
+  <div class="section">
+    <h3>Phase 1 Go/No-Go</h3>
+    <h2>🚦 PoC 結束後的決策標準</h2>
+
+    <div class="grid-2">
+      <div class="card cyan">
+        <h4>✅ GO 進入 Phase 1</h4>
+        <ul>
+          <li>5 個情境都跑通</li>
+          <li>使用者 demo 後表達「我會用」</li>
+          <li>Widget 選擇正確率 ≥ 80%</li>
+          <li>沒有發現基本架構問題</li>
+        </ul>
+      </div>
+      <div class="card bad">
+        <h4>❌ NO-GO（重新設計）</h4>
+        <ul>
+          <li>3 個以上情境失敗</li>
+          <li>使用者覺得「不如自己設」</li>
+          <li>Widget 正確率 &lt; 60%</li>
+          <li>LLM 持續 hallucinate config</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ==================================================================
+     TAB 3: Eval Pipeline
+     ================================================================== -->
+<section class="tab-content" id="t3">
+
+  <div class="tab-hero">
+    <div class="badge">TAB 3 · EVAL PIPELINE</div>
+    <h2>Dashboard <span class="accent">品質保證機制</span></h2>
+    <p class="lead">
+      AI 系統會悄悄退步，<strong>沒有 evals 就是賭博</strong>。
+      這頁定義「測什麼、怎麼測、CI 怎麼擋」— 大部分競品都沒做這件事。
+    </p>
+  </div>
+
+  <!-- Why -->
+  <div class="section">
+    <h3>為什麼必要</h3>
+    <h2>🚨 沒 eval 會發生什麼</h2>
+
+    <div class="callout bad-callout">
+      <div class="label">📉 真實案例（業界常見）</div>
+      <p>
+        <strong>第 1 個月</strong>：上線、AI 表現好、客戶滿意。<br>
+        <strong>第 3 個月</strong>：Anthropic 推出新模型，產品換上 → AI 表現微弱下滑，沒人發現。<br>
+        <strong>第 6 個月</strong>：工程師為了優化某 prompt 改了 2 行 → 該情境變好但其他 5 個情境變壞。<br>
+        <strong>第 9 個月</strong>：客戶開始抱怨「AI 越來越笨」。<br>
+        <strong>第 12 個月</strong>：團隊不敢動任何 prompt，半年內無功能更新。
+      </p>
+    </div>
+
+    <p style="margin-top: 16px;"><strong>Eval 解這個問題</strong>：自動化測試 AI 品質，每次改動都跑一次，退步立刻擋下。</p>
+  </div>
+
+  <!-- 4 dimensions -->
+  <div class="section">
+    <h3>測什麼</h3>
+    <h2>📐 Dashboard Builder 要評估的 4 個維度</h2>
+
+    <div class="grid-2">
+      <div class="card cyan">
+        <div class="card-num">D1 · 結構正確</div>
+        <h4>Schema validation</h4>
+        <p><strong>確定性測試</strong>。LLM 輸出必須符合 widget JSON Schema：欄位齊全、type 對、enum 在範圍內。<br><br>
+        <strong>方法</strong>：JSON Schema validator，過 = 通過。</p>
+      </div>
+      <div class="card cyan">
+        <div class="card-num">D2 · 意圖匹配</div>
+        <h4>Intent fields exact match</h4>
+        <p><strong>半確定性測試</strong>。golden case 標好預期 intent，比對是否一致（scope、time_range、metrics）。<br><br>
+        <strong>方法</strong>：Field-by-field 比對 + 容錯（如時間範圍可接受 last_7d / last_week）。</p>
+      </div>
+      <div class="card warn">
+        <div class="card-num">D3 · Widget 選擇品質</div>
+        <h4>LLM-as-judge</h4>
+        <p><strong>軟性評分</strong>。用另一個 LLM（Sonnet）打分數：「這組 widget 適不適合回答這個問題？」1-5 分。<br><br>
+        <strong>方法</strong>：固定 judge prompt + 多次平均降噪。</p>
+      </div>
+      <div class="card accent">
+        <div class="card-num">D4 · 使用者意圖達成</div>
+        <h4>End-to-end 完成率</h4>
+        <p><strong>真實使用者訊號</strong>。記錄每個 dashboard 生成後是「儲存」還是「丟棄」。儲存率高代表品質好。<br><br>
+        <strong>方法</strong>：Telemetry 收集 + weekly 報告。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Golden Case Format -->
+  <div class="section">
+    <h3>Golden Case 格式</h3>
+    <h2>📦 標準的測試案例長什麼樣</h2>
+    <pre><span class="com"># tests/golden/case_001_weekly_health.json</span>
+{
+  <span class="str">"case_id"</span>: <span class="str">"case_001_weekly_health"</span>,
+  <span class="str">"description"</span>: <span class="str">"SMB IT asks for weekly health overview"</span>,
+  <span class="str">"input"</span>: {
+    <span class="str">"prompt"</span>: <span class="str">"我想看本週網路有沒有異常"</span>,
+    <span class="str">"context"</span>: { <span class="str">"site_id"</span>: <span class="str">"demo"</span>, <span class="str">"user_role"</span>: <span class="str">"smb_it"</span> }
+  },
+
+  <span class="com"># D1: schema validation - 自動跑</span>
+
+  <span class="com"># D2: 意圖匹配的 ground truth</span>
+  <span class="str">"expected_intent"</span>: {
+    <span class="str">"scope"</span>: <span class="str">"single_site"</span>,
+    <span class="str">"time_range"</span>: [<span class="str">"last_7d"</span>, <span class="str">"last_week"</span>],  <span class="com"># OR list = 任一可接受</span>
+    <span class="str">"metrics_must_include"</span>: [<span class="str">"anomaly_count"</span>],  <span class="com"># 必須有</span>
+    <span class="str">"metrics_may_include"</span>: [<span class="str">"client_count"</span>, <span class="str">"site_health_score"</span>]  <span class="com"># 可選</span>
+  },
+
+  <span class="com"># D3: widget 選擇預期</span>
+  <span class="str">"expected_widgets"</span>: {
+    <span class="str">"min_count"</span>: <span class="num">3</span>,
+    <span class="str">"max_count"</span>: <span class="num">6</span>,
+    <span class="str">"must_include_types"</span>: [<span class="str">"line"</span>],  <span class="com"># 至少有一個 trend chart</span>
+    <span class="str">"forbidden_types"</span>: [<span class="str">"heatmap"</span>]  <span class="com"># 不該選太複雜的</span>
+  },
+
+  <span class="com"># D3 補充：LLM-as-judge 的 quality threshold</span>
+  <span class="str">"judge_quality_min"</span>: <span class="num">3.5</span>,  <span class="com"># 平均分數至少 3.5/5</span>
+
+  <span class="com"># 元資料</span>
+  <span class="str">"annotated_by"</span>: <span class="str">"alice@netsense.ai"</span>,
+  <span class="str">"annotated_at"</span>: <span class="str">"2026-05-15"</span>,
+  <span class="str">"tags"</span>: [<span class="str">"smb_it"</span>, <span class="str">"weekly"</span>, <span class="str">"common"</span>]
+}</pre>
+  </div>
+
+  <!-- CI Integration -->
+  <div class="section">
+    <h3>CI 整合</h3>
+    <h2>🔄 自動化執行流程</h2>
+    <pre><span class="com"># .github/workflows/eval.yml</span>
+<span class="key">on</span>:
+  <span class="key">pull_request</span>:
+    <span class="key">paths</span>:
+      - <span class="str">'prompts/**'</span>
+      - <span class="str">'src/widget_selector/**'</span>
+      - <span class="str">'src/intent_parser/**'</span>
+  <span class="key">schedule</span>:
+    - <span class="key">cron</span>: <span class="str">'0 9 * * *'</span>  <span class="com"># 每天早上 9 點全量跑</span>
+
+<span class="key">jobs</span>:
+  <span class="key">eval</span>:
+    steps:
+      - <span class="key">name</span>: Run eval suite
+        <span class="key">run</span>: |
+          uv run python eval/run_evals.py \
+            --cases tests/golden/*.json \
+            --report-to=eval_report.json
+      - <span class="key">name</span>: Check thresholds
+        <span class="key">run</span>: |
+          uv run python eval/check_thresholds.py \
+            --report eval_report.json \
+            --min-d1-pass 100% \
+            --min-d2-pass 90% \
+            --min-d3-quality 3.5 \
+            --max-regression-vs-main 2%</pre>
+
+    <div class="callout warn-callout">
+      <div class="label">🚦 Gate 規則</div>
+      <p>
+        <strong>D1 (schema)</strong>：100% 必須過，沒得商量<br>
+        <strong>D2 (intent)</strong>：≥ 90% golden case 過<br>
+        <strong>D3 (judge)</strong>：平均品質 ≥ 3.5/5<br>
+        <strong>Regression</strong>：對比 main branch，整體分數下降不可超過 2%<br><br>
+        任一條件不過 → PR 被擋下，工程師必須修或解釋
+      </p>
+    </div>
+  </div>
+
+  <!-- Sample evals output -->
+  <div class="section">
+    <h3>實際輸出</h3>
+    <h2>📊 Eval 報告長什麼樣</h2>
+    <pre><span class="com"># eval_report.json (摘要)</span>
+{
+  <span class="str">"run_id"</span>: <span class="str">"2026-05-15-PR-247"</span>,
+  <span class="str">"total_cases"</span>: <span class="num">42</span>,
+
+  <span class="str">"d1_schema"</span>: { <span class="str">"pass"</span>: <span class="num">42</span>, <span class="str">"fail"</span>: <span class="num">0</span>, <span class="str">"rate"</span>: <span class="str">"100%"</span> },
+
+  <span class="str">"d2_intent"</span>: {
+    <span class="str">"pass"</span>: <span class="num">39</span>, <span class="str">"fail"</span>: <span class="num">3</span>, <span class="str">"rate"</span>: <span class="str">"92.9%"</span>,
+    <span class="str">"failures"</span>: [
+      <span class="str">"case_007: missed metric 'channel_util'"</span>,
+      <span class="str">"case_023: time_range parsed as last_30d, expected last_7d"</span>,
+      <span class="str">"case_038: scope confused (multi vs single)"</span>
+    ]
+  },
+
+  <span class="str">"d3_judge"</span>: {
+    <span class="str">"avg_quality"</span>: <span class="num">3.82</span>,
+    <span class="str">"distribution"</span>: { <span class="str">"5"</span>: <span class="num">12</span>, <span class="str">"4"</span>: <span class="num">19</span>, <span class="str">"3"</span>: <span class="num">8</span>, <span class="str">"2"</span>: <span class="num">2</span>, <span class="str">"1"</span>: <span class="num">1</span> }
+  },
+
+  <span class="str">"regression_vs_main"</span>: {
+    <span class="str">"d2_delta"</span>: <span class="str">"-1.2%"</span>,  <span class="com"># 在 2% 容忍內</span>
+    <span class="str">"d3_delta"</span>: <span class="str">"+0.05"</span>
+  },
+
+  <span class="str">"verdict"</span>: <span class="str">"PASS"</span>
+}</pre>
+  </div>
+
+  <!-- Sample golden cases -->
+  <div class="section">
+    <h3>需要的 Golden Case 數量</h3>
+    <h2>📚 從多少開始？</h2>
+    <table>
+      <thead>
+        <tr><th>階段</th><th>Golden case 數</th><th>覆蓋情境</th><th>誰標</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>PoC 結束時</td><td>10</td><td>5 demo 情境 × 2 變體</td><td>工程師自己</td></tr>
+        <tr><td>MVP 上線時</td><td>30-50</td><td>每個 widget 至少 5 個 + 邊界 case</td><td>工程師 + 1 SMB IT 顧問</td></tr>
+        <tr><td>GA 時</td><td>100+</td><td>真實客戶 case + 失敗 case</td><td>專責 AI eng + design partner</td></tr>
+        <tr><td>持續維護</td><td>+10/月</td><td>新 case 從 production 篩選</td><td>客戶成功團隊回流</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</section>
+
+<!-- ==================================================================
+     TAB 4: Widget Library
+     ================================================================== -->
+<section class="tab-content" id="t4">
+
+  <div class="tab-hero">
+    <div class="badge">TAB 4 · WIDGET LIBRARY</div>
+    <h2>8 種 widget · <span class="accent">完整 schema</span></h2>
+    <p class="lead">
+      限定 widget set = 限定 LLM 選擇空間 = 提高準確度。
+      每個 widget 包含：<strong>視覺、JSON Schema、data source 約定、何時用</strong>。
+    </p>
+  </div>
+
+  <!-- Why limited -->
+  <div class="section">
+    <h3>為什麼限定 8 種</h3>
+    <h2>🎯 設計哲學</h2>
+    <div class="grid-2">
+      <div class="card bad">
+        <h4>❌ 開放無限 widget 類型</h4>
+        <ul>
+          <li>LLM 選擇空間爆炸</li>
+          <li>正確率快速下降</li>
+          <li>每加一種要重訓所有 prompt</li>
+          <li>UX 不一致 / 維護地獄</li>
+        </ul>
+      </div>
+      <div class="card cyan">
+        <h4>✅ 限定 8 種 widget</h4>
+        <ul>
+          <li>LLM 選擇準確率 &gt; 90%</li>
+          <li>UX 統一</li>
+          <li>Schema 全部 typed</li>
+          <li>新增 widget 是「正式 release」事件，需審查</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout">
+      <div class="label">⭐ 跟 Anthropic Skills 哲學一致</div>
+      <p>Anthropic 的 Skills 系統用 <strong>progressive disclosure</strong> — 限定空間、依需求展開。Widget library 同理：<strong>少 = 強</strong>。</p>
+    </div>
+  </div>
+
+  <!-- 8 widgets -->
+  <div class="section">
+    <h3>The 8 Widgets</h3>
+    <h2>🧩 完整 widget 規格</h2>
+
+    <!-- Widget 1: KPI -->
+    <div class="widget-card">
+      <div class="widget-num">WIDGET 1 / 8</div>
+      <h4>📊 KPI Card</h4>
+      <p style="color: var(--muted);">單一數字 + 趨勢箭頭。最常用 widget。</p>
+      <div class="widget-grid">
+        <div class="vis-mock">
+          <div class="mini-title">客戶數</div>
+          <div class="mini-num">847</div>
+          <div class="mini-trend">↑ 12.4% (本週 vs 上週)</div>
+        </div>
+        <div class="widget-meta">
+          <div class="row"><strong>type</strong>: kpi</div>
+          <div class="row"><strong>適用</strong>: 單一指標 / count / score / rate</div>
+          <div class="row"><strong>必填</strong>: title, data_source, format</div>
+          <div class="row"><strong>選填</strong>: trend (compare_window), threshold</div>
+          <div class="row"><strong>data_source primitive</strong>: 任何回傳 scalar</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Widget 2: Time Series -->
+    <div class="widget-card">
+      <div class="widget-num">WIDGET 2 / 8</div>
+      <h4>📈 Time Series (Line / Area)</h4>
+      <p style="color: var(--muted);">趨勢隨時間變化。可選擇 line 或 area。</p>
+      <div class="widget-grid">
+        <div class="vis-mock">
+          <div class="mini-title">本週 anomaly 趨勢</div>
+          <svg viewBox="0 0 200 60" style="width:100%;height:50px;">
+            <path d="M0,40 L30,30 L60,35 L90,20 L120,28 L150,15 L180,25 L200,30" stroke="#ff6b35" fill="none" stroke-width="2"/>
+          </svg>
+        </div>
+        <div class="widget-meta">
+          <div class="row"><strong>type</strong>: line | area</div>
+          <div class="row"><strong>適用</strong>: 時間序列指標</div>
+          <div class="row"><strong>必填</strong>: title, data_source, time_range, granularity</div>
+          <div class="row"><strong>選填</strong>: multi_series, threshold_line</div>
+          <div class="row"><strong>granularity</strong>: 1m / 5m / 1h / 1d</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Widget 3: Bar Chart -->
+    <div class="widget-card">
+      <div class="widget-num">WIDGET 3 / 8</div>
+      <h4>📊 Bar Chart</h4>
+      <p style="color: var(--muted);">Top N 排名。最常用於「最忙」「最差」「最多」。</p>
+      <div class="widget-grid">
+        <div class="vis-mock">
+          <div class="mini-title">Top 5 最忙 AP</div>
+          <div style="display:flex;flex-direction:column;gap:3px;margin-top:4px;">
+            <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:var(--text);"><span style="width:50px;">AP-3F</span><span style="background:#ff6b35;height:8px;width:90%;border-radius:2px;"></span></div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:var(--text);"><span style="width:50px;">AP-7F</span><span style="background:#ff6b35;height:8px;width:80%;border-radius:2px;"></span></div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:10px;color:var(--text);"><span style="width:50px;">AP-2F</span><span style="background:#00d9c5;height:8px;width:65%;border-radius:2px;"></span></div>
+          </div>
+        </div>
+        <div class="widget-meta">
+          <div class="row"><strong>type</strong>: bar</div>
+          <div class="row"><strong>適用</strong>: 排名 / 比較 / 分布</div>
+          <div class="row"><strong>必填</strong>: title, data_source, sort_order</div>
+          <div class="row"><strong>選填</strong>: limit (default 10), color_threshold</div>
+          <div class="row"><strong>orientation</strong>: horizontal | vertical</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Widget 4: Table -->
+    <div class="widget-card">
+      <div class="widget-num">WIDGET 4 / 8</div>
+      <h4>📋 Table</h4>
+      <p style="color: var(--muted);">行列資料。適合需要看細節的 list 類型。</p>
+      <div class="widget-grid">
+        <div class="vis-mock">
+          <div class="mini-title">Top 問題設備</div>
+          <table style="width:100%;font-size:9px;color:var(--text);margin-top:4px;border-spacing:0;">
+            <tr style="color:var(--dim);"><th style="text-align:left;padding:2px 4px;">設備</th><th style="text-align:left;">類型</th></tr>
+            <tr><td style="padding:2px 4px;">AP-7F-N3</td><td style="color:#ef4444;">嚴重</td></tr>
+            <tr><td style="padding:2px 4px;">SW-1F-Gi12</td><td style="color:#fbbf24;">注意</td></tr>
+          </table>
+        </div>
+        <div class="widget-meta">
+          <div class="row"><strong>type</strong>: table</div>
+          <div class="row"><strong>適用</strong>: 多欄位資料 / 詳細清單</div>
+          <div class="row"><strong>必填</strong>: title, data_source, columns</div>
+          <div class="row"><strong>選填</strong>: sortable, badge_columns, limit</div>
+          <div class="row"><strong>columns</strong>: array of {field, label, format}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Widget 5: Site Map -->
+    <div class="widget-card">
+      <div class="widget-num">WIDGET 5 / 8</div>
+      <h4>🗺 Site Map</h4>
+      <p style="color: var(--muted);">多 site 健康分布。色塊顯示。</p>
+      <div class="widget-grid">
+        <div class="vis-mock">
+          <div class="mini-title">Sites 健康分數</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:4px;">
+            <div style="background:rgba(16,185,129,0.3);border-radius:3px;padding:4px;font-size:9px;text-align:center;color:var(--text);">HQ<br><strong>94</strong></div>
+            <div style="background:rgba(251,191,36,0.3);border-radius:3px;padding:4px;font-size:9px;text-align:center;color:var(--text);">Branch<br><strong>76</strong></div>
+            <div style="background:rgba(239,68,68,0.3);border-radius:3px;padding:4px;font-size:9px;text-align:center;color:var(--text);">WH<br><strong>62</strong></div>
+          </div>
+        </div>
+        <div class="widget-meta">
+          <div class="row"><strong>type</strong>: site_map</div>
+          <div class="row"><strong>適用</strong>: 多 site 概覽</div>
+          <div class="row"><strong>必填</strong>: title, data_source (回傳 site list + score)</div>
+          <div class="row"><strong>選填</strong>: thresholds (good/warn/bad)</div>
+          <div class="row"><strong>注意</strong>: PoC 不做（複雜）</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Widget 6: Heatmap -->
+    <div class="widget-card">
+      <div class="widget-num">WIDGET 6 / 8</div>
+      <h4>🔥 Heatmap</h4>
+      <p style="color: var(--muted);">時間 × 維度。常用於 channel utilization。</p>
+      <div class="widget-grid">
+        <div class="vis-mock">
+          <div class="mini-title">Channel utilization (24h)</div>
+          <div style="display:grid;grid-template-columns:repeat(8,1fr);gap:2px;margin-top:4px;">
+            <div style="background:rgba(16,185,129,0.3);height:12px;border-radius:1px;"></div>
+            <div style="background:rgba(16,185,129,0.5);height:12px;border-radius:1px;"></div>
+            <div style="background:rgba(251,191,36,0.4);height:12px;border-radius:1px;"></div>
+            <div style="background:rgba(251,191,36,0.7);height:12px;border-radius:1px;"></div>
+            <div style="background:rgba(239,68,68,0.6);height:12px;border-radius:1px;"></div>
+            <div style="background:rgba(239,68,68,0.5);height:12px;border-radius:1px;"></div>
+            <div style="background:rgba(251,191,36,0.5);height:12px;border-radius:1px;"></div>
+            <div style="background:rgba(16,185,129,0.4);height:12px;border-radius:1px;"></div>
+          </div>
+        </div>
+        <div class="widget-meta">
+          <div class="row"><strong>type</strong>: heatmap</div>
+          <div class="row"><strong>適用</strong>: 二維資料（時段 × 對象）</div>
+          <div class="row"><strong>必填</strong>: title, data_source, x_axis, y_axis</div>
+          <div class="row"><strong>選填</strong>: color_scale, cell_format</div>
+          <div class="row"><strong>注意</strong>: 進階 widget · MVP 才做</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Widget 7: Alert List -->
+    <div class="widget-card">
+      <div class="widget-num">WIDGET 7 / 8</div>
+      <h4>⚠ Alert List</h4>
+      <p style="color: var(--muted);">告警清單。每行一個 alert。</p>
+      <div class="widget-grid">
+        <div class="vis-mock">
+          <div class="mini-title">過載警示</div>
+          <div style="margin-top:4px;font-size:10px;">
+            <div style="display:flex;gap:4px;padding:2px 0;color:var(--text);"><span style="color:#ef4444;">🔴</span><span><strong>AP-3F-N2</strong> util 92%</span></div>
+            <div style="display:flex;gap:4px;padding:2px 0;color:var(--text);"><span style="color:#fbbf24;">🟡</span><span><strong>AP-2F-N4</strong> util 78%</span></div>
+          </div>
+        </div>
+        <div class="widget-meta">
+          <div class="row"><strong>type</strong>: alert_list</div>
+          <div class="row"><strong>適用</strong>: 警示 / 通知 / 異常清單</div>
+          <div class="row"><strong>必填</strong>: title, data_source, severity_field</div>
+          <div class="row"><strong>選填</strong>: limit (default 10), action_button</div>
+          <div class="row"><strong>severity</strong>: low / medium / high / critical</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Widget 8: Status Grid -->
+    <div class="widget-card">
+      <div class="widget-num">WIDGET 8 / 8</div>
+      <h4>🟢 Status Grid</h4>
+      <p style="color: var(--muted);">設備健康燈號。一格一設備。</p>
+      <div class="widget-grid">
+        <div class="vis-mock">
+          <div class="mini-title">Devices health (47 設備)</div>
+          <div style="display:grid;grid-template-columns:repeat(10,1fr);gap:2px;margin-top:4px;">
+            <div style="aspect-ratio:1;background:var(--good);border-radius:2px;opacity:0.7;"></div>
+            <div style="aspect-ratio:1;background:var(--good);border-radius:2px;opacity:0.7;"></div>
+            <div style="aspect-ratio:1;background:var(--warn);border-radius:2px;opacity:0.7;"></div>
+            <div style="aspect-ratio:1;background:var(--good);border-radius:2px;opacity:0.7;"></div>
+            <div style="aspect-ratio:1;background:var(--good);border-radius:2px;opacity:0.7;"></div>
+            <div style="aspect-ratio:1;background:var(--bad);border-radius:2px;opacity:0.7;"></div>
+            <div style="aspect-ratio:1;background:var(--good);border-radius:2px;opacity:0.7;"></div>
+            <div style="aspect-ratio:1;background:var(--good);border-radius:2px;opacity:0.7;"></div>
+            <div style="aspect-ratio:1;background:var(--good);border-radius:2px;opacity:0.7;"></div>
+            <div style="aspect-ratio:1;background:var(--good);border-radius:2px;opacity:0.7;"></div>
+          </div>
+        </div>
+        <div class="widget-meta">
+          <div class="row"><strong>type</strong>: status_grid</div>
+          <div class="row"><strong>適用</strong>: 大量設備 health-at-a-glance</div>
+          <div class="row"><strong>必填</strong>: title, data_source, status_field</div>
+          <div class="row"><strong>選填</strong>: tooltip_field, click_action</div>
+          <div class="row"><strong>適合 limit</strong>: 50-200 設備</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shared concerns -->
+  <div class="section">
+    <h3>共用考量</h3>
+    <h2>🔧 所有 widget 都要處理的事</h2>
+
+    <div class="grid-2">
+      <div class="card">
+        <h4>🔄 三種狀態</h4>
+        <ul>
+          <li><strong>Loading</strong>：skeleton placeholder</li>
+          <li><strong>Empty</strong>：「沒有符合的資料」+ icon</li>
+          <li><strong>Error</strong>：顯示錯誤 + 「重試」按鈕</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>📱 響應式</h4>
+        <ul>
+          <li>min-width: 200px（小於就堆疊）</li>
+          <li>max-width: full grid column</li>
+          <li>Mobile: 單欄堆疊</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>♿ 可訪問性</h4>
+        <ul>
+          <li>顏色不能單獨傳達訊息（要有 icon / text）</li>
+          <li>所有 chart 要有 alt text 描述</li>
+          <li>鍵盤可導航</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>🔄 即時更新</h4>
+        <ul>
+          <li>每個 widget 設 refresh_interval（30s / 5m / 1h / never）</li>
+          <li>背景刷新不打斷使用者</li>
+          <li>WebSocket 推送變更（可選）</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Extension -->
+  <div class="section">
+    <h3>未來擴充</h3>
+    <h2>➕ 第 9 個 widget 怎麼加</h2>
+    <ol>
+      <li><strong>Eng RFC</strong>：寫一份 RFC 說明為什麼需要、與既有 widget 的差異</li>
+      <li><strong>Schema 設計</strong>：JSON Schema + Pydantic model</li>
+      <li><strong>UI 元件</strong>：React 元件 + 三種狀態 + 響應式</li>
+      <li><strong>Mock data generator</strong>：開發用</li>
+      <li><strong>Prompt 更新</strong>：在 <code>select_widgets.md</code> 加上新 widget 的描述 + few-shot</li>
+      <li><strong>Eval 案例</strong>：至少 5 個 golden case 展示「應該選新 widget」</li>
+      <li><strong>Beta flag</strong>：先對 design partner 開放</li>
+      <li><strong>GA</strong>：通過 1 個月 beta 後正式釋出</li>
+    </ol>
+
+    <div class="callout warn-callout">
+      <div class="label">⚠ 黃金原則</div>
+      <p><strong>新 widget 是「release event」</strong>，不是「sprint task」。每加一個都會改變 LLM 的選擇分布，必須有 eval 保證不退步。</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- ==================================================================
+     COMMON CTA
+     ================================================================== -->
+<div class="cta">
+  <h3>看完想接著做什麼？</h3>
+  <p>切到其他 tab、或回到主入口繼續看其他文件</p>
+  <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px;">
+    <a class="nav-link" href="dashboard-builder-demo.html">📈 看 Dashboard Demo（互動範例）</a>
+    <a class="nav-link" href="playbook-examples.html">📘 看 Playbook 範例集</a>
+    <a class="nav-link" href="architecture-v2-zh.html">🏗 看完整技術架構</a>
+    <a class="nav-link muted-link" href="index.html">🏠 回入口</a>
+  </div>
+</div>
+
+</div>
+
+<script>
+function setTab(id) {
+  if (!document.getElementById(id)) return;
+  document.querySelectorAll('.tab-button').forEach(b => b.classList.toggle('active', b.dataset.tab === id));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.toggle('active', c.id === id));
+  history.replaceState(null, '', '#' + id);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.querySelectorAll('.tab-button').forEach(btn => {
+  btn.addEventListener('click', () => setTab(btn.dataset.tab));
+});
+
+// Initial tab from URL hash
+const initial = (window.location.hash || '#t1').replace('#', '');
+if (document.getElementById(initial)) setTab(initial);
+
+// Keyboard navigation (1-4 keys)
+document.addEventListener('keydown', e => {
+  if (/^[1-4]$/.test(e.key) && !e.target.matches('input,textarea')) {
+    setTab('t' + e.key);
+  }
+});
+</script>
+
+</body>
+</html>

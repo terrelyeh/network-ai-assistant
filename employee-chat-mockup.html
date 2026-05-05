@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mode A · 員工 Chat — UI Mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-1: #0a1628;
+    --bg-2: #0f1e3a;
+    --bg-3: #050d1a;
+    --surface: rgba(255,255,255,0.04);
+    --surface-2: rgba(255,255,255,0.08);
+    --border: rgba(255,255,255,0.10);
+    --border-strong: rgba(255,255,255,0.20);
+    --text: #f8fafc;
+    --muted: #cbd5e1;
+    --dim: #64748b;
+    --accent: #ff6b35;
+    --cyan: #00d9c5;
+    --good: #10b981;
+    --warn: #fbbf24;
+    --bad: #ef4444;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    height: 100%;
+    background: var(--bg-1);
+    color: var(--text);
+    font-family: 'Inter', 'Noto Sans TC', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+
+  /* Mockup banner */
+  .mockup-banner {
+    height: 32px;
+    background: linear-gradient(90deg, rgba(0,217,197,0.15), rgba(255,107,53,0.10));
+    border-bottom: 1px solid rgba(0,217,197,0.3);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 16px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .mockup-banner strong { color: var(--cyan); margin-right: 6px; }
+  .mockup-banner a {
+    color: var(--cyan);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 4px 10px;
+    border: 1px solid rgba(0,217,197,0.3);
+    border-radius: 6px;
+  }
+  .mockup-banner a:hover { background: rgba(0,217,197,0.15); }
+
+  /* Phone-like centered chat container */
+  .chat-app {
+    height: calc(100vh - 32px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background:
+      radial-gradient(ellipse at top, rgba(0,217,197,0.04), transparent 60%),
+      radial-gradient(ellipse at bottom, rgba(255,107,53,0.03), transparent 60%);
+  }
+
+  .chat-window {
+    width: 100%;
+    max-width: 520px;
+    height: 100%;
+    max-height: 920px;
+    background: var(--bg-2);
+    border: 1px solid var(--border-strong);
+    border-radius: 22px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Chat header */
+  .chat-header {
+    background: linear-gradient(135deg, rgba(0,217,197,0.10), rgba(255,107,53,0.05));
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .ai-avatar {
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, var(--cyan), var(--accent));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+  .ai-info { flex: 1; }
+  .ai-name {
+    font-size: 16px; font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .ai-status {
+    font-size: 12px;
+    color: var(--good);
+    display: flex; align-items: center; gap: 6px;
+    margin-top: 2px;
+  }
+  .ai-status::before {
+    content: '';
+    width: 7px; height: 7px;
+    background: var(--good);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .header-close {
+    width: 36px; height: 36px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    font-family: inherit;
+  }
+
+  /* Messages area */
+  .messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .messages::-webkit-scrollbar { width: 4px; }
+  .messages::-webkit-scrollbar-thumb { background: var(--surface-2); border-radius: 2px; }
+
+  /* Welcome state */
+  .welcome {
+    text-align: center;
+    padding: 30px 12px;
+  }
+  .welcome-icon {
+    font-size: 48px;
+    margin-bottom: 14px;
+  }
+  .welcome h2 {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .welcome p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 22px;
+  }
+  .welcome-suggestions {
+    display: flex; flex-direction: column; gap: 8px;
+    text-align: left;
+  }
+  .welcome-suggestions .label {
+    color: var(--dim);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    text-align: center;
+  }
+  .suggestion-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 12px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    text-align: left;
+    transition: all 0.2s;
+    font-family: inherit;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .suggestion-btn:hover {
+    background: var(--surface-2);
+    border-color: var(--cyan);
+    transform: translateY(-1px);
+  }
+  .suggestion-btn .ico { font-size: 16px; flex-shrink: 0; }
+
+  /* Message bubbles */
+  .msg {
+    max-width: 85%;
+    padding: 12px 16px;
+    border-radius: 18px;
+    font-size: 14.5px;
+    line-height: 1.55;
+    animation: msgIn 0.3s ease;
+  }
+  @keyframes msgIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .msg.user {
+    background: var(--accent);
+    color: #fff;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+  }
+  .msg.ai {
+    background: var(--surface-2);
+    color: var(--text);
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+    border: 1px solid var(--border);
+  }
+  .msg.ai.system {
+    background: rgba(0,217,197,0.08);
+    border-color: rgba(0,217,197,0.3);
+  }
+  .msg-meta {
+    font-size: 10px;
+    color: var(--dim);
+    margin-top: 4px;
+    padding: 0 8px;
+  }
+  .user-meta { align-self: flex-end; }
+  .ai-meta { align-self: flex-start; }
+
+  /* AI thinking dots */
+  .typing {
+    background: var(--surface-2);
+    color: var(--muted);
+    align-self: flex-start;
+    border-radius: 18px 18px 18px 4px;
+    padding: 14px 18px;
+    display: flex; gap: 5px;
+    border: 1px solid var(--border);
+  }
+  .typing-dot {
+    width: 7px; height: 7px;
+    background: var(--cyan);
+    border-radius: 50%;
+    animation: typing 1.4s infinite;
+  }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes typing {
+    0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+    30% { opacity: 1; transform: translateY(-4px); }
+  }
+
+  /* In-chat suggestions (after AI question) */
+  .inline-suggestions {
+    align-self: flex-start;
+    display: flex; gap: 6px; flex-wrap: wrap;
+    margin-top: -4px;
+    padding-left: 8px;
+  }
+  .inline-sug {
+    background: rgba(0,217,197,0.08);
+    border: 1px solid rgba(0,217,197,0.3);
+    color: var(--cyan);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .inline-sug:hover {
+    background: rgba(0,217,197,0.15);
+    border-color: var(--cyan);
+  }
+
+  /* Action card (escalate, etc.) */
+  .action-card {
+    align-self: flex-start;
+    background: linear-gradient(135deg, rgba(255,107,53,0.10), rgba(0,217,197,0.05));
+    border: 1px solid rgba(255,107,53,0.4);
+    border-radius: 16px;
+    padding: 16px 18px;
+    margin-top: 4px;
+    max-width: 85%;
+  }
+  .action-card .label {
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .action-card .title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .action-card .desc {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+  .action-buttons {
+    display: flex; gap: 8px;
+  }
+  .ac-btn {
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .ac-btn.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  /* Ticket confirmation */
+  .ticket-confirm {
+    background: rgba(16,185,129,0.10);
+    border: 1px solid rgba(16,185,129,0.4);
+    border-radius: 14px;
+    padding: 14px 18px;
+    align-self: stretch;
+    text-align: center;
+  }
+  .ticket-confirm .check {
+    font-size: 32px;
+    margin-bottom: 6px;
+  }
+  .ticket-confirm h4 {
+    color: var(--good);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .ticket-confirm p {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .ticket-confirm code {
+    color: var(--good);
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(16,185,129,0.15);
+    padding: 1px 8px;
+    border-radius: 4px;
+  }
+
+  /* Input area */
+  .chat-input-bar {
+    padding: 14px 18px 18px;
+    border-top: 1px solid var(--border);
+    background: var(--bg-2);
+  }
+  .quick-replies {
+    display: flex; gap: 8px;
+    overflow-x: auto;
+    margin-bottom: 10px;
+    padding-bottom: 2px;
+  }
+  .quick-replies::-webkit-scrollbar { height: 2px; }
+  .quick-reply {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-family: inherit;
+  }
+  .quick-reply:hover { color: var(--text); border-color: var(--cyan); }
+
+  .input-row {
+    display: flex; gap: 10px; align-items: center;
+  }
+  .input-wrap {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 22px;
+    padding: 0 16px;
+    display: flex; align-items: center;
+    transition: all 0.2s;
+  }
+  .input-wrap:focus-within {
+    border-color: var(--cyan);
+  }
+  .input-wrap input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 14.5px;
+    padding: 12px 0;
+  }
+  .input-wrap input::placeholder { color: var(--dim); }
+  .input-icon {
+    background: transparent;
+    border: none;
+    color: var(--dim);
+    width: 28px; height: 28px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .send {
+    background: var(--accent);
+    border: none;
+    color: #fff;
+    width: 44px; height: 44px;
+    border-radius: 22px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 700;
+    font-family: inherit;
+    flex-shrink: 0;
+  }
+  .send:disabled {
+    background: var(--surface-2);
+    color: var(--dim);
+    cursor: not-allowed;
+  }
+
+  /* Reset button (mockup convenience) */
+  .reset-btn {
+    position: fixed;
+    bottom: 16px; left: 16px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    color: var(--muted);
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    z-index: 10;
+  }
+  .reset-btn:hover { background: var(--surface-3); color: var(--text); }
+</style>
+</head>
+<body>
+
+<div class="mockup-banner">
+  <span><strong>📌 MOCKUP</strong>Mode A 員工 Chat · 非技術用戶自助客服</span>
+  <a href="mockup-gallery.html">← 回 Mockup 列表</a>
+</div>
+
+<div class="chat-app">
+  <div class="chat-window">
+
+    <!-- Header -->
+    <div class="chat-header">
+      <div class="ai-avatar">🤖</div>
+      <div class="ai-info">
+        <div class="ai-name">NetSense 助理</div>
+        <div class="ai-status">線上 · 24×7</div>
+      </div>
+      <button class="header-close" title="最小化">−</button>
+    </div>
+
+    <!-- Messages -->
+    <div class="messages" id="messages">
+      <!-- Welcome state shown initially -->
+      <div class="welcome" id="welcome">
+        <div class="welcome-icon">👋</div>
+        <h2>嗨！我是 IT 助理</h2>
+        <p>網路有問題？我先幫您看看，<br>解決不了再幫您開單給 IT。</p>
+        <div class="welcome-suggestions">
+          <div class="label">您今天遇到什麼問題？</div>
+          <button class="suggestion-btn" onclick="startScenario('wifi_slow')">
+            <span class="ico">📶</span><span>Wi-Fi 很慢 / 訊號差</span>
+          </button>
+          <button class="suggestion-btn" onclick="startScenario('cant_connect')">
+            <span class="ico">🚫</span><span>連不上網路 / 沒有訊號</span>
+          </button>
+          <button class="suggestion-btn" onclick="startScenario('printer')">
+            <span class="ico">🖨</span><span>印表機 / 共享磁碟找不到</span>
+          </button>
+          <button class="suggestion-btn" onclick="startScenario('video_lag')">
+            <span class="ico">📹</span><span>視訊會議卡頓 / 斷線</span>
+          </button>
+          <button class="suggestion-btn" onclick="startScenario('other')">
+            <span class="ico">💬</span><span>其他問題 (用講的)</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="chat-input-bar">
+      <div class="quick-replies" id="quickReplies"></div>
+      <div class="input-row">
+        <div class="input-wrap">
+          <input id="chatInput" type="text" placeholder="跟我說您的問題…" onkeypress="if(event.key==='Enter')sendMsg()">
+          <button class="input-icon" title="附加截圖">📎</button>
+        </div>
+        <button class="send" onclick="sendMsg()">↑</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<button class="reset-btn" onclick="resetChat()">↻ 重置 demo</button>
+
+<script>
+const messages = document.getElementById('messages');
+const welcome = document.getElementById('welcome');
+const quickReplies = document.getElementById('quickReplies');
+const input = document.getElementById('chatInput');
+
+let conversationStep = 0;
+
+function addMsg(text, type = 'ai', isHTML = false) {
+  const div = document.createElement('div');
+  div.className = 'msg ' + type;
+  if (isHTML) div.innerHTML = text;
+  else div.textContent = text;
+  messages.appendChild(div);
+  scrollToBottom();
+}
+
+function addTyping() {
+  const div = document.createElement('div');
+  div.className = 'typing';
+  div.id = 'typingIndicator';
+  div.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
+  messages.appendChild(div);
+  scrollToBottom();
+}
+
+function removeTyping() {
+  const t = document.getElementById('typingIndicator');
+  if (t) t.remove();
+}
+
+function addInlineSuggestions(suggestions, onClick) {
+  const div = document.createElement('div');
+  div.className = 'inline-suggestions';
+  div.id = 'currentInlineSugs';
+  suggestions.forEach(s => {
+    const btn = document.createElement('button');
+    btn.className = 'inline-sug';
+    btn.textContent = s;
+    btn.onclick = () => {
+      div.remove();
+      onClick(s);
+    };
+    div.appendChild(btn);
+  });
+  messages.appendChild(div);
+  scrollToBottom();
+}
+
+function addActionCard(label, title, desc, buttons) {
+  const div = document.createElement('div');
+  div.className = 'action-card';
+  div.id = 'currentActionCard';
+  div.innerHTML = `
+    <div class="label">${label}</div>
+    <div class="title">${title}</div>
+    <div class="desc">${desc}</div>
+    <div class="action-buttons">
+      ${buttons.map(b => `<button class="ac-btn ${b.primary?'primary':''}" data-action="${b.action}">${b.label}</button>`).join('')}
+    </div>
+  `;
+  div.querySelectorAll('button').forEach(b => {
+    b.onclick = () => {
+      const action = b.dataset.action;
+      div.remove();
+      handleAction(action);
+    };
+  });
+  messages.appendChild(div);
+  scrollToBottom();
+}
+
+function addTicketConfirm() {
+  const div = document.createElement('div');
+  div.className = 'ticket-confirm';
+  div.innerHTML = `
+    <div class="check">✓</div>
+    <h4>已送 ticket 給 IT</h4>
+    <p>單號 <code>#NS-${Math.floor(Math.random()*9000+1000)}</code> · 含完整對話紀錄與診斷資訊<br>IT 預估 30 分鐘內回覆您</p>
+  `;
+  messages.appendChild(div);
+  scrollToBottom();
+}
+
+function scrollToBottom() {
+  setTimeout(() => messages.scrollTop = messages.scrollHeight, 50);
+}
+
+function setQuickReplies(replies) {
+  quickReplies.innerHTML = '';
+  replies.forEach(r => {
+    const btn = document.createElement('button');
+    btn.className = 'quick-reply';
+    btn.textContent = r;
+    btn.onclick = () => {
+      input.value = r;
+      sendMsg();
+    };
+    quickReplies.appendChild(btn);
+  });
+}
+
+function clearQuickReplies() { quickReplies.innerHTML = ''; }
+
+function startScenario(scenario) {
+  welcome.remove();
+
+  if (scenario === 'wifi_slow') {
+    addMsg('Wi-Fi 很慢', 'user');
+    setTimeout(() => {
+      addTyping();
+      setTimeout(() => {
+        removeTyping();
+        addMsg('了解！我先幫您看一下狀況。請問您現在在哪裡？');
+        addInlineSuggestions(['7F 會議室', '我的座位', '茶水間', '其他'], (loc) => {
+          addMsg(loc, 'user');
+          handleLocation(loc);
+        });
+      }, 1500);
+    }, 400);
+  } else if (scenario === 'cant_connect') {
+    addMsg('我連不上網路', 'user');
+    setTimeout(() => {
+      addTyping();
+      setTimeout(() => {
+        removeTyping();
+        addMsg('好的，我先幫您診斷。您是 Wi-Fi 還是有線網路？');
+        addInlineSuggestions(['Wi-Fi (筆電/手機)', '有線 (桌機)'], (type) => {
+          addMsg(type, 'user');
+          if (type.includes('Wi-Fi')) handleLocation('我的座位');
+          else handleWired();
+        });
+      }, 1200);
+    }, 400);
+  } else if (scenario === 'printer') {
+    addMsg('印表機找不到', 'user');
+    setTimeout(() => {
+      addTyping();
+      setTimeout(() => {
+        removeTyping();
+        addMsg('印表機問題分兩種，您是？');
+        addInlineSuggestions(['以前可以但現在找不到', '從來沒設定過'], (s) => {
+          addMsg(s, 'user');
+          handlePrinter(s);
+        });
+      }, 1200);
+    }, 400);
+  } else if (scenario === 'video_lag') {
+    addMsg('視訊會議很卡', 'user');
+    setTimeout(() => {
+      addTyping();
+      setTimeout(() => {
+        removeTyping();
+        handleLocation('會議室');
+      }, 1200);
+    }, 400);
+  } else {
+    setQuickReplies(['Wi-Fi 慢', '連不上', '印表機問題', '其他']);
+    addMsg('好的，請用您自己的話告訴我發生什麼事 — 我會盡量幫您。', 'ai');
+  }
+}
+
+function handleLocation(loc) {
+  addTyping();
+  setTimeout(() => {
+    removeTyping();
+    addMsg(`了解，您在「${loc}」。請看一下手機 Wi-Fi 圖示現在剩幾格訊號？`);
+    addInlineSuggestions(['滿格 (4格)', '3 格', '2 格', '1 格 / 沒有'], (signal) => {
+      addMsg(signal, 'user');
+      handleSignal(signal);
+    });
+  }, 1500);
+}
+
+function handleSignal(signal) {
+  addTyping();
+  setTimeout(() => {
+    removeTyping();
+    if (signal.includes('4') || signal.includes('滿')) {
+      addMsg('訊號不錯耶！那慢可能不是 Wi-Fi 的問題，可能是某個 app 或網站本身慢。');
+      addMsg('您試試開別的網站（例如 Google）看看會不會也慢？');
+      setQuickReplies(['只有某個網站慢', '所有網站都慢']);
+    } else if (signal.includes('3')) {
+      addMsg('3 格訊號還行，但可能不夠穩。我幫您看一下您附近的 AP 狀況...');
+      setTimeout(() => {
+        addTyping();
+        setTimeout(() => {
+          removeTyping();
+          addMsg('🔍 找到了！您附近的 AP 有點滿（同時 23 個人在連）。建議：');
+          addActionCard(
+            '✨ 自助解法',
+            '試試走到走廊另一邊',
+            '另一台 AP（AP-7F-N4）使用人數較少。或者離 AP 更近一點。',
+            [
+              { label: '已試過了還是慢', action: 'escalate', primary: false },
+              { label: '✓ 我試試看', action: 'resolved', primary: true },
+            ]
+          );
+        }, 1500);
+      }, 800);
+    } else {
+      addMsg('訊號太弱了，這個問題我自己解決不了 — 通常是 AP 太遠或被擋住。我幫您聯繫 IT 好嗎？');
+      addActionCard(
+        '⚠ 需要 IT 協助',
+        '訊號過弱 · 自助無法解決',
+        'AP 可能位置不對或硬體故障，需要 IT 現場處理。我會把對話紀錄整理好給他們。',
+        [
+          { label: '✗ 先不要', action: 'cancel', primary: false },
+          { label: '📋 開單給 IT', action: 'escalate', primary: true },
+        ]
+      );
+    }
+  }, 1800);
+}
+
+function handleWired() {
+  addTyping();
+  setTimeout(() => {
+    removeTyping();
+    addMsg('有線網路通常 3 個原因：(1) 線沒插好 (2) 網路埠故障 (3) IP 設定問題');
+    addMsg('您先試試重新拔插網路線 — 拔下來等 3 秒再插回去');
+    addInlineSuggestions(['好了！可以了', '還是不行'], (r) => {
+      addMsg(r, 'user');
+      if (r.includes('好了')) handleResolved();
+      else handleEscalateNow('有線網路無法連線，已嘗試重插網路線');
+    });
+  }, 1500);
+}
+
+function handlePrinter(scenario) {
+  addTyping();
+  setTimeout(() => {
+    removeTyping();
+    if (scenario.includes('以前')) {
+      addMsg('好的，這通常是 IP 改了或共享暫時失效。請您：');
+      addMsg('1. 重新開機一次<br>2. 試試從「印表機與掃描器」設定移除印表機，再重新加入', 'ai', true);
+      addInlineSuggestions(['好了', '還是不行'], (r) => {
+        addMsg(r, 'user');
+        if (r.includes('好了')) handleResolved();
+        else handleEscalateNow('印表機無法使用，已重啟並重新加入');
+      });
+    } else {
+      handleEscalateNow('員工需要新增印表機，需 IT 協助設定');
+    }
+  }, 1500);
+}
+
+function handleAction(action) {
+  if (action === 'escalate') handleEscalateNow();
+  else if (action === 'resolved') handleResolved();
+  else if (action === 'cancel') {
+    addMsg('沒問題，您方便時隨時再來找我 👋', 'ai');
+    setQuickReplies(['新問題', '謝謝']);
+  }
+}
+
+function handleEscalateNow(context) {
+  addTyping();
+  setTimeout(() => {
+    removeTyping();
+    addMsg('好的，我幫您處理。正在整理對話內容並開單...');
+    setTimeout(() => {
+      addTicketConfirm();
+      setTimeout(() => {
+        addMsg('您可以放心了！IT 看到 ticket 會直接看到完整脈絡，不用您再重講一次 😊', 'ai');
+        setQuickReplies(['新問題', '看 ticket 進度']);
+      }, 600);
+    }, 1500);
+  }, 800);
+}
+
+function handleResolved() {
+  addTyping();
+  setTimeout(() => {
+    removeTyping();
+    addMsg('太好了！🎉 解決了就好。');
+    addMsg('如果之後又遇到同樣問題，記得來找我。我幫您記住：「下午容易在會議室訊號變弱」這個 pattern。', 'ai');
+    setQuickReplies(['新問題', '謝謝']);
+  }, 1000);
+}
+
+function sendMsg() {
+  const text = input.value.trim();
+  if (!text) return;
+  if (welcome) welcome.remove();
+
+  addMsg(text, 'user');
+  input.value = '';
+  clearQuickReplies();
+
+  // 簡化版 fallback - 真產品會走完整 LLM 流程
+  setTimeout(() => {
+    addTyping();
+    setTimeout(() => {
+      removeTyping();
+      // 簡單 keyword routing
+      if (text.match(/慢|卡|lag/i)) handleLocation('您的位置');
+      else if (text.match(/連不上|沒網|斷/i)) {
+        addMsg('連不上網路啊，我幫您看看。是 Wi-Fi 還是有線？');
+        addInlineSuggestions(['Wi-Fi', '有線'], () => {});
+      } else if (text.match(/印表|掃描/i)) handlePrinter('以前可以');
+      else {
+        addMsg('我聽到了，讓我看看怎麼幫您...');
+        setTimeout(() => {
+          addMsg('這個問題我可能幫不上忙，但我可以直接幫您聯繫 IT。要嗎？');
+          addActionCard(
+            '⚠ 我也不確定',
+            '需要 IT 直接協助',
+            '我把這段對話整理好給 IT，他們會看到您的完整描述。',
+            [
+              { label: '先不要', action: 'cancel' },
+              { label: '📋 開單', action: 'escalate', primary: true },
+            ]
+          );
+        }, 1200);
+      }
+    }, 1500);
+  }, 400);
+}
+
+function resetChat() {
+  location.reload();
+}
+</script>
+
+</body>
+</html>

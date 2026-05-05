@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UI Mockups · NetSense AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-1: #0a1628;
+    --bg-2: #0f1e3a;
+    --surface: rgba(255,255,255,0.04);
+    --surface-2: rgba(255,255,255,0.08);
+    --border: rgba(255,255,255,0.12);
+    --border-strong: rgba(255,255,255,0.22);
+    --text: #f8fafc;
+    --muted: #cbd5e1;
+    --dim: #64748b;
+    --accent: #ff6b35;
+    --cyan: #00d9c5;
+    --good: #10b981;
+    --warn: #fbbf24;
+    --bad: #ef4444;
+    --purple: #a78bfa;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%);
+    color: var(--text);
+    font-family: 'Inter', 'Noto Sans TC', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding: 40px 32px 80px;
+    line-height: 1.55;
+  }
+  .container { max-width: 1480px; margin: 0 auto; }
+
+  header {
+    margin-bottom: 36px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  header .left .tag {
+    color: var(--accent);
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  header h1 { font-size: 36px; font-weight: 800; letter-spacing: -0.02em; }
+  header h1 .accent { color: var(--accent); }
+  header .sub { color: var(--muted); margin-top: 6px; font-size: 15px; }
+
+  .nav-links { display: flex; gap: 7px; flex-wrap: wrap; }
+  .nav-link {
+    color: var(--cyan);
+    text-decoration: none;
+    font-size: 12.5px; font-weight: 600;
+    padding: 7px 12px;
+    background: rgba(0,217,197,0.08);
+    border: 1px solid rgba(0,217,197,0.35);
+    border-radius: 8px;
+    transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .nav-link:hover {
+    background: rgba(0,217,197,0.18);
+    border-color: var(--cyan);
+    transform: translateY(-1px);
+  }
+  .nav-link.muted-link {
+    color: var(--muted); background: var(--surface);
+    border-color: var(--border-strong);
+  }
+  .nav-link.current {
+    background: rgba(255,107,53,0.15);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* Hero */
+  .hero {
+    text-align: center;
+    margin-bottom: 48px;
+    padding: 16px 20px 0;
+  }
+  .hero .pre {
+    color: var(--cyan);
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .hero h2 {
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+  }
+  .hero h2 .accent { color: var(--accent); }
+  .hero h2 .cyan { color: var(--cyan); }
+  .hero .lead {
+    margin-top: 16px;
+    color: var(--muted);
+    font-size: 17px;
+    max-width: 720px;
+    margin-left: auto; margin-right: auto;
+  }
+  .hero .lead strong { color: var(--text); }
+
+  /* Mockup grid */
+  .mockup-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+    margin-bottom: 48px;
+  }
+  .mockup-card {
+    background: rgba(0,0,0,0.18);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    padding: 28px 32px;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+  }
+  .mockup-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s;
+  }
+  .mockup-card:hover::before { transform: scaleX(1); }
+  .mockup-card:hover {
+    background: rgba(0,0,0,0.28);
+    border-color: var(--border-strong);
+    transform: translateY(-3px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+  }
+  .mockup-card.cyan::before { background: var(--cyan); }
+  .mockup-card.cyan:hover { border-color: rgba(0,217,197,0.5); }
+  .mockup-card.accent::before { background: var(--accent); }
+  .mockup-card.accent:hover { border-color: rgba(255,107,53,0.5); }
+  .mockup-card.purple::before { background: var(--purple); }
+  .mockup-card.purple:hover { border-color: rgba(167,139,250,0.5); }
+  .mockup-card.warn::before { background: var(--warn); }
+  .mockup-card.warn:hover { border-color: rgba(251,191,36,0.5); }
+
+  .mockup-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    padding: 4px 10px;
+    border-radius: 5px;
+    margin-bottom: 14px;
+  }
+  .mockup-tag.t-a { background: rgba(0,217,197,0.10); color: var(--cyan); border: 1px solid rgba(0,217,197,0.3); }
+  .mockup-tag.t-b { background: rgba(255,107,53,0.10); color: var(--accent); border: 1px solid rgba(255,107,53,0.3); }
+  .mockup-tag.t-c { background: rgba(167,139,250,0.10); color: var(--purple); border: 1px solid rgba(167,139,250,0.3); }
+  .mockup-tag.t-feat { background: rgba(251,191,36,0.10); color: var(--warn); border: 1px solid rgba(251,191,36,0.3); }
+
+  .mockup-card h3 {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .mockup-card .persona {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 18px;
+  }
+  .mockup-card .persona strong { color: var(--text); }
+
+  /* Visual preview area */
+  .preview {
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 18px;
+    flex-grow: 1;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* Preview · Mode A (chat) */
+  .pv-msg {
+    border-radius: 12px;
+    padding: 8px 12px;
+    font-size: 12px;
+    max-width: 80%;
+  }
+  .pv-msg.user { background: var(--accent); color: #fff; align-self: flex-end; border-bottom-right-radius: 3px; }
+  .pv-msg.ai { background: var(--surface-2); color: var(--text); align-self: flex-start; border-bottom-left-radius: 3px; border: 1px solid var(--border); }
+
+  /* Preview · Mode B (cockpit) */
+  .pv-cockpit {
+    display: grid;
+    grid-template-columns: 50px 1fr 80px;
+    grid-template-rows: 18px 1fr;
+    gap: 4px;
+    height: 100%;
+  }
+  .pv-cockpit > div {
+    background: var(--surface);
+    border-radius: 4px;
+  }
+  .pv-cockpit .topbar { grid-column: 1 / -1; background: var(--surface-2); height: 18px; }
+  .pv-cockpit .sidebar-l { background: var(--surface); }
+  .pv-cockpit .main {
+    background: linear-gradient(135deg, rgba(255,107,53,0.10), transparent);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 4px;
+  }
+  .pv-cockpit .main > div {
+    background: var(--surface);
+    border-radius: 3px;
+    height: 12px;
+  }
+  .pv-cockpit .main > div:first-child {
+    background: rgba(239,68,68,0.2);
+    border-left: 2px solid var(--bad);
+  }
+  .pv-cockpit .main > div:nth-child(2) {
+    background: rgba(251,191,36,0.2);
+    border-left: 2px solid var(--warn);
+  }
+  .pv-cockpit .sidebar-r {
+    background: rgba(255,107,53,0.08);
+  }
+
+  /* Preview · Dashboard Flow (4 steps) */
+  .pv-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100%;
+    justify-content: center;
+  }
+  .pv-flow-step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .pv-flow-step .num {
+    width: 22px; height: 22px;
+    background: var(--surface-2);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .pv-flow-step.done .num { background: var(--good); color: #fff; }
+  .pv-flow-step.active .num { background: var(--accent); color: #fff; }
+  .pv-flow-step.active span:not(.num) { color: var(--text); font-weight: 600; }
+
+  /* Preview · Mode C (table) */
+  .pv-pro {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .pv-pro .header {
+    background: var(--surface-2);
+    height: 16px;
+    border-radius: 3px;
+  }
+  .pv-pro .tabs {
+    display: flex;
+    gap: 4px;
+    height: 14px;
+  }
+  .pv-pro .tabs > div {
+    flex: 1;
+    background: var(--surface);
+    border-radius: 3px 3px 0 0;
+  }
+  .pv-pro .tabs > div.active {
+    background: rgba(167,139,250,0.20);
+    border-bottom: 2px solid var(--purple);
+  }
+  .pv-pro .row {
+    display: grid;
+    grid-template-columns: 14px 1fr 50px 40px 40px;
+    gap: 6px;
+    align-items: center;
+    background: var(--surface);
+    border-radius: 3px;
+    padding: 4px 8px;
+    font-size: 10px;
+    color: var(--muted);
+    height: 18px;
+  }
+  .pv-pro .row .check {
+    width: 10px; height: 10px;
+    background: var(--surface-2);
+    border-radius: 2px;
+  }
+  .pv-pro .row .check.checked {
+    background: var(--purple);
+  }
+  .pv-pro .row .pill {
+    background: rgba(16,185,129,0.15);
+    color: var(--good);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 9px;
+    text-align: center;
+  }
+  .pv-pro .row .pill.warn { background: rgba(251,191,36,0.15); color: var(--warn); }
+  .pv-pro .row .pill.bad { background: rgba(239,68,68,0.15); color: var(--bad); }
+
+  /* Tags + CTA */
+  .mockup-tags {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin-bottom: 18px;
+  }
+  .mockup-tag-mini {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+  }
+
+  .mockup-cta {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+  .mockup-cta .meta {
+    color: var(--dim);
+    font-size: 12px;
+  }
+  .mockup-cta .open {
+    color: var(--cyan);
+    font-weight: 700;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .mockup-card:hover .mockup-cta .open {
+    color: var(--accent);
+  }
+  .mockup-cta .open .arrow {
+    transition: transform 0.2s;
+  }
+  .mockup-card:hover .mockup-cta .open .arrow {
+    transform: translateX(5px);
+  }
+
+  /* Comparison */
+  .compare {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 28px 32px;
+    margin-bottom: 32px;
+  }
+  .compare h3 {
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .compare h2 {
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 18px;
+    letter-spacing: -0.01em;
+  }
+  .compare table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .compare th, .compare td {
+    padding: 11px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .compare th {
+    color: var(--dim);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .compare th.col-a { color: var(--cyan); }
+  .compare th.col-b { color: var(--accent); }
+  .compare th.col-c { color: var(--purple); }
+  .compare th.col-feat { color: var(--warn); }
+  .compare td.muted { color: var(--muted); }
+
+  /* Tip */
+  .tip {
+    background: linear-gradient(135deg, rgba(0,217,197,0.10), rgba(255,107,53,0.06));
+    border: 1px solid rgba(0,217,197,0.3);
+    border-radius: 16px;
+    padding: 20px 26px;
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .tip h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .tip p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .tip kbd {
+    background: var(--surface-2);
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--cyan);
+  }
+
+  @media (max-width: 1100px) {
+    .mockup-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <div class="left">
+    <div class="tag">UI MOCKUPS · 互動式設計示意</div>
+    <h1>NetSense <span class="accent">AI</span> — Mockup 集錦</h1>
+    <div class="sub">4 個可實際操作的設計示意 · 點 card 進入</div>
+  </div>
+  <div class="nav-links">
+    <a class="nav-link muted-link" href="index.html">🏠 入口</a>
+    <a class="nav-link muted-link" href="three-modes.html">🎭 三模式</a>
+    <a class="nav-link muted-link" href="dashboard-builder-demo.html">📈 Demo</a>
+    <a class="nav-link current" href="mockup-gallery.html">🎨 Mockups</a>
+    <a class="nav-link muted-link" href="overview-pm-mkt.html">🎯 PM/MKT</a>
+    <a class="nav-link muted-link" href="architecture-v2-zh.html">🏗 架構</a>
+    <a class="nav-link muted-link" href="playbook-examples.html">📘 Playbook</a>
+    <a class="nav-link muted-link" href="blind-spots.html">⚠ 盲點</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="pre">CLICKABLE · INTERACTIVE</div>
+  <h2>4 個 mockup<br>覆蓋<span class="accent">所有 user persona</span></h2>
+  <p class="lead">
+    從<strong>非技術員工</strong>的 chat 客服、<strong>SMB IT</strong> 的 cockpit、
+    <strong>Dashboard Builder</strong> 的 4 步驟流程，到 <strong>MSP / Pro 工程師</strong>的進階 console。
+    <br>每個都是可點擊互動的設計示意。
+  </p>
+</section>
+
+<!-- 4 MOCKUPS -->
+<div class="mockup-grid">
+
+  <!-- Mode A · Employee Chat -->
+  <a class="mockup-card cyan" href="employee-chat-mockup.html">
+    <span class="mockup-tag t-a">MODE A · 員工 / 終端用戶</span>
+    <h3>👤 員工 Chat 自助</h3>
+    <div class="persona">非技術員工的 IT 客服 · <strong>不用 call IT</strong></div>
+
+    <div class="preview" style="background: var(--bg-2);">
+      <div class="pv-msg user">會議室 Wi-Fi 很慢</div>
+      <div class="pv-msg ai">了解！您現在是 7F 會議室嗎？方便看一下手機 Wi-Fi 圖示剩幾格？</div>
+      <div class="pv-msg user">2 格</div>
+      <div class="pv-msg ai">先試試靠近會議室門口看訊號有沒有變強。如果還是 2 格我幫您開單給 IT。</div>
+    </div>
+
+    <div class="mockup-tags">
+      <span class="mockup-tag-mini">手機友善</span>
+      <span class="mockup-tag-mini">教育式對話</span>
+      <span class="mockup-tag-mini">自動 escalate</span>
+      <span class="mockup-tag-mini">5 個情境可走</span>
+    </div>
+    <div class="mockup-cta">
+      <span class="meta">employee-chat-mockup.html</span>
+      <span class="open">開啟 mockup <span class="arrow">→</span></span>
+    </div>
+  </a>
+
+  <!-- Mode B · Cockpit -->
+  <a class="mockup-card accent" href="cockpit-mockup.html">
+    <span class="mockup-tag t-b">MODE B · SMB IT ⭐ 主軸</span>
+    <h3>🛠 SMB IT Cockpit</h3>
+    <div class="persona">缺經驗的 IT 主控台 · <strong>監測 + 診斷 + 核准</strong></div>
+
+    <div class="preview">
+      <div class="pv-cockpit">
+        <div class="topbar"></div>
+        <div class="sidebar-l"></div>
+        <div class="main">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+        <div class="sidebar-r"></div>
+      </div>
+    </div>
+
+    <div class="mockup-tags">
+      <span class="mockup-tag-mini">Anomaly Panel</span>
+      <span class="mockup-tag-mini">Approval Queue</span>
+      <span class="mockup-tag-mini">真 chat 對話</span>
+      <span class="mockup-tag-mini">Cmd+K</span>
+      <span class="mockup-tag-mini">Live clock</span>
+    </div>
+    <div class="mockup-cta">
+      <span class="meta">cockpit-mockup.html</span>
+      <span class="open">開啟 mockup <span class="arrow">→</span></span>
+    </div>
+  </a>
+
+  <!-- Dashboard Builder Flow -->
+  <a class="mockup-card warn" href="dashboard-builder-flow-mockup.html">
+    <span class="mockup-tag t-feat">FEATURE · ⭐ Mode B 殺手</span>
+    <h3>📊 Dashboard Builder Flow</h3>
+    <div class="persona">用<strong>講的</strong>就有 dashboard · 4 步驟互動式流程</div>
+
+    <div class="preview">
+      <div class="pv-flow">
+        <div class="pv-flow-step done"><span class="num">1</span><span>描述需求 · 「我想看本週網路有沒有異常」</span></div>
+        <div class="pv-flow-step done"><span class="num">2</span><span>AI 分析（解析意圖、選 widget）</span></div>
+        <div class="pv-flow-step active"><span class="num">3</span><span>確認 4 個 widgets · KPI / Line / Table / Map</span></div>
+        <div class="pv-flow-step"><span class="num">4</span><span>Dashboard 渲染 + Refine loop</span></div>
+      </div>
+    </div>
+
+    <div class="mockup-tags">
+      <span class="mockup-tag-mini">4 步驟可點</span>
+      <span class="mockup-tag-mini">AI 思考動畫</span>
+      <span class="mockup-tag-mini">Refine 真會加 widget</span>
+      <span class="mockup-tag-mini">7 widget 渲染</span>
+    </div>
+    <div class="mockup-cta">
+      <span class="meta">dashboard-builder-flow-mockup.html</span>
+      <span class="open">開啟 mockup <span class="arrow">→</span></span>
+    </div>
+  </a>
+
+  <!-- Mode C · Pro Console -->
+  <a class="mockup-card purple" href="mode-c-pro-mockup.html">
+    <span class="mockup-tag t-c">MODE C · Pro / MSP</span>
+    <h3>⚡ Pro Console</h3>
+    <div class="persona">資深工程師 / MSP · <strong>跨 site 批量管理 + AI agent</strong></div>
+
+    <div class="preview">
+      <div class="pv-pro">
+        <div class="header"></div>
+        <div class="tabs">
+          <div class="active"></div><div></div><div></div><div></div>
+        </div>
+        <div class="row"><div class="check checked"></div><div>Acme Corp / HQ</div><div class="pill">健康</div><div class="pill">94</div><div></div></div>
+        <div class="row"><div class="check checked"></div><div>BigCo / Tokyo</div><div class="pill bad">嚴重</div><div class="pill bad">62</div><div></div></div>
+        <div class="row"><div class="check"></div><div>TechStart / Lab</div><div class="pill">健康</div><div class="pill">97</div><div></div></div>
+        <div class="row"><div class="check"></div><div>BigCo / Singapore</div><div class="pill">健康</div><div class="pill">91</div><div></div></div>
+      </div>
+    </div>
+
+    <div class="mockup-tags">
+      <span class="mockup-tag-mini">跨 site 表格</span>
+      <span class="mockup-tag-mini">Bulk select</span>
+      <span class="mockup-tag-mini">AI agent panel</span>
+      <span class="mockup-tag-mini">Cmd+K palette</span>
+      <span class="mockup-tag-mini">Custom playbook</span>
+    </div>
+    <div class="mockup-cta">
+      <span class="meta">mode-c-pro-mockup.html</span>
+      <span class="open">開啟 mockup <span class="arrow">→</span></span>
+    </div>
+  </a>
+
+</div>
+
+<!-- COMPARISON -->
+<section class="compare">
+  <h3>三模式 + 殺手功能對照</h3>
+  <h2>為什麼 4 個 mockup 缺一不可</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>面向</th>
+        <th class="col-a">Mode A · 員工</th>
+        <th class="col-b">Mode B · SMB IT ⭐</th>
+        <th class="col-feat">Dashboard Builder</th>
+        <th class="col-c">Mode C · Pro</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>主要用戶</td>
+        <td>非技術員工</td>
+        <td>缺經驗 IT</td>
+        <td>SMB IT（主功能）</td>
+        <td>資深網管 / MSP</td>
+      </tr>
+      <tr>
+        <td>UI 形態</td>
+        <td>單一 chat 視窗</td>
+        <td>多 panel cockpit</td>
+        <td>4 步驟 wizard</td>
+        <td>多 tab 表格 console</td>
+      </tr>
+      <tr>
+        <td>主要互動</td>
+        <td>對話</td>
+        <td>查看 + chat + 核准</td>
+        <td>描述 → 確認 → 用</td>
+        <td>批量選取 + 命令</td>
+      </tr>
+      <tr>
+        <td>AI 角色</td>
+        <td>客服 / 教練</td>
+        <td>副駕駛</td>
+        <td>「翻譯員」</td>
+        <td>Agent / 工具</td>
+      </tr>
+      <tr>
+        <td>寫入動作</td>
+        <td>無 (只開單)</td>
+        <td>Ring 0/1 + approval</td>
+        <td>Ring 0/1 (save)</td>
+        <td>完整 Ring 0/1/2</td>
+      </tr>
+      <tr>
+        <td>Cmd+K</td>
+        <td class="muted">不需要</td>
+        <td>有</td>
+        <td class="muted">不適用</td>
+        <td>核心功能</td>
+      </tr>
+      <tr>
+        <td>Demo 焦點</td>
+        <td>「不用 call IT」</td>
+        <td>「30 秒看完當日狀況」</td>
+        <td>「用講的就有 dashboard」</td>
+        <td>「100 sites 批量管理」</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- TIP -->
+<div class="tip">
+  <h3>💡 展示順序建議</h3>
+  <p>
+    對 PM/MKT 講故事 → 先 <strong>Mode A</strong>（小白都會用），再 <strong>Dashboard Builder</strong>（殺手 wow），最後 <strong>Mode B</strong>（專業）。
+    <br>對技術買家 → <strong>Mode C</strong>（power）+ <strong>Mode B</strong>（核准流程）。
+    <br>展會 demo → <strong>Mode A → Dashboard Builder</strong>（最容易視覺感受到價值）。
+  </p>
+</div>
+
+</div>
+</body>
+</html>

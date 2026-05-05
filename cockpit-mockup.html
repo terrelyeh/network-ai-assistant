@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mode B Cockpit — UI Mockup · NetSense AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-1: #0a1628;
+    --bg-2: #0f1e3a;
+    --bg-3: #050d1a;
+    --surface: rgba(255,255,255,0.04);
+    --surface-2: rgba(255,255,255,0.08);
+    --surface-3: rgba(255,255,255,0.12);
+    --border: rgba(255,255,255,0.10);
+    --border-strong: rgba(255,255,255,0.20);
+    --text: #f8fafc;
+    --muted: #cbd5e1;
+    --dim: #64748b;
+    --accent: #ff6b35;
+    --cyan: #00d9c5;
+    --good: #10b981;
+    --warn: #fbbf24;
+    --bad: #ef4444;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    height: 100%;
+    background: var(--bg-3);
+    color: var(--text);
+    font-family: 'Inter', 'Noto Sans TC', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* MOCKUP BANNER (top) */
+  .mockup-banner {
+    height: 32px;
+    background: linear-gradient(90deg, rgba(255,107,53,0.15), rgba(0,217,197,0.10));
+    border-bottom: 1px solid rgba(255,107,53,0.3);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 16px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .mockup-banner strong { color: var(--accent); margin-right: 6px; }
+  .mockup-banner a {
+    color: var(--cyan);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 4px 10px;
+    border: 1px solid rgba(0,217,197,0.3);
+    border-radius: 6px;
+    transition: all 0.2s;
+  }
+  .mockup-banner a:hover { background: rgba(0,217,197,0.15); }
+
+  /* COCKPIT LAYOUT */
+  .cockpit {
+    display: grid;
+    grid-template-columns: 240px 1fr 320px;
+    grid-template-rows: 56px 1fr 70px;
+    grid-template-areas:
+      "topbar topbar topbar"
+      "sidebar-left content sidebar-right"
+      "chat-bar chat-bar chat-bar";
+    height: calc(100vh - 32px);
+    background: var(--bg-1);
+  }
+
+  /* TOP BAR */
+  .topbar {
+    grid-area: topbar;
+    background: var(--bg-2);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 18px;
+    gap: 16px;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 800; font-size: 16px;
+    letter-spacing: -0.01em;
+  }
+  .brand .dot {
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+  .brand .accent { color: var(--accent); }
+
+  .search-bar {
+    flex: 1;
+    max-width: 480px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 12px;
+    display: flex; align-items: center; gap: 10px;
+    color: var(--dim);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .search-bar:hover {
+    background: var(--surface-2);
+    border-color: var(--border-strong);
+  }
+  .search-bar .kbd {
+    margin-left: auto;
+    background: var(--surface-2);
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .topbar-right {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .icon-btn {
+    width: 36px; height: 36px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    display: inline-flex; align-items: center; justify-content: center;
+    position: relative;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .icon-btn:hover {
+    background: var(--surface-2);
+    color: var(--text);
+  }
+  .icon-btn .badge {
+    position: absolute;
+    top: -4px; right: -4px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .user-avatar {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--accent), var(--cyan));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    color: #fff;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  /* LEFT SIDEBAR */
+  .sidebar-left {
+    grid-area: sidebar-left;
+    background: var(--bg-2);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 16px 12px;
+  }
+  .sb-section { margin-bottom: 22px; }
+  .sb-section-title {
+    color: var(--dim);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 0 10px 8px;
+  }
+  .sb-item {
+    padding: 8px 10px;
+    border-radius: 7px;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 13px;
+    display: flex; align-items: center; gap: 10px;
+    transition: all 0.15s;
+    margin-bottom: 2px;
+  }
+  .sb-item:hover {
+    background: var(--surface);
+    color: var(--text);
+  }
+  .sb-item.active {
+    background: rgba(0,217,197,0.10);
+    color: var(--cyan);
+    font-weight: 600;
+  }
+  .sb-item .ico { font-size: 14px; flex-shrink: 0; }
+  .sb-item .badge-dot {
+    margin-left: auto;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--bad);
+  }
+  .sb-item .badge-dot.warn { background: var(--warn); }
+  .sb-item .badge-dot.good { background: var(--good); }
+  .sb-item .count {
+    margin-left: auto;
+    background: var(--surface-2);
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 999px;
+  }
+  .sb-add {
+    border: 1px dashed rgba(255,107,53,0.4);
+    color: var(--accent);
+    font-weight: 600;
+    text-align: center;
+    margin-top: 6px;
+    padding: 8px 10px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 12.5px;
+    transition: all 0.2s;
+  }
+  .sb-add:hover {
+    background: rgba(255,107,53,0.1);
+  }
+
+  /* CONTENT */
+  .content {
+    grid-area: content;
+    overflow-y: auto;
+    padding: 22px 28px 28px;
+  }
+  .content-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    margin-bottom: 18px;
+  }
+  .content-title {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .content-sub {
+    color: var(--dim);
+    font-size: 13px;
+    margin-top: 4px;
+  }
+  .content-meta {
+    color: var(--muted);
+    font-size: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .live-dot {
+    width: 7px; height: 7px;
+    background: var(--good);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.3); }
+  }
+
+  /* SECTION (anomaly / dashboards) */
+  .section {
+    margin-bottom: 28px;
+  }
+  .section-head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px;
+  }
+  .section-head h3 {
+    font-size: 14px; font-weight: 700;
+    color: var(--text);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-head h3 .count-pill {
+    background: var(--bad);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 9px;
+    border-radius: 999px;
+  }
+  .section-head h3 .count-pill.warn { background: var(--warn); }
+  .section-head h3 .count-pill.good { background: var(--good); }
+  .section-head .more {
+    color: var(--cyan);
+    font-size: 12px;
+    cursor: pointer;
+  }
+
+  /* ANOMALY CARDS */
+  .anomaly-grid {
+    display: grid;
+    gap: 10px;
+  }
+  .anomaly {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-left: 3px solid var(--bad);
+  }
+  .anomaly.warn { border-left-color: var(--warn); }
+  .anomaly.info { border-left-color: var(--cyan); }
+  .anomaly:hover {
+    background: var(--surface-2);
+    border-color: var(--border-strong);
+    transform: translateY(-1px);
+  }
+  .anomaly-head {
+    display: flex; justify-content: space-between; align-items: start;
+    margin-bottom: 6px;
+  }
+  .anomaly-title {
+    font-size: 14px; font-weight: 700;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .anomaly-title .ico { font-size: 14px; }
+  .anomaly-title .ico.bad { color: var(--bad); }
+  .anomaly-title .ico.warn { color: var(--warn); }
+  .anomaly-time {
+    color: var(--dim);
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .anomaly-desc {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+  .anomaly-cause {
+    color: var(--text);
+    font-size: 12px;
+    margin-bottom: 12px;
+  }
+  .anomaly-cause::before {
+    content: '🤖 ';
+  }
+  .anomaly-actions {
+    display: flex; gap: 8px;
+  }
+  .btn-mini {
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-mini:hover {
+    background: var(--surface-3);
+  }
+  .btn-mini.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .btn-mini.primary:hover { background: #e85a25; }
+  .btn-mini.ghost {
+    background: transparent;
+    border-color: var(--border);
+  }
+
+  /* DASHBOARD TILES */
+  .dash-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+  .dash-tile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    min-height: 110px;
+    display: flex; flex-direction: column;
+  }
+  .dash-tile:hover {
+    background: var(--surface-2);
+    border-color: var(--cyan);
+    transform: translateY(-2px);
+  }
+  .dash-tile.add {
+    border-style: dashed;
+    border-color: rgba(255,107,53,0.4);
+    background: rgba(255,107,53,0.04);
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: var(--accent);
+  }
+  .dash-tile.add:hover {
+    background: rgba(255,107,53,0.10);
+    border-color: var(--accent);
+  }
+  .dash-tile-name {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .dash-tile-meta {
+    color: var(--dim);
+    font-size: 11px;
+    margin-bottom: 10px;
+  }
+  .dash-tile-preview {
+    flex: 1;
+    display: flex; align-items: end; gap: 3px;
+    margin-top: auto;
+  }
+  .dash-tile-preview .bar {
+    flex: 1;
+    background: var(--cyan);
+    border-radius: 2px 2px 0 0;
+    opacity: 0.4;
+  }
+
+  /* RIGHT SIDEBAR */
+  .sidebar-right {
+    grid-area: sidebar-right;
+    background: var(--bg-2);
+    border-left: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 18px 16px;
+  }
+  .sr-section { margin-bottom: 24px; }
+  .sr-section-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 4px 10px;
+  }
+  .sr-section-title {
+    color: var(--dim);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .sr-section-count {
+    background: var(--accent);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 999px;
+  }
+
+  /* APPROVAL CARD */
+  .approval {
+    background: rgba(255,107,53,0.08);
+    border: 1px solid rgba(255,107,53,0.3);
+    border-radius: 10px;
+    padding: 14px 14px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: all 0.2s;
+  }
+  .approval:hover {
+    background: rgba(255,107,53,0.14);
+    border-color: rgba(255,107,53,0.5);
+    transform: translateY(-1px);
+  }
+  .approval-tag {
+    color: var(--accent);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .approval-action {
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    line-height: 1.35;
+  }
+  .approval-meta {
+    color: var(--muted);
+    font-size: 11px;
+    margin-bottom: 10px;
+  }
+  .approval-meta .meta-row { padding: 1px 0; }
+  .approval-cta {
+    display: flex; gap: 6px;
+  }
+  .approval-cta button {
+    flex: 1;
+    padding: 6px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 5px;
+    border: 1px solid var(--border-strong);
+    background: var(--surface-2);
+    color: var(--text);
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .approval-cta button.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  /* AI ACTIVITY */
+  .activity {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+  .activity-row {
+    display: flex; gap: 10px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.45;
+  }
+  .activity-row:last-child { border-bottom: none; }
+  .activity-row .time {
+    color: var(--dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .activity-row .text strong { color: var(--text); }
+
+  /* CHAT BAR */
+  .chat-bar {
+    grid-area: chat-bar;
+    background: var(--bg-2);
+    border-top: 1px solid var(--border-strong);
+    padding: 10px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .chat-suggestions {
+    display: flex; gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+  .chat-suggestions::-webkit-scrollbar { height: 2px; }
+  .chat-suggestion {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+    flex-shrink: 0;
+    font-family: inherit;
+  }
+  .chat-suggestion:hover {
+    background: var(--surface-2);
+    color: var(--text);
+    border-color: var(--cyan);
+  }
+  .chat-input-row {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .chat-input-wrap {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 10px;
+    padding: 0 14px;
+    display: flex; align-items: center; gap: 10px;
+    transition: all 0.2s;
+  }
+  .chat-input-wrap:focus-within {
+    border-color: var(--cyan);
+    background: var(--surface-2);
+  }
+  .chat-input-wrap .lead {
+    color: var(--cyan);
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .chat-input-wrap input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 14px;
+    padding: 11px 0;
+  }
+  .chat-input-wrap input::placeholder { color: var(--dim); }
+  .chat-icon-btn {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    width: 32px; height: 32px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .chat-icon-btn:hover {
+    background: var(--surface);
+    color: var(--text);
+  }
+  .send-btn {
+    background: var(--accent);
+    border: none;
+    color: #fff;
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 700;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .send-btn:hover { background: #e85a25; }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+  }
+  .modal-overlay.show { display: flex; }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .modal {
+    background: var(--bg-2);
+    border: 1px solid var(--border-strong);
+    border-radius: 18px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+    max-width: 600px;
+    width: calc(100vw - 40px);
+    max-height: 85vh;
+    overflow-y: auto;
+    animation: modalIn 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.95) translateY(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .modal-header {
+    padding: 22px 26px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: start;
+  }
+  .modal-title {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+  .modal-close {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    font-size: 16px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .modal-body { padding: 22px 26px; }
+  .modal-section { margin-bottom: 18px; }
+  .modal-section .label {
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .modal-section p {
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 14px;
+  }
+  .modal-section ul {
+    color: var(--muted);
+    font-size: 13px;
+    padding-left: 20px;
+    line-height: 1.7;
+  }
+  .modal-section ul li strong { color: var(--text); }
+  .evidence-box {
+    background: var(--surface);
+    border-left: 3px solid var(--cyan);
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .modal-footer {
+    padding: 16px 26px 22px;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: flex-end; gap: 8px;
+  }
+  .btn-modal {
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: 1px solid var(--border-strong);
+    background: var(--surface-2);
+    color: var(--text);
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+  }
+  .btn-modal.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .btn-modal.danger {
+    background: rgba(239,68,68,0.15);
+    border-color: rgba(239,68,68,0.5);
+    color: var(--bad);
+  }
+
+  /* COMMAND PALETTE */
+  .cmdk-modal {
+    max-width: 640px;
+    background: var(--bg-2);
+    margin-top: -20vh;
+  }
+  .cmdk-input-wrap {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .cmdk-input-wrap .ico { color: var(--cyan); font-size: 18px; }
+  .cmdk-input-wrap input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 16px;
+  }
+  .cmdk-input-wrap .esc {
+    background: var(--surface-2);
+    color: var(--muted);
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+  }
+  .cmdk-results { padding: 8px; max-height: 400px; overflow-y: auto; }
+  .cmdk-section-label {
+    color: var(--dim);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 10px 14px 6px;
+  }
+  .cmdk-item {
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 13px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .cmdk-item:hover { background: var(--surface); color: var(--text); }
+  .cmdk-item .ico { font-size: 14px; flex-shrink: 0; }
+  .cmdk-item .desc {
+    color: var(--dim);
+    font-size: 11px;
+    margin-left: 4px;
+  }
+
+  /* CHAT PANEL (slides up above chat bar) */
+  .chat-panel {
+    position: fixed;
+    bottom: 70px;
+    left: 240px;
+    right: 320px;
+    max-height: 0;
+    overflow: hidden;
+    background: var(--bg-2);
+    border-top: 1px solid var(--border-strong);
+    transition: max-height 0.3s ease;
+    z-index: 50;
+  }
+  .chat-panel.open {
+    max-height: 500px;
+  }
+  .chat-panel-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 22px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(0,217,197,0.06);
+  }
+  .chat-panel-title {
+    color: var(--cyan);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .chat-panel-actions { display: flex; gap: 6px; }
+  .chat-panel-actions button {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .chat-panel-actions button:hover {
+    background: var(--surface-2);
+    color: var(--text);
+  }
+  .chat-panel-body {
+    overflow-y: auto;
+    max-height: 440px;
+    padding: 16px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .chat-msg {
+    max-width: 80%;
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 13px;
+    line-height: 1.55;
+    animation: msgIn 0.25s ease;
+  }
+  @keyframes msgIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .chat-msg.user {
+    background: var(--accent);
+    color: #fff;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+  }
+  .chat-msg.ai {
+    background: var(--surface-2);
+    color: var(--text);
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+    border: 1px solid var(--border);
+  }
+  .chat-msg.ai .ai-prefix {
+    color: var(--cyan);
+    font-weight: 700;
+    font-size: 11px;
+    margin-bottom: 4px;
+    letter-spacing: 0.05em;
+  }
+  .chat-msg.ai code {
+    background: var(--surface);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--cyan);
+  }
+  .chat-typing {
+    align-self: flex-start;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 14px 14px 14px 4px;
+    padding: 12px 16px;
+    display: flex; gap: 5px;
+  }
+  .chat-typing-dot {
+    width: 6px; height: 6px;
+    background: var(--cyan);
+    border-radius: 50%;
+    animation: chat-typing 1.4s infinite;
+  }
+  .chat-typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .chat-typing-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes chat-typing {
+    0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+    30% { opacity: 1; transform: translateY(-3px); }
+  }
+
+  /* Anomaly dismiss animation */
+  .anomaly.dismissing {
+    animation: dismissOut 0.4s ease forwards;
+  }
+  @keyframes dismissOut {
+    to { opacity: 0; transform: translateX(40px); max-height: 0; padding: 0; margin: 0; border: none; }
+  }
+
+  /* Live clock */
+  .live-clock {
+    color: var(--muted);
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 4px 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(16,185,129,0.15);
+    border: 1px solid rgba(16,185,129,0.5);
+    color: var(--good);
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 13px;
+    z-index: 200;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; }
+
+  /* RESPONSIVE */
+  @media (max-width: 1100px) {
+    .cockpit { grid-template-columns: 200px 1fr 280px; }
+    .chat-panel { left: 200px; right: 280px; }
+  }
+  @media (max-width: 900px) {
+    .cockpit { grid-template-columns: 1fr; grid-template-areas: "topbar" "content" "chat-bar"; }
+    .sidebar-left, .sidebar-right { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- MOCKUP BANNER -->
+<div class="mockup-banner">
+  <span><strong>📌 MOCKUP</strong>Mode B Cockpit · UI 設計示意（非實際產品）</span>
+  <a href="mockup-gallery.html">← 回 Mockup 列表</a>
+</div>
+
+<!-- COCKPIT -->
+<div class="cockpit">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="dot"></span>
+      <span>NetSense <span class="accent">AI</span></span>
+    </div>
+
+    <div class="search-bar" onclick="openCmdK()">
+      <span>🔍</span>
+      <span>搜尋裝置 / dashboard / 跟 AI 說…</span>
+      <span class="kbd">⌘K</span>
+    </div>
+
+    <div class="topbar-right">
+      <span class="live-clock" id="liveClock">--:--:--</span>
+      <button class="icon-btn" title="通知">🔔<span class="badge">3</span></button>
+      <button class="icon-btn" title="設定">⚙</button>
+      <div class="user-avatar" title="Lin · IT 主管">L</div>
+    </div>
+  </header>
+
+  <!-- LEFT SIDEBAR -->
+  <aside class="sidebar-left">
+
+    <div class="sb-section">
+      <div class="sb-section-title">📍 SITES</div>
+      <div class="sb-item active"><span class="ico">🏢</span><span>HQ Office</span><span class="badge-dot"></span></div>
+      <div class="sb-item"><span class="ico">🏬</span><span>Branch Taipei</span><span class="badge-dot warn"></span></div>
+      <div class="sb-item"><span class="ico">🏭</span><span>Factory</span><span class="badge-dot good"></span></div>
+      <div class="sb-item"><span class="ico">🔬</span><span>Lab</span><span class="badge-dot good"></span></div>
+      <div class="sb-item"><span class="ico">📦</span><span>Warehouse</span><span class="badge-dot good"></span></div>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-section-title">📊 DASHBOARDS</div>
+      <div class="sb-item"><span class="ico">📊</span><span>本週健康</span></div>
+      <div class="sb-item"><span class="ico">🛰</span><span>AP 負載</span></div>
+      <div class="sb-item"><span class="ico">📈</span><span>月報</span></div>
+      <div class="sb-item"><span class="ico">⚠</span><span>異常追蹤</span><span class="count">3</span></div>
+      <div class="sb-add" onclick="fillChat('幫我建一個新 dashboard')">+ 用 AI 建 Dashboard</div>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-section-title">🛠 工具</div>
+      <div class="sb-item"><span class="ico">📋</span><span>Tickets</span><span class="count">5</span></div>
+      <div class="sb-item"><span class="ico">📜</span><span>Audit Log</span></div>
+      <div class="sb-item"><span class="ico">🧱</span><span>Custom Skills</span></div>
+    </div>
+
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="content">
+
+    <div class="content-head">
+      <div>
+        <div class="content-title">HQ Office · Today</div>
+        <div class="content-sub">2026-05-08 週四 · 早安 Lin</div>
+      </div>
+      <div class="content-meta">
+        <span class="live-dot"></span>
+        <span>Live · 監測 47 設備</span>
+      </div>
+    </div>
+
+    <!-- ANOMALY PANEL -->
+    <div class="section">
+      <div class="section-head">
+        <h3>⚠ 今日異常 <span class="count-pill">3</span></h3>
+        <span class="more">看全部 →</span>
+      </div>
+      <div class="anomaly-grid">
+
+        <div class="anomaly" onclick="openAnomaly()">
+          <div class="anomaly-head">
+            <div class="anomaly-title"><span class="ico bad">⚠</span> AP-7F-N3 · 會議室</div>
+            <div class="anomaly-time">2 分鐘前</div>
+          </div>
+          <div class="anomaly-desc">3 個 client 訊號低於 −75 dBm 但沒有漫遊</div>
+          <div class="anomaly-cause">可能是 cell 太大（信心 86%）</div>
+          <div class="anomaly-actions">
+            <button class="btn-mini primary" onclick="event.stopPropagation();openAnomaly()">看詳情</button>
+            <button class="btn-mini ghost" onclick="event.stopPropagation()">不重要</button>
+            <button class="btn-mini" onclick="event.stopPropagation();fillChat('AP-7F-N3 怎麼了')">跟 AI 聊</button>
+          </div>
+        </div>
+
+        <div class="anomaly warn">
+          <div class="anomaly-head">
+            <div class="anomaly-title"><span class="ico warn">⚠</span> SW-1F · port Gi0/12</div>
+            <div class="anomaly-time">14 分鐘前</div>
+          </div>
+          <div class="anomaly-desc">CRC 錯誤上升 — 過去 24h 比平常高 4×</div>
+          <div class="anomaly-cause">可能是線材老化或鬆動（信心 72%）</div>
+          <div class="anomaly-actions">
+            <button class="btn-mini primary" onclick="event.stopPropagation();openAnomaly()">看詳情</button>
+            <button class="btn-mini ghost" onclick="event.stopPropagation()">不重要</button>
+            <button class="btn-mini" onclick="event.stopPropagation();fillChat('Gi0/12 port 狀況')">跟 AI 聊</button>
+          </div>
+        </div>
+
+        <div class="anomaly info">
+          <div class="anomaly-head">
+            <div class="anomaly-title"><span class="ico" style="color:var(--cyan)">ℹ</span> 5GHz 利用率上升</div>
+            <div class="anomaly-time">1 小時前</div>
+          </div>
+          <div class="anomaly-desc">2F 與 3F 的 5GHz 平均利用率本週上升 12%</div>
+          <div class="anomaly-cause">趨勢觀察 — 暫不需動作</div>
+          <div class="anomaly-actions">
+            <button class="btn-mini primary" onclick="event.stopPropagation();openAnomaly()">看詳情</button>
+            <button class="btn-mini ghost" onclick="event.stopPropagation()">已讀</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- DASHBOARDS -->
+    <div class="section">
+      <div class="section-head">
+        <h3>📊 我的 Dashboards <span class="count-pill good">4</span></h3>
+        <span class="more">管理 →</span>
+      </div>
+      <div class="dash-grid">
+
+        <div class="dash-tile">
+          <div class="dash-tile-name">📊 本週健康</div>
+          <div class="dash-tile-meta">4 widgets · 5 分鐘前更新</div>
+          <div class="dash-tile-preview">
+            <div class="bar" style="height:40%"></div>
+            <div class="bar" style="height:60%"></div>
+            <div class="bar" style="height:55%"></div>
+            <div class="bar" style="height:75%"></div>
+            <div class="bar" style="height:50%"></div>
+            <div class="bar" style="height:80%"></div>
+          </div>
+        </div>
+
+        <div class="dash-tile">
+          <div class="dash-tile-name">🛰 AP 負載</div>
+          <div class="dash-tile-meta">3 widgets · 即時</div>
+          <div class="dash-tile-preview">
+            <div class="bar" style="height:90%"></div>
+            <div class="bar" style="height:75%"></div>
+            <div class="bar" style="height:60%"></div>
+            <div class="bar" style="height:45%"></div>
+            <div class="bar" style="height:35%"></div>
+          </div>
+        </div>
+
+        <div class="dash-tile">
+          <div class="dash-tile-name">📈 月報</div>
+          <div class="dash-tile-meta">6 widgets · 排程週一發送</div>
+          <div class="dash-tile-preview">
+            <div class="bar" style="height:30%"></div>
+            <div class="bar" style="height:50%"></div>
+            <div class="bar" style="height:65%"></div>
+            <div class="bar" style="height:80%"></div>
+            <div class="bar" style="height:90%"></div>
+          </div>
+        </div>
+
+        <div class="dash-tile">
+          <div class="dash-tile-name">⚠ 異常追蹤</div>
+          <div class="dash-tile-meta">2 widgets · 自動更新</div>
+          <div class="dash-tile-preview">
+            <div class="bar" style="height:70%; background:var(--bad);"></div>
+            <div class="bar" style="height:50%; background:var(--warn);"></div>
+            <div class="bar" style="height:30%"></div>
+            <div class="bar" style="height:20%"></div>
+          </div>
+        </div>
+
+        <div class="dash-tile add" onclick="fillChat('我想看……')">
+          <div style="font-size: 28px; margin-bottom: 6px;">+</div>
+          <div style="font-weight:700; font-size:13px;">用 AI 新建</div>
+          <div style="font-size: 11px; opacity:0.8; margin-top:4px;">用講的就好</div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- RIGHT SIDEBAR -->
+  <aside class="sidebar-right">
+
+    <div class="sr-section">
+      <div class="sr-section-head">
+        <span class="sr-section-title">⏳ 等您決定</span>
+        <span class="sr-section-count">2</span>
+      </div>
+
+      <div class="approval" onclick="openApproval()">
+        <div class="approval-tag">⭐ AI 建議</div>
+        <div class="approval-action">降 AP-7F-N3 5GHz TX power<br>23 → 17 dBm</div>
+        <div class="approval-meta">
+          <div class="meta-row">影響：12 client</div>
+          <div class="meta-row">回退：自動 rollback</div>
+          <div class="meta-row">⏱ 等待 5 分鐘</div>
+        </div>
+        <div class="approval-cta">
+          <button class="primary" onclick="event.stopPropagation();openApproval()">看詳情</button>
+        </div>
+      </div>
+
+      <div class="approval" onclick="openApproval()">
+        <div class="approval-tag">⭐ AI 建議</div>
+        <div class="approval-action">啟用 IGMP snooping<br>VLAN 30 (Sonos)</div>
+        <div class="approval-meta">
+          <div class="meta-row">影響：~30 device</div>
+          <div class="meta-row">⏱ 等待 18 分鐘</div>
+        </div>
+        <div class="approval-cta">
+          <button class="primary" onclick="event.stopPropagation();openApproval()">看詳情</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sr-section">
+      <div class="sr-section-head">
+        <span class="sr-section-title">🤖 AI 活動</span>
+      </div>
+      <div class="activity">
+        <div class="activity-row">
+          <span class="time">09:45</span>
+          <span class="text"><strong>narrate_anomalies</strong> 完成 — 發現 3 個異常</span>
+        </div>
+        <div class="activity-row">
+          <span class="time">09:32</span>
+          <span class="text"><strong>watch_device_status</strong> 跑完 — 全部 47 device 健康</span>
+        </div>
+        <div class="activity-row">
+          <span class="time">09:15</span>
+          <span class="text">Dashboard <strong>本週健康</strong> 自動更新</span>
+        </div>
+        <div class="activity-row">
+          <span class="time">08:00</span>
+          <span class="text">每日健康檢查完成 ✓</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sr-section">
+      <div class="sr-section-head">
+        <span class="sr-section-title">💡 提示</span>
+      </div>
+      <div class="activity" style="font-size:12px; color:var(--muted); line-height:1.5;">
+        想看新數據？直接在下方 chat bar 用講的，例如「<strong style="color:var(--cyan);">哪些 site 客戶數異常</strong>」。
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- CHAT BAR (always at bottom) -->
+  <div class="chat-bar">
+    <div class="chat-suggestions">
+      <button class="chat-suggestion" onclick="fillChat('AP-7F-N3 怎麼了')">AP-7F-N3 怎麼了</button>
+      <button class="chat-suggestion" onclick="fillChat('我想看本週網路狀況')">我想看本週網路狀況</button>
+      <button class="chat-suggestion" onclick="fillChat('哪些 AP 太忙')">哪些 AP 太忙</button>
+      <button class="chat-suggestion" onclick="fillChat('幫我做月報 dashboard')">幫我做月報</button>
+      <button class="chat-suggestion" onclick="fillChat('客戶數異常的 site')">客戶數異常的 site</button>
+      <button class="chat-suggestion" onclick="fillChat('Sonos 為什麼找不到')">Sonos 為什麼找不到</button>
+    </div>
+    <div class="chat-input-row">
+      <div class="chat-input-wrap">
+        <span class="lead">💬</span>
+        <input id="chatInput" type="text" placeholder="跟 AI 說：問問題、找資料、做 dashboard…">
+        <button class="chat-icon-btn" title="附加截圖">📎</button>
+        <button class="chat-icon-btn" title="語音輸入（Phase 2）">🎙</button>
+      </div>
+      <button class="send-btn" onclick="sendMsg()">↑</button>
+    </div>
+  </div>
+
+  <!-- Chat panel (slides up above chat bar) -->
+  <div class="chat-panel" id="chatPanel">
+    <div class="chat-panel-head">
+      <div class="chat-panel-title">
+        <span style="width:7px;height:7px;background:var(--good);border-radius:50%;display:inline-block;animation:pulse 2s infinite;"></span>
+        AI 對話
+      </div>
+      <div class="chat-panel-actions">
+        <button onclick="clearChat()" title="清除對話">🗑</button>
+        <button onclick="closeChatPanel()" title="收起">▾</button>
+      </div>
+    </div>
+    <div class="chat-panel-body" id="chatPanelBody">
+      <!-- Messages added here dynamically -->
+    </div>
+  </div>
+
+</div>
+
+<!-- Toast notification -->
+<div class="toast" id="toast"></div>
+
+<!-- ANOMALY DETAIL MODAL -->
+<div class="modal-overlay" id="anomalyModal" onclick="if(event.target===this)closeModal('anomalyModal')">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="approval-tag" style="margin-bottom:4px;">⚠ 異常詳細診斷</div>
+        <div class="modal-title">AP-7F-N3 · 會議室 · 3 個 client 卡住</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('anomalyModal')">×</button>
+    </div>
+    <div class="modal-body">
+
+      <div class="modal-section">
+        <div class="label">🔍 AI 診斷結果</div>
+        <p><strong>根因</strong>：RF 設計問題（cell 太大）<br>
+        <strong>信心</strong>：86%</p>
+      </div>
+
+      <div class="modal-section">
+        <div class="label">📋 證據</div>
+        <div class="evidence-box">
+          <strong>signal.rssi_avg_dbm</strong>: <span style="color:var(--bad);">−78 dBm</span>（低於漫遊閾值）<br>
+          <strong>neighbors[0].rssi</strong>: <span style="color:var(--good);">−58 dBm</span>（鄰居強很多）<br>
+          <strong>radio.tx_power_dbm</strong>: <span style="color:var(--warn);">23 dBm</span>（最大值，cell 過大）<br>
+          <strong>roaming_events.count</strong>: <span style="color:var(--bad);">0</span>（30 分鐘內沒漫遊）
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <div class="label">💡 AI 建議的修復</div>
+        <p style="color:var(--cyan);font-weight:600;">→ 把 5GHz TX power 從 23 dBm 降到 17 dBm</p>
+        <ul style="margin-top:10px;">
+          <li><strong>影響範圍</strong>：12 個 client 短暫斷線 3-8 秒</li>
+          <li><strong>預期效果</strong>：client 漫遊到 AP-7F-N4，RSSI 提升 ≥ 10 dB</li>
+          <li><strong>驗證方式</strong>：10 分鐘後 re-measure，沒效自動 rollback</li>
+        </ul>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn-modal" onclick="closeModal('anomalyModal')">先觀察</button>
+      <button class="btn-modal danger">這不是問題</button>
+      <button class="btn-modal primary" onclick="closeModal('anomalyModal');openApproval()">→ 看 Approval 卡片</button>
+    </div>
+  </div>
+</div>
+
+<!-- APPROVAL MODAL -->
+<div class="modal-overlay" id="approvalModal" onclick="if(event.target===this)closeModal('approvalModal')">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="approval-tag" style="margin-bottom:4px;">🤖 等您核准</div>
+        <div class="modal-title">降 AP-7F-N3 5GHz TX power 23 → 17 dBm</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('approvalModal')">×</button>
+    </div>
+    <div class="modal-body">
+
+      <div class="modal-section">
+        <div class="label">💡 為什麼建議這個動作</div>
+        <p>3 個 client 黏在弱訊號（−78 dBm），但鄰居 AP-7F-N4 訊號達 −58 dBm，差 20 dB。<br>
+        Cell 太大讓 client 不肯漫遊。降 power 後 cell 縮小，client 會自然 roam。</p>
+      </div>
+
+      <div class="modal-section">
+        <div class="label">⚠ 影響範圍 (Blast Radius)</div>
+        <ul>
+          <li><strong>立即影響</strong>：12 個 client 短暫斷線 3-8 秒</li>
+          <li><strong>受影響設備</strong>：AP-7F-N3 上的所有 client</li>
+          <li><strong>不影響</strong>：其他 site / 其他 AP</li>
+          <li><strong>Ring 等級</strong>：Ring 1（可逆）</li>
+        </ul>
+      </div>
+
+      <div class="modal-section">
+        <div class="label">↩ 驗證 + 回退計畫</div>
+        <ul>
+          <li><strong>驗證</strong>：10 分鐘後重新量測 client RSSI</li>
+          <li><strong>達標標準</strong>：RSSI 提升 ≥ +4 dB OR 至少 1 個 client 漫遊</li>
+          <li><strong>不達標 → 自動 rollback</strong>（恢復 23 dBm）</li>
+        </ul>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn-modal" onclick="closeModal('approvalModal')">⏸ 延後 30 分鐘</button>
+      <button class="btn-modal">✏ 改參數</button>
+      <button class="btn-modal danger">✗ 拒絕</button>
+      <button class="btn-modal primary">✓ 同意執行</button>
+    </div>
+  </div>
+</div>
+
+<!-- COMMAND PALETTE -->
+<div class="modal-overlay" id="cmdkModal" onclick="if(event.target===this)closeModal('cmdkModal')">
+  <div class="modal cmdk-modal">
+    <div class="cmdk-input-wrap">
+      <span class="ico">🔍</span>
+      <input type="text" placeholder="搜尋 / 命令 / 跟 AI 說…" autofocus>
+      <span class="esc">Esc</span>
+    </div>
+    <div class="cmdk-results">
+
+      <div class="cmdk-section-label">📍 跳到 SITES</div>
+      <div class="cmdk-item"><span class="ico">🏢</span><span>HQ Office</span><span class="desc">5 棟、47 設備</span></div>
+      <div class="cmdk-item"><span class="ico">🏬</span><span>Branch Taipei</span><span class="desc">12 設備</span></div>
+
+      <div class="cmdk-section-label">📊 跳到 DASHBOARDS</div>
+      <div class="cmdk-item"><span class="ico">📊</span><span>本週健康</span></div>
+      <div class="cmdk-item"><span class="ico">🛰</span><span>AP 負載</span></div>
+
+      <div class="cmdk-section-label">💬 問 AI（按 Enter 送出）</div>
+      <div class="cmdk-item"><span class="ico">🤖</span><span>「我想看本週網路狀況」</span></div>
+      <div class="cmdk-item"><span class="ico">🤖</span><span>「AP-7F-N3 怎麼了」</span></div>
+
+      <div class="cmdk-section-label">⚙ 動作</div>
+      <div class="cmdk-item"><span class="ico">📋</span><span>看 Pending Approvals</span><span class="desc">2 個</span></div>
+      <div class="cmdk-item"><span class="ico">📜</span><span>開 Audit Log</span></div>
+      <div class="cmdk-item"><span class="ico">⚙</span><span>設定</span></div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function openModal(id) {
+  document.getElementById(id).classList.add('show');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('show');
+}
+function openAnomaly() { openModal('anomalyModal'); }
+function openApproval() { openModal('approvalModal'); }
+function openCmdK() {
+  openModal('cmdkModal');
+  setTimeout(() => document.querySelector('#cmdkModal input').focus(), 50);
+}
+
+function fillChat(text) {
+  const input = document.getElementById('chatInput');
+  input.value = text;
+  input.focus();
+}
+
+// ---- Chat Panel ----
+function openChatPanel() {
+  document.getElementById('chatPanel').classList.add('open');
+}
+function closeChatPanel() {
+  document.getElementById('chatPanel').classList.remove('open');
+}
+function clearChat() {
+  document.getElementById('chatPanelBody').innerHTML = '';
+  closeChatPanel();
+}
+
+function addChatMsg(text, type, isHTML) {
+  const body = document.getElementById('chatPanelBody');
+  const div = document.createElement('div');
+  div.className = 'chat-msg ' + type;
+  if (type === 'ai') {
+    const prefix = isHTML
+      ? `<div class="ai-prefix">🤖 NetSense AI</div>${text}`
+      : `<div class="ai-prefix">🤖 NetSense AI</div>${text}`;
+    div.innerHTML = prefix;
+  } else {
+    div.textContent = text;
+  }
+  body.appendChild(div);
+  setTimeout(() => body.scrollTop = body.scrollHeight, 50);
+}
+
+function addTyping() {
+  const body = document.getElementById('chatPanelBody');
+  const div = document.createElement('div');
+  div.className = 'chat-typing';
+  div.id = 'cockpitTyping';
+  div.innerHTML = '<span class="chat-typing-dot"></span><span class="chat-typing-dot"></span><span class="chat-typing-dot"></span>';
+  body.appendChild(div);
+  setTimeout(() => body.scrollTop = body.scrollHeight, 50);
+}
+function removeTyping() {
+  const t = document.getElementById('cockpitTyping');
+  if (t) t.remove();
+}
+
+// Canned responses based on keywords
+function getAIResponse(prompt) {
+  const p = prompt.toLowerCase();
+  if (p.match(/ap-?7f-?n3|會議室.*7f|sticky/i)) {
+    return `查到了 — <strong style="color:var(--accent);">AP-7F-N3</strong> 上有 3 個 client 訊號低於 −75 dBm 但沒有漫遊。<br><br>可能是 <strong>cell 太大</strong>（信心 86%）。要我送出 approval 卡片建議降 TX power 6 dB 嗎？`;
+  }
+  if (p.match(/本週.*狀況|本週.*健康|weekly|本週/i)) {
+    return `我幫您整理本週網路狀況：<br>• 客戶數：<strong>847</strong>（↑ 12.4%）<br>• 異常：<strong>23</strong> 個（↓ 8% vs 上週）<br>• 健康分數：<strong>87 / 100</strong><br><br>要我做成 dashboard 嗎？或您想看哪個指標的細節？`;
+  }
+  if (p.match(/哪些.*ap.*忙|ap.*負載|busy/i)) {
+    return `Top 3 最忙 AP：<br>1. <code>AP-3F-N2</code> — 76 client（utilization 92%）<br>2. <code>AP-7F-S1</code> — 71 client（87%）<br>3. <code>AP-2F-N4</code> — 58 client（72%）<br><br>3F 跟 7F 連續 3 天 &gt; 85% — <strong>建議 7 天內加 1 台輔助 AP</strong>。`;
+  }
+  if (p.match(/月報|月.*dashboard|做.*dashboard/i)) {
+    return `好的！月報通常包含：<br>• 各 site 健康分數<br>• 月度 anomaly trend<br>• Top 10 問題設備<br>• 客戶數 month-over-month<br><br>要我建立嗎？建立後可設每月 1 號自動 email 給您。`;
+  }
+  if (p.match(/客戶數|異常.*site|client.*site/i)) {
+    return `查到 <strong>2 個 site 異常</strong>：<br>• <code>Branch Taipei</code> — 客戶數本週 ↓ 18%（突然下降）<br>• <code>Warehouse</code> — 健康分數 62（持續低於閾值）<br><br>要看哪個的詳細診斷？`;
+  }
+  if (p.match(/sonos|多播|mdns|找不到/i)) {
+    return `Sonos 多播問題通常是這幾個原因：<br>• VLAN 分離（controller 跟 target 不同 VLAN）<br>• IGMP snooping 沒開啟<br>• mDNS gateway 跨 VLAN 沒設<br><br>需要我跑完整 <code>sonos_lan_discovery</code> playbook 嗎？`;
+  }
+  if (p.match(/gi0\/12|crc/i)) {
+    return `<code>SW-1F port Gi0/12</code> 的 CRC errors 過去 24h 比平常高 <strong>4×</strong>。<br><br>通常是：<br>• 線材老化或鬆動（最常見）<br>• 設備硬體故障<br><br>建議 IT 現場檢查 — 我幫您開單嗎？`;
+  }
+  return `我聽到「${prompt}」了。<br><br>這是 mockup 示意 — 實際產品會：<br>1. 解析您的意圖<br>2. 跑相關 playbook 或 skill<br>3. 回您結構化結果<br><br>試試我能回答的：<em>「AP-7F 怎麼了」「本週狀況」「哪些 AP 太忙」「Sonos 找不到」</em>`;
+}
+
+function sendMsg() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  openChatPanel();
+  addChatMsg(text, 'user');
+  input.value = '';
+
+  setTimeout(() => {
+    addTyping();
+    setTimeout(() => {
+      removeTyping();
+      addChatMsg(getAIResponse(text), 'ai', true);
+    }, 1200);
+  }, 300);
+}
+
+// ---- Anomaly dismiss ----
+function dismissAnomaly(btn) {
+  const card = btn.closest('.anomaly');
+  card.classList.add('dismissing');
+  setTimeout(() => {
+    card.remove();
+    showToast('已標記為「不重要」 — AI 會學習');
+  }, 400);
+}
+
+// ---- Toast ----
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = '✓ ' + msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ---- Live clock ----
+function updateClock() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2, '0');
+  const m = String(now.getMinutes()).padStart(2, '0');
+  const s = String(now.getSeconds()).padStart(2, '0');
+  const el = document.getElementById('liveClock');
+  if (el) el.textContent = `${h}:${m}:${s}`;
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// ---- Hook up "不重要" buttons ----
+document.querySelectorAll('.anomaly-actions button').forEach(btn => {
+  if (btn.textContent.includes('不重要') || btn.textContent.includes('已讀')) {
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      dismissAnomaly(btn);
+    };
+  }
+});
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  // Cmd+K / Ctrl+K
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault();
+    openCmdK();
+  }
+  // Esc closes modals or chat panel
+  if (e.key === 'Escape') {
+    const openModals = document.querySelectorAll('.modal-overlay.show');
+    if (openModals.length) {
+      openModals.forEach(m => m.classList.remove('show'));
+    } else if (document.getElementById('chatPanel').classList.contains('open')) {
+      closeChatPanel();
+    }
+  }
+  // Enter in chat sends
+  if (e.key === 'Enter' && document.activeElement === document.getElementById('chatInput')) {
+    sendMsg();
+  }
+});
+</script>
+
+</body>
+</html>

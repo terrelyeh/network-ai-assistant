@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NetSense AI — 高層次系統圖</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-1: #0a1628;
+    --bg-2: #0f1e3a;
+    --surface: rgba(255,255,255,0.04);
+    --surface-2: rgba(255,255,255,0.08);
+    --border: rgba(255,255,255,0.12);
+    --border-strong: rgba(255,255,255,0.22);
+    --text: #f8fafc;
+    --muted: #cbd5e1;
+    --dim: #64748b;
+    --accent: #ff6b35;
+    --cyan: #00d9c5;
+    --good: #10b981;
+    --warn: #fbbf24;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%);
+    color: var(--text);
+    font-family: 'Inter', 'Noto Sans TC', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding: 40px 32px 80px;
+    line-height: 1.55;
+  }
+  .container { max-width: 1480px; margin: 0 auto; }
+
+  header {
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  header .left .tag {
+    color: var(--accent);
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  header h1 {
+    font-size: 36px; font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  header h1 .accent { color: var(--accent); }
+  header .sub {
+    color: var(--muted);
+    margin-top: 6px;
+    font-size: 15px;
+  }
+  .nav-links { display: flex; gap: 8px; flex-wrap: wrap; }
+  .nav-link {
+    color: var(--cyan);
+    text-decoration: none;
+    font-size: 13px; font-weight: 600;
+    padding: 7px 13px;
+    background: rgba(0,217,197,0.08);
+    border: 1px solid rgba(0,217,197,0.35);
+    border-radius: 8px;
+    transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .nav-link:hover {
+    background: rgba(0,217,197,0.18);
+    border-color: var(--cyan);
+    transform: translateY(-1px);
+  }
+  .nav-link.muted-link {
+    color: var(--muted);
+    background: var(--surface);
+    border-color: var(--border-strong);
+  }
+  .nav-link.current {
+    background: rgba(255,107,53,0.15);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* HERO */
+  .hero {
+    text-align: center;
+    margin-bottom: 36px;
+    padding: 12px 20px;
+  }
+  .hero h2 {
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .hero h2 .accent { color: var(--accent); }
+  .hero .lead {
+    margin-top: 14px;
+    color: var(--muted);
+    font-size: 16px;
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* CANVAS */
+  .canvas {
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--border-strong);
+    border-radius: 20px;
+    padding: 32px;
+    margin-bottom: 40px;
+  }
+  svg { width: 100%; height: auto; display: block; }
+
+  /* SVG element styles */
+  .layer-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.25em;
+    fill: var(--accent);
+    text-transform: uppercase;
+  }
+  .block-bg {
+    fill: rgba(255,255,255,0.04);
+    stroke: var(--border-strong);
+    stroke-width: 1.2;
+    rx: 14;
+  }
+  .block-bg-cyan {
+    fill: rgba(0,217,197,0.08);
+    stroke: var(--cyan);
+    stroke-width: 1.5;
+    rx: 14;
+  }
+  .block-bg-engine {
+    fill: rgba(255,107,53,0.08);
+    stroke: var(--accent);
+    stroke-width: 1.8;
+    rx: 18;
+  }
+  .block-bg-mcp {
+    fill: rgba(0,217,197,0.06);
+    stroke: var(--cyan);
+    stroke-width: 1.5;
+    rx: 14;
+    stroke-dasharray: 0;
+  }
+  .block-title {
+    font-size: 18px; font-weight: 800;
+    fill: var(--text);
+    letter-spacing: -0.01em;
+  }
+  .block-title-big {
+    font-size: 24px; font-weight: 800;
+    fill: var(--text);
+    letter-spacing: -0.02em;
+  }
+  .block-sub {
+    font-size: 13px;
+    fill: var(--muted);
+  }
+  .block-mono {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    fill: var(--muted);
+  }
+  .star {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 11px; font-weight: 800;
+    fill: var(--cyan);
+  }
+  .pill {
+    fill: rgba(0,217,197,0.1);
+    stroke: rgba(0,217,197,0.3);
+    stroke-width: 1;
+    rx: 14;
+  }
+  .pill-text {
+    font-size: 12px;
+    fill: var(--cyan);
+    font-weight: 600;
+  }
+  .pill-orange {
+    fill: rgba(255,107,53,0.12);
+    stroke: rgba(255,107,53,0.4);
+    stroke-width: 1;
+    rx: 14;
+  }
+  .pill-orange-text {
+    font-size: 12px;
+    fill: var(--accent);
+    font-weight: 600;
+  }
+
+  .arrow {
+    stroke: rgba(255,255,255,0.5);
+    stroke-width: 2.5;
+    fill: none;
+  }
+  .arrow-side {
+    stroke: var(--cyan);
+    stroke-width: 2;
+    fill: none;
+    stroke-dasharray: 6 4;
+  }
+  .arrow-back {
+    stroke: var(--accent);
+    stroke-width: 2;
+    fill: none;
+    stroke-dasharray: 4 3;
+  }
+
+  /* DESC CARDS */
+  .desc-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-bottom: 40px;
+  }
+  .desc-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 24px;
+  }
+  .desc-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .desc-title {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    letter-spacing: -0.01em;
+  }
+  .desc-body {
+    color: var(--muted);
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+  .desc-body strong { color: var(--text); }
+
+  /* CTA STRIP */
+  .cta {
+    background: linear-gradient(135deg, rgba(0,217,197,0.08), rgba(255,107,53,0.06));
+    border: 1px solid rgba(0,217,197,0.3);
+    border-radius: 16px;
+    padding: 24px 32px;
+    text-align: center;
+  }
+  .cta h3 {
+    font-size: 18px;
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+  .cta p {
+    color: var(--muted);
+    margin-bottom: 16px;
+    font-size: 14px;
+  }
+  .cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 18px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  .cta-btn:hover {
+    background: rgba(0,217,197,0.15);
+    border-color: var(--cyan);
+    color: var(--cyan);
+  }
+
+  @media (max-width: 900px) {
+    .desc-grid { grid-template-columns: 1fr; }
+  }
+  @media print {
+    body { background: white; color: black; padding: 20px; }
+    .nav-links { display: none; }
+    .canvas, .desc-card, .cta { background: white; border-color: #ccc; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <div class="left">
+    <div class="tag">高層次系統圖 · System diagram</div>
+    <h1>NetSense <span class="accent">AI</span> — 整套系統一張圖</h1>
+    <div class="sub">介於「客戶故事」與「完整技術架構」之間 · 適合 PM/MKT/業務說明系統有什麼 block</div>
+  </div>
+  <div class="nav-links">
+    <a class="nav-link muted-link" href="index.html">🏠 入口</a>
+    <a class="nav-link current" href="system-diagram.html">🗺 系統圖</a>
+    <a class="nav-link muted-link" href="three-modes.html">🎭 三模式</a>
+    <a class="nav-link muted-link" href="use-case-matrix.html">📊 使用案例</a>
+    <a class="nav-link muted-link" href="dashboard-builder-demo.html">📈 Dashboard Demo</a>
+    <a class="nav-link muted-link" href="dashboard-builder-implementation.html">🔧 實作指南</a>
+    <a class="nav-link muted-link" href="mockup-gallery.html">🎨 Mockups</a>
+    <a class="nav-link muted-link" href="overview-pm-mkt.html">🎯 PM/MKT</a>
+    <a class="nav-link muted-link" href="architecture-v2-zh.html">🏗 架構</a>
+    <a class="nav-link muted-link" href="playbook-examples.html">📘 Playbook</a>
+    <a class="nav-link muted-link" href="blind-spots.html">⚠ 盲點</a>
+  </div>
+</header>
+
+<section class="hero">
+  <h2>系統有<span class="accent">哪些 block</span> · 它們<span class="accent">怎麼接</span></h2>
+  <p class="lead">
+    沒有 ring、沒有 primitive 細節，但比 PM/MKT 概覽多了「實際 component」 —
+    給技術型業務、PM 排 roadmap、與 partner 對接時用。
+  </p>
+</section>
+
+<div class="canvas">
+<svg viewBox="0 0 1480 1020" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="rgba(255,255,255,0.6)"/>
+    </marker>
+    <marker id="arr-cyan" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#00d9c5"/>
+    </marker>
+    <marker id="arr-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#ff6b35"/>
+    </marker>
+    <linearGradient id="brain-glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="rgba(255,107,53,0.18)"/>
+      <stop offset="100%" stop-color="rgba(0,217,197,0.10)"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ====================================================
+       LAYER 1: USERS (top)
+       ==================================================== -->
+  <text class="layer-tag" x="60" y="50">① WHO USES IT · 誰會用</text>
+
+  <rect class="pill" x="380" y="70" width="160" height="44" />
+  <text class="pill-text" x="460" y="97" text-anchor="middle">👤 SMB IT</text>
+
+  <rect class="pill" x="560" y="70" width="160" height="44" />
+  <text class="pill-text" x="640" y="97" text-anchor="middle">👥 MSP T1</text>
+
+  <rect class="pill" x="740" y="70" width="180" height="44" />
+  <text class="pill-text" x="830" y="97" text-anchor="middle">🏢 Enterprise IT</text>
+
+  <rect class="pill" x="940" y="70" width="180" height="44" />
+  <text class="pill-text" x="1030" y="97" text-anchor="middle">👤 終端使用者</text>
+
+  <!-- Arrow down to Apps -->
+  <path class="arrow" d="M 740 130 L 740 175" marker-end="url(#arr)"/>
+  <text class="block-mono" x="755" y="158" fill="rgba(255,255,255,0.7)">問問題 / 看儀表板</text>
+
+  <path class="arrow-back" d="M 800 175 L 800 130" marker-end="url(#arr-orange)"/>
+  <text class="block-mono" x="815" y="158" fill="#ff6b35">通知 / 核准 ↑</text>
+
+  <!-- ====================================================
+       LAYER 2: APPLICATIONS (4 user-facing apps)
+       ==================================================== -->
+  <text class="layer-tag" x="60" y="195">② APPLICATIONS · 使用者直接接觸的入口</text>
+
+  <rect class="block-bg" x="60" y="210" width="320" height="120"/>
+  <text class="block-title" x="220" y="245" text-anchor="middle">💬 AI Chat Assistant</text>
+  <text class="block-sub" x="220" y="270" text-anchor="middle">互動式故障排除</text>
+  <text class="block-mono" x="220" y="295" text-anchor="middle">「會議室 Wi-Fi 為什麼很慢？」</text>
+  <text class="block-mono" x="220" y="313" text-anchor="middle">→ AI 回應 + 建議</text>
+
+  <rect class="block-bg-cyan" x="400" y="210" width="320" height="120"/>
+  <text class="star" x="700" y="232" text-anchor="end">★ NEW · 主動</text>
+  <text class="block-title" x="560" y="252" text-anchor="middle">🔔 Anomaly Panel</text>
+  <text class="block-sub" x="560" y="276" text-anchor="middle">AI 主動偵測，先告訴你</text>
+  <text class="block-mono" x="560" y="298" text-anchor="middle">「AP-7F 過去 24h 漫遊 4× 異常」</text>
+  <text class="block-mono" x="560" y="316" text-anchor="middle">→ 早於客戶反應</text>
+
+  <rect class="block-bg" x="740" y="210" width="320" height="120"/>
+  <text class="block-title" x="900" y="245" text-anchor="middle">📊 Dashboard Builder</text>
+  <text class="block-sub" x="900" y="270" text-anchor="middle">自然語言生成自訂視圖</text>
+  <text class="block-mono" x="900" y="295" text-anchor="middle">「show top 10 sites by client」</text>
+  <text class="block-mono" x="900" y="313" text-anchor="middle">→ 3 秒生成 dashboard</text>
+
+  <rect class="block-bg" x="1080" y="210" width="320" height="120"/>
+  <text class="block-title" x="1240" y="245" text-anchor="middle">🛠 Custom Skills</text>
+  <text class="block-sub" x="1240" y="270" text-anchor="middle">使用者 / partner 自訂 playbook</text>
+  <text class="block-mono" x="1240" y="295" text-anchor="middle">從 GitHub 載入</text>
+  <text class="block-mono" x="1240" y="313" text-anchor="middle">→ 平台延展性</text>
+
+  <!-- Arrows down to AI Engine -->
+  <path class="arrow" d="M 220 330 L 220 375 Q 220 400, 400 400 L 590 400" marker-end="url(#arr)"/>
+  <path class="arrow" d="M 560 330 L 560 400 L 590 400" marker-end="url(#arr)"/>
+  <path class="arrow" d="M 900 330 L 900 400 L 870 400" marker-end="url(#arr)"/>
+  <path class="arrow" d="M 1240 330 L 1240 375 Q 1240 400, 1080 400 L 870 400" marker-end="url(#arr)"/>
+
+  <!-- ====================================================
+       LAYER 3: AI ENGINE (the brain - single big block)
+       ==================================================== -->
+  <text class="layer-tag" x="60" y="425">③ AI BRAIN · 系統大腦</text>
+
+  <rect fill="url(#brain-glow)" stroke="#ff6b35" stroke-width="2" rx="20" x="430" y="440" width="620" height="170"/>
+  <text class="block-title-big" x="740" y="478" text-anchor="middle">🧠 NetSense AI Engine</text>
+  <text class="block-sub" x="740" y="502" text-anchor="middle">把症狀 → 變診斷 → 變建議 → 變動作</text>
+
+  <!-- Internal capabilities (without going too deep) -->
+  <rect class="pill-orange" x="455" y="525" width="170" height="32"/>
+  <text class="pill-orange-text" x="540" y="546" text-anchor="middle">🎯 Skill Routing</text>
+
+  <rect class="pill-orange" x="640" y="525" width="190" height="32"/>
+  <text class="pill-orange-text" x="735" y="546" text-anchor="middle">🛡 Safety + Approval</text>
+
+  <rect class="pill-orange" x="845" y="525" width="180" height="32"/>
+  <text class="pill-orange-text" x="935" y="546" text-anchor="middle">📝 Reasoning + Audit</text>
+
+  <text class="block-mono" x="740" y="585" text-anchor="middle" fill="#cbd5e1">確定性 backbone + LLM 在判斷節點 + 完整稽核</text>
+
+  <path class="arrow" d="M 740 610 L 740 660" marker-end="url(#arr)"/>
+  <text class="block-mono" x="755" y="640" fill="rgba(255,255,255,0.7)">execute step</text>
+
+  <!-- ====================================================
+       LAYER 4: SKILLS LIBRARY
+       ==================================================== -->
+  <text class="layer-tag" x="60" y="685">④ SKILLS LIBRARY · 能力庫</text>
+
+  <rect class="block-bg" x="200" y="700" width="380" height="100"/>
+  <text class="block-title" x="390" y="734" text-anchor="middle">📘 Diagnostic Playbooks</text>
+  <text class="block-sub" x="390" y="757" text-anchor="middle">被動觸發 — 有問題時跑診斷</text>
+  <text class="block-mono" x="390" y="780" text-anchor="middle">device_offline · sticky_client · sonos_lan ...</text>
+
+  <rect class="block-bg-cyan" x="600" y="700" width="380" height="100"/>
+  <text class="star" x="960" y="722" text-anchor="end">★ 餵 Anomaly</text>
+  <text class="block-title" x="790" y="744" text-anchor="middle">📘 Monitoring Playbooks</text>
+  <text class="block-sub" x="790" y="767" text-anchor="middle">主動執行 — 24×7 偵測異常</text>
+  <text class="block-mono" x="790" y="787" text-anchor="middle">watch_status · narrate_anomalies ...</text>
+
+  <rect class="block-bg" x="1000" y="700" width="280" height="100"/>
+  <text class="block-title" x="1140" y="734" text-anchor="middle">🛠 Custom Playbooks</text>
+  <text class="block-sub" x="1140" y="757" text-anchor="middle">客戶 / partner 寫的</text>
+  <text class="block-mono" x="1140" y="780" text-anchor="middle">↔ GitHub Skills Library</text>
+
+  <path class="arrow" d="M 740 800 L 740 855" marker-end="url(#arr)"/>
+  <text class="block-mono" x="755" y="835" fill="rgba(255,255,255,0.7)">primitive call</text>
+
+  <!-- ====================================================
+       LAYER 5: MCP / API LAYER
+       ==================================================== -->
+  <text class="layer-tag" x="60" y="880">⑤ STANDARD API LAYER · 業界標準介接</text>
+
+  <rect class="block-bg-mcp" x="200" y="890" width="1080" height="60"/>
+  <text class="block-title" x="740" y="918" text-anchor="middle">🔌 MCP Tool Layer  ·  Auth · Cache · Normalize · Tool schemas</text>
+  <text class="block-mono" x="740" y="938" text-anchor="middle">業界標準 (Anthropic Model Context Protocol) — 客戶可接自家 AI</text>
+
+  <path class="arrow" d="M 740 950 L 740 985" marker-end="url(#arr)"/>
+
+  <!-- ====================================================
+       LAYER 6: DEVICES
+       ==================================================== -->
+  <rect class="block-bg" x="430" y="985" width="620" height="30" rx="15"/>
+  <text class="block-sub" x="740" y="1005" text-anchor="middle" fill="#cbd5e1">🛰 APs · 🔀 Switches · ☁ Cloud State (REST API)</text>
+
+  <!-- ====================================================
+       SIDE PANEL: GitHub Skills
+       ==================================================== -->
+  <rect class="block-bg" x="1310" y="700" width="150" height="100"/>
+  <text class="star" x="1385" y="725" text-anchor="middle">📦</text>
+  <text class="block-title" x="1385" y="752" text-anchor="middle" font-size="14">GitHub</text>
+  <text class="block-sub" x="1385" y="772" text-anchor="middle" font-size="11">Skills Library</text>
+  <text class="block-mono" x="1385" y="790" text-anchor="middle" font-size="10">community + custom</text>
+
+  <path class="arrow-side" d="M 1310 750 L 1280 750" marker-end="url(#arr-cyan)"/>
+
+  <!-- ====================================================
+       SIDE PANEL: Customer AI Engine
+       ==================================================== -->
+  <rect class="block-bg-cyan" x="1310" y="880" width="150" height="80"/>
+  <text class="star" x="1385" y="903" text-anchor="middle">🤖</text>
+  <text class="block-title" x="1385" y="924" text-anchor="middle" font-size="14">Customer AI</text>
+  <text class="block-sub" x="1385" y="942" text-anchor="middle" font-size="11">Plug-in via MCP</text>
+  <text class="block-mono" x="1385" y="956" text-anchor="middle" font-size="10">no vendor lock-in</text>
+
+  <path class="arrow-side" d="M 1310 920 L 1280 920" marker-end="url(#arr-cyan)"/>
+
+  <!-- ====================================================
+       LEGEND
+       ==================================================== -->
+  <g transform="translate(60, 950)">
+    <rect fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.1)" rx="8" x="0" y="0" width="320" height="60"/>
+    <text class="block-mono" x="14" y="20" fill="#94a3b8">圖例</text>
+    <line x1="14" y1="32" x2="44" y2="32" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
+    <text class="block-mono" x="50" y="36" fill="#cbd5e1">主流程</text>
+    <line x1="100" y1="32" x2="130" y2="32" stroke="#00d9c5" stroke-width="2" stroke-dasharray="6 4"/>
+    <text class="block-mono" x="136" y="36" fill="#cbd5e1">外部接入</text>
+    <line x1="200" y1="32" x2="230" y2="32" stroke="#ff6b35" stroke-width="2" stroke-dasharray="4 3"/>
+    <text class="block-mono" x="236" y="36" fill="#cbd5e1">回饋 / 通知</text>
+    <text class="block-mono" x="14" y="52" fill="#cbd5e1">★ = 對 Roger v1 新增的部分</text>
+  </g>
+
+</svg>
+</div>
+
+<!-- BLOCK DESCRIPTIONS -->
+<section>
+  <div class="desc-grid">
+    <div class="desc-card">
+      <div class="desc-num">BLOCK ②</div>
+      <div class="desc-title">Applications · 4 個入口</div>
+      <div class="desc-body">
+        <strong>Chat</strong> 互動診斷、<strong>Anomaly Panel</strong> 主動通知（★ 新增）、
+        <strong>Dashboard Builder</strong> 自然語言視圖、<strong>Custom Skills</strong> 自訂能力。
+        同一個 AI 引擎服務不同情境。
+      </div>
+    </div>
+
+    <div class="desc-card">
+      <div class="desc-num">BLOCK ③</div>
+      <div class="desc-title">AI Engine · 系統大腦</div>
+      <div class="desc-body">
+        三大職責：<strong>Skill Routing</strong>（選對 playbook）、
+        <strong>Safety + Approval</strong>（攔下危險動作要人核准）、
+        <strong>Reasoning + Audit</strong>（每個決定有完整推理鏈可查）。
+      </div>
+    </div>
+
+    <div class="desc-card">
+      <div class="desc-num">BLOCK ④</div>
+      <div class="desc-title">Skills Library · 能力庫</div>
+      <div class="desc-body">
+        分三類：<strong>Diagnostic</strong>（被動，問才查）、
+        <strong>Monitoring</strong>（主動，24×7 跑）、
+        <strong>Custom</strong>（社群 / 客戶自訂）。所有 playbook 都用同一個 YAML 格式。
+      </div>
+    </div>
+
+    <div class="desc-card">
+      <div class="desc-num">BLOCK ⑤</div>
+      <div class="desc-title">MCP Tool Layer · 標準介接</div>
+      <div class="desc-body">
+        <strong>Anthropic 業界標準協定</strong>。把 device API 包裝成 LLM 可呼叫的工具。
+        最大價值：<strong>客戶自家 AI 也能用同一個 MCP 接進來</strong> — 不被 vendor lock-in。
+      </div>
+    </div>
+
+    <div class="desc-card">
+      <div class="desc-num">SIDE</div>
+      <div class="desc-title">📦 GitHub Skills Library</div>
+      <div class="desc-body">
+        Playbook 的版本控制 + 社群分享。EnGenius 官方 + 集成商私有 + 社群貢獻共用同一格式。
+        <strong>MSP 可以靠賣自家 know-how 賺錢</strong> — 生態系飛輪的開端。
+      </div>
+    </div>
+
+    <div class="desc-card">
+      <div class="desc-num">SIDE</div>
+      <div class="desc-title">🤖 Customer AI Engine</div>
+      <div class="desc-body">
+        客戶自家的 AI（Microsoft Copilot、自建 LLM 等）可<strong>透過同一個 MCP server</strong> 連進來查網路、跑 playbook。
+        消除企業客戶 #1 的 vendor lock-in 焦慮。
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <h3>看完想看更深？</h3>
+  <p>這頁是「系統有什麼」 — 想看「客戶體驗故事」、「完整技術細節」、「具體 playbook」、「踩過的盲點」請選</p>
+  <div class="cta-buttons">
+    <a class="cta-btn" href="overview-pm-mkt.html">🎯 PM/MKT 概覽（客戶故事）</a>
+    <a class="cta-btn" href="architecture-v2-zh.html">🏗 完整技術架構（互動版）</a>
+    <a class="cta-btn" href="playbook-examples.html">📘 Playbook 範例集</a>
+    <a class="cta-btn" href="blind-spots.html">⚠ 盲點與陷阱</a>
+  </div>
+</section>
+
+</div>
+</body>
+</html>

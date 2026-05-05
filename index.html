@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NetSense AI — 專案入口</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-1: #0a1628;
+    --bg-2: #0f1e3a;
+    --surface: rgba(255,255,255,0.04);
+    --surface-2: rgba(255,255,255,0.08);
+    --border: rgba(255,255,255,0.12);
+    --border-strong: rgba(255,255,255,0.22);
+    --text: #f8fafc;
+    --muted: #cbd5e1;
+    --dim: #64748b;
+    --accent: #ff6b35;
+    --cyan: #00d9c5;
+    --good: #10b981;
+    --warn: #fbbf24;
+    --bad: #ef4444;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%);
+    color: var(--text);
+    font-family: 'Inter', 'Noto Sans TC', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding: 56px 32px 80px;
+    line-height: 1.55;
+  }
+  .container { max-width: 1320px; margin: 0 auto; }
+
+  /* HERO */
+  .hero {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+  .hero .tag {
+    color: var(--accent);
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .hero h1 {
+    font-size: clamp(40px, 5vw, 64px);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+  .hero h1 .accent { color: var(--accent); }
+  .hero .lead {
+    margin-top: 18px;
+    color: var(--muted);
+    font-size: 18px;
+    max-width: 720px;
+    margin-left: auto; margin-right: auto;
+  }
+  .hero .meta {
+    margin-top: 28px;
+    display: inline-flex;
+    gap: 20px;
+    padding: 10px 22px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 13px;
+    color: var(--muted);
+    flex-wrap: wrap;
+  }
+  .hero .meta strong { color: var(--text); }
+  .hero .meta .dot { color: var(--cyan); }
+
+  /* SECTION */
+  section { margin-bottom: 56px; }
+  .section-title {
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .section-sub {
+    text-align: center;
+    color: var(--muted);
+    margin-bottom: 32px;
+    font-size: 16px;
+  }
+
+  /* AUDIENCE QUICK-START */
+  .audience-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  .audience {
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 16px;
+    padding: 26px 22px;
+    transition: all 0.25s;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+  }
+  .audience:hover {
+    background: var(--surface-2);
+    border-color: var(--cyan);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(0,217,197,0.15);
+  }
+  .audience-emoji { font-size: 32px; margin-bottom: 12px; }
+  .audience-role {
+    font-size: 17px; font-weight: 700;
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+  }
+  .audience-want {
+    color: var(--muted);
+    font-size: 13px;
+    font-style: italic;
+    margin-bottom: 16px;
+    line-height: 1.5;
+    flex-grow: 1;
+  }
+  .audience-cta {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--cyan);
+    font-weight: 600;
+    font-size: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+  .audience-cta .arrow { transition: transform 0.2s; }
+  .audience:hover .audience-cta .arrow { transform: translateX(4px); }
+
+  /* RESOURCES GRID */
+  .resources-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px;
+  }
+  .res-card {
+    background: rgba(0,0,0,0.18);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 28px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.25s;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+  .res-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--cyan);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .res-card:hover::before { transform: scaleX(1); }
+  .res-card:hover {
+    background: rgba(0,0,0,0.28);
+    border-color: var(--border-strong);
+    transform: translateY(-2px);
+  }
+  .res-card.danger::before { background: var(--bad); }
+  .res-card.warn::before { background: var(--warn); }
+  .res-card.accent::before { background: var(--accent); }
+
+  .res-head {
+    display: flex; align-items: start; gap: 14px;
+    margin-bottom: 16px;
+  }
+  .res-emoji {
+    font-size: 36px;
+    flex-shrink: 0;
+  }
+  .res-title-block { flex: 1; }
+  .res-tag {
+    display: inline-block;
+    padding: 3px 8px;
+    background: var(--surface-2);
+    color: var(--cyan);
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .res-tag.tag-pm { color: var(--accent); background: rgba(255,107,53,0.1); }
+  .res-tag.tag-eng { color: var(--cyan); background: rgba(0,217,197,0.1); }
+  .res-tag.tag-pb { color: var(--warn); background: rgba(251,191,36,0.1); }
+  .res-tag.tag-warn { color: var(--bad); background: rgba(239,68,68,0.1); }
+  .res-title {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 6px;
+  }
+  .res-file {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--dim);
+  }
+  .res-body {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 14px;
+    line-height: 1.55;
+    flex-grow: 1;
+  }
+  .res-best {
+    background: rgba(0,217,197,0.08);
+    border-left: 3px solid var(--cyan);
+    padding: 10px 14px;
+    border-radius: 0 6px 6px 0;
+    color: var(--text);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .res-best strong { color: var(--cyan); }
+  .res-foot {
+    margin-top: 16px;
+    color: var(--cyan);
+    font-weight: 600;
+    font-size: 14px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .res-foot .arrow { transition: transform 0.2s; }
+  .res-card:hover .res-foot .arrow { transform: translateX(4px); }
+
+  /* MAP */
+  .map {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 32px;
+  }
+  .map-grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+  }
+  .map-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .map-item {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .map-item h4 {
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .map-item p {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  .map-item p strong { color: var(--text); }
+
+  /* FILES TABLE */
+  .files-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .files-table th, .files-table td {
+    padding: 12px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .files-table th {
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  .files-table td.code {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--cyan);
+  }
+
+  .foot {
+    margin-top: 56px;
+    text-align: center;
+    color: var(--dim);
+    font-size: 12px;
+    font-style: italic;
+  }
+
+  @media (max-width: 1100px) {
+    .audience-grid { grid-template-columns: 1fr 1fr; }
+    .map-grid-3, .resources-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 640px) {
+    .audience-grid, .resources-grid, .map-grid-3, .map-grid-2 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HERO -->
+<section class="hero">
+  <div class="tag">PROJECT HUB</div>
+  <h1>NetSense <span class="accent">AI</span> — 提案資料總覽</h1>
+  <p class="lead">
+    一套完整的 AI 網管助理提案資料 — <strong style="color: var(--text);">11 個頁面 + 4 個 mockup</strong>。<br>
+    從這裡開始，依您的角色挑一個入口。
+  </p>
+  <div class="meta">
+    <span><span class="dot">●</span> <strong>11</strong> 個頁面</span>
+    <span><span class="dot">●</span> <strong>4</strong> 個 UI mockup</span>
+    <span><span class="dot">●</span> <strong>8</strong> 種對象</span>
+    <span><span class="dot">●</span> <strong>2</strong> 種語言</span>
+    <span><span class="dot">●</span> 全部離線可用</span>
+  </div>
+</section>
+
+<!-- AUDIENCE QUICK-START -->
+<section>
+  <div class="section-title">⚡ 依角色快速進入</div>
+  <div class="section-sub">您是哪種人？挑一個最符合的入口</div>
+  <div class="audience-grid">
+
+    <a class="audience" href="overview-pm-mkt.html">
+      <div class="audience-emoji">🎯</div>
+      <div class="audience-role">PM / MKT / 業務</div>
+      <div class="audience-want">「我要客戶故事，不要技術細節。要拿來做簡報、放網站、發 EDM。」</div>
+      <div class="audience-cta">PM/MKT 概覽 <span class="arrow">→</span></div>
+    </a>
+
+    <a class="audience" href="three-modes.html">
+      <div class="audience-emoji">🎭</div>
+      <div class="audience-role">看產品定位</div>
+      <div class="audience-want">「我要快速理解這個產品要賣給誰、有哪幾種使用模式、差異在哪。」</div>
+      <div class="audience-cta">三模式定位 <span class="arrow">→</span></div>
+    </a>
+
+    <a class="audience" href="use-case-matrix.html">
+      <div class="audience-emoji">📊</div>
+      <div class="audience-role">PM 排 roadmap</div>
+      <div class="audience-want">「我要看 4 維度 × 3 模式的完整使用案例，知道先做哪些、後做哪些。」</div>
+      <div class="audience-cta">4×3 使用案例 <span class="arrow">→</span></div>
+    </a>
+
+    <a class="audience" href="system-diagram.html">
+      <div class="audience-emoji">🗺</div>
+      <div class="audience-role">技術型業務 / Partner</div>
+      <div class="audience-want">「我要看系統有什麼 block、怎麼接，但不需要 ring/primitive 細節。」</div>
+      <div class="audience-cta">高層次系統圖 <span class="arrow">→</span></div>
+    </a>
+
+    <a class="audience" href="architecture-v2-zh.html">
+      <div class="audience-emoji">🏗</div>
+      <div class="audience-role">工程師 / Tech Lead</div>
+      <div class="audience-want">「我要看完整技術架構、安全機制、運作方式 — 全展開。」</div>
+      <div class="audience-cta">技術架構 v2 <span class="arrow">→</span></div>
+    </a>
+
+    <a class="audience" href="blind-spots.html">
+      <div class="audience-emoji">⚠</div>
+      <div class="audience-role">技術買家 / CIO</div>
+      <div class="audience-want">「給我看你們考慮過什麼盲點。我要證據，不是 marketing。」</div>
+      <div class="audience-cta">盲點與陷阱 <span class="arrow">→</span></div>
+    </a>
+
+    <a class="audience" href="dashboard-builder-implementation.html">
+      <div class="audience-emoji">🔧</div>
+      <div class="audience-role">工程師明天就要開始</div>
+      <div class="audience-want">「我要看 PoC spec、API 範例、prompt 範例、widget schema — 全部寫死的實作指南。」</div>
+      <div class="audience-cta">Dashboard Builder 實作指南 <span class="arrow">→</span></div>
+    </a>
+
+    <a class="audience" href="mockup-gallery.html">
+      <div class="audience-emoji">🎨</div>
+      <div class="audience-role">看 UI 互動設計</div>
+      <div class="audience-want">「我想實際點看看 — Mode A 員工 chat、Mode B cockpit、Dashboard Builder、Mode C Pro console。」</div>
+      <div class="audience-cta">4 個 UI Mockups <span class="arrow">→</span></div>
+    </a>
+
+  </div>
+</section>
+
+<!-- ALL RESOURCES -->
+<section>
+  <div class="section-title">📚 所有資源（11 個頁面 + 4 mockup）</div>
+  <div class="section-sub">完整介紹 · 點卡片進入</div>
+  <div class="resources-grid">
+
+    <a class="res-card accent" href="three-modes.html">
+      <div class="res-head">
+        <div class="res-emoji">🎭</div>
+        <div class="res-title-block">
+          <span class="res-tag tag-pm">PRODUCT POSITIONING · ★ NEW</span>
+          <div class="res-title">三模式定位</div>
+          <div class="res-file">three-modes.html</div>
+        </div>
+      </div>
+      <div class="res-body">
+        一套後端，三種模式 — <strong style="color:var(--text);">Mode A 員工 / Mode B SMB IT ⭐ / Mode C Pro</strong>。
+        每個模式對應不同 persona、能力範圍、風險等級。產品策略的核心定位文件。
+      </div>
+      <div class="res-best">
+        <strong>最適合：</strong>內部對焦會、產品定位 review、跨部門 kick-off
+      </div>
+      <div class="res-foot">開啟 <span class="arrow">→</span></div>
+    </a>
+
+    <a class="res-card warn" href="use-case-matrix.html">
+      <div class="res-head">
+        <div class="res-emoji">📊</div>
+        <div class="res-title-block">
+          <span class="res-tag tag-pb">USE CASE MATRIX · ★ NEW</span>
+          <div class="res-title">4×3 使用案例矩陣</div>
+          <div class="res-file">use-case-matrix.html</div>
+        </div>
+      </div>
+      <div class="res-body">
+        12 個格子（4 維度 × 3 模式）+ 標出 Phase 1/2/3。<strong style="color:var(--text);">給 PM 排 roadmap 最重要的工具</strong>。
+        含「Phase 1 三個必做格子」推薦與三季度 roadmap 建議。
+      </div>
+      <div class="res-best">
+        <strong>最適合：</strong>排 roadmap、估工程時程、找 demo 點
+      </div>
+      <div class="res-foot">開啟 <span class="arrow">→</span></div>
+    </a>
+
+    <a class="res-card accent" href="dashboard-builder-demo.html">
+      <div class="res-head">
+        <div class="res-emoji">📈</div>
+        <div class="res-title-block">
+          <span class="res-tag tag-pm">FEATURE DEMO · ★ NEW</span>
+          <div class="res-title">Dashboard Builder Demo</div>
+          <div class="res-file">dashboard-builder-demo.html</div>
+        </div>
+      </div>
+      <div class="res-body">
+        Mode B 殺手功能的<strong style="color:var(--text);">互動式 demo</strong>。4 個可切換場景 — SMB IT 健康檢查、AP 負載探索、員工自助、Pro 跨 site 分析。看一次就懂為什麼客戶會 wow。
+      </div>
+      <div class="res-best">
+        <strong>最適合：</strong>展會 demo、給客戶試用、技術業務 pitch
+      </div>
+      <div class="res-foot">開啟 <span class="arrow">→</span></div>
+    </a>
+
+    <a class="res-card warn" href="dashboard-builder-implementation.html">
+      <div class="res-head">
+        <div class="res-emoji">🔧</div>
+        <div class="res-title-block">
+          <span class="res-tag tag-eng">IMPLEMENTATION GUIDE · ★ NEW</span>
+          <div class="res-title">Dashboard Builder 實作指南</div>
+          <div class="res-file">dashboard-builder-implementation.html</div>
+        </div>
+      </div>
+      <div class="res-body">
+        4 個 tab：<strong style="color:var(--text);">實作路徑 / PoC Spec / Eval Pipeline / Widget Library</strong>。
+        2 週 PoC day-by-day 計畫、API endpoint、prompt 範例、8 widget schema 全寫死 — 工程師明天就能開工。
+      </div>
+      <div class="res-best">
+        <strong>最適合：</strong>Eng kickoff、PoC sprint、與 Roger 對焦技術細節
+      </div>
+      <div class="res-foot">開啟 <span class="arrow">→</span></div>
+    </a>
+
+    <a class="res-card accent" href="mockup-gallery.html">
+      <div class="res-head">
+        <div class="res-emoji">🎨</div>
+        <div class="res-title-block">
+          <span class="res-tag tag-pm">UI MOCKUPS · ★ NEW</span>
+          <div class="res-title">Mockup 集錦（4 個互動式 UI）</div>
+          <div class="res-file">mockup-gallery.html</div>
+        </div>
+      </div>
+      <div class="res-body">
+        統合 4 個可實際操作的 UI mockup：<strong style="color:var(--text);">員工 Chat（Mode A）、SMB IT Cockpit（Mode B）、Dashboard Builder Flow、Pro Console（Mode C）</strong>。每個都能點擊、輸入、看到反應。
+      </div>
+      <div class="res-best">
+        <strong>最適合：</strong>UX 對焦、客戶 demo、設計 review、新人 onboarding
+      </div>
+      <div class="res-foot">開啟 mockup gallery <span class="arrow">→</span></div>
+    </a>
+
+    <a class="res-card accent" href="overview-pm-mkt.html">
+      <div class="res-head">
+        <div class="res-emoji">🎯</div>
+        <div class="res-title-block">
+          <span class="res-tag tag-pm">PM / MKT</span>
+          <div class="res-title">高層次概覽</div>
+          <div class="res-file">overview-pm-mkt.html</div>
+        </div>
+      </div>
+      <div class="res-body">
+        客戶體驗 4 階段（SEE → UNDERSTAND → DECIDE → VERIFY）+ 三大 pillar + KPI + 競爭對比 + 三 personas。<strong style="color:var(--text);">沒有任何技術術語</strong>，純粹講價值與故事。
+      </div>
+      <div class="res-best">
+        <strong>最適合：</strong>展會、業務 pitch、官網 hero、leave-behind、經營層簡報
+      </div>
+      <div class="res-foot">開啟 <span class="arrow">→</span></div>
+    </a>
+
+    <a class="res-card" href="system-diagram.html">
+      <div class="res-head">
+        <div class="res-emoji">🗺</div>
+        <div class="res-title-block">
+          <span class="res-tag tag-pb">SYSTEM DIAGRAM</span>
+          <div class="res-title">高層次系統圖</div>
+          <div class="res-file">system-diagram.html</div>
+        </div>
+      </div>
+      <div class="res-body">
+        系統有<strong style="color:var(--text);">哪些 block · 它們怎麼接</strong>。介於「客戶故事」與「完整技術架構」之間。看一張圖就能講出整套系統的組成。
+      </div>
+      <div class="res-best">
+        <strong>最適合：</strong>技術型業務 / Partner 對接 / 跨部門 kick-off / Slide 中的架構頁
+      </div>
+      <div class="res-foot">開啟 <span class="arrow">→</span></div>
+    </a>
+
+    <a class="res-card" href="architecture-v2-zh.html">
+      <div class="res-head">
+        <div class="res-emoji">🏗</div>
+        <div class="res-title-block">
+          <span class="res-tag tag-eng">ENGINEERING · 繁中</span>
+          <div class="res-title">系統架構（繁中互動版）</div>
+          <div class="res-file">architecture-v2-zh.html</div>
+        </div>
+      </div>
+      <div class="res-body">
+        6 層完整架構圖 + 點擊任一元件開啟右側 panel 看比喻 / 說明 / 範例。Ring system / MCP / Approval Flow 全部視覺化。<strong style="color:var(--text);">對 Roger v1 加了 9 處改進</strong>。
+      </div>
+      <div class="res-best">
+        <strong>最適合：</strong>內部技術 review、與 Roger 對焦、企業客戶 deep dive
+      </div>
+      <div class="res-foot">開啟 <span class="arrow">→</span></div>
+    </a>
+
+    <a class="res-card" href="architecture-v2.html">
+      <div class="res-head">
+        <div class="res-emoji">🌐</div>
+        <div class="res-title-block">
+          <span class="res-tag tag-eng">ENGINEERING · EN</span>
+          <div class="res-title">System Architecture (EN)</div>
+          <div class="res-file">architecture-v2.html</div>
+        </div>
+      </div>
+      <div class="res-body">
+        Same content as the Chinese version, with English explanations. Click any element for analogy + what / why / example. <strong style="color:var(--text);">Use this for international teams or enterprise customers.</strong>
+      </div>
+      <div class="res-best">
+        <strong>Best for:</strong> Overseas teams, enterprise prospects, English-speaking engineers
+      </div>
+      <div class="res-foot">Open <span class="arrow">→</span></div>
+    </a>
+
+    <a class="res-card warn" href="playbook-examples.html">
+      <div class="res-head">
+        <div class="res-emoji">📘</div>
+        <div class="res-title-block">
+          <span class="res-tag tag-pb">PLAYBOOK CATALOG</span>
+          <div class="res-title">Playbook 範例集</div>
+          <div class="res-file">playbook-examples.html</div>
+        </div>
+      </div>
+      <div class="res-body">
+        三個 playbook 真實案例 — Device Offline（簡單）/ Sticky Client（中等）/ Sonos LAN Discovery（困難）。每個案例展開到<strong style="color:var(--text);">每一個 primitive、每一個 prompt、每一個 ring 等級</strong>。
+      </div>
+      <div class="res-best">
+        <strong>最適合：</strong>排 roadmap 優先順序、CS 訓練、技術 demo、估算工程量
+      </div>
+      <div class="res-foot">開啟 <span class="arrow">→</span></div>
+    </a>
+
+    <a class="res-card danger" href="blind-spots.html">
+      <div class="res-head">
+        <div class="res-emoji">⚠</div>
+        <div class="res-title-block">
+          <span class="res-tag tag-warn">BLIND SPOTS · ★ NEW</span>
+          <div class="res-title">工程盲點與陷阱</div>
+          <div class="res-file">blind-spots.html</div>
+        </div>
+      </div>
+      <div class="res-body">
+        12 個被低估的工程議題（含 token 爆炸、跨 vendor 看不到、closed-loop 缺席、eval 退步等）+ 我們的解 + YAML FAQ。<strong style="color:var(--text);">大部分競品根本沒做這些事</strong>。
+      </div>
+      <div class="res-best">
+        <strong>最適合：</strong>抗辯技術型客戶質疑、與 Roger 對焦、Engineering RFC 附件
+      </div>
+      <div class="res-foot">開啟 <span class="arrow">→</span></div>
+    </a>
+
+  </div>
+</section>
+
+<!-- 7-AXIS MAP -->
+<section>
+  <div class="section-title">🗺 七張圖各有角色</div>
+  <div class="section-sub">由淺入深 · 七張圖共同構成完整提案</div>
+  <div class="map">
+    <div class="map-grid-3" style="margin-bottom: 16px;">
+      <div class="map-item">
+        <h4>★☆☆ PM/MKT 概覽</h4>
+        <p><strong>故事感最強。</strong>客戶體驗 4 階段串起整個產品。看完想到「客戶會買單」。<br><br>適合說服別人花錢。</p>
+      </div>
+      <div class="map-item">
+        <h4>★☆☆ 三模式定位 ★ NEW</h4>
+        <p><strong>策略最清楚。</strong>Mode A/B/C 三 persona × 一套後端。看完想到「這產品要賣給誰」。<br><br>適合內部 + 對外 pitch 共用。</p>
+      </div>
+      <div class="map-item">
+        <h4>★★☆ 高層次系統圖</h4>
+        <p><strong>看得見系統組成。</strong>有 block 但無細節。看完想到「這個產品有這幾大塊」。<br><br>適合對接、跨部門對焦。</p>
+      </div>
+    </div>
+    <div class="map-grid-2" style="margin-bottom: 16px;">
+      <div class="map-item">
+        <h4>★★☆ 4×3 使用案例矩陣 ★ NEW</h4>
+        <p><strong>roadmap 工具。</strong>12 個格子標 phase，看完想到「我知道先做哪幾格」。<br><br>適合 PM 排程、Eng 估時。</p>
+      </div>
+      <div class="map-item">
+        <h4>★★☆ Playbook 範例集</h4>
+        <p><strong>具體案例驅動。</strong>3 個真實 case 展開。看完想到「我看得到能解決什麼」。<br><br>適合 demo、訓練 CS。</p>
+      </div>
+    </div>
+    <div class="map-grid-2">
+      <div class="map-item">
+        <h4>★★★ 完整技術架構 v2</h4>
+        <p><strong>互動 + 完整。</strong>6 層架構，每元件可點開看比喻與細節。看完想到「我能做出來」。<br><br>適合工程實作、企業 deep dive。</p>
+      </div>
+      <div class="map-item">
+        <h4>★★★ 工程盲點與陷阱</h4>
+        <p><strong>誠實面對風險。</strong>12 個被低估的議題與我們的解。看完想到「他們考慮得比我深」。<br><br>適合抗辯、技術買家評估。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FILES TABLE -->
+<section>
+  <div class="section-title">📁 檔案清單</div>
+  <div class="section-sub">如何分享、編輯、印 PDF</div>
+  <div class="map">
+    <table class="files-table">
+      <thead>
+        <tr>
+          <th style="width:30%;">檔案</th>
+          <th style="width:40%;">用途</th>
+          <th style="width:15%;">分享方式</th>
+          <th style="width:15%;">列印</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>🏠 <strong>index.html</strong>（這頁）</td>
+          <td>專案入口 · 分流</td>
+          <td>從這頁開始</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td>🎯 <strong>overview-pm-mkt.html</strong></td>
+          <td>PM / MKT / 業務 / 經營層</td>
+          <td>單一 HTML</td>
+          <td>⌘P 即可</td>
+        </tr>
+        <tr>
+          <td>🎭 <strong>three-modes.html</strong> ★ NEW</td>
+          <td>產品定位 / 內部對焦</td>
+          <td>單一 HTML</td>
+          <td>內建 print CSS</td>
+        </tr>
+        <tr>
+          <td>📊 <strong>use-case-matrix.html</strong> ★ NEW</td>
+          <td>排 roadmap / 估時程</td>
+          <td>單一 HTML</td>
+          <td>內建 print CSS</td>
+        </tr>
+        <tr>
+          <td>📈 <strong>dashboard-builder-demo.html</strong></td>
+          <td>展會 demo / 殺手功能展示</td>
+          <td>單一 HTML（含 JS tab 切換）</td>
+          <td>內建 print CSS</td>
+        </tr>
+        <tr>
+          <td>🔧 <strong>dashboard-builder-implementation.html</strong></td>
+          <td>Dashboard Builder 實作指南（4 tab）</td>
+          <td>單一 HTML（含 JS tab + URL hash）</td>
+          <td>列印展開所有 tab</td>
+        </tr>
+        <tr>
+          <td>🎨 <strong>mockup-gallery.html</strong> ★ NEW</td>
+          <td>4 mockup 統合入口（含對照表）</td>
+          <td>單一 HTML</td>
+          <td>內建 print CSS</td>
+        </tr>
+        <tr style="background:rgba(167,139,250,0.04);">
+          <td>　└ 👤 <strong>employee-chat-mockup.html</strong></td>
+          <td>Mode A 員工 chat · 5 情境</td>
+          <td>互動式（pre-scripted）</td>
+          <td>不適合列印</td>
+        </tr>
+        <tr style="background:rgba(167,139,250,0.04);">
+          <td>　└ 🛠 <strong>cockpit-mockup.html</strong></td>
+          <td>Mode B SMB IT Cockpit</td>
+          <td>互動式（chat 真對話）</td>
+          <td>不適合列印</td>
+        </tr>
+        <tr style="background:rgba(167,139,250,0.04);">
+          <td>　└ 📊 <strong>dashboard-builder-flow-mockup.html</strong></td>
+          <td>Dashboard Builder 4 步驟</td>
+          <td>互動式（多 stage）</td>
+          <td>不適合列印</td>
+        </tr>
+        <tr style="background:rgba(167,139,250,0.04);">
+          <td>　└ ⚡ <strong>mode-c-pro-mockup.html</strong></td>
+          <td>Mode C Pro Console（MSP）</td>
+          <td>互動式（bulk select + AI agent）</td>
+          <td>不適合列印</td>
+        </tr>
+        <tr>
+          <td>🗺 <strong>system-diagram.html</strong></td>
+          <td>技術型業務 / Partner / 對接</td>
+          <td>單一 HTML</td>
+          <td>內建 print CSS</td>
+        </tr>
+        <tr>
+          <td>🏗 <strong>architecture-v2-zh.html</strong></td>
+          <td>內部工程 / Roger 對焦</td>
+          <td>單一 HTML（互動需瀏覽器）</td>
+          <td>內建 print CSS</td>
+        </tr>
+        <tr>
+          <td>🌐 <strong>architecture-v2.html</strong></td>
+          <td>International / 外部</td>
+          <td>同上，英文版</td>
+          <td>內建 print CSS</td>
+        </tr>
+        <tr>
+          <td>📘 <strong>playbook-examples.html</strong></td>
+          <td>Roadmap / 訓練 / Demo</td>
+          <td>單一 HTML</td>
+          <td>每 case 自動分頁</td>
+        </tr>
+        <tr>
+          <td>⚠ <strong>blind-spots.html</strong></td>
+          <td>技術買家 / 抗辯 / RFC 附件</td>
+          <td>單一 HTML</td>
+          <td>內建 print CSS</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- USAGE TIPS -->
+<section>
+  <div class="section-title">💡 使用建議</div>
+  <div class="map">
+    <div class="map-grid-3">
+      <div class="map-item">
+        <h4>展會 / 攤位</h4>
+        <p>iPad 開 <strong>overview-pm-mkt</strong> 自助播放。掃 QR 進 pitch deck。技術問題用 <strong>system-diagram</strong>。深技術問題才開 architecture-v2。</p>
+      </div>
+      <div class="map-item">
+        <h4>跨部門對焦會</h4>
+        <p>從 <strong>index.html</strong> 開場，依與會者角色點進對應頁面。技術部分用 <strong>architecture-v2-zh</strong>。質疑用 <strong>blind-spots</strong>。</p>
+      </div>
+      <div class="map-item">
+        <h4>分享給外部客戶</h4>
+        <p>把整個資料夾 zip 傳給客戶，附「請從 index.html 開始」。所有頁面離線可用，無需登入或安裝。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="foot">
+  NetSense AI · 提案資料 v2.1 · 最後更新 2026 年 5 月<br>
+  所有頁面均為單一 HTML 檔案，無外部相依（除 Google Fonts CDN 字體）
+</div>
+
+</div>
+</body>
+</html>

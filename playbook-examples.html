@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NetSense AI — Playbook 範例集</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-1: #0a1628;
+    --bg-2: #0f1e3a;
+    --surface: rgba(255,255,255,0.04);
+    --surface-2: rgba(255,255,255,0.08);
+    --border: rgba(255,255,255,0.12);
+    --border-strong: rgba(255,255,255,0.22);
+    --text: #f8fafc;
+    --muted: #cbd5e1;
+    --dim: #64748b;
+    --accent: #ff6b35;
+    --cyan: #00d9c5;
+    --good: #10b981;
+    --warn: #fbbf24;
+    --bad: #ef4444;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%);
+    color: var(--text);
+    font-family: 'Inter', 'Noto Sans TC', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding: 40px 32px 80px;
+    line-height: 1.5;
+  }
+
+  header {
+    max-width: 1280px;
+    margin: 0 auto 40px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  header .left { flex: 1 1 auto; }
+  .nav-links { display: flex; gap: 7px; flex-wrap: wrap; }
+  .nav-link {
+    color: var(--cyan);
+    text-decoration: none;
+    font-size: 12.5px; font-weight: 600;
+    padding: 7px 12px;
+    background: rgba(0,217,197,0.08);
+    border: 1px solid rgba(0,217,197,0.35);
+    border-radius: 8px;
+    transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .nav-link:hover {
+    background: rgba(0,217,197,0.18);
+    border-color: var(--cyan);
+    transform: translateY(-1px);
+  }
+  .nav-link.muted-link {
+    color: var(--muted);
+    background: var(--surface);
+    border-color: var(--border-strong);
+  }
+  .nav-link.current {
+    background: rgba(255,107,53,0.15);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  header .tag {
+    color: var(--accent);
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  header h1 {
+    font-size: 36px; font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  header h1 .accent { color: var(--accent); }
+  header .sub {
+    color: var(--muted);
+    margin-top: 8px;
+    font-size: 16px;
+  }
+
+  /* ---- Comparison strip ---- */
+  .summary {
+    max-width: 1280px;
+    margin: 0 auto 40px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 24px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .summary-item {
+    display: flex; flex-direction: column; gap: 4px;
+    padding: 8px 12px;
+    border-left: 3px solid var(--cyan);
+  }
+  .summary-item.s-easy { border-left-color: var(--good); }
+  .summary-item.s-med { border-left-color: var(--warn); }
+  .summary-item.s-hard { border-left-color: var(--bad); }
+  .summary-name { font-weight: 700; font-size: 15px; }
+  .summary-meta {
+    font-size: 12px;
+    color: var(--dim);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ---- Card ---- */
+  .card {
+    max-width: 1280px;
+    margin: 0 auto 32px;
+    background: rgba(0,0,0,0.18);
+    border: 1px solid var(--border-strong);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+
+  .card-head {
+    padding: 28px 32px 22px;
+    background: linear-gradient(135deg, rgba(255,107,53,0.08), rgba(0,217,197,0.04));
+    border-bottom: 1px solid var(--border);
+  }
+  .card-head .row {
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+  .card-emoji { font-size: 32px; }
+  .card-title {
+    font-size: 26px; font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .card-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--cyan);
+    background: rgba(0,217,197,0.1);
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(0,217,197,0.3);
+  }
+  .difficulty {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+  .difficulty.easy { background: rgba(16,185,129,0.12); color: var(--good); border: 1px solid rgba(16,185,129,0.4); }
+  .difficulty.med  { background: rgba(251,191,36,0.12); color: var(--warn); border: 1px solid rgba(251,191,36,0.4); }
+  .difficulty.hard { background: rgba(239,68,68,0.12); color: var(--bad); border: 1px solid rgba(239,68,68,0.4); }
+
+  .meta-bar {
+    margin-top: 16px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    color: var(--muted);
+  }
+  .meta-bar .meta-item {
+    display: flex; flex-direction: column; gap: 3px;
+  }
+  .meta-label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--dim);
+    font-weight: 600;
+  }
+  .meta-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  /* ---- Card body ---- */
+  .card-body {
+    padding: 28px 32px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+  .card-body.full { grid-template-columns: 1fr; }
+
+  .section h3 {
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section h3::before {
+    content: '';
+    width: 18px; height: 1px;
+    background: var(--accent);
+  }
+  .section p {
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .section ul {
+    list-style: none;
+    padding: 0;
+  }
+  .section ul li {
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--border);
+    color: var(--muted);
+    font-size: 14px;
+    display: flex; gap: 10px;
+    line-height: 1.5;
+  }
+  .section ul li:last-child { border-bottom: none; }
+  .section ul li::before {
+    content: '▸';
+    color: var(--cyan);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .section ul li strong { color: var(--text); }
+
+  /* ---- Tree ---- */
+  .tree-wrap {
+    margin-top: 4px;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px 24px;
+    overflow-x: auto;
+  }
+  .tree {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.85;
+    color: var(--text);
+    white-space: pre;
+  }
+  .tree .com {
+    color: var(--dim);
+    font-style: normal;
+    margin-left: 12px;
+  }
+  .tree .skill { color: var(--accent); font-weight: 700; }
+  .tree .pb { color: var(--cyan); font-weight: 600; }
+  .tree .step { color: var(--text); font-weight: 700; }
+  .tree .prompt { color: #c084fc; }
+  .tree .prim { color: var(--text); }
+  .tree .ring0 { color: var(--good); font-weight: 700; }
+  .tree .ring1 { color: var(--warn); font-weight: 700; }
+  .tree .ring2 { color: var(--bad); font-weight: 700; }
+  .tree .gate { color: #f0abfc; font-weight: 700; }
+
+  /* ---- Highlight box ---- */
+  .highlight {
+    margin-top: 16px;
+    background: linear-gradient(135deg, rgba(0,217,197,0.10), rgba(255,107,53,0.06));
+    border: 1px solid rgba(0,217,197,0.3);
+    border-radius: 12px;
+    padding: 18px 22px;
+  }
+  .highlight-label {
+    color: var(--cyan);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .highlight p {
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  .highlight strong { color: var(--cyan); }
+
+  /* ---- Tags row ---- */
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .tag-chip {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: var(--surface-2);
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .tag-chip.r0 { color: var(--good); border-color: rgba(16,185,129,0.4); }
+  .tag-chip.r1 { color: var(--warn); border-color: rgba(251,191,36,0.4); }
+  .tag-chip.r2 { color: var(--bad); border-color: rgba(239,68,68,0.4); }
+
+  @media (max-width: 900px) {
+    .summary, .card-body, .meta-bar { grid-template-columns: 1fr; }
+  }
+  @media print {
+    body { background: white; color: black; }
+    .card { background: white; border-color: #ccc; page-break-inside: avoid; }
+    .tree-wrap { background: #f5f5f5; }
+    .highlight { background: #fef3e2; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="left">
+    <div class="tag">PLAYBOOK CATALOG</div>
+    <h1>NetSense <span class="accent">AI</span> — Playbook 範例集</h1>
+    <div class="sub">5 個真實案例 · 涵蓋 3 個 mode × 3 種 skill 類別</div>
+  </div>
+  <div class="nav-links">
+    <a class="nav-link muted-link" href="index.html">🏠 入口</a>
+    <a class="nav-link muted-link" href="system-diagram.html">🗺 系統圖</a>
+    <a class="nav-link muted-link" href="three-modes.html">🎭 三模式</a>
+    <a class="nav-link muted-link" href="use-case-matrix.html">📊 使用案例</a>
+    <a class="nav-link muted-link" href="dashboard-builder-demo.html">📈 Dashboard Demo</a>
+    <a class="nav-link muted-link" href="dashboard-builder-implementation.html">🔧 實作指南</a>
+    <a class="nav-link muted-link" href="mockup-gallery.html">🎨 Mockups</a>
+    <a class="nav-link muted-link" href="overview-pm-mkt.html">🎯 PM/MKT</a>
+    <a class="nav-link muted-link" href="architecture-v2-zh.html">🏗 架構</a>
+    <a class="nav-link current" href="playbook-examples.html">📘 Playbook</a>
+    <a class="nav-link muted-link" href="blind-spots.html">⚠ 盲點</a>
+  </div>
+</header>
+
+<!-- Summary strip -->
+<div class="summary" style="grid-template-columns: repeat(3, 1fr);">
+  <div class="summary-item s-easy">
+    <div class="summary-name">👤 employee_self_service_wifi <span style="color:#00d9c5;font-size:10px;">★ NEW · Mode A</span></div>
+    <div class="summary-meta">難度 ★☆☆ · 全 Ring 0 · ~2-5 分鐘對話</div>
+  </div>
+  <div class="summary-item s-easy">
+    <div class="summary-name">📡 device_offline</div>
+    <div class="summary-meta">難度 ★☆☆ · 全 Ring 0 · ~15 秒</div>
+  </div>
+  <div class="summary-item s-med">
+    <div class="summary-name">📶 sticky_client</div>
+    <div class="summary-meta">難度 ★★☆ · Ring 0 + 1 · ~30 秒 + 10 分驗證</div>
+  </div>
+  <div class="summary-item s-med">
+    <div class="summary-name">📊 dashboard_health_overview <span style="color:#ff6b35;font-size:10px;">★ NEW · 第三類 skill</span></div>
+    <div class="summary-meta">難度 ★★☆ · Ring 0 + 1 (save) · ~10 秒生成</div>
+  </div>
+  <div class="summary-item s-hard">
+    <div class="summary-name">🔊 sonos_lan_discovery</div>
+    <div class="summary-meta">難度 ★★★ · Ring 0 + 1 + 可能 2 · ~45 秒</div>
+  </div>
+</div>
+
+<!-- ====================================================
+     CARD 0: Employee Self-Service Wi-Fi (NEW · Mode A)
+     ==================================================== -->
+<div class="card">
+  <div class="card-head">
+    <div class="row">
+      <span class="card-emoji">👤</span>
+      <span class="card-title">員工自助 Wi-Fi 客服 <span style="color:#00d9c5;font-size:13px;font-weight:600;margin-left:8px;">★ NEW · Mode A</span></span>
+      <span class="card-code">employee_self_service_wifi.yaml</span>
+      <span class="difficulty easy">★☆☆ 簡單</span>
+    </div>
+    <div class="meta-bar">
+      <div class="meta-item">
+        <div class="meta-label">範圍</div>
+        <div class="meta-value">單一使用者 / 自助</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Ring 等級</div>
+        <div class="meta-value">全 Ring 0（純讀）</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">執行時間</div>
+        <div class="meta-value">~2-5 分鐘對話</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">使用模式</div>
+        <div class="meta-value">Mode A · 員工</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div>
+      <div class="section">
+        <h3>解決什麼問題</h3>
+        <p><strong>非技術員工</strong>遇到網路問題（Wi-Fi 慢、印表機找不到、視訊卡）時，<strong>不用 call IT、不用查文件</strong> — 直接問 AI chatbot。AI 用人話互動診斷，能自己解就解，解不了自動開單給 IT。</p>
+      </div>
+
+      <div class="section" style="margin-top: 28px;">
+        <h3>何時觸發</h3>
+        <ul>
+          <li>員工在 chat 介面打：「Wi-Fi 很慢」「我連不上印表機」</li>
+          <li>從公司 portal 點「網路有問題？」按鈕</li>
+          <li>從 Slack / Teams bot 私訊問</li>
+        </ul>
+      </div>
+
+      <div class="section" style="margin-top: 28px;">
+        <h3>AI 互動模式（與 Mode B/C 不同）</h3>
+        <ul>
+          <li><strong>教育式</strong>：解釋「訊號 −65 dBm 是普通強度」</li>
+          <li><strong>引導式</strong>：「請看您手機 Wi-Fi 圖示剩幾格」</li>
+          <li><strong>同理式</strong>：「對，我知道很煩。先試試…」</li>
+          <li><strong>有限度動作</strong>：只建議使用者自己做（換位置、重連）</li>
+        </ul>
+      </div>
+
+      <div class="section" style="margin-top: 28px;">
+        <h3>解不了 → Auto Escalate</h3>
+        <p>AI <strong>把對話過程 + 已嘗試動作 + 自身位置 + 設備資訊</strong>整理成 ticket 開給 IT。IT 接到時不用再問背景，直接看就懂。</p>
+      </div>
+    </div>
+
+    <div>
+      <div class="section">
+        <h3>完整流程</h3>
+        <div class="tree-wrap">
+<div class="tree"><span class="skill">🎁 SKILL: employee-wifi-self-service</span>
+   <span class="com"># 對外名稱：「網路自助客服」(Mode A)</span>
+   │
+   └── <span class="pb">📘 PLAYBOOK: employee_self_service_wifi.yaml</span>
+       │
+       ├── <span class="step">Step 1: 接收 + 取使用者 context</span>
+       │   ├── 🟢 <span class="prim">get_user_context</span>           <span class="ring0">[Ring 0]</span>
+       │   │       <span class="com"># 員工 ID / 部門 / 位置（IP / SSO）</span>
+       │   └── 🟢 <span class="prim">get_user_device</span>             <span class="ring0">[Ring 0]</span>
+       │           <span class="com"># OS / browser / IP / MAC（若可取）</span>
+       │
+       ├── <span class="step">Step 2:</span> <span class="gate">💬 LLM Gate · 意圖分類</span>
+       │   └── <span class="prompt">prompts/classify_user_intent.md</span>
+       │       <span class="com"># Haiku · 強制簡單詞彙</span>
+       │       <span class="com"># wifi_slow / connect_fail / app_unable / ...</span>
+       │
+       ├── <span class="step">Step 3:</span> <span class="gate">💬 LLM Gate · 引導對話</span>
+       │   └── <span class="prompt">prompts/guided_conversation.md</span>
+       │       <span class="com"># 提問澄清 · 教育名詞 · 同理回應</span>
+       │       <span class="com"># 限制：絕不回答技術細節</span>
+       │
+       ├── <span class="step">Step 4: 簡化診斷（限自身視角）</span>
+       │   ├── 🟢 <span class="prim">get_client_signal_health</span>   <span class="ring0">[Ring 0]</span>
+       │   │       <span class="com"># 限定查使用者自己的 client</span>
+       │   ├── 🟢 <span class="prim">get_associated_ap_status</span>   <span class="ring0">[Ring 0]</span>
+       │   └── 🟢 <span class="prim">get_recent_user_events</span>     <span class="ring0">[Ring 0]</span>
+       │
+       ├── <span class="step">Step 5:</span> <span class="gate">💬 LLM Gate · 判斷自助 vs IT</span>
+       │   <span class="com"># can_self_solve / needs_it / unclear</span>
+       │
+       └── <span class="step">Step 6: 分支</span>
+           ├── can_self_solve → 給簡單建議
+           │   <span class="com"># 「換位置、重連、關飛航」</span>
+           └── needs_it → 📋 <span class="prim">create_ticket</span>
+               <span class="com"># 含完整對話 + 診斷 context</span>
+               <span class="com"># 自動分派給對應 IT 人員</span>
+</div>
+        </div>
+
+        <div class="tags">
+          <span class="tag-chip r0">5× Ring 0</span>
+          <span class="tag-chip">3× LLM Gate</span>
+          <span class="tag-chip">0× 寫入</span>
+          <span class="tag-chip">~$0.01/次對話</span>
+        </div>
+
+        <div class="highlight">
+          <div class="highlight-label">⭐ 為什麼這個 case 重要</div>
+          <p><strong>Mode A 的代表案例。</strong>展示「<strong>非技術用戶 + AI + 自動 escalation</strong>」整套流程。
+          TAM 大 10×（每個員工都能用，不只 IT），風險低（純讀），是 <strong>最容易上線、最容易 viral 的入門款</strong>。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====================================================
+     CARD 1: Device Offline (簡單)
+     ==================================================== -->
+<div class="card">
+  <div class="card-head">
+    <div class="row">
+      <span class="card-emoji">📡</span>
+      <span class="card-title">設備離線診斷</span>
+      <span class="card-code">device_offline.yaml</span>
+      <span class="difficulty easy">★☆☆ 簡單</span>
+    </div>
+    <div class="meta-bar">
+      <div class="meta-item">
+        <div class="meta-label">範圍</div>
+        <div class="meta-value">單一設備</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Ring 等級</div>
+        <div class="meta-value">全 Ring 0（純讀）</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">執行時間</div>
+        <div class="meta-value">~15 秒</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">是否需現場</div>
+        <div class="meta-value">大多需現場處理</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div>
+      <div class="section">
+        <h3>解決什麼問題</h3>
+        <p>客戶或 monitoring 看到某台 AP / Switch 在 dashboard 顯示「offline」，需要快速判斷是<strong>真的離線</strong>還是<strong>誤報</strong>，並指出最可能的原因。</p>
+      </div>
+
+      <div class="section" style="margin-top: 28px;">
+        <h3>何時觸發</h3>
+        <ul>
+          <li>客戶問「為什麼 AP-7F 顯示離線？」</li>
+          <li>Monitoring playbook 偵測到某設備 last_seen &gt; 5 分鐘</li>
+          <li>Anomaly Panel 自動觸發（建議閾值：&gt; 3 分鐘）</li>
+        </ul>
+      </div>
+
+      <div class="section" style="margin-top: 28px;">
+        <h3>可能根因（依機率）</h3>
+        <ul>
+          <li><strong>網路不通</strong>（WAN 斷、上游 switch 掛掉）</li>
+          <li><strong>電源</strong>（PoE 端口失效、被拔）</li>
+          <li><strong>設備硬體故障</strong>（heartbeat 停但 cloud 還記得）</li>
+          <li><strong>Cloud 端誤報</strong>（最後 telemetry 太久沒更新）</li>
+          <li><strong>網段隔離</strong>（VLAN 或 firewall 改了）</li>
+        </ul>
+      </div>
+
+      <div class="section" style="margin-top: 28px;">
+        <h3>修復動作</h3>
+        <p style="color: var(--warn); font-weight: 600;">⚠️ 大多需要<strong>現場處理</strong>（重插網線、檢查 PoE）。AI 只做診斷 + 產出指引，不做寫入。</p>
+      </div>
+    </div>
+
+    <div>
+      <div class="section">
+        <h3>完整流程</h3>
+        <div class="tree-wrap">
+<div class="tree"><span class="skill">🎁 SKILL: device-status-diagnose</span>
+   <span class="com"># 對外名稱：「設備離線診斷」</span>
+   │
+   └── <span class="pb">📘 PLAYBOOK: device_offline.yaml</span>
+       │
+       ├── <span class="step">Step 1: 確認 cloud 認知狀態</span>
+       │   └── 🟢 <span class="prim">get_device_status</span>          <span class="ring0">[Ring 0]</span>
+       │       <span class="com"># last_seen, uptime, cloud_state</span>
+       │
+       ├── <span class="step">Step 2: 平行交叉驗證（4 個來源）</span>
+       │   ├── 🟢 <span class="prim">get_neighbor_devices</span>      <span class="ring0">[Ring 0]</span>
+       │   │       <span class="com"># 鄰居 AP/switch 看不看得到它</span>
+       │   ├── 🟢 <span class="prim">get_uplink_health</span>         <span class="ring0">[Ring 0]</span>
+       │   │       <span class="com"># 它的上游 port 還活著嗎</span>
+       │   ├── 🟢 <span class="prim">get_poe_status</span>            <span class="ring0">[Ring 0]</span>
+       │   │       <span class="com"># PoE 供電有沒有問題</span>
+       │   └── 🟢 <span class="prim">get_recent_events</span>         <span class="ring0">[Ring 0]</span>
+       │           <span class="com"># 過去 30 分鐘的事件 log</span>
+       │
+       ├── <span class="step">Step 3:</span> <span class="gate">💬 LLM Gate — 分類根因</span>
+       │   └── <span class="prompt">prompts/classify_offline_cause.md</span>
+       │       <span class="com"># Haiku 4.5 · 強制 JSON 輸出</span>
+       │       <span class="com"># 「依據證據判斷：真離線 / cloud 誤報 / 網路問題 / PoE / 硬體」</span>
+       │
+       └── <span class="step">Step 4:</span> 產出可執行指引
+           └── 📋 <span class="prim">emit_finding</span>
+               <span class="com"># 給工程師：去檢查 X / 建議客戶 Y</span>
+               <span class="com"># 不做寫入，僅給建議</span>
+</div>
+        </div>
+
+        <div class="tags">
+          <span class="tag-chip r0">5× Ring 0</span>
+          <span class="tag-chip">1× LLM Gate</span>
+          <span class="tag-chip">0× 寫入</span>
+          <span class="tag-chip">~$0.005/次</span>
+        </div>
+
+        <div class="highlight">
+          <div class="highlight-label">⭐ 為什麼這個 case 重要</div>
+          <p><strong>最常見的 ticket 類型，且最低風險。</strong>適合當「第一個上線的 playbook」— 純讀無寫入、跑得快、客戶見效立刻有感。把 30 分鐘的人工診斷壓到 15 秒，<strong>是 ROI 最容易證明的入門款</strong>。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====================================================
+     CARD 2: Sticky Client (中等，回顧)
+     ==================================================== -->
+<div class="card">
+  <div class="card-head">
+    <div class="row">
+      <span class="card-emoji">📶</span>
+      <span class="card-title">無線客戶端黏著診斷</span>
+      <span class="card-code">sticky_client.yaml</span>
+      <span class="difficulty med">★★☆ 中等</span>
+    </div>
+    <div class="meta-bar">
+      <div class="meta-item">
+        <div class="meta-label">範圍</div>
+        <div class="meta-value">1 client + 1 AP</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Ring 等級</div>
+        <div class="meta-value">Ring 0 + Ring 1（可逆）</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">執行時間</div>
+        <div class="meta-value">~30 秒 + 10 分驗證</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">是否需現場</div>
+        <div class="meta-value">否（純遠端）</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div>
+      <div class="section">
+        <h3>解決什麼問題</h3>
+        <p>某個 wireless client 黏在訊號差的 AP 上不漫遊，導致使用者體驗差（語音卡、視訊延遲、傳輸慢），需要找出根因並遠端調整。</p>
+      </div>
+
+      <div class="section" style="margin-top: 28px;">
+        <h3>何時觸發</h3>
+        <ul>
+          <li>使用者抱怨「我走到別的會議室還是慢」</li>
+          <li>掃碼槍 / VoIP 電話在走動時斷線</li>
+          <li>Anomaly Panel 偵測到 client 長時間 RSSI &lt; -75 dBm</li>
+        </ul>
+      </div>
+
+      <div class="section" style="margin-top: 28px;">
+        <h3>可能根因（4 類）</h3>
+        <ul>
+          <li><strong>RF 設計</strong>：cell 太大、TX power 過高、覆蓋重疊不足</li>
+          <li><strong>Policy 缺失</strong>：min RSSI 沒設、band steering 沒開、802.11k/v/r 沒啟用</li>
+          <li><strong>Client driver</strong>：client 端 OS/driver 不肯漫遊（網路端能誘導但不能強制）</li>
+          <li><strong>干擾</strong>：channel utilization 過高，roaming 沒效益</li>
+        </ul>
+      </div>
+
+      <div class="section" style="margin-top: 28px;">
+        <h3>修復動作（依根因）</h3>
+        <ul>
+          <li>RF 設計 → <strong>降 TX power 4-6 dBm</strong> <span class="tag-chip r1" style="margin-left:8px;">Ring 1</span></li>
+          <li>Policy → <strong>設 min RSSI = -72</strong> + 啟用 802.11k <span class="tag-chip r1" style="margin-left:8px;">Ring 1</span></li>
+          <li>Client driver → <strong>標記為「網路端已優化」</strong>，需 client 升級</li>
+          <li>干擾 → <strong>調整 channel plan</strong> <span class="tag-chip r1" style="margin-left:8px;">Ring 1</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div>
+      <div class="section">
+        <h3>完整流程</h3>
+        <div class="tree-wrap">
+<div class="tree"><span class="skill">🎁 SKILL: wireless-client-diagnose</span>
+   <span class="com"># 對外名稱：「無線客戶端診斷」</span>
+   │
+   └── <span class="pb">📘 PLAYBOOK: sticky_client.yaml</span>
+       │
+       ├── <span class="step">Step 1: 平行收集（4 個 primitive 同時跑）</span>
+       │   ├── 🟢 <span class="prim">get_client_signal_health</span>  <span class="ring0">[Ring 0]</span>
+       │   │       <span class="com"># RSSI / SNR / PHY rate / retry</span>
+       │   ├── 🟢 <span class="prim">get_neighbor_aps</span>          <span class="ring0">[Ring 0]</span>
+       │   │       <span class="com"># 附近的 AP 與訊號比較</span>
+       │   ├── 🟢 <span class="prim">get_roaming_events</span>        <span class="ring0">[Ring 0]</span>
+       │   │       <span class="com"># 過去 30 分鐘漫遊歷史</span>
+       │   └── 🟢 <span class="prim">get_radio_settings</span>        <span class="ring0">[Ring 0]</span>
+       │           <span class="com"># TX power / band steer / 11k/v/r</span>
+       │
+       ├── <span class="step">Step 2:</span> <span class="gate">💬 LLM Gate — 分類根因</span>
+       │   └── <span class="prompt">prompts/classify.md</span>
+       │       <span class="com"># 4 類根因擇一 + confidence + evidence</span>
+       │
+       ├── <span class="step">Step 3:</span> 根因分支
+       │   <span class="com"># client_driver → 終止；其他 → 進入提建議</span>
+       │
+       ├── <span class="step">Step 4:</span> <span class="gate">💬 LLM Gate — 提建議（用 Sonnet）</span>
+       │   └── <span class="prompt">prompts/propose_remediation.md</span>
+       │       <span class="com"># 動作 + blast radius + 預期效果</span>
+       │
+       ├── <span class="step">Step 5:</span> ⚠️ Approval（人工核准）
+       │   <span class="com"># 顯示：影響 12 client / 3-8 秒重連 / 自動 rollback</span>
+       │
+       ├── <span class="step">Step 6:</span> 執行
+       │   └── 🟡 <span class="prim">set_ap_tx_power</span>           <span class="ring1">[Ring 1]</span>
+       │
+       └── <span class="step">Step 7:</span> Closed-loop 驗證
+           <span class="com"># 10 分鐘後重跑 collect 比對 RSSI</span>
+           <span class="com"># 沒效自動 rollback</span>
+</div>
+        </div>
+
+        <div class="tags">
+          <span class="tag-chip r0">4× Ring 0</span>
+          <span class="tag-chip r1">1× Ring 1</span>
+          <span class="tag-chip">2× LLM Gate</span>
+          <span class="tag-chip">~$0.04/次</span>
+        </div>
+
+        <div class="highlight">
+          <div class="highlight-label">⭐ 為什麼這個 case 重要</div>
+          <p>展示<strong>「AI 提建議 → 人核准 → 自動驗證 → 沒效 rollback」</strong>的完整 closed-loop。是把 ring system + approval flow + 驗證機制全部跑過一輪的標竿案例。<strong>客戶看完這個 demo 才會理解「為什麼可以放心開自動化」</strong>。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====================================================
+     CARD 2.5: Dashboard Health Overview (NEW · 第三類 skill)
+     ==================================================== -->
+<div class="card">
+  <div class="card-head">
+    <div class="row">
+      <span class="card-emoji">📊</span>
+      <span class="card-title">本週健康 Dashboard 自動生成 <span style="color:#ff6b35;font-size:13px;font-weight:600;margin-left:8px;">★ NEW · 第三類 skill</span></span>
+      <span class="card-code">dashboard_health_overview.yaml</span>
+      <span class="difficulty med">★★☆ 中等</span>
+    </div>
+    <div class="meta-bar">
+      <div class="meta-item">
+        <div class="meta-label">範圍</div>
+        <div class="meta-value">單 site / 跨 site</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Ring 等級</div>
+        <div class="meta-value">Ring 0 + 1 (save)</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">執行時間</div>
+        <div class="meta-value">~10 秒生成</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">使用模式</div>
+        <div class="meta-value">Mode B 主軸 (殺手)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div>
+      <div class="section">
+        <h3>解決什麼問題</h3>
+        <p><strong>SMB IT</strong> 不會設儀表板（不知該看什麼 metric / 不會 query 語法 / 不會排版）。AI <strong>用講的</strong>就生出 4-6 widget 的儀表板，使用者預覽、確認、儲存。後續可 refine：「再加一個會議室趨勢」。</p>
+      </div>
+
+      <div class="section" style="margin-top: 28px;">
+        <h3>何時觸發</h3>
+        <ul>
+          <li>「我想看本週網路健康」</li>
+          <li>「show me top 10 sites by client churn」</li>
+          <li>「哪些 AP 太忙？」「會議室訊號狀況」</li>
+          <li>從現有 dashboard 點「+ 用 AI 加一個面板」</li>
+        </ul>
+      </div>
+
+      <div class="section" style="margin-top: 28px;">
+        <h3>第三類 Skill（不是 playbook）</h3>
+        <p>跟 Diagnostic / Monitoring playbook <strong>結構不同</strong>：</p>
+        <ul>
+          <li>輸出不是 finding — 是 <strong>持久化的 UI artifact</strong></li>
+          <li>沒有 root-cause 分支 — 是 <strong>widget composition</strong></li>
+          <li>有 <strong>refine loop</strong> —「再加一個 X」</li>
+          <li>可以儲存、分享、排程 email</li>
+        </ul>
+      </div>
+
+      <div class="section" style="margin-top: 28px;">
+        <h3>Widget Library（限定 8 種）</h3>
+        <ul>
+          <li>📊 KPI Card · 📈 Time Series · 📊 Bar Chart · 📋 Table</li>
+          <li>🗺 Site Map · 🔥 Heatmap · ⚠ Alert List · 🟢 Status Grid</li>
+        </ul>
+      </div>
+    </div>
+
+    <div>
+      <div class="section">
+        <h3>完整流程</h3>
+        <div class="tree-wrap">
+<div class="tree"><span class="skill">🎁 SKILL: dashboard-builder</span>
+   <span class="com"># 對外名稱：「Dashboard Builder」(Mode B 殺手)</span>
+   │
+   └── <span class="pb">📘 SKILL: dashboard_health_overview.yaml</span>
+       <span class="com"># 注意：這是第三類 skill（非 playbook）</span>
+       │
+       ├── <span class="step">Step 1:</span> <span class="gate">💬 LLM Gate · 解析意圖</span>
+       │   └── <span class="prompt">prompts/parse_dashboard_intent.md</span>
+       │       <span class="com"># 「我想看 X」→ 結構化意圖</span>
+       │       <span class="com"># {scope, time_range, metrics, audience}</span>
+       │
+       ├── <span class="step">Step 2:</span> <span class="gate">💬 LLM Gate · 選 widget</span>
+       │   └── <span class="prompt">prompts/select_widgets.md</span>
+       │       <span class="com"># 從 widget library 選 4-6 個</span>
+       │       <span class="com"># 強制限定：只能選 schema 列出的 8 種</span>
+       │
+       ├── <span class="step">Step 3: 每個 widget 生成 query</span>
+       │   ├── 🟢 <span class="prim">resolve_metric_to_primitive</span> <span class="ring0">[R0]</span>
+       │   │       <span class="com"># 「客戶數變化」→ get_client_count</span>
+       │   ├── 🟢 <span class="prim">get_client_count</span>            <span class="ring0">[R0]</span>
+       │   ├── 🟢 <span class="prim">get_anomaly_history</span>         <span class="ring0">[R0]</span>
+       │   ├── 🟢 <span class="prim">get_top_devices</span>             <span class="ring0">[R0]</span>
+       │   └── 🟢 <span class="prim">get_site_health_scores</span>      <span class="ring0">[R0]</span>
+       │
+       ├── <span class="step">Step 4: Layout 排版</span>
+       │   └── 🧱 <span class="prim">grid_layout_engine</span>
+       │       <span class="com"># 自動 responsive grid</span>
+       │       <span class="com"># 主要 metric 上方 / 次要下方</span>
+       │
+       ├── <span class="step">Step 5: 預覽 + 使用者確認</span>
+       │   <span class="com"># 不直接儲存 — 點「OK 建立」才執行 Step 6</span>
+       │
+       ├── <span class="step">Step 6: 持久化儲存</span>
+       │   └── 📦 <span class="prim">save_dashboard</span>              <span class="ring1">[R1]</span>
+       │       <span class="com"># 寫入 user 的 dashboard space</span>
+       │       <span class="com"># 可分享、export、排程</span>
+       │
+       └── <span class="step">Step 7: ★ Refine loop（可重複）</span>
+           <span class="com"># 「再加一個會議室趨勢」→ 回 Step 2 但只生新 widget</span>
+           <span class="com"># 增量更新，保留現有 widget</span>
+</div>
+        </div>
+
+        <div class="tags">
+          <span class="tag-chip r0">5× Ring 0</span>
+          <span class="tag-chip r1">1× Ring 1 (save)</span>
+          <span class="tag-chip">2× LLM Gate</span>
+          <span class="tag-chip killer">⭐ Mode B 殺手</span>
+          <span class="tag-chip">~$0.03/次</span>
+        </div>
+
+        <div class="highlight">
+          <div class="highlight-label">⭐ 為什麼這個 case 重要</div>
+          <p><strong>Mode B 的殺手功能 + 第三類 skill 的代表案例。</strong>結構與 Diagnostic / Monitoring playbook 完全不同 —
+          產出不是「finding」而是「<strong>持久化 UI artifact</strong>」。<strong>展會 demo 一次就讓客戶 wow</strong>，因為消除「Grafana 設一次就放棄」的摩擦。
+          搭配 <a href="dashboard-builder-demo.html" style="color:var(--cyan);">Dashboard Builder 互動 demo</a> 一起看效果最好。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====================================================
+     CARD 3: Sonos LAN Discovery (複雜)
+     ==================================================== -->
+<div class="card">
+  <div class="card-head">
+    <div class="row">
+      <span class="card-emoji">🔊</span>
+      <span class="card-title">Sonos / 多播設備發現診斷</span>
+      <span class="card-code">sonos_lan_discovery.yaml</span>
+      <span class="difficulty hard">★★★ 困難</span>
+    </div>
+    <div class="meta-bar">
+      <div class="meta-item">
+        <div class="meta-label">範圍</div>
+        <div class="meta-value">controller + N hops + target</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Ring 等級</div>
+        <div class="meta-value">0 + 1 + 可能 2（VLAN）</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">執行時間</div>
+        <div class="meta-value">~45 秒</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">是否需現場</div>
+        <div class="meta-value">有時要（跨廠商 hop）</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div>
+      <div class="section">
+        <h3>解決什麼問題</h3>
+        <p>App / 控制器找不到同 LAN 的多播設備（Sonos、AirPlay、Chromecast、Bonjour 印表機等）。涉及<strong>多 hop 拓撲</strong>，常常多個根因並存，是網管圈最頭痛的 case 類型之一。</p>
+      </div>
+
+      <div class="section" style="margin-top: 28px;">
+        <h3>何時觸發</h3>
+        <ul>
+          <li>「我的 Sonos 在 App 裡看不到」</li>
+          <li>「AirPlay 投影找不到電視」</li>
+          <li>「Bonjour 印表機消失了」</li>
+          <li>客戶報多媒體 / 智慧家居設備互通問題</li>
+        </ul>
+      </div>
+
+      <div class="section" style="margin-top: 28px;">
+        <h3>可能根因（多重共存）</h3>
+        <ul>
+          <li><strong>VLAN 分離</strong>：controller 與 target 不同 VLAN，發現流量過不去</li>
+          <li><strong>STP 阻擋</strong>：路徑上某 port 在 blocking 狀態</li>
+          <li><strong>Multicast 沒設好</strong>：IGMP snooping 沒開 querier、cross-VLAN mDNS gateway 沒設</li>
+          <li><strong>IP 衝突</strong>：兩個設備搶同 IP</li>
+          <li><strong>Port 錯誤</strong>：CRC 飆高、線路品質差</li>
+          <li><strong>Coverage gap</strong>：問題在我們看不到的 hop（客戶用 Cisco core）</li>
+        </ul>
+      </div>
+
+      <div class="section" style="margin-top: 28px;">
+        <h3>修復動作</h3>
+        <ul>
+          <li>VLAN → <strong>把 port 移到正確 VLAN</strong> <span class="tag-chip r2" style="margin-left:8px;">Ring 2</span></li>
+          <li>STP → <strong>調整 port mode</strong> <span class="tag-chip r1" style="margin-left:8px;">Ring 1</span></li>
+          <li>Multicast → <strong>啟用 IGMP / mDNS gateway</strong> <span class="tag-chip r1" style="margin-left:8px;">Ring 1</span></li>
+          <li>Coverage gap → <strong>產出客戶 runbook</strong>，請客戶端工程師檢查</li>
+        </ul>
+      </div>
+    </div>
+
+    <div>
+      <div class="section">
+        <h3>完整流程</h3>
+        <div class="tree-wrap">
+<div class="tree"><span class="skill">🎁 SKILL: sonos-lan-discovery-diagnose</span>
+   <span class="com"># 對外名稱：「多播設備發現診斷」</span>
+   │
+   └── <span class="pb">📘 PLAYBOOK: sonos_lan_discovery.yaml</span>
+       │
+       ├── <span class="step">Step A: 身份解析</span>
+       │   ├── 🟢 <span class="prim">resolve_device_identity</span> (controller) <span class="ring0">[R0]</span>
+       │   └── 🟢 <span class="prim">resolve_device_identity</span> (target)     <span class="ring0">[R0]</span>
+       │
+       ├── <span class="step">Step B: ⭐ 能力探測（這個 case 特有）</span>
+       │   └── 🟢 <span class="prim">probe_l2_path_coverage</span>      <span class="ring0">[R0]</span>
+       │       <span class="com"># 哪些 hop 看得到？哪些是 unmanaged？</span>
+       │       <span class="com"># 看不到的部分 → 後續產出客戶 runbook</span>
+       │
+       ├── <span class="step">Step C: 平行收集（8 個 primitive！）</span>
+       │   ├── 🟢 <span class="prim">get_vlan_assignment</span> × 2     <span class="ring0">[R0]</span>
+       │   ├── 🟢 <span class="prim">get_l2_path</span>                 <span class="ring0">[R0]</span>
+       │   ├── 🟢 <span class="prim">get_stp_state_on_path</span>       <span class="ring0">[R0]</span>
+       │   ├── 🟢 <span class="prim">get_port_health_on_path</span>     <span class="ring0">[R0]</span>
+       │   ├── 🟢 <span class="prim">check_ip_conflict</span>           <span class="ring0">[R0]</span>
+       │   ├── 🟢 <span class="prim">get_multicast_policy</span>        <span class="ring0">[R0]</span>
+       │   └── 🟢 <span class="prim">get_correlated_events</span>       <span class="ring0">[R0]</span>
+       │           <span class="com"># 自動對齊時間軸</span>
+       │
+       ├── <span class="step">Step D: ⭐ 主動探測（可選）</span>
+       │   └── 🟢 <span class="prim">probe_multicast_discovery</span>   <span class="ring0">[R0]</span>
+       │       <span class="com"># 從 controller port 打一個 mDNS 封包</span>
+       │       <span class="com"># 看 target port 收不收得到</span>
+       │       <span class="com"># 副作用：產生少量網路流量</span>
+       │
+       ├── <span class="step">Step E:</span> <span class="gate">💬 LLM Gate — 縮小範圍</span>
+       │   └── <span class="prompt">prompts/narrow_diagnosis.md</span>
+       │       <span class="com"># ⭐ 允許多重根因（primary + 2× co-existing）</span>
+       │       <span class="com"># Coverage gap + 視可區無異常 → in_unmanaged_hop</span>
+       │
+       ├── <span class="step">Step F:</span> 根因分支（5 條路）
+       │   <span class="com"># vlan / stp / ip_conflict / multicast / unmanaged</span>
+       │
+       ├── <span class="step">Step G:</span> <span class="gate">💬 LLM Gate — 提建議（Sonnet）</span>
+       │   └── <span class="prompt">prompts/propose_remediation.md</span>
+       │
+       ├── <span class="step">Step H:</span> ⚠️⚠️ Approval（含 VLAN 警告）
+       │   <span class="com"># 若 Ring 2 → 多顯示「整層樓會斷」警告</span>
+       │   <span class="com"># Cooling-off 10 分鐘</span>
+       │
+       ├── <span class="step">Step I:</span> 執行
+       │   └── 🔴 <span class="prim">set_port_vlan</span>               <span class="ring2">[R2]</span>
+       │       <span class="com"># 或 🟡 enable_igmp_snooping [R1]</span>
+       │
+       └── <span class="step">Step J: ⭐ 主動驗證</span>
+           └── 🟢 重跑 <span class="prim">probe_multicast_discovery</span>
+               <span class="com"># 真的能發現了嗎？</span>
+               <span class="com"># 沒效自動 rollback</span>
+</div>
+        </div>
+
+        <div class="tags">
+          <span class="tag-chip r0">9× Ring 0</span>
+          <span class="tag-chip r1">1× Ring 1</span>
+          <span class="tag-chip r2">1× Ring 2</span>
+          <span class="tag-chip">2× LLM Gate</span>
+          <span class="tag-chip">~$0.08/次</span>
+        </div>
+
+        <div class="highlight">
+          <div class="highlight-label">⭐ 為什麼這個 case 重要（架構壓力測試）</div>
+          <p>這個 case 同時把<strong>四個架構壓力</strong>施加到系統上：<br>
+          ① <strong>跨設備診斷</strong>（multi-hop primitive、時間軸對齊）<br>
+          ② <strong>多重根因</strong>（LLM 必須排序 + 承認 co-existing）<br>
+          ③ <strong>看不到的 hop</strong>（capability probe + 客戶 runbook 機制）<br>
+          ④ <strong>Ring 2 高 blast radius 動作</strong>（強化 approval + cooling-off）<br>
+          能完整跑這個 case 的架構，<strong>剩下的 playbook 都是它的子集</strong>。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 五者比較總結 -->
+<div class="card">
+  <div class="card-head">
+    <div class="row">
+      <span class="card-emoji">📊</span>
+      <span class="card-title">5 個範例的 scope 對照</span>
+    </div>
+    <p style="margin-top:12px;color:var(--muted);font-size:14px;line-height:1.55;">
+      <strong style="color:var(--text);">下表只比較 3 個 Diagnostic playbook 的「架構壓力」</strong>（單設備 vs 多 hop / 單因 vs 多因 / Ring 等級）。
+      <span style="color:#00d9c5;">Mode A 自助客服</span>與
+      <span style="color:#ff6b35;">Dashboard Generation</span>是<strong>不同 skill 形態</strong>，結構不可直接比較 —
+      請看上方各自的卡片詳述。
+    </p>
+  </div>
+  <div class="card-body full">
+    <table style="width:100%; border-collapse: collapse; font-size: 14px;">
+      <thead>
+        <tr style="border-bottom: 1px solid var(--border-strong);">
+          <th style="text-align:left; padding:12px; color:var(--accent); font-size:11px; letter-spacing:0.15em; text-transform:uppercase;">面向</th>
+          <th style="text-align:left; padding:12px; color:var(--good);">device_offline</th>
+          <th style="text-align:left; padding:12px; color:var(--warn);">sticky_client</th>
+          <th style="text-align:left; padding:12px; color:var(--bad);">sonos_lan_discovery</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding:12px; color:var(--muted);">設備數量</td>
+          <td style="padding:12px;">1</td>
+          <td style="padding:12px;">2 (client + AP)</td>
+          <td style="padding:12px;">N (跨多 hop)</td>
+        </tr>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding:12px; color:var(--muted);">根因數</td>
+          <td style="padding:12px;">5 種，單一</td>
+          <td style="padding:12px;">4 種，單一</td>
+          <td style="padding:12px;">6 種，<strong>常多重共存</strong></td>
+        </tr>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding:12px; color:var(--muted);">最高 Ring</td>
+          <td style="padding:12px;">Ring 0</td>
+          <td style="padding:12px;">Ring 1</td>
+          <td style="padding:12px;">Ring 2</td>
+        </tr>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding:12px; color:var(--muted);">驗證方式</td>
+          <td style="padding:12px;">無寫入無需驗證</td>
+          <td style="padding:12px;">被動 metric 比對</td>
+          <td style="padding:12px;"><strong>主動 probe</strong></td>
+        </tr>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding:12px; color:var(--muted);">Coverage gap</td>
+          <td style="padding:12px;">不會發生</td>
+          <td style="padding:12px;">不會發生</td>
+          <td style="padding:12px;"><strong>第一公民問題</strong></td>
+        </tr>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding:12px; color:var(--muted);">Token / 次</td>
+          <td style="padding:12px;">~3K</td>
+          <td style="padding:12px;">~12K</td>
+          <td style="padding:12px;">~22K</td>
+        </tr>
+        <tr style="border-bottom: 1px solid var(--border);">
+          <td style="padding:12px; color:var(--muted);">展會 demo 順序</td>
+          <td style="padding:12px;">第 1（暖場）</td>
+          <td style="padding:12px;"><strong>第 2（主秀）</strong></td>
+          <td style="padding:12px;">第 3（hardcore 客戶）</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</body>
+</html>

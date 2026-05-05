@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Builder Flow — Interactive Mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-1: #0a1628;
+    --bg-2: #0f1e3a;
+    --bg-3: #050d1a;
+    --surface: rgba(255,255,255,0.04);
+    --surface-2: rgba(255,255,255,0.08);
+    --border: rgba(255,255,255,0.10);
+    --border-strong: rgba(255,255,255,0.20);
+    --text: #f8fafc;
+    --muted: #cbd5e1;
+    --dim: #64748b;
+    --accent: #ff6b35;
+    --cyan: #00d9c5;
+    --good: #10b981;
+    --warn: #fbbf24;
+    --bad: #ef4444;
+    --purple: #a78bfa;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    background: var(--bg-1);
+    color: var(--text);
+    font-family: 'Inter', 'Noto Sans TC', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* Banner */
+  .mockup-banner {
+    height: 32px;
+    background: linear-gradient(90deg, rgba(255,107,53,0.15), rgba(0,217,197,0.10));
+    border-bottom: 1px solid rgba(255,107,53,0.3);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 16px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .mockup-banner strong { color: var(--accent); margin-right: 6px; }
+  .mockup-banner a {
+    color: var(--cyan); text-decoration: none; font-weight: 600;
+    padding: 4px 10px; border: 1px solid rgba(0,217,197,0.3);
+    border-radius: 6px;
+  }
+  .mockup-banner a:hover { background: rgba(0,217,197,0.15); }
+
+  /* Step indicator */
+  .stepbar {
+    background: var(--bg-2);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 32px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+  }
+  .step {
+    display: flex; align-items: center; gap: 8px;
+    color: var(--dim);
+    font-size: 13px; font-weight: 600;
+  }
+  .step .num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    transition: all 0.3s;
+  }
+  .step.active { color: var(--accent); }
+  .step.active .num {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  .step.done { color: var(--good); }
+  .step.done .num {
+    background: var(--good);
+    color: #fff;
+    border-color: var(--good);
+  }
+  .step-arrow { color: var(--dim); }
+
+  /* Content */
+  .container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 28px 24px 60px;
+  }
+  .stage { display: none; animation: fadeIn 0.4s ease; }
+  .stage.active { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Stage 1: Welcome */
+  .stage-hero {
+    text-align: center;
+    padding: 30px 20px 40px;
+  }
+  .stage-hero .step-tag {
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .stage-hero h1 {
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin-bottom: 14px;
+  }
+  .stage-hero h1 .accent { color: var(--accent); }
+  .stage-hero .lead {
+    color: var(--muted);
+    font-size: 16px;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .prompt-area {
+    max-width: 720px;
+    margin: 32px auto 0;
+  }
+  .prompt-input-wrap {
+    background: var(--surface);
+    border: 2px solid var(--border-strong);
+    border-radius: 18px;
+    padding: 22px 24px;
+    transition: all 0.2s;
+  }
+  .prompt-input-wrap:focus-within {
+    border-color: var(--cyan);
+    background: var(--surface-2);
+  }
+  .prompt-input-wrap textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 16px;
+    line-height: 1.5;
+    resize: none;
+    min-height: 60px;
+  }
+  .prompt-input-wrap textarea::placeholder { color: var(--dim); }
+  .prompt-actions {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+  .prompt-tips {
+    color: var(--dim);
+    font-size: 12px;
+  }
+  .prompt-tips kbd {
+    background: var(--surface-2);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+  }
+  .btn-primary {
+    background: var(--accent);
+    border: none;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: inherit;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-primary:hover { background: #e85a25; }
+  .btn-primary:disabled { background: var(--surface-2); color: var(--dim); cursor: not-allowed; }
+
+  /* Examples */
+  .examples-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin-top: 24px;
+  }
+  .example-tile {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    font-family: inherit;
+    color: var(--text);
+  }
+  .example-tile:hover {
+    background: var(--surface-2);
+    border-color: var(--cyan);
+    transform: translateY(-2px);
+  }
+  .example-tile .ico { font-size: 18px; margin-bottom: 6px; display: block; }
+  .example-tile .label { font-size: 13px; color: var(--muted); line-height: 1.45; }
+
+  /* Stage 2: AI thinking */
+  .thinking-wrap {
+    text-align: center;
+    padding: 80px 20px;
+  }
+  .thinking-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+    animation: spin 2s linear infinite;
+    display: inline-block;
+  }
+  @keyframes spin {
+    from { transform: rotate(0); }
+    to { transform: rotate(360deg); }
+  }
+  .thinking-status {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+  .thinking-steps {
+    max-width: 480px;
+    margin: 0 auto;
+    text-align: left;
+  }
+  .thinking-step {
+    padding: 12px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    color: var(--muted);
+    font-size: 14px;
+    display: flex; align-items: center; gap: 12px;
+    opacity: 0.4;
+    transition: all 0.4s;
+  }
+  .thinking-step.active {
+    opacity: 1;
+    color: var(--text);
+    border-color: var(--cyan);
+    background: rgba(0,217,197,0.08);
+  }
+  .thinking-step.done {
+    opacity: 0.7;
+    color: var(--muted);
+    border-color: rgba(16,185,129,0.4);
+    background: rgba(16,185,129,0.04);
+  }
+  .thinking-step .step-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .thinking-step.active .step-icon { animation: bounce 0.6s infinite alternate; }
+  @keyframes bounce {
+    from { transform: scale(1); }
+    to { transform: scale(1.2); }
+  }
+
+  /* Stage 3: Proposal */
+  .proposal-wrap {
+    max-width: 880px;
+    margin: 0 auto;
+  }
+  .proposal-card {
+    background: linear-gradient(135deg, rgba(0,217,197,0.08), rgba(255,107,53,0.04));
+    border: 1px solid rgba(0,217,197,0.4);
+    border-radius: 18px;
+    padding: 32px 36px;
+  }
+  .proposal-card .label {
+    color: var(--cyan);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .proposal-card h2 {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 18px;
+  }
+  .proposal-card .quote {
+    background: var(--surface-2);
+    border-left: 3px solid var(--accent);
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 24px;
+    color: var(--muted);
+    font-style: italic;
+  }
+  .proposal-card h3 {
+    font-size: 14px; font-weight: 700;
+    color: var(--text);
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .widgets-list {
+    list-style: none;
+    margin-bottom: 24px;
+  }
+  .widget-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .widget-item .num {
+    width: 28px; height: 28px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    flex-shrink: 0;
+  }
+  .widget-item .info { flex: 1; }
+  .widget-item .name {
+    font-weight: 700;
+    color: var(--text);
+    font-size: 14px;
+    margin-bottom: 2px;
+  }
+  .widget-item .desc {
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .widget-item .type-tag {
+    background: var(--surface-2);
+    color: var(--cyan);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .proposal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .btn-secondary {
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .btn-secondary:hover { background: var(--surface-3); }
+
+  /* Stage 4: Dashboard */
+  .dashboard-wrap {
+    max-width: 1240px;
+    margin: 0 auto;
+  }
+  .dashboard-head {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 24px;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .dash-title-block .name {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+  .dash-title-block .meta {
+    color: var(--dim);
+    font-size: 12px;
+    margin-top: 2px;
+  }
+  .dash-actions { display: flex; gap: 8px; }
+  .dash-btn {
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .dash-btn.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .dash-btn.primary:hover { background: #e85a25; }
+
+  .dash-grid {
+    display: grid;
+    gap: 14px;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-auto-rows: minmax(140px, auto);
+  }
+  .widget {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    transition: all 0.3s;
+    animation: widgetIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  @keyframes widgetIn {
+    from { opacity: 0; transform: scale(0.95) translateY(8px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .widget:hover {
+    background: var(--surface-2);
+    border-color: var(--border-strong);
+  }
+  .widget.span-2 { grid-column: span 2; }
+  .widget.span-3 { grid-column: span 3; }
+  .widget-title {
+    font-size: 12px;
+    color: var(--dim);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .widget-edit {
+    background: transparent;
+    border: none;
+    color: var(--dim);
+    cursor: pointer;
+    font-size: 12px;
+    font-family: inherit;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .widget-edit:hover { background: var(--surface-2); color: var(--text); }
+
+  .kpi-num {
+    font-size: 36px; font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .kpi-trend {
+    color: var(--good);
+    font-size: 12px;
+    margin-top: 8px;
+    font-weight: 600;
+  }
+  .kpi-trend.down { color: var(--bad); }
+
+  .chart-svg { width: 100%; height: 90px; }
+
+  .table-w { width: 100%; font-size: 12px; }
+  .table-w th { color: var(--dim); padding: 4px 8px; text-align: left; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; }
+  .table-w td { padding: 6px 8px; border-bottom: 1px solid var(--border); color: var(--text); }
+  .badge-mini {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+  }
+  .badge-mini.bad { background: rgba(239,68,68,0.15); color: var(--bad); }
+  .badge-mini.warn { background: rgba(251,191,36,0.15); color: var(--warn); }
+
+  /* Refine input */
+  .refine-bar {
+    margin-top: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 14px;
+    padding: 14px 18px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .refine-bar .lead {
+    color: var(--cyan);
+    font-weight: 700;
+  }
+  .refine-bar input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 14px;
+    padding: 8px 0;
+  }
+  .refine-bar input::placeholder { color: var(--dim); }
+  .refine-bar .send {
+    background: var(--cyan);
+    border: none;
+    color: #042722;
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    flex-shrink: 0;
+  }
+
+  .saved-toast {
+    background: rgba(16,185,129,0.10);
+    border: 1px solid rgba(16,185,129,0.4);
+    color: var(--good);
+    padding: 14px 22px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    font-weight: 600;
+    text-align: center;
+    animation: fadeIn 0.4s ease;
+  }
+  .saved-toast::before { content: '✓ '; }
+
+  /* Reset */
+  .reset-btn {
+    position: fixed;
+    bottom: 20px; right: 20px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-strong);
+    color: var(--muted);
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+    z-index: 50;
+  }
+  .reset-btn:hover { background: var(--surface-3); color: var(--text); }
+
+  @media (max-width: 900px) {
+    .dash-grid { grid-template-columns: 1fr; }
+    .widget.span-2, .widget.span-3 { grid-column: span 1; }
+  }
+</style>
+</head>
+<body>
+
+<div class="mockup-banner">
+  <span><strong>📌 MOCKUP</strong>Dashboard Builder · 互動式流程示意</span>
+  <a href="mockup-gallery.html">← 回 Mockup 列表</a>
+</div>
+
+<!-- Step indicator -->
+<div class="stepbar" id="stepbar">
+  <div class="step active" data-step="1"><span class="num">1</span><span>描述需求</span></div>
+  <span class="step-arrow">→</span>
+  <div class="step" data-step="2"><span class="num">2</span><span>AI 分析</span></div>
+  <span class="step-arrow">→</span>
+  <div class="step" data-step="3"><span class="num">3</span><span>確認 widgets</span></div>
+  <span class="step-arrow">→</span>
+  <div class="step" data-step="4"><span class="num">4</span><span>使用 Dashboard</span></div>
+</div>
+
+<div class="container">
+
+  <!-- STAGE 1: Welcome -->
+  <div class="stage active" id="stage1">
+    <div class="stage-hero">
+      <div class="step-tag">Step 1 / 4 · 描述您要看什麼</div>
+      <h1>用<span class="accent">講的</span><br>就有 dashboard</h1>
+      <p class="lead">不用懂 query / 不用知道 metric 名稱 / 不用會排版 — AI 從 widget library 組合給您。</p>
+    </div>
+
+    <div class="prompt-area">
+      <div class="prompt-input-wrap">
+        <textarea id="promptInput" placeholder="例如：我想看本週網路有沒有異常&#10;或：show me top 10 sites by client churn this month"></textarea>
+        <div class="prompt-actions">
+          <div class="prompt-tips">提示：可中英混用，越具體越好 · <kbd>⌘ Enter</kbd> 送出</div>
+          <button class="btn-primary" id="generateBtn" onclick="goToStage2()">建立 Dashboard →</button>
+        </div>
+      </div>
+
+      <h3 style="margin: 28px 0 14px; color: var(--dim); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;">💡 或從範例開始</h3>
+      <div class="examples-grid">
+        <button class="example-tile" onclick="useExample('我想看本週網路有沒有異常')">
+          <span class="ico">📊</span>
+          <span class="label">我想看本週網路有沒有異常</span>
+        </button>
+        <button class="example-tile" onclick="useExample('哪些 AP 太忙')">
+          <span class="ico">🛰</span>
+          <span class="label">哪些 AP 太忙</span>
+        </button>
+        <button class="example-tile" onclick="useExample('客戶數量趨勢與 anomaly 對比')">
+          <span class="ico">📈</span>
+          <span class="label">客戶數量趨勢與 anomaly 對比</span>
+        </button>
+        <button class="example-tile" onclick="useExample('Top 10 sites by client churn')">
+          <span class="ico">🌐</span>
+          <span class="label">Top 10 sites by client churn</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAGE 2: AI Thinking -->
+  <div class="stage" id="stage2">
+    <div class="thinking-wrap">
+      <div class="thinking-icon">⚙️</div>
+      <div class="thinking-status" id="thinkingStatus">AI 正在分析您的需求...</div>
+
+      <div class="thinking-steps">
+        <div class="thinking-step" data-tstep="1">
+          <span class="step-icon">💭</span>
+          <span>解析意圖（scope、time_range、metrics）</span>
+        </div>
+        <div class="thinking-step" data-tstep="2">
+          <span class="step-icon">🎯</span>
+          <span>從 widget library 選擇適合的視覺化</span>
+        </div>
+        <div class="thinking-step" data-tstep="3">
+          <span class="step-icon">🔌</span>
+          <span>對應到 telemetry primitive query</span>
+        </div>
+        <div class="thinking-step" data-tstep="4">
+          <span class="step-icon">📐</span>
+          <span>規劃 layout</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAGE 3: Proposal -->
+  <div class="stage" id="stage3">
+    <div class="proposal-wrap">
+      <div class="proposal-card">
+        <div class="label">Step 3 / 4 · AI 提案 · 等您確認</div>
+        <h2>我幫您建這個 Dashboard：</h2>
+
+        <div class="quote" id="userQuote">
+          「我想看本週網路有沒有異常」
+        </div>
+
+        <h3>📦 包含 4 個 widgets</h3>
+        <ul class="widgets-list">
+          <li class="widget-item">
+            <span class="num">1</span>
+            <div class="info">
+              <div class="name">本週客戶數（KPI）</div>
+              <div class="desc">當前數字 + WoW 變化 · 用 KPI Card</div>
+            </div>
+            <span class="type-tag">kpi</span>
+          </li>
+          <li class="widget-item">
+            <span class="num">2</span>
+            <div class="info">
+              <div class="name">本週 anomaly 趨勢（Line）</div>
+              <div class="desc">每日 anomaly 數量趨勢 · 用 Time Series</div>
+            </div>
+            <span class="type-tag">line</span>
+          </li>
+          <li class="widget-item">
+            <span class="num">3</span>
+            <div class="info">
+              <div class="name">Top 5 問題設備（Table）</div>
+              <div class="desc">本週發生問題最多的 device · 用 Table</div>
+            </div>
+            <span class="type-tag">table</span>
+          </li>
+          <li class="widget-item">
+            <span class="num">4</span>
+            <div class="info">
+              <div class="name">各 site 健康分數（Map）</div>
+              <div class="desc">所有 site 的健康分布 · 用 Site Map</div>
+            </div>
+            <span class="type-tag">site_map</span>
+          </li>
+        </ul>
+
+        <div class="proposal-actions">
+          <button class="btn-secondary" onclick="resetFlow()">重新描述</button>
+          <button class="btn-secondary" onclick="goToStage2()">改一下</button>
+          <button class="btn-primary" onclick="goToStage4()">✓ 建立 Dashboard</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAGE 4: Live Dashboard -->
+  <div class="stage" id="stage4">
+    <div class="dashboard-wrap">
+
+      <div class="saved-toast" id="savedToast" style="display:none;">已儲存 — 從首頁可以隨時開啟</div>
+
+      <div class="dashboard-head">
+        <div class="dash-title-block">
+          <div class="name" id="dashTitle">📊 本週健康狀況</div>
+          <div class="meta">4 widgets · 5 秒前生成 · Live monitoring</div>
+        </div>
+        <div class="dash-actions">
+          <button class="dash-btn">📤 分享</button>
+          <button class="dash-btn">📅 排程 email</button>
+          <button class="dash-btn primary" onclick="saveDashboard()">💾 儲存</button>
+        </div>
+      </div>
+
+      <div class="dash-grid" id="dashGrid">
+
+        <div class="widget">
+          <div class="widget-title">本週客戶數 <button class="widget-edit" title="用 AI 修改">✏</button></div>
+          <div class="kpi-num">847</div>
+          <div class="kpi-trend">↑ 12.4% (vs 上週)</div>
+        </div>
+
+        <div class="widget">
+          <div class="widget-title">本週 anomaly 數 <button class="widget-edit">✏</button></div>
+          <div class="kpi-num">23</div>
+          <div class="kpi-trend down">↓ 8% (vs 上週)</div>
+        </div>
+
+        <div class="widget">
+          <div class="widget-title">健康分數 <button class="widget-edit">✏</button></div>
+          <div class="kpi-num">87</div>
+          <div class="kpi-trend">↑ 3 分</div>
+        </div>
+
+        <div class="widget span-2">
+          <div class="widget-title">本週 anomaly 趨勢 <button class="widget-edit">✏</button></div>
+          <svg class="chart-svg" viewBox="0 0 600 90" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="gradA" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#ff6b35" stop-opacity="0.4"/>
+                <stop offset="100%" stop-color="#ff6b35" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path d="M0,70 L85,55 L170,65 L255,35 L340,50 L425,25 L510,40 L600,45 L600,90 L0,90 Z" fill="url(#gradA)"/>
+            <path d="M0,70 L85,55 L170,65 L255,35 L340,50 L425,25 L510,40 L600,45" stroke="#ff6b35" stroke-width="2" fill="none"/>
+            <g font-size="9" fill="#64748b" font-family="JetBrains Mono">
+              <text x="0" y="86">週一</text><text x="170" y="86">週三</text>
+              <text x="340" y="86">週五</text><text x="510" y="86">週日</text>
+            </g>
+          </svg>
+        </div>
+
+        <div class="widget">
+          <div class="widget-title">問題 site <button class="widget-edit">✏</button></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px;">
+            <div style="background:rgba(16,185,129,0.15);padding:8px;border-radius:6px;text-align:center;color:var(--text);">HQ<br><strong style="font-size:14px;">94</strong></div>
+            <div style="background:rgba(251,191,36,0.15);padding:8px;border-radius:6px;text-align:center;color:var(--text);">分公司<br><strong style="font-size:14px;">76</strong></div>
+            <div style="background:rgba(239,68,68,0.15);padding:8px;border-radius:6px;text-align:center;color:var(--text);">倉庫<br><strong style="font-size:14px;">62</strong></div>
+            <div style="background:rgba(16,185,129,0.15);padding:8px;border-radius:6px;text-align:center;color:var(--text);">Lab<br><strong style="font-size:14px;">91</strong></div>
+          </div>
+        </div>
+
+        <div class="widget span-3">
+          <div class="widget-title">Top 5 問題設備 <button class="widget-edit">✏</button></div>
+          <table class="table-w">
+            <thead><tr><th>設備</th><th>類型</th><th>狀態</th><th>建議</th></tr></thead>
+            <tbody>
+              <tr><td>AP-7F-N3</td><td>Sticky clients</td><td><span class="badge-mini bad">嚴重</span></td><td style="color:var(--cyan);">→ 降 TX power</td></tr>
+              <tr><td>SW-1F-Gi12</td><td>CRC errors</td><td><span class="badge-mini warn">注意</span></td><td style="color:var(--cyan);">→ 換線材</td></tr>
+              <tr><td>AP-3F-S2</td><td>低訊號</td><td><span class="badge-mini warn">注意</span></td><td style="color:var(--cyan);">→ 改位置</td></tr>
+              <tr><td>AP-2F-N1</td><td>Reboot loop</td><td><span class="badge-mini bad">嚴重</span></td><td style="color:var(--cyan);">→ 韌體升級</td></tr>
+              <tr><td>SW-2F-Gi24</td><td>埠 down</td><td><span class="badge-mini warn">注意</span></td><td style="color:var(--cyan);">→ 檢查連線</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <!-- Refine bar -->
+      <div class="refine-bar">
+        <span class="lead">💬</span>
+        <input id="refineInput" type="text" placeholder="想再加 / 改什麼？例如「再加一個會議室趨勢」「拿掉 health 分數」">
+        <button class="send" onclick="refineDashboard()">↑</button>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<button class="reset-btn" onclick="resetFlow()">↻ 重新開始</button>
+
+<script>
+let currentStage = 1;
+
+function setStep(n) {
+  currentStage = n;
+  // Update stages
+  document.querySelectorAll('.stage').forEach((s, i) => {
+    s.classList.toggle('active', i + 1 === n);
+  });
+  // Update step indicator
+  document.querySelectorAll('.step').forEach((s, i) => {
+    const stepNum = i + 1;
+    s.classList.toggle('active', stepNum === n);
+    s.classList.toggle('done', stepNum < n);
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function useExample(text) {
+  document.getElementById('promptInput').value = text;
+  goToStage2();
+}
+
+function goToStage2() {
+  const promptText = document.getElementById('promptInput').value.trim() || '我想看本週網路有沒有異常';
+  document.getElementById('userQuote').textContent = `「${promptText}」`;
+  setStep(2);
+
+  // Reset thinking steps
+  document.querySelectorAll('.thinking-step').forEach(s => {
+    s.classList.remove('active', 'done');
+  });
+
+  const statusEl = document.getElementById('thinkingStatus');
+  const steps = [
+    { selector: '[data-tstep="1"]', status: '解析意圖中...' },
+    { selector: '[data-tstep="2"]', status: '從 widget library 挑選...' },
+    { selector: '[data-tstep="3"]', status: '對應 telemetry 資料源...' },
+    { selector: '[data-tstep="4"]', status: '完成 layout 規劃...' },
+  ];
+
+  let i = 0;
+  function next() {
+    if (i > 0) {
+      const prev = document.querySelector(steps[i-1].selector);
+      prev.classList.remove('active');
+      prev.classList.add('done');
+    }
+    if (i < steps.length) {
+      const cur = document.querySelector(steps[i].selector);
+      cur.classList.add('active');
+      statusEl.textContent = steps[i].status;
+      i++;
+      setTimeout(next, 800);
+    } else {
+      statusEl.textContent = '✓ 完成！正在準備提案...';
+      setTimeout(() => goToStage3(), 600);
+    }
+  }
+  next();
+}
+
+function goToStage3() {
+  setStep(3);
+}
+
+function goToStage4() {
+  setStep(4);
+  // Animate widgets in
+  document.querySelectorAll('.dash-grid .widget').forEach((w, i) => {
+    w.style.animationDelay = (i * 0.08) + 's';
+  });
+}
+
+function saveDashboard() {
+  const toast = document.getElementById('savedToast');
+  toast.style.display = 'block';
+  setTimeout(() => {
+    toast.style.transition = 'opacity 0.3s';
+    toast.style.opacity = '0';
+    setTimeout(() => {
+      toast.style.display = 'none';
+      toast.style.opacity = '1';
+    }, 300);
+  }, 2500);
+}
+
+function refineDashboard() {
+  const refineText = document.getElementById('refineInput').value.trim();
+  if (!refineText) return;
+
+  // Add a new widget
+  const grid = document.getElementById('dashGrid');
+  const newWidget = document.createElement('div');
+  newWidget.className = 'widget';
+  newWidget.style.animation = 'widgetIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)';
+  newWidget.innerHTML = `
+    <div class="widget-title">${refineText.length > 24 ? refineText.slice(0,24)+'…' : refineText} <button class="widget-edit">✏</button></div>
+    <div class="kpi-num">42</div>
+    <div class="kpi-trend">↑ 已加入新 widget</div>
+  `;
+  grid.appendChild(newWidget);
+  document.getElementById('refineInput').value = '';
+
+  // Show toast
+  const toast = document.getElementById('savedToast');
+  toast.textContent = `✓ 已加入「${refineText.length > 30 ? refineText.slice(0,30)+'…' : refineText}」widget`;
+  toast.style.display = 'block';
+  setTimeout(() => {
+    toast.style.transition = 'opacity 0.3s';
+    toast.style.opacity = '0';
+    setTimeout(() => {
+      toast.style.display = 'none';
+      toast.style.opacity = '1';
+      toast.textContent = '已儲存 — 從首頁可以隨時開啟';
+    }, 300);
+  }, 2500);
+}
+
+function resetFlow() {
+  document.getElementById('promptInput').value = '';
+  document.getElementById('refineInput').value = '';
+  setStep(1);
+}
+
+// Keyboard
+document.addEventListener('keydown', (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+    if (currentStage === 1) goToStage2();
+    else if (currentStage === 4) refineDashboard();
+  }
+});
+</script>
+
+</body>
+</html>

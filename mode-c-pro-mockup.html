@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mode C · Pro Console — UI Mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-1: #0a1628;
+    --bg-2: #0f1e3a;
+    --bg-3: #050d1a;
+    --surface: rgba(255,255,255,0.04);
+    --surface-2: rgba(255,255,255,0.08);
+    --surface-3: rgba(255,255,255,0.12);
+    --border: rgba(255,255,255,0.10);
+    --border-strong: rgba(255,255,255,0.20);
+    --text: #f8fafc;
+    --muted: #cbd5e1;
+    --dim: #64748b;
+    --accent: #ff6b35;
+    --cyan: #00d9c5;
+    --good: #10b981;
+    --warn: #fbbf24;
+    --bad: #ef4444;
+    --purple: #a78bfa;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    height: 100%;
+    background: var(--bg-3);
+    color: var(--text);
+    font-family: 'Inter', 'Noto Sans TC', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+    font-size: 13px;
+  }
+
+  .mockup-banner {
+    height: 32px;
+    background: linear-gradient(90deg, rgba(167,139,250,0.15), rgba(255,107,53,0.10));
+    border-bottom: 1px solid rgba(167,139,250,0.3);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 16px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .mockup-banner strong { color: var(--purple); margin-right: 6px; }
+  .mockup-banner a {
+    color: var(--cyan); text-decoration: none; font-weight: 600;
+    padding: 4px 10px; border: 1px solid rgba(0,217,197,0.3); border-radius: 6px;
+  }
+  .mockup-banner a:hover { background: rgba(0,217,197,0.15); }
+
+  /* Pro Console layout */
+  .console {
+    height: calc(100vh - 32px);
+    display: grid;
+    grid-template-rows: 48px 44px 1fr 28px;
+    grid-template-columns: 220px 1fr;
+    grid-template-areas:
+      "topbar topbar"
+      "tabs tabs"
+      "sidebar main"
+      "statusbar statusbar";
+    background: var(--bg-1);
+  }
+
+  /* TOP BAR */
+  .topbar {
+    grid-area: topbar;
+    background: var(--bg-2);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; padding: 0 16px;
+    gap: 14px;
+  }
+  .brand {
+    font-weight: 800; font-size: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .brand .dot { width: 7px; height: 7px; background: var(--purple); border-radius: 50%; }
+  .brand .accent { color: var(--purple); }
+  .brand .pro-tag {
+    background: rgba(167,139,250,0.15);
+    color: var(--purple);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    margin-left: 4px;
+  }
+  .org-switcher {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 12px;
+    color: var(--muted);
+    cursor: pointer;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .org-switcher .arrow { color: var(--dim); font-size: 10px; }
+  .cmdk-bar {
+    flex: 1;
+    max-width: 420px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 12px;
+    display: flex; align-items: center; gap: 10px;
+    color: var(--dim);
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .cmdk-bar:hover { background: var(--surface-2); }
+  .cmdk-bar .kbd {
+    margin-left: auto;
+    background: var(--surface-2);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+  }
+  .topbar-actions {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .icon-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    width: 30px; height: 30px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: inherit;
+    display: inline-flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .icon-btn:hover { background: var(--surface-2); color: var(--text); }
+  .icon-btn .badge {
+    position: absolute; top: -4px; right: -4px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 9px; font-weight: 700;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .user-pill {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 10px 4px 6px;
+    font-size: 12px;
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .user-avatar {
+    width: 22px; height: 22px;
+    background: linear-gradient(135deg, var(--purple), var(--cyan));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  /* TABS */
+  .tabs {
+    grid-area: tabs;
+    background: var(--bg-2);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center;
+    padding: 0 16px;
+    gap: 2px;
+  }
+  .tab {
+    padding: 10px 16px;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    display: flex; align-items: center; gap: 8px;
+    transition: all 0.15s;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active {
+    color: var(--purple);
+    border-bottom-color: var(--purple);
+  }
+  .tab .count {
+    background: var(--surface-2);
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 999px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .tab.active .count { background: rgba(167,139,250,0.2); color: var(--purple); }
+
+  /* SIDEBAR (filters / sites tree) */
+  .sidebar {
+    grid-area: sidebar;
+    background: var(--bg-2);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    padding: 14px 10px;
+  }
+  .sb-section { margin-bottom: 18px; }
+  .sb-section-title {
+    color: var(--dim);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 0 8px 6px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .sb-section-title .add {
+    color: var(--cyan);
+    cursor: pointer;
+    font-size: 12px;
+  }
+  .sb-tree-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 5px 8px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 12.5px;
+  }
+  .sb-tree-item:hover { background: var(--surface); color: var(--text); }
+  .sb-tree-item.active { background: rgba(167,139,250,0.10); color: var(--purple); font-weight: 600; }
+  .sb-tree-item .ico { font-size: 11px; flex-shrink: 0; color: var(--dim); }
+  .sb-tree-item .count {
+    margin-left: auto;
+    color: var(--dim);
+    font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .sb-tree-item.indent { padding-left: 24px; }
+
+  .filter-input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-family: inherit;
+    margin-bottom: 8px;
+  }
+  .filter-input::placeholder { color: var(--dim); }
+
+  .filter-chip {
+    display: inline-block;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 3px 9px;
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
+    margin: 2px;
+  }
+  .filter-chip:hover { color: var(--text); }
+  .filter-chip.active { background: rgba(167,139,250,0.15); color: var(--purple); border-color: rgba(167,139,250,0.3); }
+
+  /* MAIN */
+  .main {
+    grid-area: main;
+    overflow: auto;
+    background: var(--bg-1);
+  }
+
+  .toolbar {
+    background: var(--bg-2);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .toolbar .left { display: flex; align-items: center; gap: 8px; }
+  .toolbar .right { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+  .pill-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 5px 11px;
+    border-radius: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .pill-btn:hover { background: var(--surface-2); }
+  .pill-btn.primary { background: var(--purple); border-color: var(--purple); color: #fff; }
+  .pill-btn.primary:hover { background: #9272f7; }
+  .pill-btn.ghost { background: transparent; }
+  .pill-btn .kbd {
+    background: var(--surface-2);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--dim);
+    margin-left: 4px;
+  }
+
+  .selection-bar {
+    background: rgba(167,139,250,0.10);
+    border-bottom: 1px solid rgba(167,139,250,0.3);
+    padding: 8px 16px;
+    display: none;
+    align-items: center;
+    gap: 12px;
+    color: var(--purple);
+    font-size: 12px;
+  }
+  .selection-bar.show { display: flex; }
+  .selection-bar .count { font-weight: 700; }
+  .selection-bar .actions { margin-left: auto; display: flex; gap: 6px; }
+  .selection-bar .pill-btn { background: rgba(167,139,250,0.15); border-color: rgba(167,139,250,0.3); color: var(--purple); }
+  .selection-bar .pill-btn:hover { background: rgba(167,139,250,0.25); }
+
+  /* DATA TABLE */
+  .data-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 12.5px;
+  }
+  .data-table thead {
+    position: sticky;
+    top: 0;
+    background: var(--bg-2);
+    z-index: 5;
+  }
+  .data-table th {
+    text-align: left;
+    padding: 8px 12px;
+    font-size: 10px;
+    color: var(--dim);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border-strong);
+    white-space: nowrap;
+  }
+  .data-table th.sortable { cursor: pointer; }
+  .data-table th.sortable:hover { color: var(--text); }
+  .data-table th.sortable::after { content: ' ↕'; color: var(--dim); }
+  .data-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: middle;
+  }
+  .data-table tr.selected td { background: rgba(167,139,250,0.06); }
+  .data-table tr:hover td { background: var(--surface); }
+  .data-table input[type="checkbox"] {
+    accent-color: var(--purple);
+    cursor: pointer;
+  }
+  .row-actions {
+    color: var(--dim);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .row-actions:hover { background: var(--surface-2); color: var(--text); }
+
+  .status-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .status-pill::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+  }
+  .status-pill.healthy { background: rgba(16,185,129,0.10); color: var(--good); }
+  .status-pill.healthy::before { background: var(--good); }
+  .status-pill.warn { background: rgba(251,191,36,0.10); color: var(--warn); }
+  .status-pill.warn::before { background: var(--warn); }
+  .status-pill.bad { background: rgba(239,68,68,0.10); color: var(--bad); }
+  .status-pill.bad::before { background: var(--bad); }
+  .status-pill.offline { background: var(--surface-2); color: var(--dim); }
+  .status-pill.offline::before { background: var(--dim); }
+
+  .num-cell {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .num-cell.bad { color: var(--bad); }
+  .num-cell.warn { color: var(--warn); }
+  .num-cell.dim { color: var(--dim); }
+
+  .mini-spark {
+    height: 18px; width: 60px;
+  }
+
+  /* AI AGENT FLOATING PANEL */
+  .ai-agent-trigger {
+    position: fixed;
+    bottom: 50px; right: 20px;
+    background: linear-gradient(135deg, var(--purple), var(--cyan));
+    border: none;
+    color: #fff;
+    width: 50px; height: 50px;
+    border-radius: 50%;
+    font-size: 22px;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(167,139,250,0.4);
+    z-index: 50;
+    transition: transform 0.2s;
+    font-family: inherit;
+  }
+  .ai-agent-trigger:hover { transform: scale(1.08); }
+
+  .ai-agent {
+    position: fixed;
+    top: 80px; right: 20px;
+    bottom: 50px;
+    width: 380px;
+    background: var(--bg-2);
+    border: 1px solid var(--border-strong);
+    border-radius: 14px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    display: none;
+    flex-direction: column;
+    z-index: 60;
+    overflow: hidden;
+  }
+  .ai-agent.show { display: flex; }
+  .ai-agent-head {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(135deg, rgba(167,139,250,0.12), rgba(0,217,197,0.05));
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .ai-agent-title {
+    display: flex; align-items: center; gap: 8px;
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .ai-agent-title .pulse {
+    width: 7px; height: 7px;
+    background: var(--cyan);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .ai-close {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    width: 26px; height: 26px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: inherit;
+  }
+  .ai-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px 18px;
+    font-size: 13px;
+  }
+  .ai-section { margin-bottom: 18px; }
+  .ai-section-label {
+    color: var(--dim);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .ai-action {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-bottom: 6px;
+    font-size: 12px;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .ai-action:hover {
+    background: var(--surface-2);
+    color: var(--text);
+    border-color: var(--purple);
+  }
+  .ai-action .ico { font-size: 14px; flex-shrink: 0; color: var(--purple); }
+  .ai-input-wrap {
+    border-top: 1px solid var(--border);
+    padding: 12px 16px;
+    display: flex; gap: 8px;
+    background: var(--bg-2);
+  }
+  .ai-input-wrap input {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 12px;
+  }
+  .ai-input-wrap input:focus { outline: none; border-color: var(--purple); }
+  .ai-input-wrap .send {
+    background: var(--purple);
+    border: none;
+    color: #fff;
+    width: 34px; height: 34px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  /* STATUS BAR */
+  .statusbar {
+    grid-area: statusbar;
+    background: var(--bg-2);
+    border-top: 1px solid var(--border);
+    padding: 0 16px;
+    display: flex; align-items: center; gap: 16px;
+    font-size: 11px;
+    color: var(--dim);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .statusbar .item { display: flex; align-items: center; gap: 6px; }
+  .statusbar .item .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--good);
+  }
+  .statusbar .right { margin-left: auto; display: flex; gap: 16px; }
+
+  /* CMDK MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(8px);
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    z-index: 1000;
+    padding-top: 15vh;
+  }
+  .modal-overlay.show { display: flex; animation: fadeIn 0.2s ease; }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  .cmdk {
+    background: var(--bg-2);
+    border: 1px solid var(--border-strong);
+    border-radius: 14px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+    width: 600px; max-width: calc(100vw - 40px);
+    overflow: hidden;
+  }
+  .cmdk-input-wrap {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .cmdk-input-wrap input {
+    flex: 1;
+    background: transparent; border: none; outline: none;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 15px;
+  }
+  .cmdk-input-wrap .esc {
+    background: var(--surface-2); color: var(--muted);
+    padding: 3px 8px; border-radius: 5px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  }
+  .cmdk-results { padding: 8px; max-height: 400px; overflow-y: auto; }
+  .cmdk-section { padding: 8px 12px 4px; color: var(--dim); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700; }
+  .cmdk-item {
+    padding: 9px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 13px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .cmdk-item:hover { background: var(--surface); color: var(--text); }
+  .cmdk-item .ico { font-size: 13px; flex-shrink: 0; }
+  .cmdk-item .desc { color: var(--dim); font-size: 11px; margin-left: auto; font-family: 'JetBrains Mono', monospace; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 50px; left: 50%;
+    transform: translateX(-50%);
+    background: rgba(167,139,250,0.15);
+    border: 1px solid rgba(167,139,250,0.5);
+    color: var(--purple);
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    z-index: 200;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="mockup-banner">
+  <span><strong>📌 MOCKUP</strong>Mode C Pro Console · MSP / 進階用戶介面</span>
+  <a href="mockup-gallery.html">← 回 Mockup 列表</a>
+</div>
+
+<div class="console">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="dot"></span>
+      <span>NetSense <span class="accent">AI</span></span>
+      <span class="pro-tag">PRO</span>
+    </div>
+
+    <div class="org-switcher">
+      <span>🏢 Acme MSP</span>
+      <span class="arrow">▾</span>
+    </div>
+
+    <div class="cmdk-bar" onclick="openCmdK()">
+      <span>🔍</span>
+      <span>跨 site 搜尋 / 命令 / 跑 playbook…</span>
+      <span class="kbd">⌘K</span>
+    </div>
+
+    <div class="topbar-actions">
+      <button class="icon-btn" title="Pending approvals">⏳<span class="badge">7</span></button>
+      <button class="icon-btn" title="Activity">📊</button>
+      <button class="icon-btn" title="API keys">🔑</button>
+      <button class="icon-btn" title="Settings">⚙</button>
+      <div class="user-pill">
+        <div class="user-avatar">C</div>
+        <span>Chen · Sr. Eng</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- TABS -->
+  <nav class="tabs">
+    <div class="tab active" onclick="setTab(this,'sites')">📍 Sites <span class="count">28</span></div>
+    <div class="tab" onclick="setTab(this,'devices')">🛰 Devices <span class="count">412</span></div>
+    <div class="tab" onclick="setTab(this,'playbooks')">📘 Playbooks <span class="count">23</span></div>
+    <div class="tab" onclick="setTab(this,'approvals')">⏳ Approvals <span class="count">7</span></div>
+    <div class="tab" onclick="setTab(this,'audit')">📜 Audit Log</div>
+    <div class="tab" onclick="setTab(this,'api')">🔌 API</div>
+  </nav>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+
+    <div class="sb-section">
+      <div class="sb-section-title">🔍 篩選</div>
+      <input class="filter-input" placeholder="搜尋 site…">
+      <div>
+        <span class="filter-chip active">全部 (28)</span>
+        <span class="filter-chip">健康 (19)</span>
+        <span class="filter-chip">警告 (6)</span>
+        <span class="filter-chip">嚴重 (2)</span>
+        <span class="filter-chip">離線 (1)</span>
+      </div>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-section-title"><span>📁 客戶分組</span><span class="add">+</span></div>
+      <div class="sb-tree-item active"><span class="ico">▾</span><span>Tier 1 客戶</span><span class="count">12</span></div>
+      <div class="sb-tree-item indent"><span class="ico">●</span><span>Acme Corp</span><span class="count">5</span></div>
+      <div class="sb-tree-item indent"><span class="ico">●</span><span>BigCo</span><span class="count">4</span></div>
+      <div class="sb-tree-item indent"><span class="ico">●</span><span>TechStart</span><span class="count">3</span></div>
+      <div class="sb-tree-item"><span class="ico">▸</span><span>Tier 2 客戶</span><span class="count">11</span></div>
+      <div class="sb-tree-item"><span class="ico">▸</span><span>Trial / 試用</span><span class="count">5</span></div>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-section-title"><span>🏷 標籤</span><span class="add">+</span></div>
+      <div class="sb-tree-item"><span class="ico">●</span><span>SLA-critical</span><span class="count">6</span></div>
+      <div class="sb-tree-item"><span class="ico">●</span><span>auto-remediate</span><span class="count">14</span></div>
+      <div class="sb-tree-item"><span class="ico">●</span><span>maintenance</span><span class="count">2</span></div>
+    </div>
+
+    <div class="sb-section">
+      <div class="sb-section-title">⚡ 已存搜尋</div>
+      <div class="sb-tree-item"><span class="ico">⭐</span><span>過載 AP all</span></div>
+      <div class="sb-tree-item"><span class="ico">⭐</span><span>本月新異常</span></div>
+      <div class="sb-tree-item"><span class="ico">⭐</span><span>待汰換設備</span></div>
+    </div>
+
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="left">
+        <button class="pill-btn primary" onclick="openCmdK()">+ 新動作 <span class="kbd">⌘K</span></button>
+        <button class="pill-btn">📤 匯出</button>
+        <button class="pill-btn ghost">🔄 自動刷新 ON</button>
+      </div>
+      <div class="right">
+        <span style="color:var(--dim); font-size:11px;">28 sites · 即時</span>
+        <button class="pill-btn ghost">⚙ 欄位</button>
+        <button class="pill-btn ghost">⚏ 視圖</button>
+      </div>
+    </div>
+
+    <!-- Selection bar (hidden by default) -->
+    <div class="selection-bar" id="selectionBar">
+      <span>已選 <span class="count" id="selectedCount">0</span> 個 sites</span>
+      <div class="actions">
+        <button class="pill-btn" onclick="bulkAction('push_config')">📤 套用設定</button>
+        <button class="pill-btn" onclick="bulkAction('run_playbook')">▶ 跑 playbook</button>
+        <button class="pill-btn" onclick="bulkAction('schedule_report')">📅 排程報告</button>
+        <button class="pill-btn" onclick="bulkAction('tag')">🏷 加標籤</button>
+        <button class="pill-btn ghost" onclick="clearSelection()">✗ 取消</button>
+      </div>
+    </div>
+
+    <!-- Sites table -->
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th style="width:32px;"><input type="checkbox" id="selectAll" onclick="toggleAll(this)"></th>
+          <th class="sortable" style="width:20%;">Site</th>
+          <th class="sortable" style="width:13%;">Customer</th>
+          <th class="sortable">狀態</th>
+          <th class="sortable">設備</th>
+          <th class="sortable">Anomalies (24h)</th>
+          <th class="sortable">健康分數</th>
+          <th class="sortable">7-day trend</th>
+          <th>最後動作</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="sitesBody">
+        <!-- rows added by JS -->
+      </tbody>
+    </table>
+
+  </main>
+
+  <!-- STATUS BAR -->
+  <div class="statusbar">
+    <div class="item"><span class="dot"></span><span>API: connected</span></div>
+    <div class="item"><span>Polling: 5s</span></div>
+    <div class="item"><span>Cache hit: 89%</span></div>
+    <div class="right">
+      <div class="item"><span>v2.4.1</span></div>
+      <div class="item"><span>©2026 NetSense</span></div>
+      <div class="item"><span>Cmd+K · Cmd+/</span></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- AI Agent floating button -->
+<button class="ai-agent-trigger" onclick="toggleAgent()" title="AI Agent">🤖</button>
+
+<!-- AI Agent Panel -->
+<div class="ai-agent" id="aiAgent">
+  <div class="ai-agent-head">
+    <div class="ai-agent-title"><span class="pulse"></span> AI Agent · Pro</div>
+    <button class="ai-close" onclick="toggleAgent()">×</button>
+  </div>
+  <div class="ai-body">
+    <div class="ai-section">
+      <div class="ai-section-label">⚡ Quick Actions</div>
+      <div class="ai-action" onclick="runAction('Run diagnose_sticky_client on selected')">
+        <span class="ico">▶</span><span>對 selected sites 跑 diagnose_sticky_client</span>
+      </div>
+      <div class="ai-action" onclick="runAction('Generate weekly health report')">
+        <span class="ico">📊</span><span>生成本週 health report (cross-site)</span>
+      </div>
+      <div class="ai-action" onclick="runAction('Find anomalies pattern')">
+        <span class="ico">🔍</span><span>找出本週異常 pattern</span>
+      </div>
+      <div class="ai-action" onclick="runAction('Suggest auto-remediation rules')">
+        <span class="ico">💡</span><span>建議 auto-remediation 規則</span>
+      </div>
+    </div>
+
+    <div class="ai-section">
+      <div class="ai-section-label">📜 最近活動</div>
+      <div style="font-size:11px;color:var(--muted);line-height:1.7;">
+        <div style="padding:6px 0;border-bottom:1px solid var(--border);">
+          <span style="color:var(--dim);font-family:'JetBrains Mono';">11:42</span> — 對 5 sites 套用 IGMP fix（自動 rollback ON）
+        </div>
+        <div style="padding:6px 0;border-bottom:1px solid var(--border);">
+          <span style="color:var(--dim);font-family:'JetBrains Mono';">10:30</span> — 跑 sticky_client@Acme + BigCo (12 fix 建議)
+        </div>
+        <div style="padding:6px 0;">
+          <span style="color:var(--dim);font-family:'JetBrains Mono';">09:15</span> — 排程週報生成 ✓
+        </div>
+      </div>
+    </div>
+
+    <div class="ai-section">
+      <div class="ai-section-label">🧱 Custom Skills (3)</div>
+      <div class="ai-action"><span class="ico">📘</span><span>acme_special_diagnose.yaml</span></div>
+      <div class="ai-action"><span class="ico">📘</span><span>warehouse_iot_check.yaml</span></div>
+      <div class="ai-action"><span class="ico">📘</span><span>+ 新增 custom playbook</span></div>
+    </div>
+  </div>
+  <div class="ai-input-wrap">
+    <input type="text" placeholder="跟 AI 說話 / 跑命令…" onkeypress="if(event.key==='Enter')aiSend(this)">
+    <button class="send" onclick="aiSend()">↑</button>
+  </div>
+</div>
+
+<!-- CMDK -->
+<div class="modal-overlay" id="cmdkModal" onclick="if(event.target===this)closeCmdK()">
+  <div class="cmdk">
+    <div class="cmdk-input-wrap">
+      <span style="color:var(--purple);font-size:18px;">⌘</span>
+      <input type="text" placeholder="搜尋 / 命令 / 跑 playbook…" autofocus>
+      <span class="esc">Esc</span>
+    </div>
+    <div class="cmdk-results">
+      <div class="cmdk-section">📍 跳到 SITE</div>
+      <div class="cmdk-item"><span class="ico">🏢</span><span>Acme Corp / HQ</span><span class="desc">→ enter</span></div>
+      <div class="cmdk-item"><span class="ico">🏢</span><span>BigCo / Tokyo</span><span class="desc">→ enter</span></div>
+
+      <div class="cmdk-section">▶ 跑 PLAYBOOK</div>
+      <div class="cmdk-item"><span class="ico">📘</span><span>diagnose_sticky_client</span><span class="desc">on selection</span></div>
+      <div class="cmdk-item"><span class="ico">📘</span><span>diagnose_lan_discovery</span><span class="desc">on selection</span></div>
+      <div class="cmdk-item"><span class="ico">📘</span><span>narrate_anomalies</span><span class="desc">on selection</span></div>
+
+      <div class="cmdk-section">⚙ 動作</div>
+      <div class="cmdk-item"><span class="ico">📤</span><span>套用 config 到 selected</span><span class="desc">⌘⇧P</span></div>
+      <div class="cmdk-item"><span class="ico">📅</span><span>排程週報</span></div>
+      <div class="cmdk-item"><span class="ico">🔌</span><span>產生 API key</span></div>
+      <div class="cmdk-item"><span class="ico">📜</span><span>看 audit log</span></div>
+
+      <div class="cmdk-section">💬 問 AI</div>
+      <div class="cmdk-item"><span class="ico">🤖</span><span>「show top 10 sites by churn」</span></div>
+      <div class="cmdk-item"><span class="ico">🤖</span><span>「find pattern in this week's anomalies」</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// Site data
+const sites = [
+  { name:'Acme Corp / HQ', cust:'Acme Corp', status:'healthy', devices:47, anomalies:2, score:94, trend:'up', last:'IGMP fix · 12 min ago' },
+  { name:'Acme Corp / Branch', cust:'Acme Corp', status:'warn', devices:18, anomalies:5, score:76, trend:'down', last:'sticky_client run · 30 min' },
+  { name:'BigCo / Tokyo', cust:'BigCo', status:'bad', devices:32, anomalies:11, score:62, trend:'down', last:'manual review · 1h' },
+  { name:'BigCo / Singapore', cust:'BigCo', status:'healthy', devices:24, anomalies:1, score:91, trend:'up', last:'auto IGMP · yesterday' },
+  { name:'BigCo / Seoul', cust:'BigCo', status:'healthy', devices:21, anomalies:3, score:88, trend:'flat', last:'config push · 2 days' },
+  { name:'TechStart / Office', cust:'TechStart', status:'warn', devices:9, anomalies:4, score:73, trend:'down', last:'TX power tune · 3h' },
+  { name:'TechStart / Lab', cust:'TechStart', status:'healthy', devices:6, anomalies:0, score:97, trend:'up', last:'no actions · 1 week' },
+  { name:'TechStart / Remote', cust:'TechStart', status:'offline', devices:3, anomalies:0, score:0, trend:'flat', last:'lost contact · 2h' },
+  { name:'Acme Corp / DR Site', cust:'Acme Corp', status:'healthy', devices:14, anomalies:0, score:100, trend:'flat', last:'(test mode)' },
+];
+
+// Render rows
+const tbody = document.getElementById('sitesBody');
+sites.forEach((s, i) => {
+  const tr = document.createElement('tr');
+  tr.dataset.idx = i;
+
+  const trendSvg = s.trend === 'up'
+    ? '<svg class="mini-spark" viewBox="0 0 60 18"><path d="M0,14 L15,12 L30,8 L45,5 L60,3" stroke="#10b981" stroke-width="1.5" fill="none"/></svg>'
+    : s.trend === 'down'
+    ? '<svg class="mini-spark" viewBox="0 0 60 18"><path d="M0,4 L15,7 L30,10 L45,13 L60,15" stroke="#ef4444" stroke-width="1.5" fill="none"/></svg>'
+    : '<svg class="mini-spark" viewBox="0 0 60 18"><path d="M0,9 L15,8 L30,10 L45,9 L60,9" stroke="#94a3b8" stroke-width="1.5" fill="none"/></svg>';
+
+  const statusClass = s.status;
+  const statusLabel = { healthy:'健康', warn:'警告', bad:'嚴重', offline:'離線' }[s.status];
+  const anomClass = s.anomalies >= 8 ? 'bad' : s.anomalies >= 3 ? 'warn' : '';
+  const scoreClass = s.score >= 85 ? '' : s.score >= 70 ? 'warn' : 'bad';
+
+  tr.innerHTML = `
+    <td><input type="checkbox" onclick="toggleRow(${i}, this)"></td>
+    <td><strong>${s.name}</strong></td>
+    <td style="color:var(--muted);">${s.cust}</td>
+    <td><span class="status-pill ${statusClass}">${statusLabel}</span></td>
+    <td class="num-cell">${s.devices}</td>
+    <td class="num-cell ${anomClass}">${s.anomalies}</td>
+    <td class="num-cell ${scoreClass}">${s.score}</td>
+    <td>${trendSvg}</td>
+    <td style="color:var(--muted);font-size:11px;">${s.last}</td>
+    <td><span class="row-actions">⋯</span></td>
+  `;
+  tbody.appendChild(tr);
+});
+
+let selectedRows = new Set();
+
+function toggleRow(idx, checkbox) {
+  if (checkbox.checked) selectedRows.add(idx);
+  else selectedRows.delete(idx);
+  updateSelectionUI();
+}
+
+function toggleAll(cb) {
+  document.querySelectorAll('#sitesBody input[type="checkbox"]').forEach((c, i) => {
+    c.checked = cb.checked;
+    if (cb.checked) selectedRows.add(i);
+    else selectedRows.delete(i);
+  });
+  updateSelectionUI();
+}
+
+function updateSelectionUI() {
+  const count = selectedRows.size;
+  const bar = document.getElementById('selectionBar');
+  document.getElementById('selectedCount').textContent = count;
+  bar.classList.toggle('show', count > 0);
+  // Highlight selected rows
+  document.querySelectorAll('#sitesBody tr').forEach((tr, i) => {
+    tr.classList.toggle('selected', selectedRows.has(i));
+  });
+}
+
+function clearSelection() {
+  selectedRows.clear();
+  document.querySelectorAll('#sitesBody input[type="checkbox"]').forEach(c => c.checked = false);
+  document.getElementById('selectAll').checked = false;
+  updateSelectionUI();
+}
+
+function bulkAction(action) {
+  const labels = {
+    push_config: '套用 config 到',
+    run_playbook: '跑 playbook 在',
+    schedule_report: '排程報告對',
+    tag: '加標籤到',
+  };
+  showToast(`⏳ 已送出：對 ${selectedRows.size} sites ${labels[action]} (mockup · 不會真執行)`);
+}
+
+function setTab(el, name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  showToast(`切換到 ${el.textContent.trim()} (mockup)`);
+}
+
+function openCmdK() {
+  document.getElementById('cmdkModal').classList.add('show');
+  setTimeout(() => document.querySelector('#cmdkModal input').focus(), 50);
+}
+function closeCmdK() {
+  document.getElementById('cmdkModal').classList.remove('show');
+}
+
+function toggleAgent() {
+  document.getElementById('aiAgent').classList.toggle('show');
+}
+
+function runAction(label) {
+  showToast(`▶ ${label}`);
+}
+
+function aiSend(input) {
+  const el = input || document.querySelector('.ai-input-wrap input');
+  const text = el.value.trim();
+  if (!text) return;
+  showToast(`🤖 AI 收到：「${text}」`);
+  el.value = '';
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openCmdK(); }
+  if (e.key === 'Escape') {
+    if (document.getElementById('cmdkModal').classList.contains('show')) closeCmdK();
+    else if (document.getElementById('aiAgent').classList.contains('show')) toggleAgent();
+  }
+});
+</script>
+
+</body>
+</html>

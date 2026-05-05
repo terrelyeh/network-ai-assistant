@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NetSense AI — Architecture v2.0 (Interactive)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-1: #0a1628;
+    --bg-2: #0f1e3a;
+    --bg-3: #050d1a;
+    --surface: rgba(255,255,255,0.04);
+    --surface-2: rgba(255,255,255,0.08);
+    --border: rgba(255,255,255,0.12);
+    --border-strong: rgba(255,255,255,0.22);
+    --text: #f8fafc;
+    --muted: #cbd5e1;
+    --dim: #64748b;
+    --accent: #ff6b35;
+    --cyan: #00d9c5;
+    --good: #10b981;
+    --warn: #fbbf24;
+    --bad: #ef4444;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding: 40px 32px;
+  }
+
+  header {
+    max-width: 1640px;
+    margin: 0 auto 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  header .left .tag {
+    color: var(--accent);
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  header h1 {
+    font-size: 36px; font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  header h1 .accent { color: var(--accent); }
+  header .sub {
+    color: var(--muted);
+    margin-top: 6px;
+    font-size: 15px;
+  }
+  header .hint {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 18px;
+    color: var(--muted);
+    font-size: 13px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  header .nav-area { display: flex; flex-direction: column; align-items: end; gap: 10px; }
+  header .nav-links { display: flex; gap: 10px; }
+  header .nav-link {
+    color: var(--cyan);
+    text-decoration: none;
+    font-size: 14px; font-weight: 600;
+    padding: 9px 16px;
+    background: rgba(0,217,197,0.08);
+    border: 1px solid rgba(0,217,197,0.35);
+    border-radius: 8px;
+    transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  header .nav-link:hover {
+    background: rgba(0,217,197,0.18);
+    border-color: var(--cyan);
+    transform: translateY(-1px);
+  }
+  header .nav-link.lang {
+    color: var(--muted);
+    background: var(--surface);
+    border-color: var(--border-strong);
+  }
+  header .nav-link.lang:hover {
+    background: var(--surface-2);
+    color: var(--text);
+  }
+  header .hint .pulse {
+    width: 8px; height: 8px;
+    background: var(--cyan); border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.3); }
+  }
+
+  .canvas {
+    max-width: 1640px;
+    margin: 0 auto;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+  }
+
+  svg { width: 100%; height: auto; display: block; }
+
+  /* SVG element styles */
+  .layer-bg { fill: rgba(255,255,255,0.025); stroke: var(--border); stroke-width: 1; rx: 14; }
+  .layer-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.2em;
+    fill: var(--accent);
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+  .layer-sub {
+    font-size: 12px;
+    fill: var(--dim);
+    pointer-events: none;
+  }
+
+  .node {
+    fill: rgba(255,255,255,0.05);
+    stroke: var(--border-strong);
+    stroke-width: 1.2;
+    rx: 10;
+  }
+  .node-cyan {
+    fill: rgba(0,217,197,0.10);
+    stroke: rgba(0,217,197,0.4);
+    stroke-width: 1.5;
+    rx: 10;
+  }
+  .node-engine {
+    fill: rgba(255,255,255,0.07);
+    stroke: var(--cyan);
+    stroke-width: 1.5;
+    rx: 12;
+  }
+  .node-mcp {
+    fill: rgba(0,217,197,0.08);
+    stroke: var(--cyan);
+    stroke-width: 1.5;
+    rx: 12;
+  }
+
+  .ring-0 { fill: rgba(16,185,129,0.12); stroke: rgba(16,185,129,0.5); stroke-width: 1.2; rx: 8; }
+  .ring-1 { fill: rgba(251,191,36,0.12); stroke: rgba(251,191,36,0.5); stroke-width: 1.2; rx: 8; }
+  .ring-2 { fill: rgba(239,68,68,0.12); stroke: rgba(239,68,68,0.5); stroke-width: 1.2; rx: 8; }
+
+  .label-title {
+    font-size: 14px; font-weight: 700;
+    fill: var(--text);
+    pointer-events: none;
+  }
+  .label-sub {
+    font-size: 11px;
+    fill: var(--muted);
+    pointer-events: none;
+  }
+  .label-mono {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    fill: var(--muted);
+    pointer-events: none;
+  }
+  .ring-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.1em;
+    pointer-events: none;
+  }
+  .ring-label-0 { fill: var(--good); }
+  .ring-label-1 { fill: var(--warn); }
+  .ring-label-2 { fill: var(--bad); }
+
+  .star {
+    font-size: 11px; font-weight: 800;
+    fill: var(--cyan);
+    pointer-events: none;
+  }
+
+  /* Arrows */
+  .flow-main { stroke: rgba(255,255,255,0.45); stroke-width: 2; fill: none; }
+  .flow-async { stroke: var(--cyan); stroke-width: 2; fill: none; stroke-dasharray: 6 4; }
+  .flow-approval { stroke: var(--accent); stroke-width: 2; fill: none; stroke-dasharray: 4 3; }
+  .flow-audit { stroke: rgba(255,255,255,0.3); stroke-width: 1.5; fill: none; stroke-dasharray: 2 3; }
+
+  /* Clickable groups */
+  .clickable {
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .clickable:hover {
+    filter: brightness(1.4) drop-shadow(0 0 6px rgba(0,217,197,0.3));
+  }
+  .clickable.active rect:first-of-type {
+    stroke: var(--cyan) !important;
+    stroke-width: 2.5 !important;
+  }
+
+  /* Tooltip on hover */
+  .tooltip {
+    position: fixed;
+    background: var(--bg-3);
+    border: 1px solid var(--cyan);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 12px;
+    color: var(--text);
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 0.15s, transform 0.15s;
+    z-index: 200;
+    white-space: nowrap;
+    font-weight: 500;
+  }
+  .tooltip.show { opacity: 1; transform: translateY(0); }
+  .tooltip::after {
+    content: '';
+    position: absolute;
+    bottom: -5px; left: 12px;
+    width: 0; height: 0;
+    border: 5px solid transparent;
+    border-top-color: var(--cyan);
+    border-bottom: 0;
+  }
+
+  /* ============================================================
+     RIGHT PANEL
+     ============================================================ */
+  .panel {
+    position: fixed;
+    top: 0; right: 0;
+    width: 480px;
+    max-width: 90vw;
+    height: 100vh;
+    background: linear-gradient(180deg, var(--bg-2) 0%, var(--bg-1) 100%);
+    border-left: 1px solid var(--border-strong);
+    box-shadow: -20px 0 60px rgba(0,0,0,0.5);
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    z-index: 100;
+    overflow-y: auto;
+    padding: 32px 32px 60px;
+  }
+  .panel.open { transform: translateX(0); }
+
+  .panel-close {
+    position: absolute;
+    top: 20px; right: 20px;
+    width: 36px; height: 36px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .panel-close:hover {
+    background: var(--surface-2);
+    transform: rotate(90deg);
+  }
+
+  .panel-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.15em;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+  .panel-title {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 24px;
+  }
+  .panel-title .new {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 3px 8px;
+    background: rgba(0,217,197,0.15);
+    border: 1px solid rgba(0,217,197,0.4);
+    color: var(--cyan);
+    font-size: 11px;
+    border-radius: 4px;
+    vertical-align: middle;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+  }
+
+  .analogy-box {
+    background: linear-gradient(135deg, rgba(255,107,53,0.12), rgba(0,217,197,0.08));
+    border: 1px solid rgba(255,107,53,0.3);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 28px;
+  }
+  .analogy-label {
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .analogy-text {
+    font-size: 16px;
+    line-height: 1.5;
+    font-style: italic;
+    color: var(--text);
+  }
+
+  .panel-section { margin-bottom: 24px; }
+  .panel-section h3 {
+    font-size: 12px;
+    color: var(--cyan);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .panel-section p {
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .panel-section .example {
+    background: var(--surface);
+    border-left: 3px solid var(--cyan);
+    padding: 10px 14px;
+    border-radius: 0 6px 6px 0;
+    color: var(--muted);
+    font-size: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1.5;
+  }
+
+  .panel-empty {
+    padding: 60px 20px;
+    text-align: center;
+    color: var(--muted);
+  }
+  .panel-empty .icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.6;
+  }
+  .panel-empty h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+  .panel-empty p {
+    line-height: 1.55;
+    font-size: 14px;
+  }
+  .panel-empty .key-hint {
+    display: inline-block;
+    margin: 4px;
+    padding: 3px 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text);
+  }
+
+  /* Legend */
+  .legend {
+    max-width: 1640px;
+    margin: 28px auto 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 28px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+  .legend h3 {
+    font-size: 13px; font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .legend-grid { display: grid; gap: 8px; }
+  .legend-item {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .legend-item strong { color: var(--text); margin-right: 4px; }
+  .swatch {
+    width: 36px; height: 12px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+  .swatch.flow-main-s { background: rgba(255,255,255,0.45); height: 2px; }
+  .swatch.flow-async-s {
+    background: repeating-linear-gradient(90deg, var(--cyan) 0 6px, transparent 6px 10px);
+    height: 2px;
+  }
+  .swatch.flow-approval-s {
+    background: repeating-linear-gradient(90deg, var(--accent) 0 4px, transparent 4px 7px);
+    height: 2px;
+  }
+  .swatch.flow-audit-s {
+    background: repeating-linear-gradient(90deg, rgba(255,255,255,0.3) 0 2px, transparent 2px 5px);
+    height: 1.5px;
+  }
+  .swatch.ring-0-s { background: rgba(16,185,129,0.5); }
+  .swatch.ring-1-s { background: rgba(251,191,36,0.5); }
+  .swatch.ring-2-s { background: rgba(239,68,68,0.5); }
+  .swatch.cyan-s { background: rgba(0,217,197,0.4); }
+  .swatch.accent-s { background: rgba(255,107,53,0.4); }
+
+  @media print {
+    body { background: white; color: black; padding: 20px; }
+    header { color: black; border-color: #ccc; }
+    .canvas, .legend { background: white; border-color: #ccc; }
+    .panel, .tooltip { display: none !important; }
+  }
+
+  @media (max-width: 768px) {
+    .panel { width: 100vw; max-width: 100vw; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="left">
+    <div class="tag">Architecture · v2.0 · Interactive</div>
+    <h1>NetSense <span class="accent">AI</span> — System Architecture</h1>
+    <div class="sub">Click any element on the diagram for explanation, analogy, and example</div>
+  </div>
+  <div class="nav-area">
+    <div class="nav-links">
+      <a class="nav-link" href="index.html">🏠 Home</a>
+      <a class="nav-link" href="system-diagram.html">🗺 System</a>
+      <a class="nav-link" href="three-modes.html">🎭 3 Modes</a>
+      <a class="nav-link" href="use-case-matrix.html">📊 Use Cases</a>
+      <a class="nav-link" href="dashboard-builder-demo.html">📈 Dashboard Demo</a>
+      <a class="nav-link" href="dashboard-builder-implementation.html">🔧 Implementation</a>
+      <a class="nav-link" href="mockup-gallery.html">🎨 Mockups</a>
+      <a class="nav-link" href="overview-pm-mkt.html">🎯 PM/MKT</a>
+      <a class="nav-link" href="playbook-examples.html">📘 Playbook</a>
+      <a class="nav-link" href="blind-spots.html">⚠ Pitfalls</a>
+      <a class="nav-link lang" href="architecture-v2-zh.html">繁中 <span>→</span></a>
+    </div>
+    <div class="hint">
+      <span class="pulse"></span>
+      <span><strong style="color: var(--text);">Tip:</strong> Click any colored box · Press <code style="background:var(--surface);padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono';font-size:11px;">Esc</code> to close</span>
+    </div>
+  </div>
+</header>
+
+<div class="canvas">
+<svg viewBox="0 0 1640 1280" xmlns="http://www.w3.org/2000/svg" id="diagram">
+  <defs>
+    <marker id="arr-main" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="rgba(255,255,255,0.55)"/>
+    </marker>
+    <marker id="arr-async" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#00d9c5"/>
+    </marker>
+    <marker id="arr-approval" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#ff6b35"/>
+    </marker>
+    <marker id="arr-audit" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="rgba(255,255,255,0.4)"/>
+    </marker>
+  </defs>
+
+  <!-- ====================================================
+       LAYER 1: USERS
+       ==================================================== -->
+  <g class="clickable" data-explain="l1" data-tooltip="User Layer">
+    <rect class="layer-bg" x="40" y="30" width="1280" height="100"/>
+    <text class="layer-label" x="60" y="58">L1 · USER LAYER</text>
+    <text class="layer-sub" x="60" y="76">Who interacts with the system</text>
+  </g>
+
+  <g class="clickable" data-explain="user-engineer" data-tooltip="Engineer / NOC">
+    <rect class="node" x="500" y="60" width="170" height="56" rx="28"/>
+    <text class="label-title" x="585" y="84" text-anchor="middle">Engineer / NOC</text>
+    <text class="label-sub" x="585" y="102" text-anchor="middle">approves actions</text>
+  </g>
+
+  <g class="clickable" data-explain="user-msp" data-tooltip="MSP T1">
+    <rect class="node" x="690" y="60" width="170" height="56" rx="28"/>
+    <text class="label-title" x="775" y="84" text-anchor="middle">MSP T1</text>
+    <text class="label-sub" x="775" y="102" text-anchor="middle">resolves tickets</text>
+  </g>
+
+  <g class="clickable" data-explain="user-smb" data-tooltip="SMB IT">
+    <rect class="node" x="880" y="60" width="170" height="56" rx="28"/>
+    <text class="label-title" x="965" y="84" text-anchor="middle">SMB IT</text>
+    <text class="label-sub" x="965" y="102" text-anchor="middle">solo operator</text>
+  </g>
+
+  <g class="clickable" data-explain="user-enterprise" data-tooltip="Enterprise IT">
+    <rect class="node" x="1070" y="60" width="170" height="56" rx="28"/>
+    <text class="label-title" x="1155" y="84" text-anchor="middle">Enterprise IT</text>
+    <text class="label-sub" x="1155" y="102" text-anchor="middle">audit & compliance</text>
+  </g>
+
+  <!-- Arrows -->
+  <path class="flow-main" d="M 680 130 L 680 175" marker-end="url(#arr-main)"/>
+  <text class="label-mono" x="690" y="155" fill="rgba(255,255,255,0.6)">chat / view</text>
+
+  <path class="flow-async" d="M 880 175 L 880 130" marker-end="url(#arr-async)"/>
+  <text class="label-mono" x="890" y="155" fill="#00d9c5">alerts ↑ async</text>
+
+  <path class="flow-approval" d="M 760 130 L 760 175" marker-end="url(#arr-approval)"/>
+  <text class="label-mono" x="600" y="158" fill="#ff6b35" text-anchor="end">approval ↓</text>
+
+  <!-- ====================================================
+       LAYER 2: APPLICATIONS
+       ==================================================== -->
+  <g class="clickable" data-explain="l2" data-tooltip="Application Layer">
+    <rect class="layer-bg" x="40" y="180" width="1280" height="130"/>
+    <text class="layer-label" x="60" y="208">L2 · APPLICATION LAYER</text>
+    <text class="layer-sub" x="60" y="226">User-facing entry points</text>
+  </g>
+
+  <g class="clickable" data-explain="app-chat" data-tooltip="AI Chat Assistant">
+    <rect class="node" x="240" y="220" width="220" height="80"/>
+    <text class="label-title" x="350" y="248" text-anchor="middle">AI Chat Assistant</text>
+    <text class="label-sub" x="350" y="268" text-anchor="middle">Interactive troubleshooting</text>
+    <text class="label-mono" x="350" y="286" text-anchor="middle">"why is wifi slow?"</text>
+  </g>
+
+  <g class="clickable" data-explain="app-dashboard" data-tooltip="Dashboard Builder">
+    <rect class="node" x="480" y="220" width="220" height="80"/>
+    <text class="label-title" x="590" y="248" text-anchor="middle">Dashboard Builder</text>
+    <text class="label-sub" x="590" y="268" text-anchor="middle">Natural-language views</text>
+    <text class="label-mono" x="590" y="286" text-anchor="middle">"show top 10 sites"</text>
+  </g>
+
+  <g class="clickable" data-explain="app-anomaly" data-tooltip="Anomaly Panel ★">
+    <rect class="node-cyan" x="720" y="220" width="220" height="80"/>
+    <text class="star" x="930" y="236" text-anchor="end">★ NEW</text>
+    <text class="label-title" x="830" y="252" text-anchor="middle">Anomaly Panel</text>
+    <text class="label-sub" x="830" y="270" text-anchor="middle">AI tells you, before customer</text>
+    <text class="label-mono" x="830" y="288" text-anchor="middle">proactive notifications</text>
+  </g>
+
+  <g class="clickable" data-explain="app-custom" data-tooltip="Custom Skills">
+    <rect class="node" x="960" y="220" width="220" height="80"/>
+    <text class="label-title" x="1070" y="248" text-anchor="middle">Custom Skills</text>
+    <text class="label-sub" x="1070" y="268" text-anchor="middle">User-defined playbooks</text>
+    <text class="label-mono" x="1070" y="286" text-anchor="middle">load from GitHub</text>
+  </g>
+
+  <path class="flow-main" d="M 680 310 L 680 380" marker-end="url(#arr-main)"/>
+  <text class="label-mono" x="690" y="350" fill="rgba(255,255,255,0.6)">request</text>
+
+  <!-- ====================================================
+       LAYER 3: AI ENGINE
+       ==================================================== -->
+  <g class="clickable" data-explain="l3" data-tooltip="AI Engine — system brain">
+    <rect class="layer-bg" x="40" y="385" width="1280" height="195"/>
+    <text class="layer-label" x="60" y="413">L3 · AI ENGINE</text>
+    <text class="layer-sub" x="60" y="431">Routing, execution, safety</text>
+  </g>
+
+  <g class="clickable" data-explain="engine-router" data-tooltip="Router — pick playbook">
+    <rect class="node-engine" x="100" y="450" width="220" height="100"/>
+    <text class="label-title" x="210" y="478" text-anchor="middle">① Router</text>
+    <text class="label-sub" x="210" y="498" text-anchor="middle">Match symptom →</text>
+    <text class="label-sub" x="210" y="514" text-anchor="middle">select playbook</text>
+    <text class="label-mono" x="210" y="534" text-anchor="middle">RAG + metadata filter</text>
+  </g>
+
+  <g class="clickable" data-explain="engine-executor" data-tooltip="Playbook Executor — run YAML">
+    <rect class="node-engine" x="360" y="450" width="220" height="100"/>
+    <text class="label-title" x="470" y="478" text-anchor="middle">② Playbook Executor</text>
+    <text class="label-sub" x="470" y="498" text-anchor="middle">Run YAML DAG;</text>
+    <text class="label-sub" x="470" y="514" text-anchor="middle">LLM at gates only</text>
+    <text class="label-mono" x="470" y="534" text-anchor="middle">deterministic backbone</text>
+  </g>
+
+  <g class="clickable" data-explain="engine-safety" data-tooltip="Safety Gate ★ — Ring check">
+    <rect class="node-engine" x="620" y="450" width="220" height="100"/>
+    <text class="star" x="830" y="466" text-anchor="end">★ NEW</text>
+    <text class="label-title" x="730" y="478" text-anchor="middle">③ Safety Gate</text>
+    <text class="label-sub" x="730" y="498" text-anchor="middle">Ring 0/1/2 check</text>
+    <text class="label-sub" x="730" y="514" text-anchor="middle">+ blast radius calc</text>
+    <text class="label-mono" x="730" y="534" text-anchor="middle">type-system enforced</text>
+  </g>
+
+  <g class="clickable" data-explain="engine-approval" data-tooltip="Approval Flow ★ — human gate">
+    <rect class="node-engine" x="880" y="450" width="220" height="100"/>
+    <text class="star" x="1090" y="466" text-anchor="end">★ NEW</text>
+    <text class="label-title" x="990" y="478" text-anchor="middle">④ Approval Flow</text>
+    <text class="label-sub" x="990" y="498" text-anchor="middle">Show evidence,</text>
+    <text class="label-sub" x="990" y="514" text-anchor="middle">rollback, validation</text>
+    <text class="label-mono" x="990" y="534" text-anchor="middle">human-in-the-loop</text>
+  </g>
+
+  <path class="flow-main" d="M 320 500 L 358 500" marker-end="url(#arr-main)"/>
+  <path class="flow-main" d="M 580 500 L 618 500" marker-end="url(#arr-main)"/>
+  <path class="flow-main" d="M 840 500 L 878 500" marker-end="url(#arr-main)"/>
+
+  <path class="flow-approval" d="M 990 450 Q 990 380, 870 230 Q 815 145, 760 145" fill="none"/>
+  <text class="label-mono" x="1180" y="370" fill="#ff6b35">ring 1/2 → user approval</text>
+
+  <path class="flow-main" d="M 470 580 L 470 660" marker-end="url(#arr-main)"/>
+  <text class="label-mono" x="480" y="625" fill="rgba(255,255,255,0.6)">execute step</text>
+
+  <path class="flow-main" d="M 990 580 L 990 660" marker-end="url(#arr-main)"/>
+  <text class="label-mono" x="1000" y="625" fill="rgba(255,255,255,0.6)">approved action</text>
+
+  <!-- ====================================================
+       LAYER 4: SKILL EXECUTION
+       ==================================================== -->
+  <g class="clickable" data-explain="l4" data-tooltip="Skill Execution Layer">
+    <rect class="layer-bg" x="40" y="665" width="1280" height="260"/>
+    <text class="layer-label" x="60" y="693">L4 · SKILL EXECUTION</text>
+    <text class="layer-sub" x="60" y="711">3 skill classes · Diagnostic / Monitoring / Dashboard Generation · share Primitives</text>
+  </g>
+
+  <g class="clickable" data-explain="playbook-diagnostic" data-tooltip="Diagnostic Playbooks">
+    <rect class="node" x="120" y="722" width="370" height="74"/>
+    <text class="label-title" x="140" y="744">📘 Diagnostic</text>
+    <text class="label-mono" x="140" y="763">diagnose_device_offline</text>
+    <text class="label-mono" x="140" y="780">diagnose_sticky_client · ...</text>
+  </g>
+
+  <g class="clickable" data-explain="playbook-monitoring" data-tooltip="Monitoring Playbooks">
+    <rect class="node-cyan" x="510" y="722" width="370" height="74"/>
+    <text class="label-title" x="530" y="744">📘 Monitoring</text>
+    <text class="label-mono" x="530" y="763">watch_device_status</text>
+    <text class="label-mono" x="530" y="780">narrate_anomalies · ...</text>
+  </g>
+
+  <g class="clickable" data-explain="playbook-dashboard" data-tooltip="Dashboard Generation ★ NEW">
+    <rect x="900" y="722" width="370" height="74" rx="10" fill="rgba(255,107,53,0.10)" stroke="#ff6b35" stroke-width="1.8"/>
+    <text class="star" x="1255" y="738" text-anchor="end" fill="#ff6b35">★ NEW · Mode B killer</text>
+    <text class="label-title" x="920" y="754" fill="#ff6b35">📊 Dashboard Generation</text>
+    <text class="label-mono" x="920" y="773">parse intent → widgets</text>
+    <text class="label-mono" x="920" y="788">layout · persist · refine</text>
+  </g>
+
+  <path class="flow-main" d="M 305 796 L 305 825" marker-end="url(#arr-main)"/>
+  <path class="flow-main" d="M 695 796 L 695 825" marker-end="url(#arr-main)"/>
+  <path class="flow-main" d="M 1085 796 L 1085 825" marker-end="url(#arr-main)"/>
+
+  <text class="label-mono" x="120" y="845" fill="#94a3b8">🧱 PRIMITIVES (typed, ring-tagged)</text>
+
+  <g class="clickable" data-explain="ring-0" data-tooltip="Ring 0 — Read only (safe)">
+    <rect class="ring-0" x="120" y="855" width="370" height="56"/>
+    <text class="ring-label ring-label-0" x="140" y="875">RING 0 · READ-ONLY</text>
+    <text class="label-mono" x="140" y="893" fill="#cbd5e1">get_signal · get_topology · get_logs · get_radio_settings</text>
+  </g>
+
+  <g class="clickable" data-explain="ring-1" data-tooltip="Ring 1 — Reversible (caution)">
+    <rect class="ring-1" x="510" y="855" width="370" height="56"/>
+    <text class="ring-label ring-label-1" x="530" y="875">RING 1 · REVERSIBLE WRITE</text>
+    <text class="label-mono" x="530" y="893" fill="#cbd5e1">set_tx_power · enable_igmp · tune_band_steer</text>
+  </g>
+
+  <g class="clickable" data-explain="ring-2" data-tooltip="Ring 2 — Destructive (danger)">
+    <rect class="ring-2" x="900" y="855" width="370" height="56"/>
+    <text class="ring-label ring-label-2" x="920" y="875">RING 2 · DESTRUCTIVE</text>
+    <text class="label-mono" x="920" y="893" fill="#cbd5e1">set_port_vlan · reboot_port · deauth_client</text>
+  </g>
+
+  <path class="flow-main" d="M 680 925 L 680 980" marker-end="url(#arr-main)"/>
+  <text class="label-mono" x="690" y="958" fill="rgba(255,255,255,0.6)">primitive call</text>
+
+  <!-- ====================================================
+       LAYER 5: MCP TOOL LAYER
+       ==================================================== -->
+  <g class="clickable" data-explain="l5" data-tooltip="MCP Tool Layer">
+    <rect class="layer-bg" x="40" y="985" width="1280" height="90"/>
+    <text class="layer-label" x="60" y="1013">L5 · MCP TOOL LAYER</text>
+    <text class="layer-sub" x="60" y="1031">Standard protocol — shared with customer AI engines</text>
+    <rect class="node-mcp" x="180" y="1010" width="1000" height="55"/>
+    <text class="label-title" x="680" y="1034" text-anchor="middle">🔌 MCP Server (Anthropic Model Context Protocol)</text>
+    <text class="label-mono" x="680" y="1054" text-anchor="middle">Auth · Rate-limit · Normalize · Cache · Tool schemas</text>
+  </g>
+
+  <path class="flow-main" d="M 680 1075 L 680 1130" marker-end="url(#arr-main)"/>
+  <text class="label-mono" x="690" y="1108" fill="rgba(255,255,255,0.6)">REST API</text>
+
+  <!-- ====================================================
+       LAYER 6: DEVICES
+       ==================================================== -->
+  <g class="clickable" data-explain="l6" data-tooltip="Devices & Cloud APIs">
+    <rect class="layer-bg" x="40" y="1135" width="1280" height="80"/>
+    <text class="layer-label" x="60" y="1163">L6 · DEVICE & CLOUD APIs</text>
+    <rect class="node" x="280" y="1150" width="300" height="50"/>
+    <text class="label-title" x="430" y="1172" text-anchor="middle">🛰 Wireless APs</text>
+    <text class="label-mono" x="430" y="1190" text-anchor="middle">EnGenius Cloud-managed</text>
+    <rect class="node" x="600" y="1150" width="300" height="50"/>
+    <text class="label-title" x="750" y="1172" text-anchor="middle">🔀 Switches</text>
+    <text class="label-mono" x="750" y="1190" text-anchor="middle">Cloud-managed L2/L3</text>
+    <rect class="node" x="920" y="1150" width="200" height="50"/>
+    <text class="label-title" x="1020" y="1172" text-anchor="middle">☁ Cloud State</text>
+    <text class="label-mono" x="1020" y="1190" text-anchor="middle">configs · telemetry</text>
+  </g>
+
+  <!-- ====================================================
+       SIDE PANELS
+       ==================================================== -->
+  <path class="flow-async" d="M 695 722 Q 695 500, 940 260" marker-end="url(#arr-async)"/>
+  <text class="label-mono" x="730" y="500" fill="#00d9c5">★ async push</text>
+  <text class="label-mono" x="730" y="518" fill="#00d9c5">"today's anomalies"</text>
+
+  <g class="clickable" data-explain="side-customer" data-tooltip="Customer AI Engine ★">
+    <rect class="node-cyan" x="1340" y="980" width="260" height="100"/>
+    <text class="star" x="1580" y="998" text-anchor="end">★ shared MCP</text>
+    <text class="label-title" x="1470" y="1018" text-anchor="middle">Customer AI Engine</text>
+    <text class="label-sub" x="1470" y="1038" text-anchor="middle">NMS / EMS / 3rd-party</text>
+    <text class="label-mono" x="1470" y="1058" text-anchor="middle">connects via same</text>
+    <text class="label-mono" x="1470" y="1072" text-anchor="middle">MCP — no lock-in</text>
+  </g>
+
+  <path class="flow-async" d="M 1340 1030 L 1180 1030" marker-end="url(#arr-async)"/>
+
+  <g class="clickable" data-explain="side-library" data-tooltip="Skills Library on GitHub">
+    <rect class="node" x="1340" y="220" width="260" height="80"/>
+    <text class="label-title" x="1470" y="248" text-anchor="middle">📦 Skills Library</text>
+    <text class="label-sub" x="1470" y="268" text-anchor="middle">Published on GitHub</text>
+    <text class="label-mono" x="1470" y="288" text-anchor="middle">community + custom</text>
+  </g>
+
+  <path class="flow-async" d="M 1180 260 L 1340 260" marker-end="url(#arr-async)"/>
+  <text class="label-mono" x="1260" y="252" text-anchor="middle" fill="#00d9c5">publish/load</text>
+
+  <path class="flow-async" d="M 1470 300 Q 1470 380, 1300 470 L 1100 470" marker-end="url(#arr-async)"/>
+
+  <g class="clickable" data-explain="side-audit" data-tooltip="Audit + Eval Loop ★">
+    <rect class="node-cyan" x="1340" y="385" width="260" height="195"/>
+    <text class="star" x="1580" y="403" text-anchor="end">★ NEW</text>
+    <text class="label-title" x="1470" y="423" text-anchor="middle">Audit + Eval Loop</text>
+    <text class="label-sub" x="1470" y="448" text-anchor="middle">Every Engine decision</text>
+    <text class="label-sub" x="1470" y="466" text-anchor="middle">→ logged with reasoning</text>
+    <text class="label-sub" x="1470" y="490" text-anchor="middle">→ feeds golden cases</text>
+    <text class="label-sub" x="1470" y="508" text-anchor="middle">→ regression CI nightly</text>
+    <text class="label-mono" x="1470" y="540" text-anchor="middle">"how we keep AI honest"</text>
+    <text class="label-mono" x="1470" y="558" text-anchor="middle">eval pipeline</text>
+  </g>
+
+  <path class="flow-audit" d="M 1100 500 L 1340 500" marker-end="url(#arr-audit)"/>
+  <path class="flow-audit" d="M 1100 560 Q 1230 560, 1340 540"/>
+
+  <g class="clickable" data-explain="side-telemetry" data-tooltip="Telemetry stream cache">
+    <rect class="node" x="40" y="722" width="60" height="200" rx="10"/>
+    <text class="label-mono" x="70" y="780" text-anchor="middle" fill="#94a3b8" transform="rotate(-90 70 780)">telemetry</text>
+    <text class="label-mono" x="70" y="850" text-anchor="middle" fill="#94a3b8" transform="rotate(-90 70 850)">stream cache</text>
+  </g>
+
+  <path class="flow-async" d="M 100 760 L 680 760" stroke-opacity="0.4"/>
+
+</svg>
+</div>
+
+<div class="legend">
+  <div>
+    <h3>Arrow Types</h3>
+    <div class="legend-grid">
+      <div class="legend-item"><span class="swatch flow-main-s"></span><strong>Solid</strong> Synchronous request / response</div>
+      <div class="legend-item"><span class="swatch flow-async-s"></span><strong>Cyan dashed</strong> Async event / push notification</div>
+      <div class="legend-item"><span class="swatch flow-approval-s"></span><strong>Orange dashed</strong> Approval round-trip (human gate)</div>
+      <div class="legend-item"><span class="swatch flow-audit-s"></span><strong>Light dotted</strong> Audit / eval data collection</div>
+    </div>
+  </div>
+  <div>
+    <h3>Ring Color Codes</h3>
+    <div class="legend-grid">
+      <div class="legend-item"><span class="swatch ring-0-s"></span><strong>Ring 0</strong> Read-only · LLM may call freely</div>
+      <div class="legend-item"><span class="swatch ring-1-s"></span><strong>Ring 1</strong> Reversible · approval + auto-rollback</div>
+      <div class="legend-item"><span class="swatch ring-2-s"></span><strong>Ring 2</strong> Destructive · explicit human + cooling-off</div>
+      <div class="legend-item"><span class="swatch cyan-s"></span><strong>★ Cyan</strong> Newly added vs Roger's v1</div>
+    </div>
+  </div>
+</div>
+
+<!-- TOOLTIP -->
+<div class="tooltip" id="tooltip"></div>
+
+<!-- RIGHT EXPLANATION PANEL -->
+<aside class="panel" id="panel">
+  <button class="panel-close" id="panelClose" aria-label="Close">×</button>
+  <div id="panelContent">
+    <div class="panel-empty">
+      <div class="icon">👆</div>
+      <h2>Click any element</h2>
+      <p>Each box, layer, and sidebar has a plain-English explanation, an analogy, and a concrete example.</p>
+      <p style="margin-top: 14px;">
+        <span class="key-hint">Click</span> to open ·
+        <span class="key-hint">Esc</span> to close
+      </p>
+    </div>
+  </div>
+</aside>
+
+<script>
+const E = {
+  // ===== Layers =====
+  'l1': {
+    badge: 'L1 · USER LAYER',
+    title: 'User Layer',
+    analogy: 'Like the dining customers in a restaurant — they order, confirm, and decide whether to take leftovers home.',
+    what: 'The humans who interact with the AI system. They drive requests and hold final authority over destructive actions.',
+    why: 'AI is never a black box. The human always has final say — this is what makes the system trustworthy enough to deploy.',
+    example: '4 personas with different needs:\n• Engineer / NOC — approves Ring 1/2 actions\n• MSP T1 — handles ticket volume\n• SMB IT — solo, needs AI as expert\n• Enterprise — needs audit trail'
+  },
+  'user-engineer': {
+    badge: 'L1 · USER',
+    title: 'Engineer / NOC',
+    analogy: 'Like the head chef — final taste-tester before food leaves the kitchen.',
+    what: 'Senior network engineer or NOC operator who reviews and approves AI-suggested actions, especially Ring 1/2 changes.',
+    why: 'High-stakes changes (VLAN moves, reboots) cannot be left to AI alone. Engineers provide the final gate.',
+    example: 'AI suggests "lower TX power 23 → 17 dBm on AP-7F-N3" → engineer reviews evidence + blast radius → clicks Approve.'
+  },
+  'user-msp': {
+    badge: 'L1 · USER',
+    title: 'MSP / Integrator T1',
+    analogy: 'Like a hospital triage nurse — fast intake, route to right specialist, handle simple cases inline.',
+    what: 'Tier-1 staff at managed service providers handling 50–100 tickets/day across many customer sites.',
+    why: 'This is the highest-value persona for ROI: AI takes them from "investigator" to "reviewer" and triples their throughput.',
+    example: 'Instead of logging into 12 dashboards to diagnose one ticket, T1 sees AI\'s pre-built diagnosis in 30 seconds and approves the fix.'
+  },
+  'user-smb': {
+    badge: 'L1 · USER',
+    title: 'SMB IT (Solo Operator)',
+    analogy: 'Like a small-town clinic doctor — has to handle every kind of case alone.',
+    what: 'The lone IT person at a small/medium business managing the entire network without specialist backup.',
+    why: 'They lack expertise depth. AI provides "senior engineer" judgment they otherwise couldn\'t afford.',
+    example: 'Boss texts at 9 PM: "Wi-Fi is slow." SMB IT asks AI, gets full diagnosis + one-click fix in 5 minutes — no escalation needed.'
+  },
+  'user-enterprise': {
+    badge: 'L1 · USER',
+    title: 'Enterprise IT',
+    analogy: 'Like a finance auditor — wants every decision explained, dated, and signed.',
+    what: 'In-house IT teams at larger orgs with compliance, change-management, and audit obligations.',
+    why: 'They need full reasoning trace and audit log to defend AI actions to internal review boards.',
+    example: 'Quarterly audit asks "why was VLAN changed on 2026-Q1?" → entire AI reasoning chain + approval record retrievable from audit log.'
+  },
+
+  // ===== Application Layer =====
+  'l2': {
+    badge: 'L2 · APPLICATION LAYER',
+    title: 'Application Layer',
+    analogy: 'Like the menus and front-of-house staff in a restaurant — they translate customer intent into kitchen orders.',
+    what: 'The user-facing entry points. Different surfaces for different use modes (chat, dashboard, alerts, custom).',
+    why: 'Same AI Engine serves multiple use cases — separating apps lets each be optimized independently.',
+    example: 'Chat for ad-hoc questions. Dashboard Builder for repeated views. Anomaly Panel for proactive alerts.'
+  },
+  'app-chat': {
+    badge: 'L2 · APP',
+    title: 'AI Chat Assistant',
+    analogy: 'Like ChatGPT — but it knows your specific network inside out.',
+    what: 'Conversational interface. User types a question or symptom; AI responds with diagnosis and suggested actions.',
+    why: 'Lowest barrier to entry — anyone can use it, no training needed. Killer feature for SMB IT.',
+    example: 'User: "Conference room Wi-Fi is laggy." → AI: "3 clients on AP-7F-N3 stuck below -75 dBm. Likely cell too large. Want me to suggest a fix?"'
+  },
+  'app-dashboard': {
+    badge: 'L2 · APP',
+    title: 'Dashboard Builder',
+    analogy: 'Like a pivot table you describe in English instead of dragging fields.',
+    what: 'Generate custom dashboards by describing what you want to see, instead of clicking through a builder UI.',
+    why: 'Eliminates the "I know what I want but can\'t configure it" friction. Especially helpful for non-power-users.',
+    example: 'User: "Show me top 10 sites by client count this week, broken down by SSID." → Dashboard generated in 3 seconds.'
+  },
+  'app-anomaly': {
+    badge: 'L2 · APP · ★ NEW',
+    title: 'Anomaly Panel',
+    analogy: 'Like a smartwatch alerting you to abnormal heart rate — you don\'t have to ask, it tells you.',
+    what: 'AI proactively detects unusual patterns and writes a plain-English narration. The most valuable feature in the system.',
+    why: 'Solves the root pain: customers always notice problems before IT does. With Anomaly Panel, IT notices first.',
+    example: '9:00 AM, IT opens dashboard: "AP-7F-N3 conference room had 4× normal client roaming events overnight. Likely cause: cell too large. → Suggested fix: lower TX power."'
+  },
+  'app-custom': {
+    badge: 'L2 · APP',
+    title: 'Custom Skills',
+    analogy: 'Like VSCode extensions — community + customer-built capabilities load into the platform.',
+    what: 'Lets customers / partners write their own playbooks and load them. Published / shared via GitHub.',
+    why: 'Platform extensibility. MSPs can package their proprietary know-how as skills and resell them.',
+    example: 'A Sonos integrator writes "diagnose_sonos_multicast" playbook, publishes to GitHub. Other MSPs install it directly into their platform.'
+  },
+
+  // ===== AI Engine =====
+  'l3': {
+    badge: 'L3 · AI ENGINE',
+    title: 'AI Engine',
+    analogy: 'Like the kitchen — receives orders, decides who cooks what, checks quality, plates the dish.',
+    what: 'The brain of the system. Coordinates routing, execution, safety checks, and approval flow.',
+    why: 'Centralized control + safety enforcement. Without this, every app would have to reimplement orchestration logic.',
+    example: 'Request flows through 4 sub-components: Router → Executor → Safety Gate → Approval Flow.'
+  },
+  'engine-router': {
+    badge: 'L3 · ENGINE · ①',
+    title: 'Router',
+    analogy: 'Like the hospital reception — "you have a sore throat → ENT department, you have chest pain → cardiology."',
+    what: 'Receives a user request and decides which playbook to run. Uses RAG + metadata filtering to pick from 100+ playbooks.',
+    why: 'At scale, manually picking playbooks is impossible. Router automates this with AI.',
+    example: 'User: "Wi-Fi slow in conference room" → Router considers `diagnose_sticky_client`, `diagnose_channel_congestion`, `diagnose_ap_overload` → picks based on context.'
+  },
+  'engine-executor': {
+    badge: 'L3 · ENGINE · ②',
+    title: 'Playbook Executor',
+    analogy: 'Like GitHub Actions — runs the YAML workflow step by step, with branches and parallel execution.',
+    what: 'Runs the chosen playbook as a deterministic DAG. Calls primitives, invokes LLM at "gates" only.',
+    why: 'Deterministic backbone = predictable, debuggable, replayable. LLM only at decision points = controllable cost.',
+    example: 'Sticky Client playbook: 11 steps, 4 in parallel for data collection, 2 LLM gates for classification + remediation, branches based on root cause.'
+  },
+  'engine-safety': {
+    badge: 'L3 · ENGINE · ③ · ★ NEW',
+    title: 'Safety Gate',
+    analogy: 'Like airport security — every package gets x-rayed before boarding.',
+    what: 'Inspects every action the Executor wants to perform. Checks Ring level + computes blast radius before allowing it.',
+    why: 'This is the type-system-enforced safety net. Without it, LLM hallucination could trigger destructive operations.',
+    example: 'LLM wants to call `set_port_vlan` (Ring 2). Safety Gate computes blast radius = "all 30 devices on this trunk" → routes through full Approval Flow with extra warnings.'
+  },
+  'engine-approval': {
+    badge: 'L3 · ENGINE · ④ · ★ NEW',
+    title: 'Approval Flow',
+    analogy: 'Like the 2FA prompt for a large credit card transaction — explicit human consent required.',
+    what: 'Builds an approval card showing the proposed action, evidence, blast radius, rollback plan, and validation method. Routes to human for decision.',
+    why: 'Maintains human-in-the-loop. This is THE feature that lets customers trust the system enough to enable write actions.',
+    example: 'Card displays: "Reduce AP-7F-N3 TX power 23→17 dBm · affects 12 clients · 3-8s reconnect · auto-rollback if RSSI doesn\'t improve in 10 min." Engineer clicks Approve.'
+  },
+
+  // ===== Skill Execution =====
+  'l4': {
+    badge: 'L4 · SKILL EXECUTION',
+    title: 'Skill Execution Layer',
+    analogy: 'Like the cooking station + ingredient pantry — playbooks (recipes) compose primitives (ingredients).',
+    what: 'Where actual work happens. Playbooks orchestrate; primitives are the atomic operations.',
+    why: 'Separating "intelligence" (playbooks) from "actions" (primitives) enables reuse, safety tagging, and independent testing.',
+    example: '5 primitives + 1 playbook = `sticky_client` diagnosis. Same 5 primitives can compose 10 other playbooks.'
+  },
+  'playbook-diagnostic': {
+    badge: 'L4 · PLAYBOOK',
+    title: 'Diagnostic Playbooks',
+    analogy: 'Like seeing a family doctor — you only go when something\'s wrong.',
+    what: 'Reactive playbooks triggered by user query or ticket. Take symptoms, return root cause + suggested fix.',
+    why: 'Handles the "ticket comes in" case. Compresses 30 minutes of manual diagnosis into 30 seconds.',
+    example: '`diagnose_sticky_client(client_mac, site_id)` → returns root cause (e.g. "rf_design") with evidence and proposed remediation.'
+  },
+  'playbook-monitoring': {
+    badge: 'L4 · PLAYBOOK · ★',
+    title: 'Monitoring Playbooks',
+    analogy: 'Like an ICU heart monitor — runs 24/7, beeps when something\'s off.',
+    what: 'Always-on playbooks that continuously analyze telemetry to detect anomalies. Feed the Anomaly Panel.',
+    why: 'Proactive value. This is what differentiates from "AI chatbot" — the system tells you, not the other way around.',
+    example: '`narrate_anomalies` runs every 15 min, finds AP-7F-N3 had 4× normal roaming events, writes a one-line summary into Anomaly Panel.'
+  },
+  'playbook-dashboard': {
+    badge: 'L4 · SKILL · ★ NEW',
+    title: 'Dashboard Generation Skill',
+    analogy: 'Like "describing an Excel pivot table in English" — you describe what you want, AI composes from a widget library.',
+    what: 'A third class of skill (not a playbook — a different skill shape). Turns user intent ("show me X") into a persistent, interactive dashboard UI artifact.',
+    why: 'The killer feature for Mode B (SMB IT). Traditional Grafana = "set once, give up". Build dashboards by talking — users come back daily.',
+    example: 'User: "Show me this week\'s network anomalies" → AI generates a 4-widget dashboard: anomaly trend, client count change, top 5 problem devices, site health scores. User can refine: "Add another for the conference room."'
+  },
+  'ring-0': {
+    badge: 'L4 · PRIMITIVE · 🟢 RING 0',
+    title: 'Ring 0 — Read-only Primitives',
+    analogy: 'Like reading a thermometer — totally safe, you can do it anytime.',
+    what: 'Primitives that only read data. They never modify any state, anywhere.',
+    why: 'Safe enough for the LLM to call freely without approval. Form the bulk of diagnostic data collection.',
+    example: '`get_client_signal_health(mac)`, `get_topology(site)`, `get_logs(window)`, `get_radio_settings(ap_id)`.'
+  },
+  'ring-1': {
+    badge: 'L4 · PRIMITIVE · 🟡 RING 1',
+    title: 'Ring 1 — Reversible Write Primitives',
+    analogy: 'Like writing in pencil — you can erase if it\'s wrong.',
+    what: 'Primitives that change configuration but can be cleanly reverted via snapshot rollback.',
+    why: 'Need approval before execution. Auto-rollback if validation fails. The sweet spot for "AI suggests, human approves" UX.',
+    example: '`set_ap_tx_power(ap, dbm)`, `enable_igmp_snooping(vlan)`, `tune_band_steering(site, params)`.'
+  },
+  'ring-2': {
+    badge: 'L4 · PRIMITIVE · 🔴 RING 2',
+    title: 'Ring 2 — Destructive Primitives',
+    analogy: 'Like painting a wall — once it\'s on, undoing it is messy and visible.',
+    what: 'Primitives whose effects ripple beyond config — they disconnect users, drop traffic, or affect many devices at once.',
+    why: 'Require explicit human approval + cooling-off period + extra warnings. Default DISABLED in production until customer opts in.',
+    example: '`set_port_vlan(port, new_vlan)` (everyone on that port disconnects), `reboot_port(port)`, `deauth_client(mac)`.'
+  },
+
+  // ===== MCP & Devices =====
+  'l5': {
+    badge: 'L5 · MCP TOOL LAYER',
+    title: 'MCP Tool Layer',
+    analogy: 'Like USB — one standard plug, works with any device or computer.',
+    what: 'Industry-standard protocol (Anthropic Model Context Protocol) that exposes device APIs as AI-callable tools. Handles auth, normalization, caching.',
+    why: 'TWO huge wins: (1) decouples LLM changes from API changes, (2) lets customers plug their own AI engine into the same MCP — no vendor lock-in.',
+    example: 'Same MCP server is used by EnGenius AI Engine AND a customer\'s Microsoft Copilot integration — both call the same get_signal() tool.'
+  },
+  'l6': {
+    badge: 'L6 · DEVICES',
+    title: 'Device & Cloud APIs',
+    analogy: 'Like the actual ingredients in the kitchen — the real-world endpoints AI must reach.',
+    what: 'The physical network devices and the cloud-hosted state, exposed via REST APIs.',
+    why: 'Where rubber meets road. All abstraction collapses here — every primitive eventually hits these APIs.',
+    example: 'AP returns RSSI/SNR. Switch returns MAC table. Cloud State returns config history.'
+  },
+
+  // ===== Side panels =====
+  'side-customer': {
+    badge: 'SIDE · ★ NEW',
+    title: 'Customer AI Engine (3rd-party)',
+    analogy: 'Like a USB port — your external hard drive plugs into our laptop just fine.',
+    what: 'Customer\'s own AI engine (Microsoft Copilot, internal LLM, etc.) connects via the same MCP server.',
+    why: 'Eliminates vendor lock-in fear — the #1 enterprise objection. Customers know they can leave or augment.',
+    example: 'Enterprise customer uses Microsoft Copilot internally. They point Copilot at our MCP endpoint → it can query their EnGenius network just like our AI does.'
+  },
+  'side-library': {
+    badge: 'SIDE',
+    title: 'Skills Library on GitHub',
+    analogy: 'Like npm or PyPI — a package registry for shareable capabilities.',
+    what: 'Version-controlled repository where playbooks live. EnGenius-published + community + customer-private all share the format.',
+    why: 'Enables ecosystem growth. Successful playbooks become reusable assets. MSPs can monetize their know-how.',
+    example: 'Integrator publishes `diagnose_sonos_multicast@1.2.0` → 50 other MSPs install it → 50× ROI on the original development.'
+  },
+  'side-audit': {
+    badge: 'SIDE · ★ NEW',
+    title: 'Audit + Eval Loop',
+    analogy: 'Like aircraft black box + flight simulator training — record everything, replay to train better.',
+    what: 'Every AI Engine decision is logged with full reasoning trace. Real cases become golden cases for nightly regression CI.',
+    why: 'This is the QUALITY MOAT. Most competitors don\'t do evals. Without it, AI silently degrades when models or prompts change.',
+    example: 'Tonight\'s CI runs 200+ historical cases through the latest playbook version. If 5 fail vs yesterday → PR blocked, engineer investigates.'
+  },
+  'side-telemetry': {
+    badge: 'SIDE',
+    title: 'Telemetry Stream Cache',
+    analogy: 'Like a convenience store cold case — pre-stocked ingredients, ready to grab.',
+    what: 'Pre-aggregated rolling window of device metrics. Avoids hitting device APIs on every monitoring tick.',
+    why: 'Cost + latency. Without caching, monitoring playbooks running every 15 min would hammer device APIs and burn money.',
+    example: '5-minute rolling RSSI window per AP, refreshed every 30s. When `narrate_anomalies` runs, it reads from cache, not from APs directly.'
+  },
+};
+
+// ============================================================
+// Wire it up
+// ============================================================
+const panel = document.getElementById('panel');
+const panelContent = document.getElementById('panelContent');
+const tooltip = document.getElementById('tooltip');
+let activeEl = null;
+
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function renderExplanation(key) {
+  const e = E[key];
+  if (!e) return;
+  const isNew = e.badge.includes('★ NEW');
+  const titleHtml = e.title + (isNew ? ' <span class="new">★ NEW</span>' : '');
+
+  panelContent.innerHTML = `
+    <div class="panel-badge">${escapeHtml(e.badge)}</div>
+    <h2 class="panel-title">${titleHtml}</h2>
+    <div class="analogy-box">
+      <div class="analogy-label">📐 Analogy</div>
+      <div class="analogy-text">${escapeHtml(e.analogy)}</div>
+    </div>
+    <div class="panel-section">
+      <h3>What it does</h3>
+      <p>${escapeHtml(e.what)}</p>
+    </div>
+    <div class="panel-section">
+      <h3>Why it matters</h3>
+      <p>${escapeHtml(e.why)}</p>
+    </div>
+    <div class="panel-section">
+      <h3>Concrete example</h3>
+      <div class="example">${escapeHtml(e.example).replace(/\n/g, '<br>')}</div>
+    </div>
+  `;
+}
+
+function openPanel(key, el) {
+  if (activeEl) activeEl.classList.remove('active');
+  activeEl = el;
+  if (el) el.classList.add('active');
+  renderExplanation(key);
+  panel.classList.add('open');
+}
+
+function closePanel() {
+  panel.classList.remove('open');
+  if (activeEl) {
+    activeEl.classList.remove('active');
+    activeEl = null;
+  }
+}
+
+document.querySelectorAll('.clickable').forEach(g => {
+  g.addEventListener('click', e => {
+    e.stopPropagation();
+    const key = g.getAttribute('data-explain');
+    openPanel(key, g);
+  });
+  g.addEventListener('mouseenter', e => {
+    const t = g.getAttribute('data-tooltip');
+    if (!t) return;
+    tooltip.textContent = t;
+    tooltip.classList.add('show');
+  });
+  g.addEventListener('mousemove', e => {
+    tooltip.style.left = (e.clientX + 12) + 'px';
+    tooltip.style.top = (e.clientY - 36) + 'px';
+  });
+  g.addEventListener('mouseleave', () => {
+    tooltip.classList.remove('show');
+  });
+});
+
+document.getElementById('panelClose').addEventListener('click', closePanel);
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closePanel();
+});
+</script>
+
+</body>
+</html>
