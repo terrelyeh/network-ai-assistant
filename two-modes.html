@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Network AI-Assistant — 三模式定位</title>
+<title>Network AI-Assistant — 兩模式定位</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -126,7 +126,7 @@
   /* MODES GRID */
   .modes {
     display: grid;
-    grid-template-columns: 1fr 1.15fr 1fr;
+    grid-template-columns: 1fr 1.2fr;
     gap: 22px;
     margin-bottom: 56px;
     align-items: stretch;
@@ -313,7 +313,7 @@
   }
   .backend-diagram {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1fr 1fr;
     gap: 14px;
     margin-bottom: 24px;
   }
@@ -558,14 +558,14 @@
 
 <header>
   <div class="left">
-    <div class="tag">PRODUCT POSITIONING · 三模式定位</div>
-    <h1>Network <span class="accent">AI-Assistant</span> — 一套後端，三種模式</h1>
+    <div class="tag">PRODUCT POSITIONING · 兩模式定位</div>
+    <h1>Network <span class="accent">AI-Assistant</span> — 一套後端，兩種模式</h1>
     <div class="sub">同一個 AI 引擎，依使用者角色提供不同 UI 與能力範圍</div>
   </div>
   <div class="nav-links">
     <a class="nav-link muted-link" href="index.html">🏠 入口</a>
     <a class="nav-link muted-link" href="system-diagram.html">🗺 系統圖</a>
-    <a class="nav-link current" href="three-modes.html">🎭 三模式</a>
+    <a class="nav-link current" href="two-modes.html">🎭 兩模式</a>
     <a class="nav-link muted-link" href="use-case-matrix.html">📊 使用案例</a>
     <a class="nav-link muted-link" href="dashboard-builder-demo.html">📈 Dashboard Demo</a>
     <a class="nav-link muted-link" href="dashboard-builder-implementation.html">🔧 實作指南</a>
@@ -579,15 +579,20 @@
 
 <!-- HERO -->
 <section class="hero">
-  <div class="pre">同一個 AI 後端 · 三種使用者體驗</div>
-  <h2>不是「給工程師的 AI」<br>也不是「給員工的 AI」 — 是<span class="accent">三種人</span>都能用的 AI</h2>
+  <div class="pre">同一個 AI 後端 · 兩種使用者體驗</div>
+  <h2>不是「給工程師的 AI」<br>也不是「給員工的 AI」 — 是<span class="accent">兩種人</span>都能用的 AI</h2>
   <p class="lead">
-    員工自己問問題、SMB IT 引導式診斷、Pro 工程師完整自動化 — <strong>同一套後端</strong>，UI 隨身分變化。
+    員工自己問問題、SMB IT 引導式診斷 — <strong>同一套後端</strong>，UI 隨身分變化。
     <br>每種模式都有<strong>合適的能力範圍與風險等級</strong>，避免一刀切。
+  </p>
+  <p class="lead" style="margin-top:14px; font-size:14px; color:var(--dim);">
+    📌 <strong style="color:var(--muted);">為什麼不做 MSP / multi-tenant？</strong>
+    那是不同 ICP（外部服務商 vs 內部 IT），不同 sales motion、不同採購週期、不同產品需求。
+    我們 deliberately 先把「公司內 IT」這個市場做透，未來市場驗證後再擴展 — focus 是優點不是缺點。
   </p>
 </section>
 
-<!-- THREE MODES -->
+<!-- TWO MODES -->
 <section class="modes">
 
   <!-- Mode A: Employee -->
@@ -675,61 +680,17 @@
     </div>
   </div>
 
-  <!-- Mode C: Pro -->
-  <div class="mode">
-    <div class="mode-tag">MODE C · 進階模式</div>
-    <div class="mode-emoji">⚡</div>
-    <div class="mode-name">Pro Console</div>
-    <div class="mode-tagline">「資深工程師 / MSP」<br>批量、自動化、可程式化</div>
-
-    <div class="mode-section">
-      <h4>核心能力</h4>
-      <ul class="feature-list">
-        <li><span class="icon">🧰</span><span>完整 Ring 0/1/2 動作</span></li>
-        <li><span class="icon">⚙️</span><span>跨 site batch 操作</span></li>
-        <li><span class="icon">🤖</span><span>高信心動作可設自動執行</span></li>
-        <li><span class="icon">📝</span><span>自寫 / 載入 custom playbook</span></li>
-        <li><span class="icon">🔌</span><span>API + MCP 接外部系統</span></li>
-        <li><span class="icon">📤</span><span>Dashboard 可 export / 排程</span></li>
-        <li><span class="icon">📊</span><span>完整 audit log 與 eval 報告</span></li>
-      </ul>
-    </div>
-
-    <div class="mockup">
-      <div class="mockup-title">範例操作</div>
-      <div class="you">「show top 10 sites by client churn this month, with 5GHz utilization breakdown」</div>
-      <div class="ai">Generated. Want to set this as a weekly auto-email to your team?</div>
-      <div class="you">「Yes, every Monday 9 AM」</div>
-      <div class="ai">Scheduled. Also exposing as REST endpoint for your Grafana?</div>
-    </div>
-
-    <div class="mode-meta">
-      <div class="meta-block">
-        <span class="label">寫入動作</span>
-        <span class="value red">🔴 Ring 0/1/2</span>
-      </div>
-      <div class="meta-block">
-        <span class="label">風險等級</span>
-        <span class="value red">🔴 完整權限</span>
-      </div>
-      <div class="meta-block">
-        <span class="label">主要動作</span>
-        <span class="value">All operations</span>
-      </div>
-    </div>
-  </div>
 
 </section>
 
 <!-- SHARED BACKEND -->
 <section class="backend">
   <h3>同一個後端</h3>
-  <h2>三種 UI · 一套 Engine · 一組 Skills</h2>
+  <h2>兩種 UI · 一套 Engine · 一組 Skills</h2>
 
   <div class="backend-diagram">
-    <div class="ui-box">UI 模式 A · Chat<br><span style="font-weight:400;color:var(--muted);font-size:11px;">Web / Mobile</span></div>
-    <div class="ui-box featured-ui">UI 模式 B · Cockpit<br><span style="font-weight:400;color:var(--accent);font-size:11px;opacity:0.8;">主力 UI</span></div>
-    <div class="ui-box">UI 模式 C · Console<br><span style="font-weight:400;color:var(--muted);font-size:11px;">Pro / API</span></div>
+    <div class="ui-box">UI 模式 A · Chat<br><span style="font-weight:400;color:var(--muted);font-size:11px;">員工自助 · Web / Mobile</span></div>
+    <div class="ui-box featured-ui">UI 模式 B · Cockpit<br><span style="font-weight:400;color:var(--accent);font-size:11px;opacity:0.8;">SMB IT · 主力 UI</span></div>
   </div>
   <div class="arrow-down">↓</div>
   <div class="engine-box">
@@ -749,7 +710,8 @@
     引擎不變，只是<strong style="color:var(--cyan);">不同模式對 LLM 的 prompt template 不同</strong>、
     <strong style="color:var(--cyan);">允許的 Ring 範圍不同</strong>、
     <strong style="color:var(--cyan);">UI 元件複雜度不同</strong>。
-    <br>同一套基礎設施服務三個 persona — <strong style="color:var(--text);">工程開發成本最佳化</strong>。
+    <br>同一套基礎設施服務兩個 persona — <strong style="color:var(--text);">工程開發成本最佳化</strong>。
+    <br><span style="font-size:12px; color:var(--dim);">架構保留 mode-agnostic — 未來真要擴 MSP / Pro，後端不需大改。</span>
   </p>
 </section>
 
@@ -759,10 +721,9 @@
   <table>
     <thead>
       <tr>
-        <th style="width:24%">能力</th>
+        <th style="width:30%">能力</th>
         <th class="col-mode-a">Mode A · 員工</th>
         <th class="col-mode-b">Mode B · SMB IT ⭐</th>
-        <th class="col-mode-c">Mode C · Pro</th>
       </tr>
     </thead>
     <tbody>
@@ -770,35 +731,29 @@
         <td>自然語言對話</td>
         <td>✅ 簡化詞彙</td>
         <td>✅ 含技術細節</td>
-        <td>✅ 含 query DSL</td>
       </tr>
       <tr>
         <td>查資料 / 監測</td>
         <td>個人視角</td>
         <td>單 site 全貌</td>
-        <td>跨 site / 批量</td>
       </tr>
       <tr>
         <td>Anomaly 通知</td>
         <td>個人相關</td>
         <td>✅ 全 site</td>
-        <td>✅ 跨 site + 自訂規則</td>
       </tr>
       <tr>
         <td>診斷 playbook</td>
         <td>限「自助級」案例</td>
         <td>✅ 完整</td>
-        <td>✅ 含自訂</td>
       </tr>
       <tr style="background:rgba(251,191,36,0.05);">
         <td><strong>Dashboard Builder</strong> <span style="color:var(--warn);font-size:11px;">(wedge · 跨模式)</span></td>
         <td>1-2 widget 簡易版</td>
         <td>4-6 widget 標準版</td>
-        <td>無限制 + 排程 + export</td>
       </tr>
       <tr>
         <td>Ring 0 (純讀)</td>
-        <td>✅</td>
         <td>✅</td>
         <td>✅</td>
       </tr>
@@ -806,31 +761,21 @@
         <td>Ring 1 (可逆寫入)</td>
         <td>❌</td>
         <td>✅ 需 approval</td>
-        <td>✅ 可批量 / 部分自動</td>
       </tr>
       <tr>
         <td>Ring 2 (破壞性)</td>
         <td>❌</td>
         <td>❌</td>
-        <td>✅ 需明確開啟</td>
       </tr>
       <tr>
         <td>Custom playbook</td>
         <td>❌</td>
         <td>讀取社群版</td>
-        <td>✅ 自寫 + 發布</td>
-      </tr>
-      <tr>
-        <td>API / MCP 接出</td>
-        <td>❌</td>
-        <td>❌</td>
-        <td>✅</td>
       </tr>
       <tr>
         <td>Audit log</td>
         <td>個人記錄</td>
         <td>✅ 完整</td>
-        <td>✅ 含 export</td>
       </tr>
     </tbody>
   </table>
@@ -840,7 +785,7 @@
 <section class="cta">
   <h3>看完想看更深？</h3>
   <div class="cta-btns">
-    <a class="cta-btn primary" href="use-case-matrix.html">📊 4×3 使用案例矩陣</a>
+    <a class="cta-btn primary" href="use-case-matrix.html">📊 4×2 使用案例矩陣</a>
     <a class="cta-btn" href="overview-pm-mkt.html">🎯 PM/MKT 客戶故事</a>
     <a class="cta-btn" href="architecture-v2-zh.html">🏗 完整技術架構</a>
     <a class="cta-btn" href="playbook-examples.html">📘 Playbook 範例</a>

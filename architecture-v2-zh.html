@@ -481,7 +481,7 @@
     <div class="nav-links">
       <a class="nav-link" href="index.html">🏠 入口</a>
       <a class="nav-link" href="system-diagram.html">🗺 系統圖</a>
-      <a class="nav-link" href="three-modes.html">🎭 三模式</a>
+      <a class="nav-link" href="two-modes.html">🎭 兩模式</a>
       <a class="nav-link" href="use-case-matrix.html">📊 使用案例</a>
       <a class="nav-link" href="dashboard-builder-demo.html">📈 Dashboard Demo</a>
       <a class="nav-link" href="dashboard-builder-implementation.html">🔧 實作指南</a>
@@ -526,10 +526,10 @@
     <text class="label-title" x="585" y="84" text-anchor="middle">Engineer / NOC</text>
     <text class="label-sub" x="585" y="102" text-anchor="middle">核准動作</text>
   </g>
-  <g class="clickable" data-explain="user-msp" data-tooltip="MSP 第一線">
+  <g class="clickable" data-explain="user-employee" data-tooltip="員工 (Mode A)">
     <rect class="node" x="690" y="60" width="170" height="56" rx="28"/>
-    <text class="label-title" x="775" y="84" text-anchor="middle">MSP T1</text>
-    <text class="label-sub" x="775" y="102" text-anchor="middle">處理 ticket</text>
+    <text class="label-title" x="775" y="84" text-anchor="middle">Employee</text>
+    <text class="label-sub" x="775" y="102" text-anchor="middle">員工自助 (Mode A)</text>
   </g>
   <g class="clickable" data-explain="user-smb" data-tooltip="中小企業 IT">
     <rect class="node" x="880" y="60" width="170" height="56" rx="28"/>
@@ -808,7 +808,7 @@ const E = {
     analogy: '像餐廳裡的用餐客人 — 點餐、確認餐點、決定要不要打包帶走。',
     what: '直接與 AI 系統互動的人。所有請求由他們發起，破壞性動作的最終決定權永遠在他們手上。',
     why: 'AI 永遠不是黑盒。最終決策權在人手上 — 這是系統能被信任、能上 production 的根本。',
-    example: '4 種 persona，需求各不同：\n• Engineer / NOC — 核准 Ring 1/2 動作\n• MSP T1 — 處理大量 ticket\n• SMB IT — 一個人扛全部，需要 AI 當資深工程師\n• Enterprise — 需要完整 audit trail'
+    example: '4 種 persona，需求各不同：\n• Engineer / NOC — 核准 Ring 1/2 動作（如有資深工程師）\n• Employee — 員工自助（Mode A）\n• SMB IT — 一個人扛全部，需要 AI 當資深工程師（Mode B · 主軸）\n• Enterprise — 需要完整 audit trail'
   },
   'user-engineer': {
     badge: 'L1 · USER',
@@ -818,13 +818,13 @@ const E = {
     why: '高風險動作（VLAN 變更、reboot）不能讓 AI 自己決定。工程師是最後一道閘門。',
     example: 'AI 建議「把 AP-7F-N3 的 TX power 從 23 dBm 降到 17 dBm」→ 工程師看到 evidence + blast radius → 點 Approve。'
   },
-  'user-msp': {
+  'user-employee': {
     badge: 'L1 · USER',
-    title: 'MSP / Integrator T1（集成商一線）',
-    analogy: '像醫院急診分診護士 — 快速接案、轉到對的科室、簡單的當場處理。',
-    what: '集成商 / MSP 的第一線值班人員，每天跨多個客戶 site 處理 50–100 張 ticket。',
-    why: '這是 ROI 最高的 persona — AI 把他們從「調查員」變「複核者」，處理量直接提升 3 倍。',
-    example: '原本要登 12 個客戶 dashboard 才能診斷一張 ticket，現在 AI 30 秒給出完整診斷，T1 點同意執行就好。'
+    title: 'Employee（員工 · Mode A）',
+    analogy: '像便利商店的自助結帳 — 簡單的事自己解決，麻煩的才請店員。',
+    what: '公司一般員工。透過 chat 自助診斷 Wi-Fi / 連線 / 印表機等問題，解不了再升級給 IT。',
+    why: '把 80% 重複客服 ticket 擋在 IT 之前 — 員工省時間，IT 只看真正需要他們的 case。',
+    example: '員工：「我的 SONOS 連不上」→ AI 走 quick check 找出是訪客網路問題 → 教員工切回員工網 → 解決，不用 call IT。'
   },
   'user-smb': {
     badge: 'L1 · USER',
@@ -881,8 +881,8 @@ const E = {
     title: 'Custom Skills（自訂 playbook）',
     analogy: '像 VSCode 的 extension — 社群與客戶可以寫自己的能力載入平台。',
     what: '客戶 / 合作夥伴可寫自己的 playbook 並透過 GitHub 載入或分享。',
-    why: '平台延展性。MSP 可以把自家 know-how 包成 skill 賣給其他人。',
-    example: '一個 Sonos 集成商寫「diagnose_sonos_multicast」playbook 發到 GitHub。其他 MSP 直接安裝來用。'
+    why: '平台延展性。客戶 IT / 顧問可以把自家 know-how 包成 skill 重複使用或分享。',
+    example: '一個 Sonos 顧問寫「diagnose_sonos_multicast」playbook 發到 GitHub。其他客戶 IT 直接安裝來用。'
   },
 
   // ===== L3 Engine =====
@@ -1017,8 +1017,8 @@ const E = {
     title: 'Skills Library on GitHub（劇本庫）',
     analogy: '像 npm 或 PyPI — 可分享能力的 package registry。',
     what: '版本控制的 playbook 倉庫。EnGenius 官方 + 社群 + 客戶私有都用同一格式。',
-    why: '生態系成長飛輪。成功的 playbook 變成可重用資產。MSP 可以靠賣 know-how 賺錢。',
-    example: '集成商發布 diagnose_sonos_multicast@1.2.0 → 50 個其他 MSP 安裝 → 原本開發投入的 ROI 直接 50 倍。'
+    why: '生態系成長飛輪。成功的 playbook 變成可重用資產。客戶 IT / 顧問可以分享或重用。',
+    example: '社群發布 diagnose_sonos_multicast@1.2.0 → 50 個其他客戶 IT 直接安裝 → 不用各自重新摸索。'
   },
   'side-audit': {
     badge: 'SIDE · ★ 新增',

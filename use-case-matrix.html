@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Network AI-Assistant — 4×3 使用案例矩陣</title>
+<title>Network AI-Assistant — 4×2 使用案例矩陣</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -165,7 +165,7 @@
   }
   .matrix-grid {
     display: grid;
-    grid-template-columns: 180px 1fr 1.15fr 1fr;
+    grid-template-columns: 180px 1fr 1.2fr;
     gap: 12px;
     min-width: 1200px;
   }
@@ -502,14 +502,14 @@
 
 <header>
   <div class="left">
-    <div class="tag">USE CASE MATRIX · 4×3 矩陣</div>
-    <h1>Network <span class="accent">AI-Assistant</span> — 4 維度 × 3 模式</h1>
-    <div class="sub">12 個格子 · 給 PM 排 roadmap、給 Eng 估時程、給業務找 demo 點</div>
+    <div class="tag">USE CASE MATRIX · 4×2 矩陣</div>
+    <h1>Network <span class="accent">AI-Assistant</span> — 4 維度 × 2 模式</h1>
+    <div class="sub">8 個格子 · 給 PM 排 roadmap、給 Eng 估時程、給業務找 demo 點</div>
   </div>
   <div class="nav-links">
     <a class="nav-link muted-link" href="index.html">🏠 入口</a>
     <a class="nav-link muted-link" href="system-diagram.html">🗺 系統圖</a>
-    <a class="nav-link muted-link" href="three-modes.html">🎭 三模式</a>
+    <a class="nav-link muted-link" href="two-modes.html">🎭 兩模式</a>
     <a class="nav-link current" href="use-case-matrix.html">📊 使用案例</a>
     <a class="nav-link muted-link" href="dashboard-builder-demo.html">📈 Dashboard Demo</a>
     <a class="nav-link muted-link" href="dashboard-builder-implementation.html">🔧 實作指南</a>
@@ -525,8 +525,8 @@
 <section class="hero">
   <h2>用<span class="accent">兩個軸</span>看清楚整個產品有哪些<span class="cyan">使用案例</span></h2>
   <p class="lead">
-    橫軸 = <strong>使用者模式</strong>（誰在用），縱軸 = <strong>應用維度</strong>（在做什麼）。
-    每個格子代表一個具體的功能 / 體驗 / 故事 — <strong>標出 phase 後就是工程 roadmap</strong>。
+    橫軸 = <strong>2 個使用者模式</strong>（員工 / SMB IT），縱軸 = <strong>4 個應用維度</strong>（在做什麼）。
+    8 個格子 — <strong>標出 phase 後就是工程 roadmap</strong>。
   </p>
 </section>
 
@@ -542,11 +542,10 @@
     </div>
   </div>
   <div class="axis-card">
-    <h4>👥 橫軸 · 3 個使用者模式（誰在用）</h4>
-    <div class="axis-list three">
+    <h4>👥 橫軸 · 2 個使用者模式（誰在用）</h4>
+    <div class="axis-list" style="grid-template-columns: repeat(2, 1fr);">
       <div class="axis-pill"><div class="dim-label" style="color:var(--cyan)">A · 員工</div><div class="dim-meta">非技術用戶</div></div>
       <div class="axis-pill"><div class="dim-label" style="color:var(--accent)">B · SMB IT ⭐</div><div class="dim-meta">缺經驗的 IT</div></div>
-      <div class="axis-pill"><div class="dim-label" style="color:var(--purple)">C · Pro</div><div class="dim-meta">資深 / MSP</div></div>
     </div>
   </div>
 </section>
@@ -559,7 +558,6 @@
     <div class="header-cell header-dim">維度</div>
     <div class="header-cell header-mode-a">A · 員工</div>
     <div class="header-cell header-mode-b">B · SMB IT</div>
-    <div class="header-cell header-mode-c">C · Pro / MSP</div>
 
     <!-- Row 1: Deployment -->
     <div class="row-label">
@@ -575,13 +573,6 @@
       <div class="cell-desc">AI 帶著 SMB IT 一步步加新 AP / SSID / VLAN。<strong style="color:var(--text);">事前預檢查可能衝突</strong>，避免設定錯誤。</div>
       <div class="cell-meta"><span class="meta-tag r1">Ring 1</span><span class="meta-tag">引導</span></div>
       <div class="cell-example">「幫我加一個訪客網路」→ AI 問 4 個問題 → 自動產設定 → 預覽 → 套用</div>
-    </div>
-
-    <div class="cell priority-3">
-      <div class="cell-title">批量部署 + 模板化</div>
-      <div class="cell-desc">MSP 用 template 一次部署多 site，AI 從現有環境推導模板。</div>
-      <div class="cell-meta"><span class="meta-tag r1">Ring 1</span><span class="meta-tag r2">Ring 2</span><span class="meta-tag">batch</span></div>
-      <div class="cell-example">「以這個 site 為樣板，部署到剩餘 9 個」→ AI 產出設定 + diff 預覽</div>
     </div>
 
     <!-- Row 2: Monitoring -->
@@ -605,13 +596,6 @@
       <div class="cell-example">「我想看這週網路有沒有異常」→ AI 生成 4 widget dashboard 並儲存</div>
     </div>
 
-    <div class="cell priority-2">
-      <div class="cell-title">跨 site 儀表板 + 排程</div>
-      <div class="cell-desc">MSP 看跨客戶數據；可 export / 排程 email / 對接 Grafana。</div>
-      <div class="cell-meta"><span class="meta-tag r0">Ring 0</span><span class="meta-tag">batch</span><span class="meta-tag">export</span></div>
-      <div class="cell-example">「Top 10 sites by churn this month, weekly email」→ 自動排程</div>
-    </div>
-
     <!-- Row 3: Troubleshoot -->
     <div class="row-label">
       <span class="num">DIMENSION ③</span>
@@ -633,13 +617,6 @@
       <div class="cell-example">sticky_client / device_offline / sonos_lan 等 playbook 全自動跑完</div>
     </div>
 
-    <div class="cell priority-2">
-      <div class="cell-title">完整 playbook + 自動化</div>
-      <div class="cell-desc">高信心情境可設自動執行；可寫 custom playbook；含 batch 故障排除。</div>
-      <div class="cell-meta"><span class="meta-tag r0">Ring 0</span><span class="meta-tag r1">Ring 1</span><span class="meta-tag r2">Ring 2</span><span class="meta-tag">auto</span></div>
-      <div class="cell-example">「過去一週這個錯誤代碼出現 50 次，自動套修復」→ 一鍵批次處理</div>
-    </div>
-
     <!-- Row 4: Management -->
     <div class="row-label">
       <span class="num">DIMENSION ④</span>
@@ -656,12 +633,6 @@
       <div class="cell-example">「哪些 AP 過保了？」→ AI 列表 + 建議汰換順序</div>
     </div>
 
-    <div class="cell priority-3">
-      <div class="cell-title">容量規劃 + 生命週期</div>
-      <div class="cell-desc">AI 根據長期 telemetry 預測容量瓶頸、firmware 升級建議、policy 審視、security audit。</div>
-      <div class="cell-meta"><span class="meta-tag r0">Ring 0</span><span class="meta-tag">predictive</span></div>
-      <div class="cell-example">「依趨勢，您 6 週後會撞到 AP 容量上限。建議在 3 週內加 2 台。」</div>
-    </div>
 
   </div>
 </section>
@@ -699,7 +670,7 @@
 <!-- PHASE ROADMAP -->
 <section class="roadmap">
   <h3>建議的 Phase Roadmap</h3>
-  <h2>把 12 個格子排成 3 個季度</h2>
+  <h2>把 8 個格子排成 2 個季度</h2>
 
   <div class="phase-row">
     <div class="phase-label">
@@ -708,7 +679,7 @@
       <div class="phase-time">M0–M3 · MVP</div>
     </div>
     <div class="phase-content">
-      <strong>目標</strong>：證明三模式的核心命題成立 — 員工會用、SMB IT 愛用、能省下時間。
+      <strong>目標</strong>：證明兩模式的核心命題成立 — 員工會用、SMB IT 愛用、能省下時間。
       <br><strong>策略</strong>：全部 read-mostly + 受控 Ring 1，<strong>避開高風險動作</strong>。
       <div class="phase-cells">
         <span class="phase-cell-chip">A② 個人 dashboard</span>
@@ -726,41 +697,28 @@
       <div class="phase-time">M3–M6 · GA · 拓展功能</div>
     </div>
     <div class="phase-content">
-      <strong>目標</strong>：拓展到管理 / 部署維度，引入跨 site 能力，開始攻 MSP 市場。
-      <br><strong>策略</strong>：開放部分 Ring 2 動作（嚴格 approval），加入 batch 操作。
+      <strong>目標</strong>：拓展到管理 / 部署維度，把整套 SMB IT 流程做完整。
+      <br><strong>策略</strong>：開放更多 Ring 1 動作 + 引導式部署，仍嚴格守 approval。
       <div class="phase-cells">
         <span class="phase-cell-chip">B① 引導式部署</span>
         <span class="phase-cell-chip">B④ 「我想看 X」式探索</span>
-        <span class="phase-cell-chip">C② 跨 site 儀表板</span>
-        <span class="phase-cell-chip">C③ 完整 playbook + auto</span>
+        <span class="phase-cell-chip">B③+ 更多 playbook（VPN / IPv6 / SD-WAN）</span>
+        <span class="phase-cell-chip">A 補強 · 員工 chat 多語系</span>
       </div>
     </div>
   </div>
 
-  <div class="phase-row">
-    <div class="phase-label">
-      <div class="phase-num">PHASE 3</div>
-      <div class="phase-title">Differentiate</div>
-      <div class="phase-time">M6–M12 · 競爭護城河</div>
-    </div>
-    <div class="phase-content">
-      <strong>目標</strong>：建立競爭護城河 — 預測能力、完整自動化、生態系。
-      <br><strong>策略</strong>：搶到 Mist / Marvis 沒做完的維運層 + 開放 custom playbook 給社群。
-      <div class="phase-cells">
-        <span class="phase-cell-chip">C① 批量部署</span>
-        <span class="phase-cell-chip">C④ 容量規劃 + 生命週期</span>
-        <span class="phase-cell-chip">Custom playbook marketplace</span>
-        <span class="phase-cell-chip">Predictive insights</span>
-      </div>
-    </div>
-  </div>
+  <p style="text-align:center; color:var(--dim); font-size:13px; margin-top:24px; max-width:680px; margin-left:auto; margin-right:auto;">
+    📌 deliberately 不做 MSP / multi-tenant / 跨組織 console — 那是不同 ICP，需要 multi-tenant、billing、white-label。
+    把「公司內 IT」做透再說。架構保留 mode-agnostic，未來真要擴後端不會大改。
+  </p>
 </section>
 
 <!-- CTA -->
 <section class="cta">
   <h3>看完這張矩陣，下一步…</h3>
   <div class="cta-btns">
-    <a class="cta-btn" href="three-modes.html">🎭 三模式詳細介紹</a>
+    <a class="cta-btn" href="two-modes.html">🎭 兩模式詳細介紹</a>
     <a class="cta-btn" href="playbook-examples.html">📘 Phase 1 Playbook 範例</a>
     <a class="cta-btn" href="architecture-v2-zh.html">🏗 完整技術架構</a>
     <a class="cta-btn" href="overview-pm-mkt.html">🎯 對外客戶版</a>

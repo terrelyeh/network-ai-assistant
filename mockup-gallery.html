@@ -155,10 +155,10 @@
     margin-bottom: 36px;
   }
 
-  /* Mockup grid (3 modes) */
+  /* Mockup grid (2 modes) */
   .mockup-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 18px;
     margin-bottom: 48px;
   }
@@ -511,11 +511,11 @@
   <div class="left">
     <div class="tag">UI MOCKUPS · 互動式設計示意</div>
     <h1>Network <span class="accent">AI-Assistant</span> — Mockup 集錦</h1>
-    <div class="sub">4 個可實際操作的設計示意 · 點 card 進入</div>
+    <div class="sub">3 個可實際操作的設計示意 · 點 card 進入</div>
   </div>
   <div class="nav-links">
     <a class="nav-link muted-link" href="index.html">🏠 入口</a>
-    <a class="nav-link muted-link" href="three-modes.html">🎭 三模式</a>
+    <a class="nav-link muted-link" href="two-modes.html">🎭 兩模式</a>
     <a class="nav-link muted-link" href="dashboard-builder-demo.html">📈 Demo</a>
     <a class="nav-link current" href="mockup-gallery.html">🎨 Mockups</a>
     <a class="nav-link muted-link" href="overview-pm-mkt.html">🎯 PM/MKT</a>
@@ -528,10 +528,10 @@
 <!-- HERO -->
 <section class="hero">
   <div class="pre">CLICKABLE · INTERACTIVE</div>
-  <h2>3 個使用者模式<br>+ 1 個<span class="accent">進入點產品</span></h2>
+  <h2>2 個使用者模式<br>+ 1 個<span class="accent">進入點產品</span></h2>
   <p class="lead">
-    <strong>Dashboard Builder</strong> 是<strong style="color:var(--warn);">跨模式 wedge product</strong> — 任何 user 都能用、競爭壓力最弱、最容易 land。
-    <br>另外 3 個 mockup 對應依角色切分的 <strong>Mode A / B / C</strong>，UI 體驗各自不同。
+    <strong>Dashboard Builder</strong> 是<strong style="color:var(--warn);">跨模式 wedge product</strong> — Mode A 與 Mode B 都能用、競爭壓力最弱、最容易 land。
+    <br>另外 2 個 mockup 對應依角色切分的 <strong>Mode A 員工 / Mode B SMB IT</strong>，UI 體驗各自不同。
   </p>
 </section>
 
@@ -540,7 +540,7 @@
   <span class="gallery-section-tag wedge">⭐ Wedge Product · 進入點產品</span>
   <h2>跨模式 · <span class="accent">land 客戶最快的路徑</span></h2>
   <p class="desc">
-    不限定 user role — Mode A / B / C 都能用。最容易 demo、TAM 最大、競品最弱。
+    不限定 user role — Mode A 與 Mode B 都能用。最容易 demo、TAM 最大、競品最弱。
     建議 Phase 1 主推這個切入市場，再 expand 到完整 suite。
   </p>
 </div>
@@ -579,16 +579,16 @@
 
 <hr class="section-divider">
 
-<!-- 3 MODES (依角色) -->
+<!-- 2 MODES (依角色) -->
 <div class="gallery-section-head">
-  <span class="gallery-section-tag modes">👥 3 Modes · 依角色</span>
-  <h2>同一套後端 · <span class="accent">3 種 UI 體驗</span></h2>
+  <span class="gallery-section-tag modes">👥 2 Modes · 依角色</span>
+  <h2>同一套後端 · <span class="accent">2 種 UI 體驗</span></h2>
   <p class="desc">
-    完整 Network AI-Assistant Suite 對 3 種角色提供合適的 UI 與能力範圍 — 員工自助、SMB IT cockpit、MSP Pro Console。
+    Network AI-Assistant 對 2 種角色提供合適的 UI 與能力範圍 — 員工自助 + SMB IT cockpit。聚焦「公司內 IT」這個 ICP，不分散做 MSP / multi-tenant。
   </p>
 </div>
 
-<div class="mockup-grid">
+<div class="mockup-grid two">
 
   <!-- Mode A · Employee Chat -->
   <a class="mockup-card cyan" href="employee-chat-mockup.html">
@@ -647,47 +647,16 @@
     </div>
   </a>
 
-  <!-- Mode C · Pro Console -->
-  <a class="mockup-card purple" href="mode-c-pro-mockup.html">
-    <span class="mockup-tag t-c">MODE C · Pro / MSP</span>
-    <h3>⚡ Pro Console</h3>
-    <div class="persona">資深工程師 / MSP · <strong>跨 site 批量管理 + AI agent</strong></div>
-
-    <div class="preview">
-      <div class="pv-pro">
-        <div class="header"></div>
-        <div class="tabs">
-          <div class="active"></div><div></div><div></div><div></div>
-        </div>
-        <div class="row"><div class="check checked"></div><div>Acme Corp / HQ</div><div class="pill">健康</div><div class="pill">94</div><div></div></div>
-        <div class="row"><div class="check checked"></div><div>BigCo / Tokyo</div><div class="pill bad">嚴重</div><div class="pill bad">62</div><div></div></div>
-        <div class="row"><div class="check"></div><div>TechStart / Lab</div><div class="pill">健康</div><div class="pill">97</div><div></div></div>
-        <div class="row"><div class="check"></div><div>BigCo / Singapore</div><div class="pill">健康</div><div class="pill">91</div><div></div></div>
-      </div>
-    </div>
-
-    <div class="mockup-tags">
-      <span class="mockup-tag-mini">跨 site 表格</span>
-      <span class="mockup-tag-mini">Bulk select</span>
-      <span class="mockup-tag-mini">AI agent panel</span>
-      <span class="mockup-tag-mini">Cmd+K palette</span>
-      <span class="mockup-tag-mini">Custom playbook</span>
-    </div>
-    <div class="mockup-cta">
-      <span class="meta">mode-c-pro-mockup.html</span>
-      <span class="open">開啟 mockup <span class="arrow">→</span></span>
-    </div>
-  </a>
 
 </div>
 
 <!-- COMPARISON -->
 <section class="compare">
-  <h3>3 Modes vs Wedge Product · 對照</h3>
+  <h3>2 Modes vs Wedge Product · 對照</h3>
   <h2>為什麼 wedge 跟 modes <span style="color: var(--accent);">不同軸</span></h2>
   <p style="color:var(--muted); font-size:14px; margin-bottom:18px; line-height:1.6;">
-    <strong style="color:var(--text);">Modes</strong> 是依「<strong>誰用</strong>」分（A/B/C 對應 employee / SMB IT / Pro）。
-    <strong style="color:var(--text);">Wedge</strong> 是「<strong>賣什麼</strong>」 — Dashboard Builder 跨所有模式都能用。
+    <strong style="color:var(--text);">Modes</strong> 是依「<strong>誰用</strong>」分（A 員工 / B SMB IT）。
+    <strong style="color:var(--text);">Wedge</strong> 是「<strong>賣什麼</strong>」 — Dashboard Builder 跨兩個模式都能用。
   </p>
   <table>
     <thead>
@@ -695,7 +664,6 @@
         <th>面向</th>
         <th class="col-a">Mode A · 員工</th>
         <th class="col-b">Mode B · SMB IT</th>
-        <th class="col-c">Mode C · Pro</th>
         <th class="col-feat">⭐ Dashboard Builder<br><span style="font-weight:400;font-size:10px;text-transform:none;letter-spacing:0;">(跨模式 wedge)</span></th>
       </tr>
     </thead>
@@ -704,12 +672,10 @@
         <td>主要用戶</td>
         <td>非技術員工</td>
         <td>缺經驗 IT</td>
-        <td>資深網管 / MSP</td>
         <td><strong>所有 user</strong>（跨模式）</td>
       </tr>
       <tr>
         <td>軸性質</td>
-        <td>依「誰用」</td>
         <td>依「誰用」</td>
         <td>依「誰用」</td>
         <td><strong>依「賣什麼」</strong></td>
@@ -718,49 +684,42 @@
         <td>UI 形態</td>
         <td>單一 chat 視窗</td>
         <td>多 panel cockpit</td>
-        <td>多 tab 表格 console</td>
         <td>4 步驟 wizard</td>
       </tr>
       <tr>
         <td>主要互動</td>
         <td>對話</td>
         <td>查看 + chat + 核准</td>
-        <td>批量選取 + 命令</td>
         <td>描述 → 確認 → 用</td>
       </tr>
       <tr>
         <td>AI 角色</td>
         <td>客服 / 教練</td>
         <td>副駕駛</td>
-        <td>Agent / 工具</td>
         <td>「翻譯員」</td>
       </tr>
       <tr>
         <td>寫入動作</td>
         <td>無 (只開單)</td>
         <td>Ring 0/1 + approval</td>
-        <td>完整 Ring 0/1/2</td>
         <td>Ring 0/1 (save)</td>
       </tr>
       <tr>
         <td>商業角色</td>
         <td class="muted">附贈 / 包含於 suite</td>
         <td class="muted">主訂閱 / Suite 核心</td>
-        <td class="muted">Enterprise tier</td>
         <td><strong style="color:var(--warn);">⭐ Wedge / Land 工具</strong></td>
       </tr>
       <tr>
         <td>競爭 frame</td>
         <td class="muted">內建客服</td>
         <td class="muted">vs Mist / Aruba（紅海）</td>
-        <td class="muted">vs Datadog（紅海）</td>
         <td><strong style="color:var(--warn);">vs Grafana（藍海）</strong></td>
       </tr>
       <tr>
         <td>Demo 焦點</td>
         <td>「不用 call IT」</td>
         <td>「30 秒看完當日狀況」</td>
-        <td>「100 sites 批量管理」</td>
         <td><strong>「用講的就有 dashboard」</strong></td>
       </tr>
     </tbody>
@@ -771,10 +730,10 @@
 <div class="tip">
   <h3>💡 展示順序建議（依 wedge 策略）</h3>
   <p>
-    <strong>Phase 1 land</strong> → 全部主推 <strong style="color:var(--warn);">Dashboard Builder</strong>（最容易 demo · 最低風險 · TAM 最大）。
+    <strong>Phase 1 land</strong> → 主推 <strong style="color:var(--warn);">Dashboard Builder</strong>（最容易 demo · 最低風險 · TAM 最大）。
     <br><strong>對 PM/MKT 講故事</strong> → Dashboard Builder（wow）→ Mode A（員工自助降 IT 負擔）→ Mode B（IT 主控台）。
-    <br><strong>對技術買家</strong> → Mode C + Mode B（power + 核准流程）。
-    <br><strong>展會 demo</strong> → 30 秒 Dashboard Builder wow → 視客戶反應展開到 modes。
+    <br><strong>對技術買家</strong> → Mode B（cockpit + 核准流程 + ring 安全機制）。
+    <br><strong>展會 demo</strong> → 30 秒 Dashboard Builder wow → Mode A → Mode B 升級劇情。
     <br><strong>Expand 階段</strong> → 客戶上 Dashboard Builder 後，upsell 到 diagnose / monitor / approval 完整 suite。
   </p>
 </div>

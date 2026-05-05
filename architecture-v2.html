@@ -472,7 +472,7 @@
     <div class="nav-links">
       <a class="nav-link" href="index.html">🏠 Home</a>
       <a class="nav-link" href="system-diagram.html">🗺 System</a>
-      <a class="nav-link" href="three-modes.html">🎭 3 Modes</a>
+      <a class="nav-link" href="two-modes.html">🎭 3 Modes</a>
       <a class="nav-link" href="use-case-matrix.html">📊 Use Cases</a>
       <a class="nav-link" href="dashboard-builder-demo.html">📈 Dashboard Demo</a>
       <a class="nav-link" href="dashboard-builder-implementation.html">🔧 Implementation</a>
@@ -521,10 +521,10 @@
     <text class="label-sub" x="585" y="102" text-anchor="middle">approves actions</text>
   </g>
 
-  <g class="clickable" data-explain="user-msp" data-tooltip="MSP T1">
+  <g class="clickable" data-explain="user-employee" data-tooltip="Employee (Mode A)">
     <rect class="node" x="690" y="60" width="170" height="56" rx="28"/>
-    <text class="label-title" x="775" y="84" text-anchor="middle">MSP T1</text>
-    <text class="label-sub" x="775" y="102" text-anchor="middle">resolves tickets</text>
+    <text class="label-title" x="775" y="84" text-anchor="middle">Employee</text>
+    <text class="label-sub" x="775" y="102" text-anchor="middle">self-service (Mode A)</text>
   </g>
 
   <g class="clickable" data-explain="user-smb" data-tooltip="SMB IT">
@@ -841,7 +841,7 @@ const E = {
     analogy: 'Like the dining customers in a restaurant — they order, confirm, and decide whether to take leftovers home.',
     what: 'The humans who interact with the AI system. They drive requests and hold final authority over destructive actions.',
     why: 'AI is never a black box. The human always has final say — this is what makes the system trustworthy enough to deploy.',
-    example: '4 personas with different needs:\n• Engineer / NOC — approves Ring 1/2 actions\n• MSP T1 — handles ticket volume\n• SMB IT — solo, needs AI as expert\n• Enterprise — needs audit trail'
+    example: '4 personas with different needs:\n• Engineer / NOC — approves Ring 1/2 actions (where senior eng exists)\n• Employee — self-service via chat (Mode A)\n• SMB IT — solo, needs AI as expert (Mode B · primary)\n• Enterprise — needs audit trail'
   },
   'user-engineer': {
     badge: 'L1 · USER',
@@ -851,13 +851,13 @@ const E = {
     why: 'High-stakes changes (VLAN moves, reboots) cannot be left to AI alone. Engineers provide the final gate.',
     example: 'AI suggests "lower TX power 23 → 17 dBm on AP-7F-N3" → engineer reviews evidence + blast radius → clicks Approve.'
   },
-  'user-msp': {
+  'user-employee': {
     badge: 'L1 · USER',
-    title: 'MSP / Integrator T1',
-    analogy: 'Like a hospital triage nurse — fast intake, route to right specialist, handle simple cases inline.',
-    what: 'Tier-1 staff at managed service providers handling 50–100 tickets/day across many customer sites.',
-    why: 'This is the highest-value persona for ROI: AI takes them from "investigator" to "reviewer" and triples their throughput.',
-    example: 'Instead of logging into 12 dashboards to diagnose one ticket, T1 sees AI\'s pre-built diagnosis in 30 seconds and approves the fix.'
+    title: 'Employee (Mode A)',
+    analogy: 'Like a self-checkout at the convenience store — handle simple things yourself, only flag staff when stuck.',
+    what: 'Regular employees in the company. Self-diagnose Wi-Fi / connectivity / printer issues via chat; escalate only when self-help fails.',
+    why: 'Deflects ~80% of repeat helpdesk tickets before they hit IT — employees save time, IT only sees what really needs them.',
+    example: 'Employee: "My SONOS won\'t connect" → AI runs quick check, finds employee is on guest VLAN → guides switch back to corp Wi-Fi → resolved without calling IT.'
   },
   'user-smb': {
     badge: 'L1 · USER',
@@ -914,8 +914,8 @@ const E = {
     title: 'Custom Skills',
     analogy: 'Like VSCode extensions — community + customer-built capabilities load into the platform.',
     what: 'Lets customers / partners write their own playbooks and load them. Published / shared via GitHub.',
-    why: 'Platform extensibility. MSPs can package their proprietary know-how as skills and resell them.',
-    example: 'A Sonos integrator writes "diagnose_sonos_multicast" playbook, publishes to GitHub. Other MSPs install it directly into their platform.'
+    why: 'Platform extensibility. Customer IT / consultants can package their know-how as reusable or shareable skills.',
+    example: 'A Sonos consultant writes "diagnose_sonos_multicast" playbook, publishes to GitHub. Other customer IT teams install it directly.'
   },
 
   // ===== AI Engine =====
@@ -1050,8 +1050,8 @@ const E = {
     title: 'Skills Library on GitHub',
     analogy: 'Like npm or PyPI — a package registry for shareable capabilities.',
     what: 'Version-controlled repository where playbooks live. EnGenius-published + community + customer-private all share the format.',
-    why: 'Enables ecosystem growth. Successful playbooks become reusable assets. MSPs can monetize their know-how.',
-    example: 'Integrator publishes `diagnose_sonos_multicast@1.2.0` → 50 other MSPs install it → 50× ROI on the original development.'
+    why: 'Enables ecosystem growth. Successful playbooks become reusable assets. Customer IT / consultants can share or reuse instead of reinventing.',
+    example: 'Community publishes `diagnose_sonos_multicast@1.2.0` → 50 other customer IT teams install it → no need to re-debug from scratch.'
   },
   'side-audit': {
     badge: 'SIDE · ★ NEW',
