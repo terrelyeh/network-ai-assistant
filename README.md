@@ -1,6 +1,6 @@
 # Network AI-Assistant · Network Management Assistant Proposal
 
-完整的 AI 網管助理產品提案資料 — **12 個頁面 + 4 個互動 mockup + 1 個 sales deck**。
+完整的 AI 網管助理產品提案資料 — **11 個頁面 + 4 個互動 mockup + 1 個 sales deck**。
 
 🔗 **Live**: https://network-ai-assistant.vercel.app
 
@@ -20,7 +20,6 @@
 - [`playbook-examples.html`](./playbook-examples.html) — 5 個 playbook 範例
 
 ### ⭐ Wedge Product（進入點產品）
-- [`dashboard-builder-product.html`](./dashboard-builder-product.html) — **產品定位** · TAM 分析、競品 frame、freemium、land-and-expand 策略
 - [`dashboard-builder-demo.html`](./dashboard-builder-demo.html) — 4 場景互動 demo
 - [`dashboard-builder-implementation.html`](./dashboard-builder-implementation.html) — 實作完整指南（4 tab）
 
@@ -63,7 +62,6 @@
 | PM / MKT / 業務 | `overview-pm-mkt.html` |
 | 工程師 / Tech Lead | `architecture-v2-zh.html`（含 EN 切換） |
 | 產品策略 / 內部對焦 | `three-modes.html` |
-| Wedge / 商業模式討論 | `dashboard-builder-product.html` |
 | 排 roadmap | `use-case-matrix.html` |
 | 看 UI 設計 | `mockup-gallery.html` |
 | 技術買家 / CIO | `blind-spots.html` |

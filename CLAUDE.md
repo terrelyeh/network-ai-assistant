@@ -5,7 +5,7 @@
 ## Project Overview
 
 純靜態 HTML 產品提案網站 — 「**Network AI-Assistant**」AI 網管助理的完整提案資料包。
-12 個策略/技術頁 + 4 個互動式 UI mockup + 1 份 sales pitch deck，部署於 Vercel，
+11 個策略/技術頁 + 4 個互動式 UI mockup + 1 份 sales pitch deck，部署於 Vercel，
 給 PM / MKT / Eng / 客戶 / 經營層不同對象用。
 
 完整功能與內容結構詳見 [README.md](README.md)。
@@ -29,7 +29,6 @@ network-ai-assistant/
 ├── system-diagram.html                       高層次系統圖
 ├── use-case-matrix.html                      4×3 use case 矩陣
 ├── dashboard-builder-demo.html               Dashboard Builder 互動 demo
-├── dashboard-builder-product.html            ⭐ Wedge product 定位（TAM/競品/freemium）
 ├── dashboard-builder-implementation.html     Dashboard Builder 實作指南（4-tab）
 ├── mockup-gallery.html                       4 mockup 統合入口
 ├── architecture-v2-zh.html / architecture-v2.html  互動架構圖（ZH ⇄ EN 切換）
@@ -48,7 +47,7 @@ network-ai-assistant/
 
 | 類型 | 應用 | 結構 |
 |---|---|---|
-| **內容頁 nav** | 12 個策略/技術頁 | `<header>` 含 `.nav-links`，list 12 個 page link |
+| **內容頁 nav** | 11 個策略/技術頁 | `<header>` 含 `.nav-links`，list 11 個 page link |
 | **Mockup banner** | 4 個 mockup 檔 | 頂部 `.mockup-banner` 單一「← 回 Mockup 列表」連結 |
 
 ### 關鍵 framing（已穩定，不要回頭混淆）
@@ -57,7 +56,7 @@ network-ai-assistant/
 - **Dashboard Builder = wedge product**（不是 Mode B 子功能）— 跨所有模式可用，藍海競爭
 - **4 dimensions** = 用例維度：Deployment / Monitoring / Troubleshoot / Management
 - 工程上 Dashboard Builder 仍是 **third skill class**（與 Diagnostic / Monitoring playbooks 並列），架構不變
-- Marketing 上 Dashboard Builder **獨立成 wedge** 主推 — 詳見 dashboard-builder-product.html
+- Marketing 上 Dashboard Builder **獨立成 wedge** 主推（跨模式可用，藍海競爭）
 
 ## Conventions
 
@@ -82,7 +81,7 @@ network-ai-assistant/
 | Cyan | Mode A · 員工 | employee-chat-mockup |
 | Accent (橘) | Mode B · SMB IT · 主軸 | cockpit-mockup |
 | Purple | Mode C · Pro/MSP | mode-c-pro-mockup |
-| **Warn (黃)** | **Wedge product (Dashboard Builder)** | dashboard-builder-product / flow |
+| **Warn (黃)** | **Wedge product (Dashboard Builder)** | dashboard-builder-demo / flow |
 
 ### 命名
 
@@ -95,11 +94,11 @@ network-ai-assistant/
 - 大部分頁用 `<a class="nav-link muted-link" href="...">`（非 current 狀態）
 - `architecture-v2-zh.html` / `architecture-v2.html` 例外用 `<a class="nav-link" href="...">`（無 muted-link）
 - 縮排不一致：mockup-gallery 用 4 spaces，architecture 用 6 spaces
-- 加新頁時要更新**所有 11 個內容頁** + index.html（mockup 不需更新 nav）
+- 加新頁時要更新**所有 10 個內容頁** + index.html（mockup 不需更新 nav）
 
 ## Current Status
 
-- ✅ 12 內容頁 + 4 mockup + sales deck 全部 live
+- ✅ 11 內容頁 + 4 mockup + sales deck 全部 live
 - ✅ Dashboard Builder 已 reframe 為 wedge product
 - ✅ EN / ZH 架構整合（一張 card + 頁內切換）
 - ✅ 全部 nav 互通
@@ -136,9 +135,9 @@ curl -sS -o /dev/null -w "%{http_code}\n" https://network-ai-assistant.vercel.ap
 4. **Mockup 的「回」連結指向 gallery** 而不是 index — 別誤改回 index
 5. **`AI-Assistant` 才是 highlighted span**（不是 Network）— 改 brand 文字時注意 span 結構
 6. **Dashboard Builder 視覺色用 warn (黃)** 不是 accent (橘)，因為它是 wedge 不是 Mode B 子功能
-7. **加新頁要更新 nav 11 處 + index.html 3-4 處**（resource cards、files table、count）— 漏一處會不一致
+7. **加新頁要更新 nav 10 處 + index.html 3-4 處**（resource cards、files table、count）— 漏一處會不一致
 8. **index.html 的 page count 出現在 3 個位置**：hero meta、resources section title、各種 narrative 文字
-9. **不要把 mockup 加進 nav 12 link 列表** — mockup 只從 mockup-gallery 進入，不出現在內容頁 nav
+9. **不要把 mockup 加進 nav 11 link 列表** — mockup 只從 mockup-gallery 進入，不出現在內容頁 nav
 10. **檔案列表表格用 `⇄` 符號**（U+21C4）標明 ZH ⇄ EN 兩個檔案是 mirror
 
 ## 詳細文件
