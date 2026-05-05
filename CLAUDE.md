@@ -5,7 +5,7 @@
 ## Project Overview
 
 純靜態 HTML 產品提案網站 — 「**Network AI-Assistant**」AI 網管助理的完整提案資料包。
-10 個策略/技術頁 + 3 個互動式 UI mockup + 1 份 sales pitch deck，部署於 Vercel，
+10 個策略/技術頁 + 4 個互動式 UI mockup + 1 份 sales pitch deck，部署於 Vercel，
 給 PM / MKT / Eng / 客戶 / 經營層不同對象用。
 
 **ICP focus**：deliberately 兩模式 — A 員工 / B SMB IT。不做 MSP / multi-tenant / Pro Console。
@@ -38,7 +38,7 @@ network-ai-assistant/
 ├── playbook-examples.html                    5 個 playbook 範例
 ├── blind-spots.html                          12 個工程盲點
 ├── pitch-deck.html                           10-slide sales deck
-└── *-mockup.html (3)                         互動式 mockup（Mode A 員工 / Mode B cockpit / Dashboard Builder flow）
+└── *-mockup.html (4)                         互動式 mockup（Mode A 員工 / Mode B cockpit / Dashboard Builder flow / Unified Chat PoC）
 ```
 
 ## Architecture & Data Flow
@@ -51,7 +51,7 @@ network-ai-assistant/
 | 類型 | 應用 | 結構 |
 |---|---|---|
 | **內容頁 nav** | 10 個策略/技術頁 | `<header>` 含 `.nav-links`，list 10 個 page link |
-| **Mockup banner** | 3 個 mockup 檔 | 頂部 `.mockup-banner` 單一「← 回 Mockup 列表」連結 |
+| **Mockup banner** | 4 個 mockup 檔 | 頂部 `.mockup-banner` 單一「← 回 Mockup 列表」連結 |
 
 ### 關鍵 framing（已穩定，不要回頭混淆）
 
@@ -102,7 +102,7 @@ network-ai-assistant/
 
 ## Current Status
 
-- ✅ 10 內容頁 + 3 mockup + sales deck 全部 live
+- ✅ 10 內容頁 + 4 mockup + sales deck 全部 live
 - ✅ Mode C 已砍 — focus 兩模式（A 員工 / B SMB IT）
 - ✅ Dashboard Builder 為 wedge product
 - ✅ EN / ZH 架構整合（一張 card + 頁內切換）

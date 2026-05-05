@@ -1,6 +1,6 @@
 # Network AI-Assistant · Network Management Assistant Proposal
 
-完整的 AI 網管助理產品提案資料 — **10 個頁面 + 3 個互動 mockup + 1 個 sales deck**。
+完整的 AI 網管助理產品提案資料 — **10 個頁面 + 4 個互動 mockup + 1 個 sales deck**。
 
 🔗 **Live**: https://network-ai-assistant.vercel.app
 
@@ -31,9 +31,10 @@
 - [`blind-spots.html`](./blind-spots.html) — 12 個工程盲點與對策
 
 ### UI Mockups（[`mockup-gallery.html`](./mockup-gallery.html) 統合入口）
-- [`employee-chat-mockup.html`](./employee-chat-mockup.html) — Mode A 員工自助 chat
-- [`cockpit-mockup.html`](./cockpit-mockup.html) — Mode B SMB IT Cockpit
-- [`dashboard-builder-flow-mockup.html`](./dashboard-builder-flow-mockup.html) — Dashboard Builder 4 步驟流程
+- [`employee-chat-mockup.html`](./employee-chat-mockup.html) — Mode A 員工自助 chat（7 情境）
+- [`cockpit-mockup.html`](./cockpit-mockup.html) — Mode B SMB IT Cockpit（4 情境切換）
+- [`dashboard-builder-flow-mockup.html`](./dashboard-builder-flow-mockup.html) — Dashboard Builder 4 步驟流程（8 starter）
+- [`unified-chat-mockup.html`](./unified-chat-mockup.html) — ★ Unified Chat PoC（一個 chat 三種 outcome · chat-first 產品方向）
 
 ### 對外簡報
 - [`pitch-deck.html`](./pitch-deck.html) — 10 張投影片 sales pitch deck（主推 Dashboard Builder wedge）

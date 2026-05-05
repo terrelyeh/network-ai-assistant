@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unified Chat — UI Mockup · Network AI-Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-1: #0a1628;
+    --bg-2: #0f1e3a;
+    --bg-3: #050d1a;
+    --surface: rgba(255,255,255,0.04);
+    --surface-2: rgba(255,255,255,0.08);
+    --surface-3: rgba(255,255,255,0.12);
+    --border: rgba(255,255,255,0.10);
+    --border-strong: rgba(255,255,255,0.20);
+    --text: #f8fafc;
+    --muted: #cbd5e1;
+    --dim: #64748b;
+    --accent: #ff6b35;
+    --cyan: #00d9c5;
+    --good: #10b981;
+    --warn: #fbbf24;
+    --bad: #ef4444;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    height: 100%;
+    background: var(--bg-1);
+    color: var(--text);
+    font-family: 'Inter', 'Noto Sans TC', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+    font-size: 14px;
+  }
+
+  /* MOCKUP BANNER */
+  .mockup-banner {
+    height: 32px;
+    background: linear-gradient(90deg, rgba(0,217,197,0.15), rgba(255,107,53,0.10));
+    border-bottom: 1px solid rgba(0,217,197,0.3);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 16px; font-size: 12px; color: var(--muted);
+  }
+  .mockup-banner strong { color: var(--cyan); margin-right: 6px; }
+  .mockup-banner a {
+    color: var(--cyan); text-decoration: none; font-weight: 600;
+    padding: 4px 10px; border: 1px solid rgba(0,217,197,0.3);
+    border-radius: 6px; transition: all 0.2s;
+  }
+  .mockup-banner a:hover { background: rgba(0,217,197,0.15); }
+
+  /* CHAT APP */
+  .chat-app {
+    height: calc(100vh - 32px);
+    display: flex; flex-direction: column;
+    background:
+      radial-gradient(ellipse at top, rgba(0,217,197,0.04), transparent 60%),
+      radial-gradient(ellipse at bottom, rgba(255,107,53,0.03), transparent 60%);
+  }
+
+  /* HEADER */
+  .chat-header {
+    height: 60px;
+    background: var(--bg-2);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; padding: 0 24px; gap: 16px;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 800; font-size: 16px; letter-spacing: -0.01em;
+  }
+  .brand .dot { width: 8px; height: 8px; background: var(--cyan); border-radius: 50%; box-shadow: 0 0 8px var(--cyan); }
+  .brand .accent { color: var(--accent); }
+
+  .header-spacer { flex: 1; }
+
+  /* Mode switcher */
+  .mode-switcher {
+    display: flex;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 3px;
+    gap: 2px;
+  }
+  .mode-tab {
+    background: transparent; border: none; color: var(--muted);
+    padding: 6px 14px; font-size: 12px; font-weight: 600;
+    cursor: pointer; border-radius: 6px;
+    font-family: inherit; transition: all 0.15s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .mode-tab:hover { color: var(--text); }
+  .mode-tab.active.mode-a {
+    background: rgba(0,217,197,0.15); color: var(--cyan);
+    box-shadow: 0 0 0 1px var(--cyan);
+  }
+  .mode-tab.active.mode-b {
+    background: rgba(255,107,53,0.15); color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+
+  .header-info {
+    font-size: 12px; color: var(--muted);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .live-dot { width: 7px; height: 7px; background: var(--good); border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:0.4 } }
+
+  /* MESSAGES AREA */
+  .messages-wrap {
+    flex: 1;
+    overflow-y: auto;
+    padding: 32px 0 16px;
+  }
+  .messages-wrap::-webkit-scrollbar { width: 6px; }
+  .messages-wrap::-webkit-scrollbar-thumb { background: var(--surface-2); border-radius: 3px; }
+
+  .messages {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* WELCOME */
+  .welcome {
+    text-align: center;
+    padding: 40px 12px 0;
+  }
+  .welcome-icon { font-size: 48px; margin-bottom: 14px; }
+  .welcome h2 {
+    font-size: 26px; font-weight: 800;
+    letter-spacing: -0.02em; margin-bottom: 8px;
+  }
+  .welcome h2 .accent { color: var(--accent); }
+  .welcome h2 .cyan { color: var(--cyan); }
+  .welcome p {
+    color: var(--muted); font-size: 14px; line-height: 1.6;
+    max-width: 600px; margin: 0 auto 28px;
+  }
+  .welcome p strong { color: var(--text); }
+
+  .outcome-info {
+    display: flex; gap: 12px; flex-wrap: wrap;
+    justify-content: center; margin-bottom: 32px;
+  }
+  .outcome-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 99px;
+    font-size: 11.5px; color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .starter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 10px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .starter-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    font-family: inherit;
+    color: var(--text);
+    font-size: 13px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .starter-card:hover {
+    background: var(--surface-2);
+    border-color: var(--cyan);
+    transform: translateY(-2px);
+  }
+  .starter-card .ico { font-size: 18px; }
+  .starter-card .title { font-weight: 700; color: var(--text); font-size: 13.5px; }
+  .starter-card .outcome {
+    font-size: 11px; font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .starter-card .outcome.resolve { color: var(--good); }
+  .starter-card .outcome.escalate { color: var(--warn); }
+  .starter-card .outcome.dashboard { color: var(--cyan); }
+  .starter-card .outcome.approval { color: var(--accent); }
+
+  /* MESSAGE BUBBLES */
+  .msg {
+    display: flex;
+    margin-bottom: 14px;
+    animation: msgIn 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  @keyframes msgIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .msg.user { justify-content: flex-end; }
+  .msg.user .bubble {
+    background: linear-gradient(135deg, var(--accent), #ff8a5b);
+    color: white;
+    padding: 10px 16px;
+    border-radius: 18px 18px 4px 18px;
+    max-width: 70%;
+    font-size: 14px;
+    line-height: 1.5;
+    box-shadow: 0 4px 12px rgba(255,107,53,0.18);
+  }
+
+  .msg.ai { align-items: flex-start; gap: 12px; }
+  .ai-avatar {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--cyan), var(--accent));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+  .msg.ai .bubble {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 12px 16px;
+    border-radius: 4px 18px 18px 18px;
+    max-width: 78%;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .msg.ai .bubble code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    background: var(--surface-2);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--cyan);
+  }
+  .msg.ai .bubble .ai-prefix {
+    font-size: 11px;
+    color: var(--cyan);
+    font-weight: 700;
+    margin-bottom: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.03em;
+  }
+  .msg.ai .bubble strong { color: var(--text); }
+
+  /* TYPING */
+  .typing { display: flex; gap: 4px; padding: 12px 16px; align-items: center; }
+  .typing-dot {
+    width: 6px; height: 6px; background: var(--muted); border-radius: 50%;
+    animation: typingBounce 1.2s infinite;
+  }
+  .typing-dot:nth-child(2) { animation-delay: 0.15s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes typingBounce { 0%,80%,100% { transform: scale(0.6); opacity: 0.5; } 40% { transform: scale(1); opacity: 1; } }
+
+  /* INLINE SUGGESTIONS */
+  .inline-sugs {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin: 8px 0 14px 44px; /* align with bubble (32 avatar + 12 gap) */
+  }
+  .inline-sug {
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    color: var(--cyan);
+    padding: 6px 12px;
+    border-radius: 99px;
+    font-size: 12.5px; font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .inline-sug:hover {
+    background: var(--surface-2);
+    border-color: var(--cyan);
+    transform: translateY(-1px);
+  }
+
+  /* OUTCOME: Action / Approval card */
+  .outcome-card {
+    margin: 8px 0 14px 44px;
+    background: var(--surface);
+    border-left: 3px solid var(--cyan);
+    border: 1px solid var(--border);
+    border-left-width: 3px;
+    border-radius: 12px;
+    padding: 16px 18px;
+    max-width: 78%;
+    animation: cardIn 0.4s cubic-bezier(0.2,0.8,0.2,1);
+  }
+  @keyframes cardIn { from { opacity: 0; transform: translateY(8px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+  .outcome-card.approval { border-left-color: var(--accent); background: rgba(255,107,53,0.05); }
+  .outcome-card.escalate { border-left-color: var(--warn); background: rgba(251,191,36,0.05); }
+  .outcome-card.success { border-left-color: var(--good); background: rgba(16,185,129,0.05); }
+
+  .outcome-card .label {
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--cyan);
+    margin-bottom: 8px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .outcome-card.approval .label { color: var(--accent); }
+  .outcome-card.escalate .label { color: var(--warn); }
+  .outcome-card.success .label { color: var(--good); }
+
+  .outcome-card .title {
+    font-size: 16px; font-weight: 700;
+    margin-bottom: 6px; line-height: 1.35;
+  }
+  .outcome-card .desc {
+    font-size: 13px; color: var(--muted);
+    line-height: 1.55; margin-bottom: 12px;
+  }
+  .outcome-card .meta-row {
+    font-size: 12px; color: var(--muted);
+    padding: 2px 0;
+  }
+  .outcome-card .meta-row strong { color: var(--text); }
+
+  .oc-actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .oc-btn {
+    background: var(--surface-2); color: var(--text);
+    border: 1px solid var(--border-strong);
+    padding: 8px 14px; border-radius: 8px;
+    font-size: 13px; font-weight: 600;
+    cursor: pointer; font-family: inherit;
+    transition: all 0.15s;
+  }
+  .oc-btn:hover { background: var(--surface-3); }
+  .oc-btn.primary {
+    background: linear-gradient(135deg, var(--accent), #ff8a5b);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 4px 12px rgba(255,107,53,0.25);
+  }
+  .oc-btn.primary:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(255,107,53,0.35); }
+  .oc-btn.success {
+    background: linear-gradient(135deg, var(--good), #34d399);
+    color: white;
+    border-color: transparent;
+  }
+
+  /* OUTCOME: Inline Dashboard */
+  .inline-dash {
+    margin: 8px 0 14px 44px;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    max-width: 78%;
+    animation: cardIn 0.5s cubic-bezier(0.2,0.8,0.2,1);
+  }
+  .inline-dash-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px; padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .inline-dash-title {
+    font-size: 15px; font-weight: 700;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .inline-dash-meta {
+    font-size: 11px; color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .id-grid {
+    display: grid; gap: 10px;
+  }
+  .id-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .id-grid.cols-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+  .id-widget {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  .id-widget.span-2 { grid-column: span 2; }
+  .id-widget.span-3 { grid-column: span 3; }
+  .id-widget.span-4 { grid-column: span 4; }
+  .id-widget .wlabel {
+    font-size: 10.5px; font-weight: 700;
+    color: var(--dim); text-transform: uppercase;
+    letter-spacing: 0.1em; margin-bottom: 5px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .id-widget .wvalue {
+    font-size: 22px; font-weight: 800;
+    letter-spacing: -0.02em; line-height: 1.1;
+  }
+  .id-widget .wvalue .unit { font-size: 11px; color: var(--muted); font-weight: 600; }
+  .id-widget .wsub { font-size: 11px; color: var(--muted); margin-top: 3px; }
+  .id-widget .wsub.bad { color: var(--bad); }
+  .id-widget .wsub.warn { color: var(--warn); }
+  .id-widget .wsub.good { color: var(--good); }
+
+  .id-bar {
+    display: grid;
+    grid-template-columns: 90px 1fr 90px;
+    gap: 6px; align-items: center;
+    font-size: 11px; padding: 3px 0;
+  }
+  .id-bar-track {
+    height: 10px; background: rgba(255,255,255,0.06);
+    border-radius: 3px; overflow: hidden;
+  }
+  .id-bar-fill {
+    height: 100%; background: var(--cyan);
+    transition: width 0.3s;
+  }
+  .id-bar-fill.warn { background: var(--warn); }
+  .id-bar-fill.bad { background: var(--bad); }
+  .id-bar-fill.accent { background: var(--accent); }
+
+  .id-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .id-table th {
+    text-align: left; color: var(--dim);
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    padding: 6px 8px; border-bottom: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .id-table td {
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--border);
+    color: var(--muted);
+  }
+  .id-table tr:last-child td { border-bottom: none; }
+  .id-badge {
+    display: inline-block; padding: 1px 7px; border-radius: 99px;
+    font-size: 10.5px; font-weight: 700;
+    background: var(--surface-2);
+  }
+  .id-badge.bad { background: rgba(239,68,68,0.18); color: #fca5a5; }
+  .id-badge.warn { background: rgba(251,191,36,0.18); color: #fcd34d; }
+  .id-badge.good { background: rgba(16,185,129,0.18); color: #6ee7b7; }
+
+  /* OUTCOME: Anomaly Panel (cockpit-style inline) */
+  .anomaly-panel {
+    margin: 8px 0 14px 44px;
+    max-width: 78%;
+    display: flex; flex-direction: column; gap: 8px;
+    animation: cardIn 0.4s cubic-bezier(0.2,0.8,0.2,1);
+  }
+  .anomaly-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--bad);
+    border-radius: 10px;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .anomaly-card:hover { background: var(--surface-2); }
+  .anomaly-card.warn { border-left-color: var(--warn); }
+  .anomaly-card.info { border-left-color: var(--cyan); }
+  .anomaly-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .anomaly-title {
+    font-size: 13.5px; font-weight: 700;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .anomaly-title .ico { font-size: 14px; }
+  .anomaly-title .ico.bad { color: var(--bad); }
+  .anomaly-title .ico.warn { color: var(--warn); }
+  .anomaly-time { font-size: 11px; color: var(--dim); font-family: 'JetBrains Mono', monospace; }
+  .anomaly-desc { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+  .anomaly-cause { font-size: 11.5px; color: var(--dim); margin-top: 4px; }
+
+  /* SUCCESS / TICKET */
+  .ticket-card {
+    margin: 8px 0 14px 44px;
+    background: rgba(16,185,129,0.06);
+    border: 1px solid rgba(16,185,129,0.3);
+    border-radius: 12px;
+    padding: 18px 22px;
+    max-width: 78%;
+    text-align: center;
+    animation: cardIn 0.4s cubic-bezier(0.2,0.8,0.2,1);
+  }
+  .ticket-card .check {
+    width: 40px; height: 40px;
+    background: var(--good);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 10px;
+    color: white; font-size: 22px; font-weight: 700;
+  }
+  .ticket-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .ticket-card p { color: var(--muted); font-size: 12.5px; line-height: 1.5; }
+  .ticket-card code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--surface-2);
+    padding: 1px 6px; border-radius: 4px;
+    color: var(--cyan); font-size: 11.5px;
+  }
+
+  /* CHAT INPUT */
+  .chat-input-wrap {
+    border-top: 1px solid var(--border);
+    background: var(--bg-2);
+    padding: 14px 24px 18px;
+  }
+  .chat-input-inner {
+    max-width: 880px;
+    margin: 0 auto;
+  }
+  .quick-replies {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+  .quick-replies:empty { display: none; }
+  .quick-reply {
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    color: var(--muted);
+    padding: 5px 11px;
+    border-radius: 99px;
+    font-size: 12px; font-weight: 600;
+    cursor: pointer; font-family: inherit;
+    transition: all 0.15s;
+  }
+  .quick-reply:hover {
+    background: var(--surface-2);
+    border-color: var(--cyan);
+    color: var(--cyan);
+  }
+  .input-row {
+    display: flex; gap: 10px; align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 14px;
+    padding: 6px 6px 6px 16px;
+    transition: border-color 0.15s;
+  }
+  .input-row:focus-within { border-color: var(--cyan); }
+  .input-row input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    padding: 8px 0;
+  }
+  .input-row input::placeholder { color: var(--dim); }
+  .send-btn {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--accent), #ff8a5b);
+    color: white;
+    border: none; border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px; font-weight: 700;
+    transition: all 0.15s;
+  }
+  .send-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(255,107,53,0.3); }
+
+  /* RESET BUTTON */
+  .reset-btn {
+    position: fixed; bottom: 20px; left: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 12px; font-weight: 600;
+    cursor: pointer;
+    z-index: 10;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .reset-btn:hover {
+    background: var(--surface-2); color: var(--text);
+    border-color: var(--cyan);
+  }
+
+  @media print {
+    .reset-btn, .chat-input-wrap, .mockup-banner { display: none; }
+    body { overflow: visible; }
+    .messages-wrap { overflow: visible; }
+  }
+</style>
+</head>
+<body>
+
+<div class="mockup-banner">
+  <span><strong>📌 MOCKUP</strong>Unified Chat · 一個 chat 三種 outcome（解決 / 開單 / Dashboard / 核准）</span>
+  <a href="mockup-gallery.html">← 回 Mockup 列表</a>
+</div>
+
+<div class="chat-app">
+
+  <!-- Header -->
+  <div class="chat-header">
+    <div class="brand">
+      <span class="dot"></span>
+      <span>Network <span class="accent">AI-Assistant</span></span>
+    </div>
+    <div class="header-spacer"></div>
+    <div class="mode-switcher">
+      <button class="mode-tab mode-a active" data-mode="a" onclick="switchMode('a')">👤 Mode A · 員工</button>
+      <button class="mode-tab mode-b" data-mode="b" onclick="switchMode('b')">🛠 Mode B · IT</button>
+    </div>
+    <div class="header-info"><span class="live-dot"></span><span id="modeStatus">員工自助 · 解決 + 開單</span></div>
+  </div>
+
+  <!-- Messages -->
+  <div class="messages-wrap" id="messagesWrap">
+    <div class="messages" id="messages">
+
+      <!-- Welcome state -->
+      <div class="welcome" id="welcome">
+        <div class="welcome-icon">💬</div>
+        <h2>一個 <span class="cyan">chat</span>，<span class="accent">三種 outcome</span></h2>
+        <p>
+          這就是介面的全部 — 用講的就好。
+          <br>AI 會依您的需求<strong>直接解決</strong>、<strong>幫您開單</strong>、<strong>生成 dashboard</strong> 或<strong>提出可核准動作</strong>。
+        </p>
+        <div class="outcome-info">
+          <span class="outcome-pill" style="color:var(--good);">✅ Resolve</span>
+          <span class="outcome-pill" style="color:var(--warn);">🎫 Escalate</span>
+          <span class="outcome-pill" style="color:var(--cyan);">📊 Dashboard</span>
+          <span class="outcome-pill" style="color:var(--accent);">⭐ Approval</span>
+        </div>
+        <div class="starter-grid" id="starterGrid">
+          <!-- populated by JS -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Input -->
+  <div class="chat-input-wrap">
+    <div class="chat-input-inner">
+      <div class="quick-replies" id="quickReplies"></div>
+      <div class="input-row">
+        <input id="chatInput" type="text" placeholder="跟 AI 說：問問題、找資料、做 dashboard、核准動作…" onkeypress="if(event.key==='Enter')sendMsg()">
+        <button class="send-btn" onclick="sendMsg()">↑</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<button class="reset-btn" onclick="resetChat()">↻ 重置 demo</button>
+
+<script>
+const messages = document.getElementById('messages');
+const welcome = document.getElementById('welcome');
+const quickReplies = document.getElementById('quickReplies');
+const input = document.getElementById('chatInput');
+const messagesWrap = document.getElementById('messagesWrap');
+const starterGrid = document.getElementById('starterGrid');
+const modeStatus = document.getElementById('modeStatus');
+
+let currentMode = 'a';
+
+const starters = {
+  a: [
+    { id: 'wifi_slow', ico: '📶', title: 'Wi-Fi 很慢 / 訊號差', outcome: 'resolve', label: '✅ 解決' },
+    { id: 'sonos', ico: '🎵', title: 'SONOS 找不到', outcome: 'escalate', label: '🎫 升級' },
+    { id: 'vpn', ico: '🔒', title: 'VPN 連不上', outcome: 'escalate', label: '🎫 升級' },
+    { id: 'printer', ico: '🖨', title: '印表機 / 共享磁碟找不到', outcome: 'resolve', label: '✅ 解決' }
+  ],
+  b: [
+    { id: 'anomaly_today', ico: '⚠', title: '今天有什麼異常', outcome: 'dashboard', label: '📊 Anomaly Panel' },
+    { id: 'ap_diag', ico: '📡', title: 'AP-7F-N3 怎麼了', outcome: 'approval', label: '⭐ 核准動作' },
+    { id: 'poe_plan', ico: '🔌', title: '再加 5 台 IP 攝影機，PoE 撐得住嗎', outcome: 'dashboard', label: '📊 Dashboard' },
+    { id: 'blast_radius', ico: '🗺', title: 'SW-3F-Core 維護影響範圍', outcome: 'dashboard', label: '📊 Dashboard' },
+    { id: 'device_timeline', ico: '💻', title: 'Sandy 筆電一直斷，看 timeline', outcome: 'dashboard', label: '📊 Dashboard' },
+    { id: 'sticky_client', ico: '🛠', title: 'AP-7F-N3 的 sticky client 怎麼修', outcome: 'approval', label: '⭐ 核准動作' }
+  ]
+};
+
+function renderStarters() {
+  const items = starters[currentMode];
+  starterGrid.innerHTML = items.map(s => `
+    <button class="starter-card" onclick="startScenario('${s.id}')">
+      <div class="ico">${s.ico}</div>
+      <div class="title">${s.title}</div>
+      <div class="outcome ${s.outcome}">→ ${s.label}</div>
+    </button>
+  `).join('');
+}
+
+function switchMode(mode) {
+  currentMode = mode;
+  document.querySelectorAll('.mode-tab').forEach(t => t.classList.toggle('active', t.dataset.mode === mode));
+  modeStatus.textContent = mode === 'a'
+    ? '員工自助 · 解決 + 開單'
+    : 'SMB IT · 解決 + 開單 + Dashboard + 核准動作';
+  renderStarters();
+}
+
+renderStarters();
+
+// ============== Helpers ==============
+function addUserMsg(text) {
+  if (welcome && welcome.parentNode) welcome.remove();
+  const div = document.createElement('div');
+  div.className = 'msg user';
+  div.innerHTML = `<div class="bubble">${text}</div>`;
+  messages.appendChild(div);
+  scrollDown();
+}
+
+function addAiMsg(html) {
+  if (welcome && welcome.parentNode) welcome.remove();
+  const div = document.createElement('div');
+  div.className = 'msg ai';
+  div.innerHTML = `<div class="ai-avatar">🤖</div><div class="bubble"><div class="ai-prefix">Network AI-Assistant</div>${html}</div>`;
+  messages.appendChild(div);
+  scrollDown();
+}
+
+function addTyping() {
+  const div = document.createElement('div');
+  div.className = 'msg ai';
+  div.id = 'typingIndicator';
+  div.innerHTML = `<div class="ai-avatar">🤖</div><div class="bubble"><div class="typing"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div></div>`;
+  messages.appendChild(div);
+  scrollDown();
+}
+function removeTyping() { const t = document.getElementById('typingIndicator'); if (t) t.remove(); }
+
+function addInlineSugs(opts, onClick) {
+  const div = document.createElement('div');
+  div.className = 'inline-sugs';
+  div.id = 'currentSugs';
+  opts.forEach(o => {
+    const btn = document.createElement('button');
+    btn.className = 'inline-sug';
+    btn.textContent = o;
+    btn.onclick = () => { div.remove(); addUserMsg(o); onClick(o); };
+    div.appendChild(btn);
+  });
+  messages.appendChild(div);
+  scrollDown();
+}
+
+function addOutcomeCard(opts) {
+  // opts: { kind: 'approval'|'escalate'|'success'|'default', label, title, desc, meta: [], buttons: [{label, primary, onClick}] }
+  const div = document.createElement('div');
+  div.className = 'outcome-card ' + (opts.kind || '');
+  div.id = 'currentOutcome';
+  let metaHtml = (opts.meta || []).map(m => `<div class="meta-row">${m}</div>`).join('');
+  let btnsHtml = (opts.buttons || []).map((b,i) => `<button class="oc-btn ${b.primary?'primary':b.success?'success':''}" data-idx="${i}">${b.label}</button>`).join('');
+  div.innerHTML = `
+    <div class="label">${opts.label}</div>
+    <div class="title">${opts.title}</div>
+    <div class="desc">${opts.desc}</div>
+    ${metaHtml}
+    <div class="oc-actions">${btnsHtml}</div>
+  `;
+  messages.appendChild(div);
+  div.querySelectorAll('.oc-btn').forEach((b,i) => {
+    b.onclick = () => { div.remove(); if (opts.buttons[i].onClick) opts.buttons[i].onClick(); };
+  });
+  scrollDown();
+}
+
+function addInlineDashboard(opts) {
+  // opts: { title, meta, html (raw inner grid HTML) }
+  const div = document.createElement('div');
+  div.className = 'inline-dash';
+  div.innerHTML = `
+    <div class="inline-dash-head">
+      <div class="inline-dash-title">${opts.title}</div>
+      <div class="inline-dash-meta">${opts.meta || ''}</div>
+    </div>
+    ${opts.html}
+  `;
+  messages.appendChild(div);
+  scrollDown();
+}
+
+function addAnomalyPanel(items) {
+  const div = document.createElement('div');
+  div.className = 'anomaly-panel';
+  div.innerHTML = items.map(it => `
+    <div class="anomaly-card ${it.severity || ''}">
+      <div class="anomaly-head">
+        <div class="anomaly-title"><span class="ico ${it.severity || 'bad'}">${it.icon || '⚠'}</span> ${it.title}</div>
+        <div class="anomaly-time">${it.time}</div>
+      </div>
+      <div class="anomaly-desc">${it.desc}</div>
+      <div class="anomaly-cause">${it.cause}</div>
+    </div>
+  `).join('');
+  messages.appendChild(div);
+  scrollDown();
+}
+
+function addTicket(opts) {
+  // opts: { title, desc, ticketId, footer }
+  const div = document.createElement('div');
+  div.className = 'ticket-card';
+  div.innerHTML = `
+    <div class="check">✓</div>
+    <h4>${opts.title || '已送 ticket'}</h4>
+    <p>${opts.desc} ${opts.ticketId ? `<br>單號 <code>#${opts.ticketId}</code>` : ''}</p>
+    ${opts.footer ? `<p style="margin-top:8px;color:var(--cyan);">${opts.footer}</p>` : ''}
+  `;
+  messages.appendChild(div);
+  scrollDown();
+}
+
+function setQuickReplies(replies) {
+  quickReplies.innerHTML = '';
+  replies.forEach(r => {
+    const btn = document.createElement('button');
+    btn.className = 'quick-reply';
+    btn.textContent = r;
+    btn.onclick = () => { input.value = r; sendMsg(); };
+    quickReplies.appendChild(btn);
+  });
+}
+function clearQuickReplies() { quickReplies.innerHTML = ''; }
+
+function scrollDown() {
+  setTimeout(() => { messagesWrap.scrollTop = messagesWrap.scrollHeight; }, 50);
+}
+
+// ============== Scenarios ==============
+function startScenario(id) {
+  switch(id) {
+    case 'wifi_slow':       runWifiSlow(); break;
+    case 'sonos':           runSonos(); break;
+    case 'vpn':             runVpn(); break;
+    case 'printer':         runPrinter(); break;
+    case 'anomaly_today':   runAnomalyToday(); break;
+    case 'ap_diag':         runApDiag(); break;
+    case 'poe_plan':        runPoePlan(); break;
+    case 'blast_radius':    runBlastRadius(); break;
+    case 'device_timeline': runDeviceTimeline(); break;
+    case 'sticky_client':   runStickyClient(); break;
+  }
+}
+
+// ----- Mode A: Wi-Fi 慢 (Resolve) -----
+function runWifiSlow() {
+  addUserMsg('我會議室的 Wi-Fi 很慢');
+  setTimeout(() => {
+    addTyping();
+    setTimeout(() => {
+      removeTyping();
+      addAiMsg('了解。您現在用的是哪間會議室？方便看一下手機 Wi-Fi 訊號剩幾格？');
+      addInlineSugs(['7F 北側 · 滿格', '7F 北側 · 2 格', '其他位置'], (sel) => {
+        if (sel.includes('滿格')) {
+          addTyping();
+          setTimeout(() => {
+            removeTyping();
+            addAiMsg('訊號滿格但會慢，通常不是 Wi-Fi 問題 — 可能是某個 app 或網站本身慢。<br>試試開 Google 看看是不是也慢？');
+            setQuickReplies(['只有某個網站慢', '所有網站都慢', '其他問題']);
+          }, 1100);
+        } else if (sel.includes('2 格')) {
+          addTyping();
+          setTimeout(() => {
+            removeTyping();
+            addAiMsg('我幫您看了一下您附近的 AP — <strong>AP-7F-N3</strong> 目前同時 76 個 client（過載），訊號被擠掉了。');
+            addOutcomeCard({
+              kind: 'success',
+              label: '✅ 自助解法',
+              title: '走到走廊另一邊試試',
+              desc: '另一台 AP（<code>AP-7F-N4</code>）使用人數較少，訊號可達 −62 dBm。或者您可以離 AP 更近一點。',
+              buttons: [
+                { label: '✗ 試了還是不行', onClick: () => escalateFromWifi() },
+                { label: '✓ 我試試看', success: true, onClick: () => resolved('Wi-Fi 訊號弱問題已自助解決') }
+              ]
+            });
+          }, 1500);
+        } else {
+          escalateFromWifi();
+        }
+      });
+    }, 1200);
+  }, 400);
+}
+
+function escalateFromWifi() {
+  addTyping();
+  setTimeout(() => {
+    removeTyping();
+    addAiMsg('那看起來不是您能自己改的 — 我幫您送單給 IT，把您剛剛的對話一併附上。');
+    addTicket({
+      title: '已送單給 IT',
+      desc: '附上完整診斷紀錄（位置、訊號、對話）— IT 看到不用您再重講一次',
+      ticketId: 'NS-' + Math.floor(Math.random()*9000+1000),
+      footer: 'IT 看到您這個 case 預計 30 分鐘內回覆'
+    });
+    setQuickReplies(['新問題', '看 ticket 進度']);
+  }, 1500);
+}
+
+function resolved(detail) {
+  addTyping();
+  setTimeout(() => {
+    removeTyping();
+    addAiMsg(`太好了！🎉 解決了就好。<br>${detail ? `<span style="font-size:12px;color:var(--dim);">已記錄：${detail}</span>` : ''}`);
+    setQuickReplies(['新問題', '謝謝']);
+  }, 800);
+}
+
+// ----- Mode A: SONOS (Escalate) -----
+function runSonos() {
+  addUserMsg('我的 SONOS 找不到');
+  setTimeout(() => {
+    addTyping();
+    setTimeout(() => {
+      removeTyping();
+      addAiMsg('SONOS 這類設備需要靠多播（mDNS）才能發現。先試 3 步：<br>1. 把 SONOS App 關掉重開<br>2. 確認手機跟 SONOS 連到 <strong>同一個 Wi-Fi</strong><br>3. 重新連一次公司 Wi-Fi');
+      addInlineSugs(['全部試過了還是不行', '我再試試'], (sel) => {
+        if (sel.includes('試過')) {
+          addTyping();
+          setTimeout(() => {
+            removeTyping();
+            addAiMsg('找到了 — 您的手機在 <code>VLAN 30 (Marketing)</code>，SONOS speakers 在 <code>VLAN 40 (Conference)</code>，跨 VLAN 多播沒打開。<br>這個我自己改不了 — 需要 <strong style="color:var(--accent);">IT 在 switch 上開設定</strong>，我幫您送過去。');
+            addOutcomeCard({
+              kind: 'escalate',
+              label: '⬆ 升級給 IT (Mode B)',
+              title: 'SONOS 跨 VLAN discovery 失敗',
+              desc: '已自動帶上：手機 VLAN、SONOS 位置、嘗試過的步驟、建議 playbook（sonos_lan_discovery）。IT 那邊看到就能直接核准修復。',
+              buttons: [
+                { label: '✗ 先不要', onClick: () => addAiMsg('沒問題，您方便時隨時再來找我 👋') },
+                { label: '⬆ 升級給 IT', primary: true, onClick: () => {
+                  addTicket({
+                    title: '✓ 已升級給 IT',
+                    desc: 'Mode B IT cockpit 收到您的 case，含完整證據鏈 + sonos_lan_discovery playbook 推薦',
+                    ticketId: 'NS-' + Math.floor(Math.random()*9000+1000),
+                    footer: 'IT 也可以從 Cockpit 的「SONOS 升級案」情境直接看到'
+                  });
+                  setQuickReplies(['新問題', '看 ticket 進度']);
+                }}
+              ]
+            });
+          }, 1800);
+        } else {
+          resolved('SONOS 自助解決');
+        }
+      });
+    }, 1500);
+  }, 400);
+}
+
+// ----- Mode A: VPN -----
+function runVpn() {
+  addUserMsg('VPN 連不上');
+  setTimeout(() => {
+    addTyping();
+    setTimeout(() => {
+      removeTyping();
+      addAiMsg('VPN 問題我幫您依序確認 — VPN client 顯示什麼？');
+      addInlineSugs(['一直轉圈', '帳密錯誤', '可以連但內網開不了'], (sel) => {
+        if (sel.includes('帳密')) {
+          addAiMsg('帳密問題我幫不上忙 — 您可能需要重設密碼或聯絡 IT 解鎖。');
+          setTimeout(() => {
+            addTicket({
+              title: '已送單給 IT · VPN 帳密',
+              desc: 'IT 會幫您重設密碼或解鎖',
+              ticketId: 'NS-' + Math.floor(Math.random()*9000+1000)
+            });
+            setQuickReplies(['新問題', '謝謝']);
+          }, 800);
+        } else if (sel.includes('內網')) {
+          addAiMsg('VPN 連上但內網不通 — 通常是 split-tunnel 或路由設定，這不是您能改的。');
+          setTimeout(() => {
+            addTicket({
+              title: '已送單給 IT · VPN 路由',
+              desc: 'IT 會檢查 split-tunnel 與內網路由設定',
+              ticketId: 'NS-' + Math.floor(Math.random()*9000+1000)
+            });
+            setQuickReplies(['新問題', '謝謝']);
+          }, 800);
+        } else {
+          addAiMsg('一直轉圈通常是公司 VPN gateway 或您的網路堵塞。先試這兩步：<br>1. 切換到手機熱點再試一次<br>2. 看看 <code>vpn.company.com</code> ping 不 ping 得到');
+          addInlineSugs(['熱點也不行', '熱點可以耶'], (s2) => {
+            const desc = s2.includes('不行') ? 'VPN gateway 端可能有問題' : '公司網路出口或防火牆堵塞';
+            addTicket({ title: '已送單給 IT · VPN 連線', desc, ticketId: 'NS-' + Math.floor(Math.random()*9000+1000) });
+            setQuickReplies(['新問題', '謝謝']);
+          });
+        }
+      });
+    }, 1300);
+  }, 400);
+}
+
+// ----- Mode A: Printer -----
+function runPrinter() {
+  addUserMsg('印表機找不到');
+  setTimeout(() => {
+    addTyping();
+    setTimeout(() => {
+      removeTyping();
+      addAiMsg('印表機問題分兩種，您是？');
+      addInlineSugs(['以前可以但現在找不到', '從來沒設定過'], (sel) => {
+        if (sel.includes('以前')) {
+          addAiMsg('好的，這通常是 IP 改了或共享暫時失效。請您：<br>1. 重新開機一次<br>2. 試試從「印表機與掃描器」設定移除印表機，再重新加入');
+          addInlineSugs(['好了！可以了', '還是不行'], (s2) => {
+            if (s2.includes('好了')) resolved('印表機自助解決');
+            else {
+              addTicket({ title: '已送單給 IT · 印表機', desc: '已重啟並重新加入仍無效', ticketId: 'NS-' + Math.floor(Math.random()*9000+1000) });
+              setQuickReplies(['新問題', '謝謝']);
+            }
+          });
+        } else {
+          addTicket({ title: '已送單給 IT · 新增印表機', desc: '需 IT 協助設定', ticketId: 'NS-' + Math.floor(Math.random()*9000+1000) });
+          setQuickReplies(['新問題', '謝謝']);
+        }
+      });
+    }, 1300);
+  }, 400);
+}
+
+// ----- Mode B: 今天有什麼異常 (Anomaly Panel — cockpit-style inline) -----
+function runAnomalyToday() {
+  addUserMsg('今天有什麼異常？');
+  setTimeout(() => {
+    addTyping();
+    setTimeout(() => {
+      removeTyping();
+      addAiMsg('幫您整理了今日 3 個異常 — 點任一個展開可以跑診斷或核准動作。');
+      addAnomalyPanel([
+        {
+          severity: '', icon: '⚠',
+          title: 'AP-7F-N3 · 會議室',
+          time: '2 分鐘前',
+          desc: '3 個 client 訊號低於 −75 dBm 但沒有漫遊',
+          cause: '可能是 cell 太大（信心 86%）'
+        },
+        {
+          severity: 'warn', icon: '⚠',
+          title: 'SW-1F · port Gi0/12',
+          time: '14 分鐘前',
+          desc: 'CRC 錯誤上升 — 過去 24h 比平常高 4×',
+          cause: '可能是線材老化或鬆動（信心 72%）'
+        },
+        {
+          severity: 'info', icon: 'ℹ',
+          title: '5GHz 利用率上升',
+          time: '1 小時前',
+          desc: '2F 與 3F 的 5GHz 平均利用率本週上升 12%',
+          cause: '趨勢觀察 — 暫不需動作'
+        }
+      ]);
+      setTimeout(() => {
+        addAiMsg('要我幫您跑哪個的完整診斷？例如「AP-7F-N3 怎麼了」或「SW-1F 那個 port」。');
+        setQuickReplies(['AP-7F-N3 怎麼了', 'SW-1F port 狀況', '看趨勢解釋']);
+      }, 800);
+    }, 1500);
+  }, 400);
+}
+
+// ----- Mode B: AP-7F-N3 (Approval) -----
+function runApDiag() {
+  addUserMsg('AP-7F-N3 怎麼了？');
+  setTimeout(() => {
+    addTyping();
+    setTimeout(() => {
+      removeTyping();
+      addAiMsg('查到了 — <code>AP-7F-N3</code> 上有 3 個 client 訊號低於 −75 dBm 但沒漫遊到鄰近 AP-7F-N4（−62 dBm available）。<br>可能是 <strong>cell 太大</strong>（信心 86%）。我建議：');
+      addOutcomeCard({
+        kind: 'approval',
+        label: '⭐ AI 建議 · 等您核准',
+        title: '降 AP-7F-N3 5GHz TX power · 23 → 17 dBm',
+        desc: '強迫 sticky client 漫遊到負載較低的鄰居 AP。Ring 1 動作，可逆。',
+        meta: [
+          '<strong>影響</strong>：12 client（短暫 &lt; 2 秒重連）',
+          '<strong>驗證</strong>：5 分鐘觀察 sticky 是否消失',
+          '<strong>回退</strong>：沒效自動 rollback + 升級',
+          '<strong>歷史</strong>：相同 playbook 過去 14 天 91% (32/35) 成功'
+        ],
+        buttons: [
+          { label: '⏸ 延後 30 分鐘', onClick: () => addAiMsg('好的，我 30 分鐘後再提醒您。') },
+          { label: '看完整證據鏈', onClick: () => addAiMsg('（會切到 evidence panel — demo 略）') },
+          { label: '✓ 核准執行', primary: true, onClick: () => approvalExecuted() }
+        ]
+      });
+    }, 1500);
+  }, 400);
+}
+
+function approvalExecuted() {
+  addAiMsg('已執行 ✓ 我會 5 分鐘後告訴您結果。');
+  setTimeout(() => {
+    addTyping();
+    setTimeout(() => {
+      removeTyping();
+      addAiMsg('5 分鐘觀察結果 — sticky 現象消失，3 個原本卡住的 client 都漫遊到 <code>AP-7F-N4</code>。<strong style="color:var(--good);">問題解決 ✓</strong>');
+      addOutcomeCard({
+        kind: 'success',
+        label: '✅ 已驗證 · 自動關閉',
+        title: 'AP-7F-N3 sticky client 案完結',
+        desc: '已寫入 audit log + 變成 golden case 用於未來 eval。',
+        buttons: [
+          { label: '看 audit log', onClick: () => addAiMsg('（demo 略）') }
+        ]
+      });
+      setQuickReplies(['新問題', '看其他異常', '做月報 dashboard']);
+    }, 4500);
+  }, 800);
+}
+
+// ----- Mode B: PoE 容量規劃 (Inline Dashboard) -----
+function runPoePlan() {
+  addUserMsg('再加 5 台 IP 攝影機在 2F-3F，現有 PoE 撐得住嗎？');
+  setTimeout(() => {
+    addTyping();
+    setTimeout(() => {
+      removeTyping();
+      addAiMsg('問得好 — 算清楚才不會買了裝不上。我幫您拉了即時 PoE 預算狀態：');
+      addInlineDashboard({
+        title: '🔌 PoE 預算與容量規劃',
+        meta: '6 PoE switches · 47 PD devices',
+        html: `
+          <div class="id-grid cols-3" style="margin-bottom:10px;">
+            <div class="id-widget"><div class="wlabel">總預算</div><div class="wvalue">1,440<span class="unit"> W</span></div><div class="wsub">6 switches</div></div>
+            <div class="id-widget"><div class="wlabel">已用</div><div class="wvalue" style="color:var(--warn);">1,072<span class="unit"> W</span></div><div class="wsub warn">使用率 74%</div></div>
+            <div class="id-widget"><div class="wlabel">剩餘</div><div class="wvalue">368<span class="unit"> W</span></div><div class="wsub good">≈ 12 台 30W</div></div>
+          </div>
+          <div class="id-widget" style="margin-bottom:10px;">
+            <div class="wlabel">各 Switch 使用率</div>
+            <div style="margin-top:8px;display:flex;flex-direction:column;gap:5px;">
+              <div class="id-bar"><span>SW-2F</span><div class="id-bar-track"><div class="id-bar-fill warn" style="width:87%"></div></div><span style="color:var(--warn);">208 / 240W (87%)</span></div>
+              <div class="id-bar"><span>SW-3F-Core</span><div class="id-bar-track"><div class="id-bar-fill accent" style="width:78%"></div></div><span>187 / 240W (78%)</span></div>
+              <div class="id-bar"><span>SW-Lab</span><div class="id-bar-track"><div class="id-bar-fill accent" style="width:80%"></div></div><span>192 / 240W (80%)</span></div>
+              <div class="id-bar"><span>SW-1F</span><div class="id-bar-track"><div class="id-bar-fill accent" style="width:75%"></div></div><span>180 / 240W (75%)</span></div>
+              <div class="id-bar"><span>SW-7F</span><div class="id-bar-track"><div class="id-bar-fill" style="width:68%"></div></div><span>163 / 240W (68%)</span></div>
+              <div class="id-bar"><span>SW-5F</span><div class="id-bar-track"><div class="id-bar-fill" style="width:59%"></div></div><span>142 / 240W (59%)</span></div>
+            </div>
+          </div>
+          <div class="id-widget">
+            <div class="wlabel">「再加 5 台 30W IP 攝影機」可行性</div>
+            <table class="id-table" style="margin-top:6px;">
+              <thead><tr><th>Switch</th><th>剩餘預算</th><th>可加 30W</th></tr></thead>
+              <tbody>
+                <tr><td>SW-2F</td><td>32 W</td><td><span class="id-badge bad">0</span></td></tr>
+                <tr><td>SW-3F-Core</td><td>53 W</td><td><span class="id-badge warn">1</span></td></tr>
+                <tr><td>SW-1F</td><td>60 W</td><td><span class="id-badge good">2</span></td></tr>
+                <tr><td>SW-7F</td><td>77 W</td><td><span class="id-badge good">2</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        `
+      });
+      setTimeout(() => {
+        addAiMsg('<strong style="color:var(--accent);">建議：3 台接 SW-1F + 2 台接 SW-7F</strong>，剩餘預算最充裕。<br><strong style="color:var(--bad);">注意</strong>：SW-2F 已 87%，再加 30W 設備會超預算 — <strong>不要</strong>接那台。<br><br>另外 SW-2F port Gi1/0/8 過去 7 天有 3 次 PoE over-current 事件 — 那台舊 AP 可能 PSU 老化，建議汰換。');
+        setQuickReplies(['儲存這個 dashboard', '看 SW-2F 那個過大電流案', '排訂購單']);
+      }, 800);
+    }, 1800);
+  }, 400);
+}
+
+// ----- Mode B: Blast Radius (Inline Dashboard) -----
+function runBlastRadius() {
+  addUserMsg('下週六 SW-3F-Core 維護的影響範圍？');
+  setTimeout(() => {
+    addTyping();
+    setTimeout(() => {
+      removeTyping();
+      addAiMsg('維護前必查 — 我跑了一份 blast radius 分析給您：');
+      addInlineDashboard({
+        title: '🗺 Blast Radius · SW-3F-Core 維護',
+        meta: '預定維護：2026-05-09 · 全 site 拓樸已掃描',
+        html: `
+          <div class="id-grid cols-4" style="margin-bottom:10px;">
+            <div class="id-widget"><div class="wlabel">受影響 AP</div><div class="wvalue" style="color:var(--bad);">6</div><div class="wsub bad">全部 3F</div></div>
+            <div class="id-widget"><div class="wlabel">受影響 Client</div><div class="wvalue" style="color:var(--warn);">~18</div><div class="wsub warn">含 4 VIP</div></div>
+            <div class="id-widget"><div class="wlabel">VLAN</div><div class="wvalue">3</div><div class="wsub">10 / 20 / 30</div></div>
+            <div class="id-widget"><div class="wlabel">替代路徑</div><div class="wvalue" style="color:var(--bad);">無</div><div class="wsub bad">單點</div></div>
+          </div>
+          <div class="id-widget" style="margin-bottom:10px;">
+            <div class="wlabel">拓樸圖（紅 = 維護期失聯）</div>
+            <svg viewBox="0 0 700 200" style="width:100%;height:auto;margin-top:6px;font-family:Inter;">
+              <rect x="290" y="6" width="120" height="28" rx="6" fill="rgba(0,217,197,0.15)" stroke="#00d9c5" stroke-width="2"/>
+              <text x="350" y="24" text-anchor="middle" fill="#00d9c5" font-size="11" font-weight="700">🌐 Internet GW</text>
+              <line x1="350" y1="34" x2="350" y2="60" stroke="#cbd5e1" stroke-width="1"/>
+              <rect x="270" y="60" width="160" height="34" rx="6" fill="rgba(239,68,68,0.18)" stroke="#ef4444" stroke-width="2"/>
+              <text x="350" y="78" text-anchor="middle" fill="#ef4444" font-size="11" font-weight="800">⚠ SW-3F-Core (維護目標)</text>
+              <line x1="350" y1="94" x2="80" y2="130" stroke="#ef4444" stroke-width="1.2" stroke-dasharray="3,3"/>
+              <line x1="350" y1="94" x2="190" y2="130" stroke="#ef4444" stroke-width="1.2" stroke-dasharray="3,3"/>
+              <line x1="350" y1="94" x2="300" y2="130" stroke="#ef4444" stroke-width="1.2" stroke-dasharray="3,3"/>
+              <line x1="350" y1="94" x2="410" y2="130" stroke="#ef4444" stroke-width="1.2" stroke-dasharray="3,3"/>
+              <line x1="350" y1="94" x2="520" y2="130" stroke="#ef4444" stroke-width="1.2" stroke-dasharray="3,3"/>
+              <line x1="350" y1="94" x2="620" y2="130" stroke="#ef4444" stroke-width="1.2" stroke-dasharray="3,3"/>
+              <g font-size="9" font-weight="600">
+                <rect x="30" y="130" width="100" height="24" rx="5" fill="rgba(239,68,68,0.10)" stroke="#ef4444" stroke-width="1"/><text x="80" y="146" text-anchor="middle" fill="#fca5a5">📡 AP-3F-N1</text>
+                <rect x="140" y="130" width="100" height="24" rx="5" fill="rgba(239,68,68,0.10)" stroke="#ef4444" stroke-width="1"/><text x="190" y="146" text-anchor="middle" fill="#fca5a5">📡 AP-3F-N2</text>
+                <rect x="250" y="130" width="100" height="24" rx="5" fill="rgba(239,68,68,0.10)" stroke="#ef4444" stroke-width="1"/><text x="300" y="146" text-anchor="middle" fill="#fca5a5">📡 AP-3F-N3</text>
+                <rect x="360" y="130" width="100" height="24" rx="5" fill="rgba(239,68,68,0.10)" stroke="#ef4444" stroke-width="1"/><text x="410" y="146" text-anchor="middle" fill="#fca5a5">📡 AP-3F-S1</text>
+                <rect x="470" y="130" width="100" height="24" rx="5" fill="rgba(239,68,68,0.10)" stroke="#ef4444" stroke-width="1"/><text x="520" y="146" text-anchor="middle" fill="#fca5a5">📡 AP-3F-S2</text>
+                <rect x="570" y="130" width="100" height="24" rx="5" fill="rgba(239,68,68,0.10)" stroke="#ef4444" stroke-width="1"/><text x="620" y="146" text-anchor="middle" fill="#fca5a5">📡 AP-3F-S3</text>
+              </g>
+              <g font-size="9" fill="#94a3b8">
+                <text x="80" y="170" text-anchor="middle">3 client</text>
+                <text x="190" y="170" text-anchor="middle">4 (VIP×2)</text>
+                <text x="300" y="170" text-anchor="middle">2 client</text>
+                <text x="410" y="170" text-anchor="middle">3 (VIP×1)</text>
+                <text x="520" y="170" text-anchor="middle">2 client</text>
+                <text x="620" y="170" text-anchor="middle">4 (VIP×1)</text>
+              </g>
+              <text x="350" y="195" text-anchor="middle" fill="#10b981" font-size="10">✓ 其他樓層不受影響（HQ-1F, 2F, 5F, 7F）</text>
+            </svg>
+          </div>
+        `
+      });
+      setTimeout(() => {
+        addAiMsg('<strong style="color:var(--bad);">警告：SW-3F-Core 是單點故障 — 沒有冗餘路徑</strong>。建議維護視窗：<strong style="color:var(--cyan);">週六 02:00-04:00</strong>（過去 8 週此時段流量歷史最低，平均僅 3 client 在線）。<br>CTO 在 3F 受影響，建議事先通知 — 要我幫您起草通知信嗎？');
+        setQuickReplies(['幫我起草通知', '排這個維護視窗', '看 redundancy 規劃建議']);
+      }, 800);
+    }, 1800);
+  }, 400);
+}
+
+// ----- Mode B: Device timeline (Inline Dashboard) -----
+function runDeviceTimeline() {
+  addUserMsg('Sandy 說她筆電一直斷，幫我看 timeline');
+  setTimeout(() => {
+    addTyping();
+    setTimeout(() => {
+      removeTyping();
+      addAiMsg('找到了 — Sandy-MacBook (<code>AC:DE:48:F2:1C:9B</code>) 過去 7 天的連線紀錄：');
+      addInlineDashboard({
+        title: '💻 Sandy-MacBook · 7 天連線 Timeline',
+        meta: 'MAC: AC:DE:48:F2:1C:9B',
+        html: `
+          <div class="id-grid cols-4" style="margin-bottom:10px;">
+            <div class="id-widget"><div class="wlabel">連線總時長</div><div class="wvalue">42<span class="unit"> hr</span></div><div class="wsub">過去 7 天</div></div>
+            <div class="id-widget"><div class="wlabel">斷線次數</div><div class="wvalue" style="color:var(--bad);">17</div><div class="wsub bad">較異常</div></div>
+            <div class="id-widget"><div class="wlabel">漫遊</div><div class="wvalue">38</div><div class="wsub">含 12 失敗</div></div>
+            <div class="id-widget"><div class="wlabel">平均訊號</div><div class="wvalue" style="color:var(--warn);">−68<span class="unit"> dBm</span></div><div class="wsub warn">下午 −78</div></div>
+          </div>
+          <div class="id-widget">
+            <div class="wlabel">7 天連線 / 斷線事件</div>
+            <svg viewBox="0 0 700 90" preserveAspectRatio="none" style="height:70px;width:100%;margin-top:8px;">
+              <rect x="0" y="35" width="700" height="20" fill="rgba(0,217,197,0.08)"/>
+              <rect x="20" y="35" width="65" height="20" fill="#00d9c5" opacity="0.6"/>
+              <rect x="100" y="35" width="40" height="20" fill="#00d9c5" opacity="0.6"/>
+              <rect x="155" y="35" width="80" height="20" fill="#00d9c5" opacity="0.6"/>
+              <rect x="250" y="35" width="55" height="20" fill="#00d9c5" opacity="0.6"/>
+              <rect x="320" y="35" width="35" height="20" fill="#00d9c5" opacity="0.6"/>
+              <rect x="370" y="35" width="70" height="20" fill="#00d9c5" opacity="0.6"/>
+              <rect x="455" y="35" width="50" height="20" fill="#00d9c5" opacity="0.6"/>
+              <rect x="520" y="35" width="60" height="20" fill="#00d9c5" opacity="0.6"/>
+              <rect x="595" y="35" width="40" height="20" fill="#00d9c5" opacity="0.6"/>
+              <rect x="650" y="35" width="40" height="20" fill="#00d9c5" opacity="0.6"/>
+              <circle cx="92" cy="45" r="3.5" fill="#ef4444"/>
+              <circle cx="148" cy="45" r="3.5" fill="#ef4444"/>
+              <circle cx="242" cy="45" r="3.5" fill="#ef4444"/>
+              <circle cx="312" cy="45" r="3.5" fill="#ef4444"/>
+              <circle cx="362" cy="45" r="3.5" fill="#ef4444"/>
+              <circle cx="447" cy="45" r="3.5" fill="#ef4444"/>
+              <circle cx="512" cy="45" r="3.5" fill="#ef4444"/>
+              <circle cx="588" cy="45" r="3.5" fill="#ef4444"/>
+              <circle cx="642" cy="45" r="3.5" fill="#ef4444"/>
+              <g font-size="9" fill="#64748b" font-family="JetBrains Mono">
+                <text x="0" y="83">週一</text><text x="100" y="83">週二</text><text x="200" y="83">週三</text>
+                <text x="300" y="83">週四</text><text x="400" y="83">週五</text><text x="500" y="83">週六</text><text x="600" y="83">週日</text>
+              </g>
+            </svg>
+            <div style="margin-top:6px;font-size:10.5px;color:var(--dim);font-family:'JetBrains Mono',monospace;">青色 = 連線時段 · <span style="color:#ef4444;">●</span> 紅點 = 斷線 (17 次)</div>
+          </div>
+        `
+      });
+      setTimeout(() => {
+        addAiMsg('🎯 看到一個明顯 pattern — Sandy 每天下午 3 點訊號掉到 −78 dBm，那時段她在 7F 會議室。<br>那台會議室常用的 <code>AP-7F-N3</code> 上週也被偵測到 sticky client 問題 — <strong>很可能是同一個根因</strong>。要跑 sticky_client playbook 嗎？');
+        setQuickReplies(['跑 sticky_client playbook', '看 AP-7F-N3 細節', '通知 Sandy 我們在處理']);
+      }, 800);
+    }, 1800);
+  }, 400);
+}
+
+// ----- Mode B: Sticky Client (Approval) -----
+function runStickyClient() {
+  addUserMsg('AP-7F-N3 的 sticky client 怎麼修？');
+  setTimeout(() => {
+    addTyping();
+    setTimeout(() => {
+      removeTyping();
+      addAiMsg('標準解法是「降 TX power 強迫漫遊」— sticky_client playbook 過去 14 天在類似情境成功率 91% (32/35 case)。');
+      addOutcomeCard({
+        kind: 'approval',
+        label: '⭐ AI 建議 · 主修復',
+        title: '降 AP-7F-N3 5GHz TX power · 23 → 17 dBm',
+        desc: '影響 12 client（短暫斷線 &lt; 2 秒），驗證視窗 5 分鐘，沒效自動 rollback。',
+        meta: [
+          '<strong>Ring</strong>：1（可逆）',
+          '<strong>Playbook</strong>：sticky_client.yaml v1.4',
+          '<strong>Eval</strong>：32/35 成功（91%）',
+          '<strong>備案</strong>：主修復沒效時自動 kick 3 sticky client'
+        ],
+        buttons: [
+          { label: '看完整證據鏈', onClick: () => addAiMsg('（demo 略）') },
+          { label: '⏸ 延後', onClick: () => addAiMsg('好的，30 分鐘後再提醒。') },
+          { label: '✓ 核准執行', primary: true, onClick: () => approvalExecuted() }
+        ]
+      });
+    }, 1500);
+  }, 400);
+}
+
+// ============== Send free-form ==============
+function sendMsg() {
+  const text = input.value.trim();
+  if (!text) return;
+  if (welcome && welcome.parentNode) welcome.remove();
+
+  addUserMsg(text);
+  input.value = '';
+  clearQuickReplies();
+
+  // Simple keyword routing
+  const t = text.toLowerCase();
+  setTimeout(() => {
+    addTyping();
+    setTimeout(() => {
+      removeTyping();
+      if (t.match(/wi-?fi.*慢|慢.*wifi|訊號/i)) runWifiSlow();
+      else if (t.match(/sonos|多播|mdns/i)) runSonos();
+      else if (t.match(/vpn/i)) runVpn();
+      else if (t.match(/印表機|印表/i)) runPrinter();
+      else if (t.match(/異常|今天/i)) runAnomalyToday();
+      else if (t.match(/poe|ip 攝|攝影機/i)) runPoePlan();
+      else if (t.match(/維護|blast|拓樸/i)) runBlastRadius();
+      else if (t.match(/sandy|筆電|timeline/i)) runDeviceTimeline();
+      else if (t.match(/sticky|ap-?7f-?n3/i)) runStickyClient();
+      else {
+        addAiMsg('我聽到「' + text + '」了。這是 mockup 示意 — 您可以試試上方 starter card 或：<em>「今天有什麼異常」「Sandy 筆電一直斷」「PoE 撐得住嗎」</em>。');
+      }
+    }, 1100);
+  }, 200);
+}
+
+function resetChat() { location.reload(); }
+</script>
+
+</body>
+</html>
