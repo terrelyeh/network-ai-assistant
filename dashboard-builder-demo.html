@@ -759,6 +759,12 @@
   <button class="tab" data-scenario="s6">
     <span>訪客 Wi-Fi 報告</span><span class="mode-badge">MODE B</span>
   </button>
+  <button class="tab" data-scenario="s7">
+    <span>PoE 容量規劃</span><span class="mode-badge">MODE B</span>
+  </button>
+  <button class="tab" data-scenario="s8">
+    <span>故障 Blast Radius</span><span class="mode-badge">MODE B</span>
+  </button>
 </div>
 
 <!-- DEMO -->
@@ -889,6 +895,53 @@
           <div class="msg ai">
             <div class="ai-name">🤖 Network AI-Assistant</div>
             已建立 ✓ 我看到一個 <strong style="color:var(--accent);">明顯 pattern</strong>：Sandy 每天下午 3 點左右會出現訊號掉到 −78 dBm 的事件 — 對照地點，那時段她在 7F 會議室。<br>那台會議室常用的 <code>AP-7F-N3</code> 上週也被偵測到 sticky client 問題（之前在 cockpit 看過）— <strong>很可能是同一個根因</strong>。要我跑 sticky_client playbook 嗎？
+          </div>
+        </div>
+
+        <!-- ===== Scenario 7: PoE 容量規劃 ===== -->
+        <div class="scenario s7">
+          <div class="msg user">老闆要再加 5 台 IP 攝影機在 2F-3F，現有 PoE 撐得住嗎？</div>
+          <div class="msg ai">
+            <div class="ai-name">🤖 Network AI-Assistant</div>
+            問得好，這個事前算清楚才不會買了裝不上。幫您拉<strong style="color:var(--text);">「PoE 預算與容量規劃」</strong>dashboard：
+            <ul>
+              <li>各 switch PoE 預算使用率（目前 vs 上限）</li>
+              <li>過去 30 天 PoE 功耗趨勢</li>
+              <li><strong>「再加 N 台 X 等級設備」可行性矩陣</strong></li>
+              <li>異常事件（過大電流 / port flap）</li>
+            </ul>
+            <div class="msg-actions">
+              <button class="msg-btn primary">✓ 建立</button>
+            </div>
+          </div>
+          <div class="msg user">建立</div>
+          <div class="msg ai">
+            <div class="ai-name">🤖 Network AI-Assistant</div>
+            已生 ✓ <strong style="color:var(--accent);">注意：SW-2F 已用 87%，再加 1 台 30W (Class 4) 攝影機就會超預算</strong>。建議：3 台接 SW-2F、2 台接 SW-3F（剩 41% 預算）。<br>另外 SW-2F port Gi1/0/8 過去 7 天有 3 次 PoE over-current 事件 — 那台舊 AP 可能 PSU 老化，建議汰換。
+          </div>
+        </div>
+
+        <!-- ===== Scenario 8: 故障 Blast Radius ===== -->
+        <div class="scenario s8">
+          <div class="msg user">下週六要做 SW-3F-Core 韌體升級維護，幫我看影響範圍</div>
+          <div class="msg ai">
+            <div class="ai-name">🤖 Network AI-Assistant</div>
+            維護前最該做的事 — 我幫您拉<strong style="color:var(--text);">「Blast Radius 影響分析」</strong>dashboard：
+            <ul>
+              <li>拓樸圖（gateway → SW-3F-Core → 下游）</li>
+              <li>受影響 device / client / VLAN 統計</li>
+              <li>受影響使用者清單（含 VIP 標記）</li>
+              <li>歷史流量低峰（建議維護視窗）</li>
+              <li>替代路徑 / redundancy 檢查</li>
+            </ul>
+            <div class="msg-actions">
+              <button class="msg-btn primary">✓ 建立</button>
+            </div>
+          </div>
+          <div class="msg user">建立</div>
+          <div class="msg ai">
+            <div class="ai-name">🤖 Network AI-Assistant</div>
+            已生 ✓ <strong style="color:var(--bad);">警告：SW-3F-Core 是單點 — 沒有冗餘路徑</strong>。下游 6 個 AP 與 ~18 個 client 會全斷。<br>建議維護視窗：<strong style="color:var(--cyan);">週六 02:00-04:00</strong>（過去 8 週此時段流量最低，平均只有 3 個 client）。CTO 辦公室在 3F 受影響，建議事先通知。要我幫您起草通知信嗎？
           </div>
         </div>
 
@@ -1356,6 +1409,229 @@
         </div>
       </div>
 
+      <!-- ===== Scenario 7: PoE 容量規劃 ===== -->
+      <div class="scenario s7">
+        <div class="dash-header">
+          <div class="dash-title">🔌 PoE 預算與容量規劃</div>
+          <div class="dash-meta"><span class="live"></span> Live · 6 PoE switches · 47 PD devices</div>
+        </div>
+        <div class="dash-grid" style="grid-template-columns: 1fr 1fr 1fr 1fr;">
+
+          <div class="widget" style="grid-column: span 1;">
+            <div class="widget-title">PoE 總預算</div>
+            <div class="kpi-value" style="font-size:32px;">1,440<span style="font-size:14px;color:var(--muted);"> W</span></div>
+            <div class="kpi-trend">6 switches · 各 240W</div>
+          </div>
+          <div class="widget" style="grid-column: span 1;">
+            <div class="widget-title">已用功耗</div>
+            <div class="kpi-value" style="font-size:32px;color:var(--warn);">1,072<span style="font-size:14px;color:var(--muted);"> W</span></div>
+            <div class="kpi-trend down">使用率 74%</div>
+          </div>
+          <div class="widget" style="grid-column: span 1;">
+            <div class="widget-title">剩餘預算</div>
+            <div class="kpi-value" style="font-size:32px;">368<span style="font-size:14px;color:var(--muted);"> W</span></div>
+            <div class="kpi-trend">≈ 12 台 30W 設備</div>
+          </div>
+          <div class="widget" style="grid-column: span 1;">
+            <div class="widget-title">異常事件 (7d)</div>
+            <div class="kpi-value" style="font-size:32px;color:var(--bad);">3</div>
+            <div class="kpi-trend down">過大電流 + flap</div>
+          </div>
+
+          <div class="widget" style="grid-column: span 4;">
+            <div class="widget-title">各 Switch PoE 使用率</div>
+            <div class="bar-list">
+              <div class="bar-row"><div class="lbl">SW-2F</div><div class="bar-track"><div class="bar-fill warn" style="width:87%"></div></div><div class="num">208 / 240W (87%)</div></div>
+              <div class="bar-row"><div class="lbl">SW-3F-Core</div><div class="bar-track"><div class="bar-fill" style="width:78%"></div></div><div class="num">187 / 240W (78%)</div></div>
+              <div class="bar-row"><div class="lbl">SW-1F</div><div class="bar-track"><div class="bar-fill" style="width:75%"></div></div><div class="num">180 / 240W (75%)</div></div>
+              <div class="bar-row"><div class="lbl">SW-7F</div><div class="bar-track"><div class="bar-fill" style="width:68%"></div></div><div class="num">163 / 240W (68%)</div></div>
+              <div class="bar-row"><div class="lbl">SW-5F</div><div class="bar-track"><div class="bar-fill" style="width:59%"></div></div><div class="num">142 / 240W (59%)</div></div>
+              <div class="bar-row"><div class="lbl">SW-Lab</div><div class="bar-track"><div class="bar-fill" style="width:80%"></div></div><div class="num">192 / 240W (80%)</div></div>
+            </div>
+            <div style="margin-top:6px;font-size:11px;color:var(--warn);">
+              ⚠ SW-2F 接近上限 — 不適合再加高耗電設備
+            </div>
+          </div>
+
+          <div class="widget" style="grid-column: span 2;">
+            <div class="widget-title">「再加 N 台 X 等級設備」可行性</div>
+            <table class="table-w">
+              <thead><tr><th>Switch</th><th>15W 設備</th><th>30W 設備</th><th>60W 設備</th></tr></thead>
+              <tbody>
+                <tr><td>SW-2F</td><td class="num">2</td><td><span class="badge-mini bad">0</span></td><td><span class="badge-mini bad">0</span></td></tr>
+                <tr><td>SW-3F-Core</td><td class="num">3</td><td class="num">1</td><td><span class="badge-mini warn">0</span></td></tr>
+                <tr><td>SW-1F</td><td class="num">4</td><td class="num">2</td><td class="num">1</td></tr>
+                <tr><td>SW-7F</td><td class="num">5</td><td class="num">2</td><td class="num">1</td></tr>
+                <tr><td>SW-5F</td><td class="num">6</td><td class="num">3</td><td class="num">1</td></tr>
+                <tr><td>SW-Lab</td><td class="num">3</td><td class="num">1</td><td><span class="badge-mini warn">0</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="widget" style="grid-column: span 2;">
+            <div class="widget-title">過去 30 天 PoE 功耗趨勢</div>
+            <svg class="chart-svg" viewBox="0 0 600 100" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="g7" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.4"/>
+                  <stop offset="100%" stop-color="#fbbf24" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <path d="M0,55 L60,52 L120,50 L180,48 L240,45 L300,42 L360,40 L420,35 L480,32 L540,28 L600,25 L600,100 L0,100 Z" fill="url(#g7)"/>
+              <path d="M0,55 L60,52 L120,50 L180,48 L240,45 L300,42 L360,40 L420,35 L480,32 L540,28 L600,25" stroke="#fbbf24" stroke-width="2" fill="none"/>
+              <g font-size="10" fill="#64748b" font-family="JetBrains Mono">
+                <text x="0" y="98">−30d</text><text x="280" y="98">−15d</text><text x="560" y="98">today</text>
+              </g>
+            </svg>
+            <div style="margin-top:4px;font-size:11px;color:var(--accent);">
+              ↗ 持續上升中（近 30 天 +8% PoE 負載）— 兩個月內可能撞到上限
+            </div>
+          </div>
+
+          <div class="widget" style="grid-column: span 4;">
+            <div class="widget-title">PoE 異常事件 + AI 建議</div>
+            <div class="alert-row">
+              <div class="ico">🔴</div>
+              <div class="msg-text"><strong>SW-2F port Gi1/0/8</strong> · 過大電流（&gt;33W）3 次 — 那台舊 AP PSU 可能老化</div>
+              <div class="ts">7d</div>
+            </div>
+            <div class="alert-row">
+              <div class="ico">🟡</div>
+              <div class="msg-text"><strong>SW-Lab port Gi1/0/12</strong> · PoE port flap 5 次 — PD class 一直跳變</div>
+              <div class="ts">3d</div>
+            </div>
+            <div class="alert-row">
+              <div class="ico">💡</div>
+              <div class="msg-text"><strong>AI 建議</strong>：5 台新 IP 攝影機 → 3 台接 SW-3F-Core、2 台接 SW-7F（剩餘預算最充裕）。同時建議汰換 SW-2F Gi1/0/8 那台舊 AP</div>
+              <div class="ts">AI</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ===== Scenario 8: 故障 Blast Radius ===== -->
+      <div class="scenario s8">
+        <div class="dash-header">
+          <div class="dash-title">🗺 Blast Radius · SW-3F-Core 維護影響分析</div>
+          <div class="dash-meta"><span class="live"></span> 預定維護：2026-05-09 02:00-04:00</div>
+        </div>
+        <div class="dash-grid" style="grid-template-columns: 1fr 1fr 1fr 1fr;">
+
+          <div class="widget" style="grid-column: span 1;">
+            <div class="widget-title">受影響 AP</div>
+            <div class="kpi-value" style="font-size:32px;color:var(--bad);">6</div>
+            <div class="kpi-trend down">全部 3F 區域</div>
+          </div>
+          <div class="widget" style="grid-column: span 1;">
+            <div class="widget-title">受影響 Client</div>
+            <div class="kpi-value" style="font-size:32px;color:var(--warn);">~18</div>
+            <div class="kpi-trend">含 4 個 VIP（CTO 在 3F）</div>
+          </div>
+          <div class="widget" style="grid-column: span 1;">
+            <div class="widget-title">受影響 VLAN</div>
+            <div class="kpi-value" style="font-size:32px;">3</div>
+            <div class="kpi-trend">VLAN 10 / 20 / 30</div>
+          </div>
+          <div class="widget" style="grid-column: span 1;">
+            <div class="widget-title">替代路徑</div>
+            <div class="kpi-value" style="font-size:32px;color:var(--bad);">無</div>
+            <div class="kpi-trend down">單點 — 建議規劃冗餘</div>
+          </div>
+
+          <div class="widget" style="grid-column: span 4;">
+            <div class="widget-title">拓樸圖 · 影響範圍（紅色 = 維護期失聯）</div>
+            <svg viewBox="0 0 800 280" style="width:100%;height:auto;font-family:Inter;">
+              <!-- Gateway -->
+              <rect x="340" y="10" width="120" height="36" rx="8" fill="rgba(0,217,197,0.15)" stroke="#00d9c5" stroke-width="2"/>
+              <text x="400" y="33" text-anchor="middle" fill="#00d9c5" font-size="13" font-weight="700">🌐 Internet GW</text>
+
+              <!-- Core Switch SW-3F-Core (target) -->
+              <line x1="400" y1="46" x2="400" y2="80" stroke="#cbd5e1" stroke-width="1.5"/>
+              <rect x="320" y="80" width="160" height="44" rx="8" fill="rgba(239,68,68,0.18)" stroke="#ef4444" stroke-width="2.5"/>
+              <text x="400" y="100" text-anchor="middle" fill="#ef4444" font-size="13" font-weight="800">⚠ SW-3F-Core</text>
+              <text x="400" y="116" text-anchor="middle" fill="#fca5a5" font-size="10">維護目標</text>
+
+              <!-- 6 affected APs -->
+              <line x1="400" y1="124" x2="100" y2="170" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="3,3"/>
+              <line x1="400" y1="124" x2="220" y2="170" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="3,3"/>
+              <line x1="400" y1="124" x2="340" y2="170" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="3,3"/>
+              <line x1="400" y1="124" x2="460" y2="170" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="3,3"/>
+              <line x1="400" y1="124" x2="580" y2="170" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="3,3"/>
+              <line x1="400" y1="124" x2="700" y2="170" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="3,3"/>
+
+              <!-- AP nodes -->
+              <g font-size="11" font-weight="600">
+                <rect x="50" y="170" width="100" height="32" rx="6" fill="rgba(239,68,68,0.10)" stroke="#ef4444" stroke-width="1"/>
+                <text x="100" y="190" text-anchor="middle" fill="#fca5a5">📡 AP-3F-N1</text>
+
+                <rect x="170" y="170" width="100" height="32" rx="6" fill="rgba(239,68,68,0.10)" stroke="#ef4444" stroke-width="1"/>
+                <text x="220" y="190" text-anchor="middle" fill="#fca5a5">📡 AP-3F-N2</text>
+
+                <rect x="290" y="170" width="100" height="32" rx="6" fill="rgba(239,68,68,0.10)" stroke="#ef4444" stroke-width="1"/>
+                <text x="340" y="190" text-anchor="middle" fill="#fca5a5">📡 AP-3F-N3</text>
+
+                <rect x="410" y="170" width="100" height="32" rx="6" fill="rgba(239,68,68,0.10)" stroke="#ef4444" stroke-width="1"/>
+                <text x="460" y="190" text-anchor="middle" fill="#fca5a5">📡 AP-3F-S1</text>
+
+                <rect x="530" y="170" width="100" height="32" rx="6" fill="rgba(239,68,68,0.10)" stroke="#ef4444" stroke-width="1"/>
+                <text x="580" y="190" text-anchor="middle" fill="#fca5a5">📡 AP-3F-S2</text>
+
+                <rect x="650" y="170" width="100" height="32" rx="6" fill="rgba(239,68,68,0.10)" stroke="#ef4444" stroke-width="1"/>
+                <text x="700" y="190" text-anchor="middle" fill="#fca5a5">📡 AP-3F-S3</text>
+              </g>
+
+              <!-- Client clusters -->
+              <g font-size="10" fill="#94a3b8">
+                <text x="100" y="225" text-anchor="middle">3 client</text>
+                <text x="220" y="225" text-anchor="middle">4 client (VIP×2)</text>
+                <text x="340" y="225" text-anchor="middle">2 client</text>
+                <text x="460" y="225" text-anchor="middle">3 client (VIP×1)</text>
+                <text x="580" y="225" text-anchor="middle">2 client</text>
+                <text x="700" y="225" text-anchor="middle">4 client (VIP×1)</text>
+              </g>
+
+              <!-- Other unaffected -->
+              <text x="400" y="265" text-anchor="middle" fill="#10b981" font-size="11">✓ 其他 site / floor 不受影響（HQ-1F, HQ-2F, HQ-7F 等）</text>
+            </svg>
+          </div>
+
+          <div class="widget" style="grid-column: span 2;">
+            <div class="widget-title">受影響 device 清單</div>
+            <table class="table-w">
+              <thead><tr><th>裝置 / Client</th><th>類型</th><th>關鍵性</th></tr></thead>
+              <tbody>
+                <tr><td>AP-3F-N2</td><td>AP</td><td><span class="badge-mini warn">VIP × 2</span></td></tr>
+                <tr><td>AP-3F-S1</td><td>AP</td><td><span class="badge-mini warn">CTO 辦公室</span></td></tr>
+                <tr><td>AP-3F-S3</td><td>AP</td><td><span class="badge-mini warn">會議室主</span></td></tr>
+                <tr><td>3F 印表機 ×2</td><td>IoT</td><td><span class="badge-mini">一般</span></td></tr>
+                <tr><td>3F IP 電話 ×6</td><td>VoIP</td><td><span class="badge-mini bad">緊急通話</span></td></tr>
+                <tr><td>3F 監視器 ×3</td><td>IoT</td><td><span class="badge-mini">一般</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="widget" style="grid-column: span 2;">
+            <div class="widget-title">建議維護視窗（過去 8 週流量低峰）</div>
+            <div class="heatmap" style="grid-template-columns: 30px repeat(8, 1fr);">
+              <div class="hm-label">週六</div>
+              <div class="hm-cell l1"></div><div class="hm-cell l1" style="background:rgba(16,185,129,0.6)!important;"></div><div class="hm-cell l1" style="background:rgba(16,185,129,0.7)!important;"></div><div class="hm-cell l1"></div><div class="hm-cell l2"></div><div class="hm-cell l3"></div><div class="hm-cell l4"></div><div class="hm-cell l3"></div>
+              <div class="hm-label">週日</div>
+              <div class="hm-cell l1"></div><div class="hm-cell l1" style="background:rgba(16,185,129,0.6)!important;"></div><div class="hm-cell l1" style="background:rgba(16,185,129,0.5)!important;"></div><div class="hm-cell l2"></div><div class="hm-cell l2"></div><div class="hm-cell l3"></div><div class="hm-cell l4"></div><div class="hm-cell l3"></div>
+              <div class="hm-label">週一</div>
+              <div class="hm-cell l1"></div><div class="hm-cell l1"></div><div class="hm-cell l3"></div><div class="hm-cell l4"></div><div class="hm-cell l5"></div><div class="hm-cell l4"></div><div class="hm-cell l5"></div><div class="hm-cell l4"></div>
+            </div>
+            <div style="margin-top:8px;font-size:11px;color:var(--good);">
+              ✓ 推薦：<strong>週六 02:00-04:00</strong>（綠色，平均僅 3 client 在線）
+            </div>
+            <div style="margin-top:4px;font-size:11px;color:var(--bad);">
+              ⚠ <strong>警告</strong>：此為單點故障，建議規劃 redundant uplink
+            </div>
+          </div>
+
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -1494,6 +1770,8 @@
         s4: { t: '場景 4 · 跨分點客戶分析（連鎖 / 多 site SMB）', m: 'B · SMB IT' },
         s5: { t: '場景 5 · 找某台設備的連線 timeline（IT 排錯）', m: 'B · SMB IT' },
         s6: { t: '場景 6 · 訪客 Wi-Fi 使用報告（給行銷）', m: 'B · SMB IT' },
+        s7: { t: '場景 7 · PoE 容量規劃與電源管理', m: 'B · SMB IT' },
+        s8: { t: '場景 8 · 故障 Blast Radius（維護前影響分析）', m: 'B · SMB IT' },
       };
       document.getElementById('demoTitle').textContent = titles[scenario].t;
       document.getElementById('demoMode').textContent = titles[scenario].m;

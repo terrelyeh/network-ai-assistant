@@ -611,21 +611,21 @@
 
       <h3 style="margin: 28px 0 14px; color: var(--dim); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;">💡 或從範例開始</h3>
       <div class="examples-grid">
-        <button class="example-tile" onclick="useExample('我想看本週網路有沒有異常')">
+        <button class="example-tile" onclick="useExample('我想看本週網路有沒有異常', 'health')">
           <span class="ico">📊</span>
           <span class="label">我想看本週網路有沒有異常</span>
         </button>
-        <button class="example-tile" onclick="useExample('哪些 AP 太忙')">
+        <button class="example-tile" onclick="useExample('哪些 AP 太忙', 'health')">
           <span class="ico">🛰</span>
           <span class="label">哪些 AP 太忙</span>
         </button>
-        <button class="example-tile" onclick="useExample('客戶數量趨勢與 anomaly 對比')">
-          <span class="ico">📈</span>
-          <span class="label">客戶數量趨勢與 anomaly 對比</span>
+        <button class="example-tile" onclick="useExample('再加 5 台 IP 攝影機，現有 PoE 撐得住嗎？', 'poe')">
+          <span class="ico">🔌</span>
+          <span class="label">PoE 容量規劃 + 電源管理</span>
         </button>
-        <button class="example-tile" onclick="useExample('Top 10 sites by client churn')">
-          <span class="ico">🌐</span>
-          <span class="label">Top 10 sites by client churn</span>
+        <button class="example-tile" onclick="useExample('SW-3F-Core 維護的影響範圍 (blast radius)', 'topology')">
+          <span class="ico">🗺</span>
+          <span class="label">故障 Blast Radius + 拓樸圖</span>
         </button>
       </div>
     </div>
@@ -669,41 +669,135 @@
           「我想看本週網路有沒有異常」
         </div>
 
-        <h3>📦 包含 4 個 widgets</h3>
-        <ul class="widgets-list">
-          <li class="widget-item">
-            <span class="num">1</span>
-            <div class="info">
-              <div class="name">本週客戶數（KPI）</div>
-              <div class="desc">當前數字 + WoW 變化 · 用 KPI Card</div>
-            </div>
-            <span class="type-tag">kpi</span>
-          </li>
-          <li class="widget-item">
-            <span class="num">2</span>
-            <div class="info">
-              <div class="name">本週 anomaly 趨勢（Line）</div>
-              <div class="desc">每日 anomaly 數量趨勢 · 用 Time Series</div>
-            </div>
-            <span class="type-tag">line</span>
-          </li>
-          <li class="widget-item">
-            <span class="num">3</span>
-            <div class="info">
-              <div class="name">Top 5 問題設備（Table）</div>
-              <div class="desc">本週發生問題最多的 device · 用 Table</div>
-            </div>
-            <span class="type-tag">table</span>
-          </li>
-          <li class="widget-item">
-            <span class="num">4</span>
-            <div class="info">
-              <div class="name">各 site 健康分數（Map）</div>
-              <div class="desc">所有 site 的健康分布 · 用 Site Map</div>
-            </div>
-            <span class="type-tag">site_map</span>
-          </li>
-        </ul>
+        <div class="proposal-content" data-scenario="health">
+          <h3>📦 包含 4 個 widgets</h3>
+          <ul class="widgets-list">
+            <li class="widget-item">
+              <span class="num">1</span>
+              <div class="info">
+                <div class="name">本週客戶數（KPI）</div>
+                <div class="desc">當前數字 + WoW 變化 · 用 KPI Card</div>
+              </div>
+              <span class="type-tag">kpi</span>
+            </li>
+            <li class="widget-item">
+              <span class="num">2</span>
+              <div class="info">
+                <div class="name">本週 anomaly 趨勢（Line）</div>
+                <div class="desc">每日 anomaly 數量趨勢 · 用 Time Series</div>
+              </div>
+              <span class="type-tag">line</span>
+            </li>
+            <li class="widget-item">
+              <span class="num">3</span>
+              <div class="info">
+                <div class="name">Top 5 問題設備（Table）</div>
+                <div class="desc">本週發生問題最多的 device · 用 Table</div>
+              </div>
+              <span class="type-tag">table</span>
+            </li>
+            <li class="widget-item">
+              <span class="num">4</span>
+              <div class="info">
+                <div class="name">各 site 健康分數（Map）</div>
+                <div class="desc">所有 site 的健康分布 · 用 Site Map</div>
+              </div>
+              <span class="type-tag">site_map</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="proposal-content" data-scenario="poe" style="display:none;">
+          <h3>📦 包含 6 個 widgets</h3>
+          <ul class="widgets-list">
+            <li class="widget-item">
+              <span class="num">1</span>
+              <div class="info">
+                <div class="name">PoE 預算 KPI（總 / 已用 / 剩餘 / 異常）</div>
+                <div class="desc">4 張 KPI 卡片 · 一眼看健康狀態</div>
+              </div>
+              <span class="type-tag">kpi</span>
+            </li>
+            <li class="widget-item">
+              <span class="num">2</span>
+              <div class="info">
+                <div class="name">各 Switch PoE 使用率（Bar）</div>
+                <div class="desc">6 台 PoE switch 排行 · 用 Bar List</div>
+              </div>
+              <span class="type-tag">bar</span>
+            </li>
+            <li class="widget-item">
+              <span class="num">3</span>
+              <div class="info">
+                <div class="name">「再加 N 台 X 等級」可行性矩陣（Table）</div>
+                <div class="desc">15W / 30W / 60W class 加得下幾台</div>
+              </div>
+              <span class="type-tag">table</span>
+            </li>
+            <li class="widget-item">
+              <span class="num">4</span>
+              <div class="info">
+                <div class="name">過去 30 天 PoE 功耗趨勢（Line）</div>
+                <div class="desc">看是否逐漸逼近上限</div>
+              </div>
+              <span class="type-tag">line</span>
+            </li>
+            <li class="widget-item">
+              <span class="num">5</span>
+              <div class="info">
+                <div class="name">PoE 異常事件 + AI 建議（Alert List）</div>
+                <div class="desc">過大電流 / port flap / AI 部署建議</div>
+              </div>
+              <span class="type-tag">alert</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="proposal-content" data-scenario="topology" style="display:none;">
+          <h3>📦 包含 5 個 widgets</h3>
+          <ul class="widgets-list">
+            <li class="widget-item">
+              <span class="num">1</span>
+              <div class="info">
+                <div class="name">影響範圍 KPI（AP / Client / VLAN / 替代路徑）</div>
+                <div class="desc">4 張 KPI · 立刻看清 blast radius</div>
+              </div>
+              <span class="type-tag">kpi</span>
+            </li>
+            <li class="widget-item">
+              <span class="num">2</span>
+              <div class="info">
+                <div class="name">拓樸 SVG 圖（樹狀）</div>
+                <div class="desc">Gateway → Core → 下游 device · 影響節點標紅</div>
+              </div>
+              <span class="type-tag">topology</span>
+            </li>
+            <li class="widget-item">
+              <span class="num">3</span>
+              <div class="info">
+                <div class="name">受影響 device 清單（Table）</div>
+                <div class="desc">含關鍵性標記（VIP / VoIP / 一般）</div>
+              </div>
+              <span class="type-tag">table</span>
+            </li>
+            <li class="widget-item">
+              <span class="num">4</span>
+              <div class="info">
+                <div class="name">建議維護視窗 Heatmap</div>
+                <div class="desc">過去 8 週流量低峰分析</div>
+              </div>
+              <span class="type-tag">heatmap</span>
+            </li>
+            <li class="widget-item">
+              <span class="num">5</span>
+              <div class="info">
+                <div class="name">替代路徑 / Redundancy 檢查（Status）</div>
+                <div class="desc">告訴您是不是單點故障</div>
+              </div>
+              <span class="type-tag">status</span>
+            </li>
+          </ul>
+        </div>
 
         <div class="proposal-actions">
           <button class="btn-secondary" onclick="resetFlow()">重新描述</button>
@@ -732,7 +826,7 @@
         </div>
       </div>
 
-      <div class="dash-grid" id="dashGrid">
+      <div class="dash-grid" id="dashGrid" data-scenario="health">
 
         <div class="widget">
           <div class="widget-title">本週客戶數 <button class="widget-edit" title="用 AI 修改">✏</button></div>
@@ -796,6 +890,179 @@
 
       </div>
 
+      <!-- ========== PoE Dashboard ========== -->
+      <div class="dash-grid" data-scenario="poe" style="display:none;">
+
+        <div class="widget">
+          <div class="widget-title">PoE 總預算 <button class="widget-edit">✏</button></div>
+          <div class="kpi-num">1,440<span style="font-size:14px;color:var(--muted);"> W</span></div>
+          <div class="kpi-trend">6 switches</div>
+        </div>
+        <div class="widget">
+          <div class="widget-title">已用功耗 <button class="widget-edit">✏</button></div>
+          <div class="kpi-num" style="color:var(--warn);">1,072<span style="font-size:14px;color:var(--muted);"> W</span></div>
+          <div class="kpi-trend down">使用率 74%</div>
+        </div>
+        <div class="widget">
+          <div class="widget-title">剩餘預算 <button class="widget-edit">✏</button></div>
+          <div class="kpi-num">368<span style="font-size:14px;color:var(--muted);"> W</span></div>
+          <div class="kpi-trend">≈ 12 台 30W</div>
+        </div>
+
+        <div class="widget span-3">
+          <div class="widget-title">各 Switch PoE 使用率 <button class="widget-edit">✏</button></div>
+          <div style="display:flex;flex-direction:column;gap:6px;font-size:11px;">
+            <div style="display:grid;grid-template-columns:80px 1fr 110px;gap:8px;align-items:center;">
+              <span>SW-2F</span>
+              <div style="height:14px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;"><div style="width:87%;height:100%;background:var(--warn);"></div></div>
+              <span style="color:var(--warn);">208 / 240W (87%)</span>
+            </div>
+            <div style="display:grid;grid-template-columns:80px 1fr 110px;gap:8px;align-items:center;">
+              <span>SW-3F-Core</span>
+              <div style="height:14px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;"><div style="width:78%;height:100%;background:var(--accent);"></div></div>
+              <span>187 / 240W (78%)</span>
+            </div>
+            <div style="display:grid;grid-template-columns:80px 1fr 110px;gap:8px;align-items:center;">
+              <span>SW-Lab</span>
+              <div style="height:14px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;"><div style="width:80%;height:100%;background:var(--accent);"></div></div>
+              <span>192 / 240W (80%)</span>
+            </div>
+            <div style="display:grid;grid-template-columns:80px 1fr 110px;gap:8px;align-items:center;">
+              <span>SW-1F</span>
+              <div style="height:14px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;"><div style="width:75%;height:100%;background:var(--accent);"></div></div>
+              <span>180 / 240W (75%)</span>
+            </div>
+            <div style="display:grid;grid-template-columns:80px 1fr 110px;gap:8px;align-items:center;">
+              <span>SW-7F</span>
+              <div style="height:14px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;"><div style="width:68%;height:100%;background:var(--cyan);"></div></div>
+              <span>163 / 240W (68%)</span>
+            </div>
+            <div style="display:grid;grid-template-columns:80px 1fr 110px;gap:8px;align-items:center;">
+              <span>SW-5F</span>
+              <div style="height:14px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;"><div style="width:59%;height:100%;background:var(--cyan);"></div></div>
+              <span>142 / 240W (59%)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="widget span-2">
+          <div class="widget-title">「再加 N 台」可行性 <button class="widget-edit">✏</button></div>
+          <table class="table-w">
+            <thead><tr><th>Switch</th><th>15W</th><th>30W</th><th>60W</th></tr></thead>
+            <tbody>
+              <tr><td>SW-2F</td><td>2</td><td><span class="badge-mini bad">0</span></td><td><span class="badge-mini bad">0</span></td></tr>
+              <tr><td>SW-3F-Core</td><td>3</td><td>1</td><td><span class="badge-mini warn">0</span></td></tr>
+              <tr><td>SW-1F</td><td>4</td><td>2</td><td>1</td></tr>
+              <tr><td>SW-7F</td><td>5</td><td>2</td><td>1</td></tr>
+              <tr><td>SW-5F</td><td>6</td><td>3</td><td>1</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="widget">
+          <div class="widget-title">過大電流 <button class="widget-edit">✏</button></div>
+          <div class="kpi-num" style="color:var(--bad);">3</div>
+          <div class="kpi-trend down">過去 7 天</div>
+        </div>
+
+        <div class="widget span-3">
+          <div class="widget-title">PoE 異常事件 + AI 建議 <button class="widget-edit">✏</button></div>
+          <div style="display:flex;flex-direction:column;gap:8px;font-size:12px;color:var(--muted);">
+            <div>🔴 <strong style="color:var(--text);">SW-2F port Gi1/0/8</strong> · 過大電流（&gt;33W）3 次 — 那台舊 AP PSU 可能老化</div>
+            <div>🟡 <strong style="color:var(--text);">SW-Lab port Gi1/0/12</strong> · PoE port flap 5 次 — PD class 一直跳變</div>
+            <div style="color:var(--cyan);padding-top:6px;border-top:1px solid var(--border);">💡 <strong style="color:var(--text);">AI 建議</strong>：5 台新 IP 攝影機 → 3 台接 SW-3F-Core、2 台接 SW-7F；同時建議汰換 SW-2F Gi1/0/8 那台舊 AP</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ========== Topology Dashboard ========== -->
+      <div class="dash-grid" data-scenario="topology" style="display:none;">
+
+        <div class="widget">
+          <div class="widget-title">受影響 AP <button class="widget-edit">✏</button></div>
+          <div class="kpi-num" style="color:var(--bad);">6</div>
+          <div class="kpi-trend down">全部 3F</div>
+        </div>
+        <div class="widget">
+          <div class="widget-title">受影響 Client <button class="widget-edit">✏</button></div>
+          <div class="kpi-num" style="color:var(--warn);">~18</div>
+          <div class="kpi-trend">含 4 VIP</div>
+        </div>
+        <div class="widget">
+          <div class="widget-title">替代路徑 <button class="widget-edit">✏</button></div>
+          <div class="kpi-num" style="color:var(--bad);">無</div>
+          <div class="kpi-trend down">單點</div>
+        </div>
+
+        <div class="widget span-3">
+          <div class="widget-title">拓樸圖 · 影響範圍（紅色 = 維護期失聯）<button class="widget-edit">✏</button></div>
+          <svg viewBox="0 0 800 240" style="width:100%;height:auto;">
+            <rect x="340" y="10" width="120" height="32" rx="6" fill="rgba(0,217,197,0.15)" stroke="#00d9c5" stroke-width="2"/>
+            <text x="400" y="30" text-anchor="middle" fill="#00d9c5" font-size="12" font-weight="700">🌐 Internet GW</text>
+
+            <line x1="400" y1="42" x2="400" y2="70" stroke="#cbd5e1" stroke-width="1.5"/>
+
+            <rect x="320" y="70" width="160" height="40" rx="6" fill="rgba(239,68,68,0.18)" stroke="#ef4444" stroke-width="2.5"/>
+            <text x="400" y="88" text-anchor="middle" fill="#ef4444" font-size="12" font-weight="800">⚠ SW-3F-Core</text>
+            <text x="400" y="103" text-anchor="middle" fill="#fca5a5" font-size="10">維護目標</text>
+
+            <line x1="400" y1="110" x2="100" y2="155" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="3,3"/>
+            <line x1="400" y1="110" x2="220" y2="155" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="3,3"/>
+            <line x1="400" y1="110" x2="340" y2="155" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="3,3"/>
+            <line x1="400" y1="110" x2="460" y2="155" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="3,3"/>
+            <line x1="400" y1="110" x2="580" y2="155" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="3,3"/>
+            <line x1="400" y1="110" x2="700" y2="155" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="3,3"/>
+
+            <g font-size="10" font-weight="600">
+              <rect x="50" y="155" width="100" height="28" rx="6" fill="rgba(239,68,68,0.10)" stroke="#ef4444" stroke-width="1"/>
+              <text x="100" y="173" text-anchor="middle" fill="#fca5a5">📡 AP-3F-N1</text>
+              <rect x="170" y="155" width="100" height="28" rx="6" fill="rgba(239,68,68,0.10)" stroke="#ef4444" stroke-width="1"/>
+              <text x="220" y="173" text-anchor="middle" fill="#fca5a5">📡 AP-3F-N2</text>
+              <rect x="290" y="155" width="100" height="28" rx="6" fill="rgba(239,68,68,0.10)" stroke="#ef4444" stroke-width="1"/>
+              <text x="340" y="173" text-anchor="middle" fill="#fca5a5">📡 AP-3F-N3</text>
+              <rect x="410" y="155" width="100" height="28" rx="6" fill="rgba(239,68,68,0.10)" stroke="#ef4444" stroke-width="1"/>
+              <text x="460" y="173" text-anchor="middle" fill="#fca5a5">📡 AP-3F-S1</text>
+              <rect x="530" y="155" width="100" height="28" rx="6" fill="rgba(239,68,68,0.10)" stroke="#ef4444" stroke-width="1"/>
+              <text x="580" y="173" text-anchor="middle" fill="#fca5a5">📡 AP-3F-S2</text>
+              <rect x="650" y="155" width="100" height="28" rx="6" fill="rgba(239,68,68,0.10)" stroke="#ef4444" stroke-width="1"/>
+              <text x="700" y="173" text-anchor="middle" fill="#fca5a5">📡 AP-3F-S3</text>
+            </g>
+            <g font-size="9" fill="#94a3b8">
+              <text x="100" y="200" text-anchor="middle">3 client</text>
+              <text x="220" y="200" text-anchor="middle">4 client (VIP×2)</text>
+              <text x="340" y="200" text-anchor="middle">2 client</text>
+              <text x="460" y="200" text-anchor="middle">3 client (VIP×1)</text>
+              <text x="580" y="200" text-anchor="middle">2 client</text>
+              <text x="700" y="200" text-anchor="middle">4 client (VIP×1)</text>
+            </g>
+            <text x="400" y="230" text-anchor="middle" fill="#10b981" font-size="11">✓ 其他樓層不受影響（HQ-1F, 2F, 5F, 7F）</text>
+          </svg>
+        </div>
+
+        <div class="widget span-2">
+          <div class="widget-title">受影響 Device 清單 <button class="widget-edit">✏</button></div>
+          <table class="table-w">
+            <thead><tr><th>Device</th><th>類型</th><th>關鍵性</th></tr></thead>
+            <tbody>
+              <tr><td>AP-3F-N2</td><td>AP</td><td><span class="badge-mini warn">VIP × 2</span></td></tr>
+              <tr><td>AP-3F-S1</td><td>AP</td><td><span class="badge-mini warn">CTO 辦公室</span></td></tr>
+              <tr><td>AP-3F-S3</td><td>AP</td><td><span class="badge-mini warn">會議室主</span></td></tr>
+              <tr><td>3F IP 電話 ×6</td><td>VoIP</td><td><span class="badge-mini bad">緊急通話</span></td></tr>
+              <tr><td>3F 監視器 ×3</td><td>IoT</td><td><span class="badge-mini">一般</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="widget">
+          <div class="widget-title">建議維護時段 <button class="widget-edit">✏</button></div>
+          <div style="font-size:13px;color:var(--good);font-weight:700;margin:8px 0;">週六 02:00–04:00</div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.5;">過去 8 週此時段平均僅 3 client 在線，流量低峰最佳維護視窗</div>
+          <div style="font-size:11px;color:var(--bad);margin-top:8px;border-top:1px solid var(--border);padding-top:6px;">⚠ 單點故障 — 建議規劃 redundant uplink</div>
+        </div>
+
+      </div>
+
       <!-- Refine bar -->
       <div class="refine-bar">
         <span class="lead">💬</span>
@@ -812,6 +1079,19 @@
 
 <script>
 let currentStage = 1;
+let currentScenario = 'health';
+
+const scenarioMeta = {
+  health: { title: '📊 本週健康狀況', meta: '4 widgets · 5 秒前生成 · Live monitoring' },
+  poe:    { title: '🔌 PoE 預算與容量規劃',  meta: '6 widgets · 5 秒前生成 · 6 PoE switches' },
+  topology: { title: '🗺 Blast Radius · SW-3F-Core 維護分析', meta: '5 widgets · 5 秒前生成 · 預定維護 2026-05-09' }
+};
+
+function applyScenarioVisibility() {
+  document.querySelectorAll('[data-scenario]').forEach(el => {
+    el.style.display = (el.getAttribute('data-scenario') === currentScenario) ? '' : 'none';
+  });
+}
 
 function setStep(n) {
   currentStage = n;
@@ -828,14 +1108,16 @@ function setStep(n) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function useExample(text) {
+function useExample(text, scenario) {
   document.getElementById('promptInput').value = text;
+  currentScenario = scenario || 'health';
   goToStage2();
 }
 
 function goToStage2() {
   const promptText = document.getElementById('promptInput').value.trim() || '我想看本週網路有沒有異常';
   document.getElementById('userQuote').textContent = `「${promptText}」`;
+  applyScenarioVisibility();
   setStep(2);
 
   // Reset thinking steps
@@ -878,10 +1160,17 @@ function goToStage3() {
 
 function goToStage4() {
   setStep(4);
-  // Animate widgets in
-  document.querySelectorAll('.dash-grid .widget').forEach((w, i) => {
-    w.style.animationDelay = (i * 0.08) + 's';
-  });
+  // Update dashboard title + meta for current scenario
+  const meta = scenarioMeta[currentScenario] || scenarioMeta.health;
+  document.getElementById('dashTitle').textContent = meta.title;
+  document.querySelector('#stage4 .dash-title-block .meta').textContent = meta.meta;
+  // Animate visible widgets in
+  const grid = document.querySelector(`#stage4 .dash-grid[data-scenario="${currentScenario}"]`);
+  if (grid) {
+    grid.querySelectorAll('.widget').forEach((w, i) => {
+      w.style.animationDelay = (i * 0.08) + 's';
+    });
+  }
 }
 
 function saveDashboard() {
@@ -901,8 +1190,8 @@ function refineDashboard() {
   const refineText = document.getElementById('refineInput').value.trim();
   if (!refineText) return;
 
-  // Add a new widget
-  const grid = document.getElementById('dashGrid');
+  // Add a new widget to the currently visible grid
+  const grid = document.querySelector(`#stage4 .dash-grid[data-scenario="${currentScenario}"]`) || document.getElementById('dashGrid');
   const newWidget = document.createElement('div');
   newWidget.className = 'widget';
   newWidget.style.animation = 'widgetIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)';
@@ -932,6 +1221,8 @@ function refineDashboard() {
 function resetFlow() {
   document.getElementById('promptInput').value = '';
   document.getElementById('refineInput').value = '';
+  currentScenario = 'health';
+  applyScenarioVisibility();
   setStep(1);
 }
 
