@@ -694,10 +694,10 @@ function startScenario(scenario) {
         removeTyping();
         addMsg('SONOS / AirPlay 這類設備需要靠多播（mDNS）才能發現。我幫您先排除常見的客戶端問題。');
         addMsg('您先試這 3 步：<br>1. 把 SONOS App 關掉重開<br>2. 確認手機跟 SONOS 連到 <strong>同一個 Wi-Fi</strong><br>3. 重新連一次公司 Wi-Fi', 'ai', true);
-        addInlineSuggestions(['全部試過了還是不行', '我再試試'], (r) => {
+        addInlineSuggestions(['全部試過了還是不行', '我再試試（順便讓 AI 幫忙查）'], (r) => {
           addMsg(r, 'user');
           if (r.includes('試過')) handleSonosEscalate();
-          else handleResolved();
+          else handleSonosDeepDiag();
         });
       }, 1500);
     }, 400);
@@ -718,6 +718,98 @@ function startScenario(scenario) {
     setQuickReplies(['Wi-Fi 慢', '連不上', '印表機問題', '其他']);
     addMsg('好的，請用您自己的話告訴我發生什麼事 — 我會盡量幫您。', 'ai');
   }
+}
+
+function handleSonosDeepDiag() {
+  addTyping();
+  setTimeout(() => {
+    removeTyping();
+    addMsg('好的！順便讓我幫您 30 秒 quick check — 3 個小問題就能找出原因。');
+    addMsg('<strong>Q1:</strong> 您手機現在連的 Wi-Fi 名稱是？', 'ai', true);
+    addInlineSuggestions(
+      ['Company-WiFi (員工網)', 'Company-Guest (訪客網)', '不確定 / 其他'],
+      (r) => {
+        addMsg(r, 'user');
+        if (r.includes('Guest')) handleSonosFix('guest');
+        else if (r.includes('Company-WiFi')) handleSonosQ2();
+        else handleSonosEscalate();
+      }
+    );
+  }, 1200);
+}
+
+function handleSonosQ2() {
+  addTyping();
+  setTimeout(() => {
+    removeTyping();
+    addMsg('<strong>Q2:</strong> SONOS 主機（喇叭本體不是手機 app）正面有亮燈嗎？', 'ai', true);
+    addInlineSuggestions(
+      ['亮著（綠 / 白色）', '沒亮 / 閃紅燈', '看不到 / 不確定'],
+      (r) => {
+        addMsg(r, 'user');
+        if (r.includes('沒亮') || r.includes('紅')) handleSonosFix('speaker_off');
+        else if (r.includes('亮著')) handleSonosQ3();
+        else handleSonosEscalate();
+      }
+    );
+  }, 1200);
+}
+
+function handleSonosQ3() {
+  addTyping();
+  setTimeout(() => {
+    removeTyping();
+    addMsg('<strong>Q3:</strong> 您用什麼裝置開 SONOS app？', 'ai', true);
+    addInlineSuggestions(
+      ['iPhone', 'Android', '其他（電腦 / 平板）'],
+      (r) => {
+        addMsg(r, 'user');
+        if (r === 'iPhone') handleSonosFix('iphone_private');
+        else handleSonosEscalate();
+      }
+    );
+  }, 1200);
+}
+
+function handleSonosFix(kind) {
+  addTyping();
+  setTimeout(() => {
+    removeTyping();
+    if (kind === 'guest') {
+      addMsg('🎯 <strong style="color:var(--good);">找到了！</strong>您連到訪客網路（Guest）— 訪客網是「<strong>裝置隔離</strong>」的，故意不能跨裝置發現，所以 SONOS 一定看不到。', 'ai', true);
+      addActionCard(
+        '✓ 自助解法',
+        '切回員工 Wi-Fi（Company-WiFi）',
+        '到手機 Wi-Fi 設定切到「Company-WiFi」 → 用您的 AD 帳密登入 → 重開 SONOS app → 應該就看得到了。',
+        [
+          { label: '✗ 還是不通', action: 'sonos_still_broken', primary: false },
+          { label: '✓ 解決了！', action: 'resolved', primary: true },
+        ]
+      );
+    } else if (kind === 'speaker_off') {
+      addMsg('🎯 <strong style="color:var(--good);">找到了！</strong>SONOS 主機可能掉電或當機 — 沒亮燈代表它根本沒上線，當然搜尋不到。', 'ai', true);
+      addActionCard(
+        '✓ 自助解法',
+        '重啟 SONOS 主機',
+        'SONOS 電源拔掉 → 等 30 秒 → 插回去 → 等指示燈變白色穩定（約 1 分鐘）→ 用 app 重新搜尋。',
+        [
+          { label: '✗ 重啟後還是不行', action: 'sonos_still_broken', primary: false },
+          { label: '✓ 看到了！', action: 'resolved', primary: true },
+        ]
+      );
+    } else if (kind === 'iphone_private') {
+      addMsg('🎯 <strong style="color:var(--good);">找到了！</strong>iPhone 從 iOS 14 起預設開「<strong>私人 Wi-Fi 位址</strong>」— 對 SONOS 這類靠 MAC + 多播的設備會干擾發現。', 'ai', true);
+      addActionCard(
+        '✓ 自助解法',
+        '關掉「私人 Wi-Fi 位址」',
+        '設定 → Wi-Fi → 點「Company-WiFi」旁邊的 ⓘ → 關掉「私人 Wi-Fi 位址」→ 自動重連 → 重開 SONOS app。',
+        [
+          { label: '✗ 關了還是不行', action: 'sonos_still_broken', primary: false },
+          { label: '✓ 解決了！', action: 'resolved', primary: true },
+        ]
+      );
+    }
+  }, 1500);
 }
 
 function handleSonosEscalate() {
@@ -854,6 +946,10 @@ function handleAction(action) {
   if (action === 'escalate') handleEscalateNow();
   else if (action === 'resolved') handleResolved();
   else if (action === 'sonos_escalate') handleSonosTicket();
+  else if (action === 'sonos_still_broken') {
+    addMsg('好的，那真的需要 IT 出手了。我把您剛剛的診斷紀錄一起送過去...', 'ai');
+    setTimeout(() => handleSonosEscalate(), 800);
+  }
   else if (action === 'cancel') {
     addMsg('沒問題，您方便時隨時再來找我 👋', 'ai');
     setQuickReplies(['新問題', '謝謝']);
