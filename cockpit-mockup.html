@@ -60,6 +60,44 @@
   }
   .mockup-banner a:hover { background: rgba(0,217,197,0.15); }
 
+  /* SCENARIO BAR */
+  .scenario-bar {
+    height: 40px;
+    background: var(--bg-2);
+    border-bottom: 1px solid rgba(255,107,53,0.2);
+    display: flex; align-items: center;
+    padding: 0 16px;
+    gap: 6px;
+    overflow-x: auto;
+  }
+  .scenario-bar-label {
+    font-size: 11px; font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-right: 10px;
+    white-space: nowrap;
+  }
+  .scenario-tab {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .scenario-tab:hover { background: var(--surface); color: var(--text); }
+  .scenario-tab.active {
+    background: rgba(255,107,53,0.15);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
   /* COCKPIT LAYOUT */
   .cockpit {
     display: grid;
@@ -69,7 +107,7 @@
       "topbar topbar topbar"
       "sidebar-left content sidebar-right"
       "chat-bar chat-bar chat-bar";
-    height: calc(100vh - 32px);
+    height: calc(100vh - 72px);
     background: var(--bg-1);
   }
 
@@ -982,6 +1020,15 @@
   <a href="mockup-gallery.html">← 回 Mockup 列表</a>
 </div>
 
+<!-- SCENARIO BAR -->
+<div class="scenario-bar">
+  <span class="scenario-bar-label">情境</span>
+  <button class="scenario-tab active" data-scenario="overview" onclick="setScenario('overview')">📋 今日總覽</button>
+  <button class="scenario-tab" data-scenario="sticky" onclick="setScenario('sticky')">📡 Sticky Client</button>
+  <button class="scenario-tab" data-scenario="offline" onclick="setScenario('offline')">🔌 設備掉線</button>
+  <button class="scenario-tab" data-scenario="sonos" onclick="setScenario('sonos')">🎵 SONOS 升級案</button>
+</div>
+
 <!-- COCKPIT -->
 <div class="cockpit">
 
@@ -1041,22 +1088,22 @@
 
     <div class="content-head">
       <div>
-        <div class="content-title">HQ Office · Today</div>
-        <div class="content-sub">2026-05-08 週四 · 早安 Lin</div>
+        <div class="content-title" id="contentTitle">HQ Office · Today</div>
+        <div class="content-sub" id="contentSub">2026-05-08 週四 · 早安 Lin</div>
       </div>
       <div class="content-meta">
         <span class="live-dot"></span>
-        <span>Live · 監測 47 設備</span>
+        <span id="contentMeta">Live · 監測 47 設備</span>
       </div>
     </div>
 
     <!-- ANOMALY PANEL -->
     <div class="section">
       <div class="section-head">
-        <h3>⚠ 今日異常 <span class="count-pill">3</span></h3>
+        <h3 id="anomalyHead">⚠ 今日異常 <span class="count-pill" id="anomalyCount">3</span></h3>
         <span class="more">看全部 →</span>
       </div>
-      <div class="anomaly-grid">
+      <div class="anomaly-grid" id="anomalyGrid">
 
         <div class="anomaly" onclick="openAnomaly()">
           <div class="anomaly-head">
@@ -1175,31 +1222,33 @@
     <div class="sr-section">
       <div class="sr-section-head">
         <span class="sr-section-title">⏳ 等您決定</span>
-        <span class="sr-section-count">2</span>
+        <span class="sr-section-count" id="approvalsCount">2</span>
       </div>
 
-      <div class="approval" onclick="openApproval()">
-        <div class="approval-tag">⭐ AI 建議</div>
-        <div class="approval-action">降 AP-7F-N3 5GHz TX power<br>23 → 17 dBm</div>
-        <div class="approval-meta">
-          <div class="meta-row">影響：12 client</div>
-          <div class="meta-row">回退：自動 rollback</div>
-          <div class="meta-row">⏱ 等待 5 分鐘</div>
+      <div id="approvalsContainer">
+        <div class="approval" onclick="openApproval()">
+          <div class="approval-tag">⭐ AI 建議</div>
+          <div class="approval-action">降 AP-7F-N3 5GHz TX power<br>23 → 17 dBm</div>
+          <div class="approval-meta">
+            <div class="meta-row">影響：12 client</div>
+            <div class="meta-row">回退：自動 rollback</div>
+            <div class="meta-row">⏱ 等待 5 分鐘</div>
+          </div>
+          <div class="approval-cta">
+            <button class="primary" onclick="event.stopPropagation();openApproval()">看詳情</button>
+          </div>
         </div>
-        <div class="approval-cta">
-          <button class="primary" onclick="event.stopPropagation();openApproval()">看詳情</button>
-        </div>
-      </div>
 
-      <div class="approval" onclick="openApproval()">
-        <div class="approval-tag">⭐ AI 建議</div>
-        <div class="approval-action">啟用 IGMP snooping<br>VLAN 30 (Sonos)</div>
-        <div class="approval-meta">
-          <div class="meta-row">影響：~30 device</div>
-          <div class="meta-row">⏱ 等待 18 分鐘</div>
-        </div>
-        <div class="approval-cta">
-          <button class="primary" onclick="event.stopPropagation();openApproval()">看詳情</button>
+        <div class="approval" onclick="openApproval()">
+          <div class="approval-tag">⭐ AI 建議</div>
+          <div class="approval-action">啟用 IGMP snooping<br>VLAN 30 (Sonos)</div>
+          <div class="approval-meta">
+            <div class="meta-row">影響：~30 device</div>
+            <div class="meta-row">⏱ 等待 18 分鐘</div>
+          </div>
+          <div class="approval-cta">
+            <button class="primary" onclick="event.stopPropagation();openApproval()">看詳情</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1241,7 +1290,7 @@
 
   <!-- CHAT BAR (always at bottom) -->
   <div class="chat-bar">
-    <div class="chat-suggestions">
+    <div class="chat-suggestions" id="chatSuggestions">
       <button class="chat-suggestion" onclick="fillChat('AP-7F-N3 怎麼了')">AP-7F-N3 怎麼了</button>
       <button class="chat-suggestion" onclick="fillChat('我想看本週網路狀況')">我想看本週網路狀況</button>
       <button class="chat-suggestion" onclick="fillChat('哪些 AP 太忙')">哪些 AP 太忙</button>
@@ -1545,14 +1594,363 @@ updateClock();
 setInterval(updateClock, 1000);
 
 // ---- Hook up "不重要" buttons ----
-document.querySelectorAll('.anomaly-actions button').forEach(btn => {
-  if (btn.textContent.includes('不重要') || btn.textContent.includes('已讀')) {
-    btn.onclick = (e) => {
-      e.stopPropagation();
-      dismissAnomaly(btn);
-    };
+function hookDismissButtons() {
+  document.querySelectorAll('.anomaly-actions button').forEach(btn => {
+    if (btn.textContent.includes('不重要') || btn.textContent.includes('已讀')) {
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        dismissAnomaly(btn);
+      };
+    }
+  });
+}
+hookDismissButtons();
+
+// ---- Scenarios ----
+const scenarios = {
+  overview: {
+    title: 'HQ Office · Today',
+    sub: '2026-05-08 週四 · 早安 Lin',
+    meta: 'Live · 監測 47 設備',
+    anomalyHead: '⚠ 今日異常',
+    anomalyCount: 3,
+    approvalsCount: 2,
+    anomalies: `
+      <div class="anomaly" onclick="openAnomaly()">
+        <div class="anomaly-head">
+          <div class="anomaly-title"><span class="ico bad">⚠</span> AP-7F-N3 · 會議室</div>
+          <div class="anomaly-time">2 分鐘前</div>
+        </div>
+        <div class="anomaly-desc">3 個 client 訊號低於 −75 dBm 但沒有漫遊</div>
+        <div class="anomaly-cause">可能是 cell 太大（信心 86%）</div>
+        <div class="anomaly-actions">
+          <button class="btn-mini primary" onclick="event.stopPropagation();openAnomaly()">看詳情</button>
+          <button class="btn-mini ghost" onclick="event.stopPropagation()">不重要</button>
+          <button class="btn-mini" onclick="event.stopPropagation();fillChat('AP-7F-N3 怎麼了')">跟 AI 聊</button>
+        </div>
+      </div>
+      <div class="anomaly warn">
+        <div class="anomaly-head">
+          <div class="anomaly-title"><span class="ico warn">⚠</span> SW-1F · port Gi0/12</div>
+          <div class="anomaly-time">14 分鐘前</div>
+        </div>
+        <div class="anomaly-desc">CRC 錯誤上升 — 過去 24h 比平常高 4×</div>
+        <div class="anomaly-cause">可能是線材老化或鬆動（信心 72%）</div>
+        <div class="anomaly-actions">
+          <button class="btn-mini primary" onclick="event.stopPropagation();openAnomaly()">看詳情</button>
+          <button class="btn-mini ghost" onclick="event.stopPropagation()">不重要</button>
+          <button class="btn-mini" onclick="event.stopPropagation();fillChat('Gi0/12 port 狀況')">跟 AI 聊</button>
+        </div>
+      </div>
+      <div class="anomaly info">
+        <div class="anomaly-head">
+          <div class="anomaly-title"><span class="ico" style="color:var(--cyan)">ℹ</span> 5GHz 利用率上升</div>
+          <div class="anomaly-time">1 小時前</div>
+        </div>
+        <div class="anomaly-desc">2F 與 3F 的 5GHz 平均利用率本週上升 12%</div>
+        <div class="anomaly-cause">趨勢觀察 — 暫不需動作</div>
+        <div class="anomaly-actions">
+          <button class="btn-mini primary" onclick="event.stopPropagation();openAnomaly()">看詳情</button>
+          <button class="btn-mini ghost" onclick="event.stopPropagation()">已讀</button>
+        </div>
+      </div>`,
+    approvals: `
+      <div class="approval" onclick="openApproval()">
+        <div class="approval-tag">⭐ AI 建議</div>
+        <div class="approval-action">降 AP-7F-N3 5GHz TX power<br>23 → 17 dBm</div>
+        <div class="approval-meta">
+          <div class="meta-row">影響：12 client</div>
+          <div class="meta-row">回退：自動 rollback</div>
+          <div class="meta-row">⏱ 等待 5 分鐘</div>
+        </div>
+        <div class="approval-cta">
+          <button class="primary" onclick="event.stopPropagation();openApproval()">看詳情</button>
+        </div>
+      </div>
+      <div class="approval" onclick="openApproval()">
+        <div class="approval-tag">⭐ AI 建議</div>
+        <div class="approval-action">啟用 IGMP snooping<br>VLAN 30 (Sonos)</div>
+        <div class="approval-meta">
+          <div class="meta-row">影響：~30 device</div>
+          <div class="meta-row">⏱ 等待 18 分鐘</div>
+        </div>
+        <div class="approval-cta">
+          <button class="primary" onclick="event.stopPropagation();openApproval()">看詳情</button>
+        </div>
+      </div>`,
+    suggestions: `
+      <button class="chat-suggestion" onclick="fillChat('AP-7F-N3 怎麼了')">AP-7F-N3 怎麼了</button>
+      <button class="chat-suggestion" onclick="fillChat('我想看本週網路狀況')">我想看本週網路狀況</button>
+      <button class="chat-suggestion" onclick="fillChat('哪些 AP 太忙')">哪些 AP 太忙</button>
+      <button class="chat-suggestion" onclick="fillChat('幫我做月報 dashboard')">幫我做月報</button>
+      <button class="chat-suggestion" onclick="fillChat('客戶數異常的 site')">客戶數異常的 site</button>
+      <button class="chat-suggestion" onclick="fillChat('Sonos 為什麼找不到')">Sonos 為什麼找不到</button>`
+  },
+
+  sticky: {
+    title: 'Sticky Client 深度診斷 · AP-7F-N3',
+    sub: 'narrate_anomalies 自動偵測 · playbook: sticky_client · 信心 86%',
+    meta: 'Diagnosing · 3 client 受影響',
+    anomalyHead: '⚠ 偵測根因',
+    anomalyCount: 3,
+    approvalsCount: 2,
+    anomalies: `
+      <div class="anomaly" onclick="openAnomaly()">
+        <div class="anomaly-head">
+          <div class="anomaly-title"><span class="ico bad">⚠</span> AP-7F-N3 · 會議室 · 主因</div>
+          <div class="anomaly-time">2 分鐘前</div>
+        </div>
+        <div class="anomaly-desc">3 個 client 訊號 <code>−78 / −81 / −76 dBm</code> 但沒漫遊到鄰近 AP-7F-N4 (−62 dBm available)</div>
+        <div class="anomaly-cause">cell 過大 + min RSSI threshold 沒設 — sticky client 經典徵狀（信心 86%）</div>
+        <div class="anomaly-actions">
+          <button class="btn-mini primary" onclick="event.stopPropagation();openAnomaly()">看完整證據鏈</button>
+          <button class="btn-mini" onclick="event.stopPropagation();fillChat('影響範圍多大')">影響範圍？</button>
+          <button class="btn-mini" onclick="event.stopPropagation();fillChat('過去 30 天 sticky client 趨勢')">看歷史趨勢</button>
+        </div>
+      </div>
+      <div class="anomaly warn">
+        <div class="anomaly-head">
+          <div class="anomaly-title"><span class="ico warn">📡</span> AP-7F-N4 · 鄰居</div>
+          <div class="anomaly-time">關聯設備</div>
+        </div>
+        <div class="anomaly-desc">7F 北側次強 AP · 訊號可達 −62 dBm · 目前負載 18 client (中)</div>
+        <div class="anomaly-cause">理想漫遊目標 — 但 client 沒主動切過去</div>
+        <div class="anomaly-actions">
+          <button class="btn-mini" onclick="event.stopPropagation();fillChat('為什麼 client 不漫遊')">為何不漫遊？</button>
+        </div>
+      </div>
+      <div class="anomaly info">
+        <div class="anomaly-head">
+          <div class="anomaly-title"><span class="ico" style="color:var(--cyan)">📋</span> Playbook 推薦</div>
+          <div class="anomaly-time">sticky_client.yaml</div>
+        </div>
+        <div class="anomaly-desc">標準解法：降 TX power 強迫漫遊 → 觀察 5 分鐘 → 沒效則 kick client</div>
+        <div class="anomaly-cause">過去 14 天此 playbook 在類似情境成功率 91% (32/35 case)</div>
+        <div class="anomaly-actions">
+          <button class="btn-mini primary" onclick="event.stopPropagation();openApproval()">看修復建議</button>
+          <button class="btn-mini" onclick="event.stopPropagation();fillChat('給我看 playbook 細節')">看 playbook</button>
+        </div>
+      </div>`,
+    approvals: `
+      <div class="approval" onclick="openApproval()">
+        <div class="approval-tag">⭐ AI 建議 · 主修復</div>
+        <div class="approval-action">降 AP-7F-N3 5GHz TX power<br>23 → 17 dBm</div>
+        <div class="approval-meta">
+          <div class="meta-row">影響：12 client</div>
+          <div class="meta-row">驗證：5 分鐘觀察 sticky 是否消失</div>
+          <div class="meta-row">回退：沒效自動 rollback + 升級</div>
+          <div class="meta-row">⏱ 等待 5 分鐘</div>
+        </div>
+        <div class="approval-cta">
+          <button class="primary" onclick="event.stopPropagation();openApproval()">看詳情</button>
+        </div>
+      </div>
+      <div class="approval" onclick="openApproval()">
+        <div class="approval-tag">⭐ AI 建議 · 備案</div>
+        <div class="approval-action">主動 kick 3 個 sticky client<br>強制重連</div>
+        <div class="approval-meta">
+          <div class="meta-row">Ring 1 · 可逆</div>
+          <div class="meta-row">影響：3 device 短暫斷線（&lt;2s）</div>
+          <div class="meta-row">前提：主修復沒效時才執行</div>
+        </div>
+        <div class="approval-cta">
+          <button class="primary" onclick="event.stopPropagation();openApproval()">看詳情</button>
+        </div>
+      </div>`,
+    suggestions: `
+      <button class="chat-suggestion" onclick="fillChat('為什麼會 sticky')">為什麼 sticky？</button>
+      <button class="chat-suggestion" onclick="fillChat('影響範圍多大')">影響範圍多大</button>
+      <button class="chat-suggestion" onclick="fillChat('給我看 playbook 細節')">看 playbook 細節</button>
+      <button class="chat-suggestion" onclick="fillChat('這個建議有什麼風險')">建議風險？</button>
+      <button class="chat-suggestion" onclick="fillChat('過去 30 天 sticky client 趨勢')">看歷史趨勢</button>
+      <button class="chat-suggestion" onclick="fillChat('這個 site 還有別的 sticky AP 嗎')">其他 sticky AP？</button>`
+  },
+
+  offline: {
+    title: '設備掉線 · SW-3F-Core',
+    sub: '4 分鐘前掉線 · 6 AP 失聯 · 18 client 受影響 · 自動診斷中',
+    meta: 'Recovering · 自動 ping + 派工',
+    anomalyHead: '🔌 掉線連鎖',
+    anomalyCount: 4,
+    approvalsCount: 2,
+    anomalies: `
+      <div class="anomaly" onclick="openAnomaly()">
+        <div class="anomaly-head">
+          <div class="anomaly-title"><span class="ico bad">⛔</span> SW-3F-Core · 主設備</div>
+          <div class="anomaly-time">4 分鐘前</div>
+        </div>
+        <div class="anomaly-desc">last seen 09:41 · ICMP / SNMP / SSH 全失敗 · uplink 燈號從遠端不可查</div>
+        <div class="anomaly-cause">可能斷電、上聯故障或硬體死機（信心 79% · 過去 60s 自動 ping 已試 3 次）</div>
+        <div class="anomaly-actions">
+          <button class="btn-mini primary" onclick="event.stopPropagation();openAnomaly()">看完整事件鏈</button>
+          <button class="btn-mini" onclick="event.stopPropagation();fillChat('上次掉線是什麼時候')">看歷史</button>
+          <button class="btn-mini" onclick="event.stopPropagation();fillChat('還有什麼受影響')">影響面？</button>
+        </div>
+      </div>
+      <div class="anomaly warn">
+        <div class="anomaly-head">
+          <div class="anomaly-title"><span class="ico warn">📡</span> 6 AP 失聯（連鎖）</div>
+          <div class="anomaly-time">3 分鐘前起</div>
+        </div>
+        <div class="anomaly-desc">AP-3F-N1 / N2 / N3 / S1 / S2 / S3 都掛在 SW-3F-Core 下</div>
+        <div class="anomaly-cause">確認是 switch 掉線造成的 cascade，非 AP 個別故障</div>
+        <div class="anomaly-actions">
+          <button class="btn-mini" onclick="event.stopPropagation();fillChat('cascade 範圍確認')">確認 cascade</button>
+          <button class="btn-mini" onclick="event.stopPropagation();fillChat('哪些員工會受影響')">使用者影響？</button>
+        </div>
+      </div>
+      <div class="anomaly warn">
+        <div class="anomaly-head">
+          <div class="anomaly-title"><span class="ico warn">👥</span> 18 client 失連</div>
+          <div class="anomaly-time">3 分鐘前起</div>
+        </div>
+        <div class="anomaly-desc">3F 區域，含 4 個 VIP（CTO 辦公室在 3F）</div>
+        <div class="anomaly-cause">建議：通知 3F 員工 + 提供臨時熱點建議</div>
+        <div class="anomaly-actions">
+          <button class="btn-mini primary" onclick="event.stopPropagation();openApproval()">送公告</button>
+          <button class="btn-mini" onclick="event.stopPropagation();fillChat('看受影響員工名單')">看名單</button>
+        </div>
+      </div>
+      <div class="anomaly info">
+        <div class="anomaly-head">
+          <div class="anomaly-title"><span class="ico" style="color:var(--cyan)">📋</span> Playbook: device_offline</div>
+          <div class="anomaly-time">已執行步驟 1-2</div>
+        </div>
+        <div class="anomaly-desc">Step 1 ✓ ping 上聯路由器（成功 → uplink 沒問題）<br>Step 2 ✓ 試 PoE port 重啟（switch 自己沒回應，無法執行）</div>
+        <div class="anomaly-cause">Step 3 候選：開遠端 OOB（如有設）／派工到場</div>
+        <div class="anomaly-actions">
+          <button class="btn-mini primary" onclick="event.stopPropagation();openApproval()">看 Step 3 建議</button>
+        </div>
+      </div>`,
+    approvals: `
+      <div class="approval" onclick="openApproval()">
+        <div class="approval-tag">⭐ AI 建議 · 派工</div>
+        <div class="approval-action">派工單給 IT 現場<br>3F 機櫃 · SW-3F-Core 檢查</div>
+        <div class="approval-meta">
+          <div class="meta-row">建議帶：替換電源、console 線</div>
+          <div class="meta-row">優先級：P1（影響 VIP 區）</div>
+          <div class="meta-row">⏱ 等待 4 分鐘</div>
+        </div>
+        <div class="approval-cta">
+          <button class="primary" onclick="event.stopPropagation();openApproval()">看詳情</button>
+        </div>
+      </div>
+      <div class="approval" onclick="openApproval()">
+        <div class="approval-tag">⭐ AI 建議 · 通知</div>
+        <div class="approval-action">送公告給 3F 員工<br>含臨時 4G 熱點 SSID</div>
+        <div class="approval-meta">
+          <div class="meta-row">影響：18 受影響 + 3F 全員</div>
+          <div class="meta-row">通道：Slack #3f-floor + Email</div>
+          <div class="meta-row">回退：可手動撤回</div>
+        </div>
+        <div class="approval-cta">
+          <button class="primary" onclick="event.stopPropagation();openApproval()">看內容預覽</button>
+        </div>
+      </div>`,
+    suggestions: `
+      <button class="chat-suggestion" onclick="fillChat('還有什麼受影響')">還有什麼受影響</button>
+      <button class="chat-suggestion" onclick="fillChat('上次掉線是什麼時候')">上次掉線何時？</button>
+      <button class="chat-suggestion" onclick="fillChat('看受影響員工名單')">受影響員工</button>
+      <button class="chat-suggestion" onclick="fillChat('臨時備援方案')">臨時備援？</button>
+      <button class="chat-suggestion" onclick="fillChat('SW-3F-Core 過去三個月健康')">設備歷史健康</button>
+      <button class="chat-suggestion" onclick="fillChat('自動派工流程')">自動派工流程</button>`
+  },
+
+  sonos: {
+    title: '升級案 · Marketing SONOS 連不上',
+    sub: '案號 #1247 · 由員工自助升級 · 影響 ~30 device · playbook: sonos_lan_discovery',
+    meta: 'Mode A → Mode B · 自動升級',
+    anomalyHead: '🎵 跨 VLAN 多播診斷',
+    anomalyCount: 3,
+    approvalsCount: 2,
+    anomalies: `
+      <div class="anomaly" onclick="openAnomaly()">
+        <div class="anomaly-head">
+          <div class="anomaly-title"><span class="ico bad">⚠</span> SONOS 跨 VLAN discovery 失敗</div>
+          <div class="anomaly-time">22 分鐘前</div>
+        </div>
+        <div class="anomaly-desc">Marketing VLAN 30 上的 SONOS Controller (iPhone) 看不到 Conference VLAN 40 上的 SONOS speakers</div>
+        <div class="anomaly-cause">mDNS / SSDP 多播沒有跨 VLAN forward · IGMP snooping 也未啟用（信心 91%）</div>
+        <div class="anomaly-actions">
+          <button class="btn-mini primary" onclick="event.stopPropagation();openAnomaly()">看封包證據</button>
+          <button class="btn-mini" onclick="event.stopPropagation();fillChat('看員工原始訊息')">看員工原始訊息</button>
+          <button class="btn-mini" onclick="event.stopPropagation();fillChat('哪些 device 受影響')">受影響清單</button>
+        </div>
+      </div>
+      <div class="anomaly warn">
+        <div class="anomaly-head">
+          <div class="anomaly-title"><span class="ico warn">👤</span> 員工自助診斷紀錄</div>
+          <div class="anomaly-time">38 分鐘前</div>
+        </div>
+        <div class="anomaly-desc">"Sandy（Marketing）" 試了重連 Wi-Fi、重啟 app、重啟 SONOS — 都沒效</div>
+        <div class="anomaly-cause">Mode A AI 確認非客戶端問題 → 自動升級給 Mode B</div>
+        <div class="anomaly-actions">
+          <button class="btn-mini" onclick="event.stopPropagation();fillChat('看 Mode A 完整對話')">看對話</button>
+        </div>
+      </div>
+      <div class="anomaly info">
+        <div class="anomaly-head">
+          <div class="anomaly-title"><span class="ico" style="color:var(--cyan)">📋</span> Playbook: sonos_lan_discovery</div>
+          <div class="anomaly-time">準備執行</div>
+        </div>
+        <div class="anomaly-desc">標準解法：啟用 IGMP snooping VLAN 30/40 + 設定 mDNS reflector 跨 VLAN</div>
+        <div class="anomaly-cause">需要您核准 — 影響範圍 ~30 device，但純加設不破壞現有流量</div>
+        <div class="anomaly-actions">
+          <button class="btn-mini primary" onclick="event.stopPropagation();openApproval()">看修復建議</button>
+          <button class="btn-mini" onclick="event.stopPropagation();fillChat('IGMP 啟用會影響什麼')">IGMP 風險？</button>
+        </div>
+      </div>`,
+    approvals: `
+      <div class="approval" onclick="openApproval()">
+        <div class="approval-tag">⭐ AI 建議 · 主修復</div>
+        <div class="approval-action">啟用 IGMP snooping<br>VLAN 30 + VLAN 40</div>
+        <div class="approval-meta">
+          <div class="meta-row">影響：~30 device（Marketing + Conference）</div>
+          <div class="meta-row">驗證：執行後跑 mDNS probe 確認</div>
+          <div class="meta-row">回退：自動 rollback（30 秒視窗）</div>
+          <div class="meta-row">⏱ 等待 18 分鐘</div>
+        </div>
+        <div class="approval-cta">
+          <button class="primary" onclick="event.stopPropagation();openApproval()">看詳情</button>
+        </div>
+      </div>
+      <div class="approval" onclick="openApproval()">
+        <div class="approval-tag">⭐ AI 建議 · 補強</div>
+        <div class="approval-action">設定 mDNS reflector<br>VLAN 30 ↔ VLAN 40</div>
+        <div class="approval-meta">
+          <div class="meta-row">前提：主修復後仍無法 discovery 才執行</div>
+          <div class="meta-row">影響：跨 VLAN 多播流量小幅增加</div>
+        </div>
+        <div class="approval-cta">
+          <button class="primary" onclick="event.stopPropagation();openApproval()">看詳情</button>
+        </div>
+      </div>`,
+    suggestions: `
+      <button class="chat-suggestion" onclick="fillChat('看員工原始訊息')">看員工原始訊息</button>
+      <button class="chat-suggestion" onclick="fillChat('為什麼跨 VLAN')">為什麼跨 VLAN？</button>
+      <button class="chat-suggestion" onclick="fillChat('IGMP 啟用會影響什麼')">IGMP 風險</button>
+      <button class="chat-suggestion" onclick="fillChat('哪些 device 受影響')">受影響 device</button>
+      <button class="chat-suggestion" onclick="fillChat('給我看 playbook 細節')">看 playbook</button>
+      <button class="chat-suggestion" onclick="fillChat('過去類似案件')">過去類似案件</button>`
   }
-});
+};
+
+function setScenario(key) {
+  const s = scenarios[key];
+  if (!s) return;
+  document.getElementById('contentTitle').textContent = s.title;
+  document.getElementById('contentSub').textContent = s.sub;
+  document.getElementById('contentMeta').textContent = s.meta;
+  document.getElementById('anomalyHead').innerHTML = `${s.anomalyHead} <span class="count-pill" id="anomalyCount">${s.anomalyCount}</span>`;
+  document.getElementById('anomalyGrid').innerHTML = s.anomalies;
+  document.getElementById('approvalsCount').textContent = s.approvalsCount;
+  document.getElementById('approvalsContainer').innerHTML = s.approvals;
+  document.getElementById('chatSuggestions').innerHTML = s.suggestions;
+  document.querySelectorAll('.scenario-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.scenario === key);
+  });
+  hookDismissButtons();
+}
 
 // Keyboard
 document.addEventListener('keydown', e => {

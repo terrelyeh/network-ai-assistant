@@ -147,26 +147,26 @@
   /* Welcome state */
   .welcome {
     text-align: center;
-    padding: 30px 12px;
+    padding: 12px 12px 8px;
   }
   .welcome-icon {
-    font-size: 48px;
-    margin-bottom: 14px;
+    font-size: 32px;
+    margin-bottom: 4px;
   }
   .welcome h2 {
-    font-size: 22px;
+    font-size: 18px;
     font-weight: 800;
     letter-spacing: -0.02em;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
   }
   .welcome p {
     color: var(--muted);
-    font-size: 14px;
+    font-size: 12.5px;
     line-height: 1.5;
-    margin-bottom: 22px;
+    margin-bottom: 10px;
   }
   .welcome-suggestions {
-    display: flex; flex-direction: column; gap: 8px;
+    display: flex; flex-direction: column; gap: 6px;
     text-align: left;
   }
   .welcome-suggestions .label {
@@ -182,10 +182,10 @@
     background: var(--surface);
     border: 1px solid var(--border);
     color: var(--text);
-    padding: 12px 16px;
+    padding: 9px 14px;
     border-radius: 10px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 13.5px;
     text-align: left;
     transition: all 0.2s;
     font-family: inherit;
@@ -500,6 +500,12 @@
           <button class="suggestion-btn" onclick="startScenario('video_lag')">
             <span class="ico">📹</span><span>視訊會議卡頓 / 斷線</span>
           </button>
+          <button class="suggestion-btn" onclick="startScenario('sonos')">
+            <span class="ico">🎵</span><span>SONOS / AirPlay 找不到</span>
+          </button>
+          <button class="suggestion-btn" onclick="startScenario('vpn')">
+            <span class="ico">🔒</span><span>VPN 連不上公司資源</span>
+          </button>
           <button class="suggestion-btn" onclick="startScenario('other')">
             <span class="ico">💬</span><span>其他問題 (用講的)</span>
           </button>
@@ -680,10 +686,83 @@ function startScenario(scenario) {
         handleLocation('會議室');
       }, 1200);
     }, 400);
+  } else if (scenario === 'sonos') {
+    addMsg('我的 SONOS 找不到', 'user');
+    setTimeout(() => {
+      addTyping();
+      setTimeout(() => {
+        removeTyping();
+        addMsg('SONOS / AirPlay 這類設備需要靠多播（mDNS）才能發現。我幫您先排除常見的客戶端問題。');
+        addMsg('您先試這 3 步：<br>1. 把 SONOS App 關掉重開<br>2. 確認手機跟 SONOS 連到 <strong>同一個 Wi-Fi</strong><br>3. 重新連一次公司 Wi-Fi', 'ai', true);
+        addInlineSuggestions(['全部試過了還是不行', '我再試試'], (r) => {
+          addMsg(r, 'user');
+          if (r.includes('試過')) handleSonosEscalate();
+          else handleResolved();
+        });
+      }, 1500);
+    }, 400);
+  } else if (scenario === 'vpn') {
+    addMsg('VPN 連不上', 'user');
+    setTimeout(() => {
+      addTyping();
+      setTimeout(() => {
+        removeTyping();
+        addMsg('好的，VPN 問題我幫您依序確認。先問您 — VPN client 顯示什麼？');
+        addInlineSuggestions(['一直轉圈', '帳密錯誤', '可以連但內網開不了', '其他錯誤'], (r) => {
+          addMsg(r, 'user');
+          handleVpn(r);
+        });
+      }, 1500);
+    }, 400);
   } else {
     setQuickReplies(['Wi-Fi 慢', '連不上', '印表機問題', '其他']);
     addMsg('好的，請用您自己的話告訴我發生什麼事 — 我會盡量幫您。', 'ai');
   }
+}
+
+function handleSonosEscalate() {
+  addTyping();
+  setTimeout(() => {
+    removeTyping();
+    addMsg('了解！我這邊查到的線索是：<br>• 您的手機在 <code>VLAN 30 (Marketing)</code><br>• SONOS speakers 在 <code>VLAN 40 (Conference)</code><br>• 跨 VLAN 多播（mDNS / IGMP）沒有打開', 'ai', true);
+    addMsg('這個我自己改不了 — 需要 <strong style="color:var(--accent);">IT 在 switch 上開設定</strong>。我幫您直接送過去，附上完整證據鏈。', 'ai', true);
+    addActionCard(
+      '⬆ 升級給 IT (Mode B)',
+      'SONOS 跨 VLAN discovery 失敗',
+      '已自動帶上：手機 VLAN、SONOS 位置、嘗試過的步驟、建議 playbook（sonos_lan_discovery）。IT 那邊看到就能直接核准修復。',
+      [
+        { label: '✗ 先不要', action: 'cancel', primary: false },
+        { label: '⬆ 升級給 IT', action: 'sonos_escalate', primary: true },
+      ]
+    );
+  }, 1800);
+}
+
+function handleVpn(reason) {
+  addTyping();
+  setTimeout(() => {
+    removeTyping();
+    if (reason.includes('帳密')) {
+      addMsg('帳密問題我幫不上忙 — 您可能需要重設密碼或聯絡 IT 解鎖。');
+      handleEscalateNow('VPN 帳密錯誤，需 IT 協助重設或解鎖');
+    } else if (reason.includes('內網')) {
+      addMsg('VPN 連上但內網不通，這通常是 split-tunnel 或路由設定 — 不是您能改的。我直接送 IT。');
+      handleEscalateNow('VPN 已連線但無法存取內網資源');
+    } else if (reason.includes('轉圈')) {
+      addMsg('一直轉圈通常是公司端 VPN gateway 或您的網路堵塞。先請您：');
+      addMsg('1. 切換到手機熱點再試一次<br>2. 看是不是 <code>vpn.company.com</code> ping 不到', 'ai', true);
+      addInlineSuggestions(['熱點也不行', '熱點可以耶'], (r) => {
+        addMsg(r, 'user');
+        if (r.includes('熱點也不行')) handleEscalateNow('VPN 連線一直 timeout，手機熱點也無法');
+        else {
+          addMsg('那是公司網路出口或防火牆的問題 — 我幫您升級給 IT。');
+          handleEscalateNow('VPN 在公司網路無法連線，但熱點可以');
+        }
+      });
+    } else {
+      handleEscalateNow('VPN 連線異常，需 IT 協助');
+    }
+  }, 1500);
 }
 
 function handleLocation(loc) {
@@ -774,10 +853,26 @@ function handlePrinter(scenario) {
 function handleAction(action) {
   if (action === 'escalate') handleEscalateNow();
   else if (action === 'resolved') handleResolved();
+  else if (action === 'sonos_escalate') handleSonosTicket();
   else if (action === 'cancel') {
     addMsg('沒問題，您方便時隨時再來找我 👋', 'ai');
     setQuickReplies(['新問題', '謝謝']);
   }
+}
+
+function handleSonosTicket() {
+  addTyping();
+  setTimeout(() => {
+    removeTyping();
+    addMsg('已送過去！我把證據鏈、playbook 建議、影響範圍都附上了。');
+    setTimeout(() => {
+      addTicketConfirm();
+      setTimeout(() => {
+        addMsg('IT 那邊已經看到您這個案子（在 <a href="cockpit-mockup.html" style="color:var(--cyan);">Cockpit · SONOS 升級案</a> 這個情境裡）— 修好我會通知您 😊', 'ai', true);
+        setQuickReplies(['新問題', '看 ticket 進度']);
+      }, 600);
+    }, 1500);
+  }, 800);
 }
 
 function handleEscalateNow(context) {
