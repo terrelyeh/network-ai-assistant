@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Builder 前端實作準備指南</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-1: #0a1628;
+    --bg-2: #0f1e3a;
+    --surface: rgba(255,255,255,0.04);
+    --surface-2: rgba(255,255,255,0.08);
+    --border: rgba(255,255,255,0.12);
+    --border-strong: rgba(255,255,255,0.22);
+    --text: #f8fafc;
+    --muted: #cbd5e1;
+    --dim: #64748b;
+    --accent: #ff6b35;
+    --cyan: #00d9c5;
+    --good: #10b981;
+    --warn: #fbbf24;
+    --bad: #ef4444;
+    --code-bg: #0a1f3a;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%);
+    color: var(--text);
+    font-family: 'Inter', 'Noto Sans TC', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding: 0;
+    line-height: 1.65;
+  }
+  .container { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
+  a { color: var(--cyan); }
+
+  /* TOP NAV */
+  header.topnav {
+    padding: 18px 32px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(10,22,40,0.85);
+    backdrop-filter: blur(8px);
+    position: sticky; top: 0; z-index: 50;
+  }
+  .topnav-inner { max-width: 1280px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .brand { font-size: 14px; font-weight: 700; letter-spacing: -0.01em; }
+  .brand .accent { color: var(--accent); }
+  .nav-links { display: flex; gap: 8px; flex-wrap: wrap; }
+  .nav-link {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 12.5px;
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    transition: all 0.15s;
+  }
+  .nav-link:hover { background: var(--surface); color: var(--text); }
+
+  /* HERO */
+  .hero {
+    padding: 64px 0 40px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+  .hero .tag {
+    color: var(--cyan);
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .hero h1 {
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+  .hero h1 .accent { color: var(--accent); }
+  .hero .lead {
+    color: var(--muted);
+    font-size: 17px;
+    max-width: 800px;
+  }
+  .hero .meta {
+    display: flex; gap: 16px; flex-wrap: wrap;
+    margin-top: 22px;
+    font-size: 13px; color: var(--dim);
+  }
+  .hero .meta strong { color: var(--text); }
+
+  /* LAYOUT */
+  .layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 56px;
+    padding-bottom: 80px;
+  }
+  @media (max-width: 960px) { .layout { grid-template-columns: 1fr; } }
+
+  /* TOC */
+  .toc {
+    position: sticky;
+    top: 90px;
+    align-self: start;
+    border-left: 1px solid var(--border);
+    padding-left: 18px;
+  }
+  .toc-title {
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .toc ol {
+    list-style: none;
+    counter-reset: tocnum;
+  }
+  .toc ol li {
+    counter-increment: tocnum;
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+  .toc ol li a {
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.15s;
+    display: block;
+    line-height: 1.4;
+  }
+  .toc ol li a::before {
+    content: counter(tocnum) ". ";
+    color: var(--dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    margin-right: 4px;
+  }
+  .toc ol li a:hover { color: var(--cyan); }
+  @media (max-width: 960px) {
+    .toc { position: static; border-left: none; padding-left: 0; padding-top: 0; padding-bottom: 24px; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
+  }
+
+  /* CONTENT */
+  .content section { margin-bottom: 56px; }
+  .content section:last-child { margin-bottom: 0; }
+  .content h2 {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .content h2 .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .content h3 {
+    font-size: 17px;
+    font-weight: 700;
+    margin: 28px 0 12px;
+    color: var(--text);
+  }
+  .content h4 {
+    font-size: 14px;
+    font-weight: 700;
+    margin: 20px 0 8px;
+    color: var(--cyan);
+    letter-spacing: 0.02em;
+  }
+  .content p { margin-bottom: 14px; color: var(--muted); }
+  .content p strong { color: var(--text); font-weight: 700; }
+  .content ul, .content ol { margin: 12px 0 14px 24px; }
+  .content li { margin-bottom: 6px; color: var(--muted); }
+  .content li strong { color: var(--text); }
+
+  /* CODE */
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    margin: 14px 0 18px;
+    color: #c9d6e8;
+  }
+  pre .kw { color: #a78bfa; }
+  pre .str { color: #6ee7b7; }
+  pre .com { color: var(--dim); font-style: italic; }
+  pre .fn { color: var(--cyan); }
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--cyan);
+  }
+
+  /* TABLE */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0 20px;
+    font-size: 13.5px;
+  }
+  th, td {
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  th {
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    background: var(--surface);
+  }
+  td { color: var(--muted); }
+  td strong { color: var(--text); }
+
+  /* CALLOUTS */
+  .callout {
+    background: var(--surface);
+    border-left: 3px solid var(--cyan);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin: 16px 0;
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .callout.warn { border-left-color: var(--warn); }
+  .callout.bad { border-left-color: var(--bad); }
+  .callout.good { border-left-color: var(--good); }
+  .callout strong { color: var(--text); }
+
+  .pitfall {
+    background: rgba(239,68,68,0.06);
+    border: 1px solid rgba(239,68,68,0.25);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 10px 0;
+    font-size: 13.5px;
+    color: var(--muted);
+    display: flex; gap: 10px;
+  }
+  .pitfall::before { content: '❌'; font-size: 16px; flex-shrink: 0; }
+  .pitfall strong { color: #fca5a5; }
+
+  .good-box {
+    background: rgba(16,185,129,0.06);
+    border: 1px solid rgba(16,185,129,0.25);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 10px 0;
+    font-size: 13.5px;
+    color: var(--muted);
+    display: flex; gap: 10px;
+  }
+  .good-box::before { content: '✅'; font-size: 16px; flex-shrink: 0; }
+  .good-box strong { color: #86efac; }
+
+  /* CHECKLIST */
+  .checklist { list-style: none; margin-left: 0; padding-left: 0; }
+  .checklist li {
+    padding: 6px 0 6px 28px;
+    position: relative;
+    font-size: 14px;
+  }
+  .checklist li::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 11px;
+    width: 14px; height: 14px;
+    border: 1.5px solid var(--border-strong);
+    border-radius: 3px;
+    background: var(--surface);
+  }
+
+  /* TLDR BOX */
+  .tldr {
+    background: linear-gradient(135deg, rgba(255,107,53,0.08), rgba(0,217,197,0.05));
+    border: 1px solid rgba(255,107,53,0.25);
+    border-radius: 12px;
+    padding: 22px 26px;
+    margin-bottom: 32px;
+  }
+  .tldr-label {
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .tldr ol { margin: 8px 0 0 22px; }
+  .tldr ol li { color: var(--muted); margin-bottom: 6px; }
+  .tldr ol li strong { color: var(--text); }
+
+  /* DIAGRAM */
+  .ascii-diagram {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--muted);
+    overflow-x: auto;
+    margin: 14px 0 20px;
+    white-space: pre;
+  }
+
+  /* RELATED */
+  .related {
+    margin-top: 56px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  @media (max-width: 700px) { .related { grid-template-columns: 1fr; } }
+  .related a {
+    display: block;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s;
+  }
+  .related a:hover {
+    background: var(--surface-2);
+    border-color: var(--cyan);
+    transform: translateY(-2px);
+  }
+  .related .r-label {
+    font-size: 10px;
+    color: var(--cyan);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .related .r-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 4px 0 4px;
+  }
+  .related .r-desc {
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<header class="topnav">
+  <div class="topnav-inner">
+    <div class="brand">Network <span class="accent">AI-Assistant</span> · 工程文件</div>
+    <div class="nav-links">
+      <a class="nav-link" href="index.html">🏠 主入口</a>
+      <a class="nav-link" href="home-product.html">🎯 產品入口</a>
+      <a class="nav-link" href="home-engineering.html">🛠 工程入口</a>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+<section class="hero">
+  <div class="tag">INTERNAL ENGINEERING DOC</div>
+  <h1>Dashboard Builder<br><span class="accent">前端實作準備指南</span></h1>
+  <p class="lead">
+    在動手 coding 之前，內部對齊「該怎麼準備、誰先做、做到什麼程度」。
+    Schema 先於 UI library，design / RD / prompt eng 三條線並行。
+  </p>
+  <div class="meta">
+    <span><strong>給誰看：</strong>PM、RD lead、Design lead、Prompt Engineer</span>
+    <span>·</span>
+    <span><strong>前置閱讀：</strong><a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/docs/widget-catalog.md">widget-catalog.md</a></span>
+    <span>·</span>
+    <span>2026-05-06</span>
+  </div>
+</section>
+
+<div class="layout">
+
+<!-- TOC -->
+<aside class="toc">
+  <div class="toc-title">本頁目錄</div>
+  <ol>
+    <li><a href="#tldr">TL;DR</a></li>
+    <li><a href="#s1">為什麼不先寫 Design Guideline</a></li>
+    <li><a href="#s2">什麼是 Widget Catalog</a></li>
+    <li><a href="#s3">Catalog 的實際存在形式</a></li>
+    <li><a href="#s4">Zod 是什麼</a></li>
+    <li><a href="#s5">怎麼開始做（順序很重要）</a></li>
+    <li><a href="#s6">角色分工 / 並行進度</a></li>
+    <li><a href="#s7">RD 實作 Checklist</a></li>
+    <li><a href="#s8">Prompt Eng Checklist</a></li>
+    <li><a href="#s9">Common Pitfalls</a></li>
+    <li><a href="#s10">第一週交付物</a></li>
+    <li><a href="#s11">Open Questions</a></li>
+  </ol>
+</aside>
+
+<!-- CONTENT -->
+<main class="content">
+
+<!-- TL;DR -->
+<section id="tldr" class="tldr">
+  <div class="tldr-label">TL;DR</div>
+  <ol>
+    <li><strong>不要先寫 Design Guideline</strong> — EnGenius Cloud 已有設計語言，重寫只會打架</li>
+    <li><strong>先做 Widget Catalog</strong>（Source of truth：Zod schema），這是 LLM ↔ 前端 ↔ Design 三方對齊的契約</li>
+    <li><strong>Schema 先於 UI library</strong> — schema 反映 LLM 自然吐什麼，不被 library 綁架</li>
+    <li><strong>第一版只做 P0 4 個 widget</strong> 跑通 end-to-end（KPI / Time Series / Bar / Table），通了再擴</li>
+  </ol>
+</section>
+
+<!-- 1 -->
+<section id="s1">
+  <h2><span class="num">01</span>為什麼不先寫 Design Guideline</h2>
+
+  <h3>結論</h3>
+  <ul>
+    <li>你們<strong>已經有 EnGenius Cloud GUI</strong> = 已經有 design system，只是沒寫成文件</li>
+    <li>重寫一份 Design Guideline = 至少 3 週，做完還會跟既有 GUI 不一致</li>
+    <li>Wedge product 6-8 週要見驗證結果，等不了 design system 文件成型</li>
+  </ul>
+
+  <h3>替代做法（半天搞定）</h3>
+  <p>從既有 EnGenius Cloud dashboard 直接抓 design tokens：主色（accent color）、字體 / 字級階層、card padding / border-radius、chart 配色、spacing scale。整理成一份 <code>design-tokens.md</code> 或 Figma frame，<strong>RD render widget 時直接 reuse 既有 css variables / tailwind tokens</strong>，不會跟既有產品違和。</p>
+
+  <div class="callout warn">
+    這份 design tokens <strong>不是 design guideline</strong> — 它是「對齊既有」的快照，不是另寫一套規則。
+  </div>
+</section>
+
+<!-- 2 -->
+<section id="s2">
+  <h2><span class="num">02</span>什麼是 Widget Catalog</h2>
+
+  <h3>一句話</h3>
+  <p><strong>LLM 跟前端之間的「元件菜單」+ 契約</strong> — 預先定義 6-8 種 widget「樂高積木」，AI 只能從中挑、再組合。</p>
+
+  <h3>為什麼需要</h3>
+  <table>
+    <thead>
+      <tr><th>沒有 catalog</th><th>有 catalog</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>LLM 會 hallucinate 出前端做不出來的 chart</td><td>LLM 只能挑 8 個已知 widget</td></tr>
+      <tr><td>前端要處理 unexpected schema</td><td>前端只實作 8 個 component，輸入永遠對齊</td></tr>
+      <tr><td>Design 跟不上 AI 的天馬行空</td><td>Design 只畫 8 種，AI 組出來都符合視覺語言</td></tr>
+      <tr><td>Demo 給客戶時邊界模糊</td><td>「我們能做什麼」一目了然</td></tr>
+    </tbody>
+  </table>
+
+  <h3>工作流程示意</h3>
+  <div class="ascii-diagram">使用者：「我想看這週網路有沒有什麼異常」
+                ↓
+LLM 看 catalog → 決定組合：
+                ├─ KPI Card × 3      (客戶數 / anomaly 總數 / 健康分數)
+                ├─ Time Series × 1   (anomaly 趨勢)
+                ├─ Table × 1         (Top 5 問題設備)
+                └─ Site Map × 1      (各 site 健康分布)
+                ↓
+前端拿到 widget JSON → 渲染</div>
+
+  <h3>業界對應名詞</h3>
+  <p>「Widget Catalog」<strong>不是嚴格的業界專有名詞</strong>，但這個概念業界用得很普遍：</p>
+  <table>
+    <thead><tr><th>來源</th><th>同類叫法</th></tr></thead>
+    <tbody>
+      <tr><td>Anthropic / OpenAI</td><td><strong>Tool definitions</strong></td></tr>
+      <tr><td>Notion</td><td>Block types</td></tr>
+      <tr><td>Slack</td><td><strong>Block Kit</strong></td></tr>
+      <tr><td>Grafana</td><td>Panel types</td></tr>
+      <tr><td>Tableau / Looker</td><td>Visualizations</td></tr>
+      <tr><td>Streamlit</td><td>Components</td></tr>
+      <tr><td>shadcn / Radix</td><td>Component library</td></tr>
+    </tbody>
+  </table>
+  <p><strong>共通本質</strong>：closed set of pre-defined building blocks + 每個 block 有明確 input schema。內部你愛叫什麼都行，重點是概念對齊。</p>
+</section>
+
+<!-- 3 -->
+<section id="s3">
+  <h2><span class="num">03</span>Catalog 的實際存在形式</h2>
+
+  <p>業界做法：<strong>三份東西，但只有「一份 source of truth」</strong>。</p>
+
+  <h3>架構圖</h3>
+  <div class="ascii-diagram">            ┌─────────────────────────────────┐
+            │   Source of Truth               │
+            │   widgets/schemas/*.ts (Zod)    │
+            │   widgets/registry.ts           │
+            └────────────┬────────────────────┘
+                         │ 自動產出
+            ┌────────────┴────────────┐
+            ▼                         ▼
+    ┌──────────────┐          ┌─────────────────┐
+    │ LLM tool spec│          │  TypeScript     │
+    │ (JSON array) │          │  Component Props│
+    └──────────────┘          └─────────────────┘
+            │                         │
+            ▼                         ▼
+        給 LLM API              給前端 components</div>
+
+  <h3>每個層級的形式</h3>
+  <table>
+    <thead><tr><th>層級</th><th>形式</th><th>檔案數</th><th>給誰</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Source of truth</strong></td><td>TypeScript + Zod schemas</td><td>一個 widget 一份</td><td>RD（核心檔）</td></tr>
+      <tr><td><strong>LLM tool spec</strong></td><td>JSON array (auto-generated)</td><td>一份合併</td><td>LLM API</td></tr>
+      <tr><td><strong>Component library</strong></td><td>React/Vue components</td><td>一個 widget 一份</td><td>前端渲染</td></tr>
+      <tr><td><strong>Storybook stories</strong></td><td><code>.stories.tsx</code></td><td>一個 widget 一份</td><td>RD + Design</td></tr>
+      <tr><td><strong>人看版 Markdown</strong></td><td><code>widget-catalog.md</code></td><td>一份合併</td><td>PM / 業務 / 客戶</td></tr>
+    </tbody>
+  </table>
+
+  <h3>範例資料夾結構</h3>
+  <pre>src/widgets/
+├── schemas/                  ← Source of truth（一份/widget）
+│   ├── kpi-card.ts          ← Zod schema
+│   ├── time-series.ts
+│   ├── bar-chart.ts
+│   └── table.ts
+├── components/               ← 前端 component（一份/widget）
+│   ├── KpiCard.tsx
+│   ├── TimeSeries.tsx
+│   ├── BarChart.tsx
+│   └── Table.tsx
+├── stories/                  ← Storybook
+│   ├── KpiCard.stories.tsx
+│   └── ...
+├── registry.ts               ← 集中註冊（schema + component 對應）
+└── llm-tools.ts              ← 自動產出 LLM tool spec
+
+docs/
+└── widget-catalog.md         ← 人看的版本</pre>
+</section>
+
+<!-- 4 -->
+<section id="s4">
+  <h2><span class="num">04</span>Zod 是什麼？為什麼用它</h2>
+
+  <p>Zod 是 TypeScript 圈最紅的 schema validation 函式庫。<strong>寫一次 schema，同時得到三個東西</strong>：</p>
+  <ol>
+    <li>TypeScript 型別（compile time）</li>
+    <li>Runtime validation（reject 壞資料）</li>
+    <li>JSON Schema（可轉成 LLM tool spec）</li>
+  </ol>
+
+  <h3>範例</h3>
+<pre><span class="kw">import</span> { z } <span class="kw">from</span> <span class="str">'zod'</span>;
+
+<span class="com">// 1. 定義 schema</span>
+<span class="kw">const</span> KpiCard = z.<span class="fn">object</span>({
+  title: z.<span class="fn">string</span>(),
+  value: z.<span class="fn">union</span>([z.<span class="fn">number</span>(), z.<span class="fn">string</span>()]),
+  delta: z.<span class="fn">object</span>({
+    value: z.<span class="fn">number</span>(),
+    direction: z.<span class="fn">enum</span>([<span class="str">'up'</span>, <span class="str">'down'</span>]),
+    unit: z.<span class="fn">enum</span>([<span class="str">'percent'</span>, <span class="str">'absolute'</span>])
+  }).<span class="fn">optional</span>(),
+  trend: z.<span class="fn">enum</span>([<span class="str">'good'</span>, <span class="str">'bad'</span>, <span class="str">'neutral'</span>])
+});
+
+<span class="com">// 2. 自動拿到 TypeScript 型別</span>
+<span class="kw">type</span> KpiCardProps = z.infer&lt;<span class="kw">typeof</span> KpiCard&gt;;
+
+<span class="com">// 3. Runtime 驗證（LLM 回傳 JSON 進來時用）</span>
+KpiCard.<span class="fn">parse</span>({ title: <span class="str">"本週客戶"</span>, value: <span class="str">847</span>, trend: <span class="str">"good"</span> });  <span class="com">// ✓</span>
+KpiCard.<span class="fn">parse</span>({ title: <span class="str">"本週客戶"</span>, value: <span class="str">"x"</span> });                  <span class="com">// ✗ throws</span>
+
+<span class="com">// 4. 轉成 JSON Schema（給 LLM）</span>
+<span class="kw">import</span> { zodToJsonSchema } <span class="kw">from</span> <span class="str">'zod-to-json-schema'</span>;
+<span class="kw">const</span> llmToolSchema = <span class="fn">zodToJsonSchema</span>(KpiCard);</pre>
+
+  <h3>其他生態系</h3>
+  <table>
+    <thead><tr><th>Stack</th><th>對應方案</th></tr></thead>
+    <tbody>
+      <tr><td>Python</td><td><strong>Pydantic</strong>（FastAPI 用的）</td></tr>
+      <tr><td>TypeScript（新）</td><td><strong>TypeBox</strong>（直接產 JSON Schema）</td></tr>
+      <tr><td>TypeScript（舊）</td><td>io-ts、Yup</td></tr>
+    </tbody>
+  </table>
+
+  <h3>為什麼 Zod 適合 Widget Catalog</h3>
+  <ul>
+    <li>LLM 吐 JSON 進來 → Zod 驗證一次（壞掉直接 reject，不會炸前端）</li>
+    <li>TypeScript component props 直接用 <code>z.infer&lt;&gt;</code> → schema 改了，component 自動有 type error</li>
+    <li>一份 schema 自動產出 LLM tool spec（不用手寫對齊兩份）</li>
+  </ul>
+</section>
+
+<!-- 5 -->
+<section id="s5">
+  <h2><span class="num">05</span>怎麼開始做（順序很重要）</h2>
+
+  <div class="pitfall">
+    <div><strong>錯誤順序（很常見）</strong>：先挑 UI library → 看 component 有什麼 props → 倒回去寫 schema。這會讓 schema 被 library 綁架（冒出 Recharts 特有的 prop 之類），LLM 完全不知道要幹嘛。</div>
+  </div>
+
+  <h3>Step 1：先想 LLM 的「資訊輸入」</h3>
+  <p>不看 UI，先問：「使用者問了 X，AI 需要吐什麼資料才足以畫這個 widget？」</p>
+<pre><span class="com">// KPI Card：使用者要看一個數字 + 變化</span>
+<span class="kw">const</span> KpiCard = z.<span class="fn">object</span>({
+  title: z.<span class="fn">string</span>(),
+  value: z.<span class="fn">union</span>([z.<span class="fn">number</span>(), z.<span class="fn">string</span>()]),
+  delta: z.<span class="fn">object</span>({
+    value: z.<span class="fn">number</span>(),
+    direction: z.<span class="fn">enum</span>([<span class="str">'up'</span>, <span class="str">'down'</span>]),
+    unit: z.<span class="fn">enum</span>([<span class="str">'percent'</span>, <span class="str">'absolute'</span>])
+  }).<span class="fn">optional</span>(),
+  trend: z.<span class="fn">enum</span>([<span class="str">'good'</span>, <span class="str">'bad'</span>, <span class="str">'neutral'</span>])
+});</pre>
+  <p>這份 schema <strong>不依賴任何 UI library</strong> — 換 React/Vue/Svelte 都不影響。</p>
+
+  <h3>Step 2：再選 UI library 渲染</h3>
+  <p><strong>優先看既有 EnGenius Cloud 用什麼，reuse 比新挑爽 library 重要</strong>。</p>
+  <p>如果是 React stack：</p>
+  <table>
+    <thead><tr><th>用途</th><th>推薦 library</th></tr></thead>
+    <tbody>
+      <tr><td>圖表（Time Series / Bar / Heatmap）</td><td><strong>Recharts</strong>（簡單）/ <strong>Apache ECharts</strong>（強大）/ <strong>Tremor</strong>（dashboard-styled）</td></tr>
+      <tr><td>KPI Card / Status Grid / Alert List</td><td><strong>shadcn/ui</strong>（Tailwind） / 自己用 Tailwind 寫</td></tr>
+      <tr><td>Table</td><td><strong>TanStack Table</strong>（headless） / shadcn Table</td></tr>
+      <tr><td>Site Map / 地圖</td><td><strong>Mapbox GL</strong> / <strong>Leaflet</strong></td></tr>
+    </tbody>
+  </table>
+  <p>Vue stack 對應：<strong>Naive UI</strong> / <strong>Element Plus</strong> / <strong>Vue-ECharts</strong>。</p>
+
+  <h3>Step 3：Component 接 Zod 型別</h3>
+<pre><span class="kw">import</span> { KpiCardSchema } <span class="kw">from</span> <span class="str">'./schemas/kpi-card'</span>;
+
+<span class="kw">type</span> Props = z.infer&lt;<span class="kw">typeof</span> KpiCardSchema&gt;;
+
+<span class="kw">export function</span> <span class="fn">KpiCard</span>({ title, value, delta, trend }: Props) {
+  <span class="kw">return</span> (
+    &lt;div className=<span class="str">"rounded-xl border p-6"</span>&gt;
+      &lt;div className=<span class="str">"text-xs uppercase text-muted"</span>&gt;{title}&lt;/div&gt;
+      &lt;div className=<span class="str">"text-5xl font-bold"</span>&gt;{value}&lt;/div&gt;
+      {delta &amp;&amp; (
+        &lt;div className={trend === <span class="str">'good'</span> ? <span class="str">'text-green-500'</span> : <span class="str">'text-red-500'</span>}&gt;
+          {delta.direction === <span class="str">'up'</span> ? <span class="str">'↑'</span> : <span class="str">'↓'</span>} {delta.value}
+          {delta.unit === <span class="str">'percent'</span> ? <span class="str">'%'</span> : <span class="str">''</span>}
+        &lt;/div&gt;
+      )}
+    &lt;/div&gt;
+  );
+}</pre>
+
+  <h3>Step 4：註冊到 registry</h3>
+<pre><span class="com">// src/widgets/registry.ts</span>
+<span class="kw">import</span> { KpiCardSchema, KpiCard } <span class="kw">from</span> <span class="str">'./kpi-card'</span>;
+<span class="kw">import</span> { TimeSeriesSchema, TimeSeries } <span class="kw">from</span> <span class="str">'./time-series'</span>;
+
+<span class="kw">export const</span> WIDGET_REGISTRY = {
+  render_kpi_card: {
+    schema: KpiCardSchema,
+    component: KpiCard,
+    description: <span class="str">'顯示單一指標 + 趨勢方向'</span>,
+  },
+  render_time_series: {
+    schema: TimeSeriesSchema,
+    component: TimeSeries,
+    description: <span class="str">'時間軸趨勢線 / 面積圖'</span>,
+  },
+} <span class="kw">as const</span>;</pre>
+
+  <h3>Step 5：自動產出 LLM tool spec</h3>
+<pre><span class="com">// src/widgets/llm-tools.ts</span>
+<span class="kw">import</span> { zodToJsonSchema } <span class="kw">from</span> <span class="str">'zod-to-json-schema'</span>;
+<span class="kw">import</span> { WIDGET_REGISTRY } <span class="kw">from</span> <span class="str">'./registry'</span>;
+
+<span class="kw">export const</span> LLM_TOOLS = Object.<span class="fn">entries</span>(WIDGET_REGISTRY).<span class="fn">map</span>(([name, def]) =&gt; ({
+  name,
+  description: def.description,
+  input_schema: <span class="fn">zodToJsonSchema</span>(def.schema),
+}));
+
+<span class="com">// 直接餵給 Anthropic / OpenAI API</span></pre>
+</section>
+
+<!-- 6 -->
+<section id="s6">
+  <h2><span class="num">06</span>角色分工 / 並行進度</h2>
+
+  <div class="ascii-diagram">週 1                週 2-3              週 4-6
+─────────────────  ─────────────────  ─────────────────
+[PM]
+列 P0 4 widget      對齊客戶 use case   驗證 wedge thesis
+描述 use case       (real demo)         調整 catalog
+
+[Design]
+抓既有 design       畫 P0 4 widget      畫 P1 4 widget
+tokens              + Storybook hookup
+
+[RD]
+選 chart library    寫 P0 schema +      寫 P1 widget
+建 widgets/         component + reg     + 整合 backend
+
+[Prompt Eng]
+讀 widget-catalog   寫 system prompt    few-shot 調優
+熟悉 LLM tool API   接 LLM API          測 8 個 scenario</div>
+
+  <div class="callout">
+    <strong>關鍵</strong>：不要等 design 把 8 個都畫完才開始 RD。Design / RD / Prompt Eng 三條線<strong>並行</strong>，靠 Zod schema 對齊。
+  </div>
+</section>
+
+<!-- 7 -->
+<section id="s7">
+  <h2><span class="num">07</span>RD 實作 Checklist（每個 widget）</h2>
+  <ul class="checklist">
+    <li>Zod schema 定義（<code>schemas/widget-name.ts</code>）</li>
+    <li>React/Vue component（<code>components/WidgetName.tsx</code>）</li>
+    <li>Props type 從 <code>z.infer&lt;&gt;</code> 來</li>
+    <li>Storybook story（4-6 種 input 變化，含 edge case）</li>
+    <li>Loading skeleton 樣式</li>
+    <li>Error state（schema 不合法時的 fallback）</li>
+    <li>Responsive（手機壞掉的話至少不要爆版）</li>
+    <li>註冊到 <code>WIDGET_REGISTRY</code></li>
+  </ul>
+</section>
+
+<!-- 8 -->
+<section id="s8">
+  <h2><span class="num">08</span>Prompt Engineering Checklist</h2>
+  <ul class="checklist">
+    <li>System prompt 列出可用 widget（用 <code>widget-catalog.md</code> 內容）</li>
+    <li>LLM tool spec 從 <code>LLM_TOOLS</code> 自動產出（不手寫）</li>
+    <li>Few-shot examples：8 個 scenario 各 1 組（user query → tool calls）</li>
+    <li>Closed-set rule：明確告訴 LLM「只能用 catalog 裡的 widget，不能發明」</li>
+    <li>Combo rules：限定 dashboard 上限 widget 數（建議 ≤ 6）</li>
+    <li>Validation：LLM 回傳的每個 widget JSON 都過 Zod，壞了重 prompt</li>
+  </ul>
+</section>
+
+<!-- 9 -->
+<section id="s9">
+  <h2><span class="num">09</span>Common Pitfalls</h2>
+
+  <h3>設計面</h3>
+  <div class="pitfall"><div><strong>等 design 寫 100 頁 design system 才開始</strong> — wedge PoC 6-8 週要見驗證，等不到</div></div>
+  <div class="pitfall"><div><strong>重寫 design guideline，不對齊既有 EnGenius Cloud GUI</strong> — 兩套設計打架</div></div>
+  <div class="pitfall"><div><strong>Design 跟 RD 不並行</strong> — 卡在 waterfall，blocked</div></div>
+
+  <h3>架構面</h3>
+  <div class="pitfall"><div><strong>沒有 closed set，讓 LLM 自由生成任意 widget</strong> — hallucination + 渲染失敗</div></div>
+  <div class="pitfall"><div><strong>先挑 UI library，schema 倒著寫</strong> — schema 被綁架，未來換 library 痛苦</div></div>
+  <div class="pitfall"><div><strong>沒有 Zod runtime check</strong> — LLM 偶爾吐壞 JSON，前端炸掉</div></div>
+  <div class="pitfall"><div><strong>Schema 寫太複雜（80 個欄位 / 4 層巢狀）</strong> — LLM 生不出來</div></div>
+  <div class="pitfall"><div><strong>手寫兩份（schema + tool spec）</strong> — 維護災難，一定會 drift</div></div>
+
+  <h3>範圍面</h3>
+  <div class="pitfall"><div><strong>第一版做 8 個 widget</strong> — 太貪心，先做 P0 4 個跑通整個 loop</div></div>
+  <div class="pitfall"><div><strong>沒定 widget 上限</strong> — dashboard 一次塞 12 個 widget，使用者看不懂</div></div>
+</section>
+
+<!-- 10 -->
+<section id="s10">
+  <h2><span class="num">10</span>第一週交付物</h2>
+  <p>完成這些就算 setup 完成：</p>
+  <table>
+    <thead><tr><th>交付物</th><th>Owner</th><th>形式</th></tr></thead>
+    <tbody>
+      <tr><td><code>design-tokens.md</code>（從既有 GUI 抓）</td><td>Design</td><td>Markdown / Figma frame</td></tr>
+      <tr><td><code>widgets/schemas/kpi-card.ts</code></td><td>RD</td><td>TypeScript + Zod</td></tr>
+      <tr><td><code>widgets/schemas/time-series.ts</code></td><td>RD</td><td>TypeScript + Zod</td></tr>
+      <tr><td><code>widgets/registry.ts</code>（含 KPI + Time Series）</td><td>RD</td><td>TypeScript</td></tr>
+      <tr><td>一個 KPI Card 在 Storybook 跑起來</td><td>RD + Design</td><td>Storybook URL</td></tr>
+      <tr><td>LLM 接 1 個 tool（render_kpi_card）成功 render</td><td>Prompt Eng + RD</td><td>影片 / GIF</td></tr>
+    </tbody>
+  </table>
+  <div class="good-box"><div>第一週通了，後面 widget 就是複製貼上。</div></div>
+</section>
+
+<!-- 11 -->
+<section id="s11">
+  <h2><span class="num">11</span>Open Questions（要在 kickoff 前定）</h2>
+  <ul class="checklist">
+    <li>既有 EnGenius Cloud 用的 UI / chart library 是哪些？（決定 reuse vs 新選）</li>
+    <li>Stack：React / Vue? Tailwind? CSS-in-JS?</li>
+    <li>LLM 走哪家 API？（Anthropic / OpenAI / 自架）</li>
+    <li>Widget 的 data 從哪打？（API gateway / 直連 SQL / cache layer）</li>
+    <li>Dashboard JSON spec 存在哪？（DB / 使用者本地 / cloud workspace）</li>
+    <li>多語：widget label 要不要 i18n key 化？</li>
+    <li>客製化：使用者能改 widget title / 顏色嗎？（v1 建議不開）</li>
+  </ul>
+</section>
+
+<div class="related">
+  <a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/docs/widget-catalog.md">
+    <div class="r-label">Widget Catalog</div>
+    <div class="r-title">widget-catalog.md</div>
+    <div class="r-desc">8 個 widget 的詳細規格 — schema、視覺 spec、LLM 使用時機</div>
+  </a>
+  <a href="dashboard-builder-implementation.html">
+    <div class="r-label">Implementation Guide</div>
+    <div class="r-title">Dashboard Builder 實作指南</div>
+    <div class="r-desc">2 週 PoC day-by-day 計畫、API endpoint、prompt 範例</div>
+  </a>
+  <a href="dashboard-builder-demo.html">
+    <div class="r-label">Interactive Demo</div>
+    <div class="r-title">Dashboard Builder Demo</div>
+    <div class="r-desc">8 個真實場景的互動式預覽</div>
+  </a>
+  <a href="home-engineering.html">
+    <div class="r-label">Home</div>
+    <div class="r-title">工程入口</div>
+    <div class="r-desc">回 Tech / RD home，看其他工程文件</div>
+  </a>
+</div>
+
+</main>
+
+</div>
+
+</div>
+
+</body>
+</html>
