@@ -1,12 +1,15 @@
 # Network AI-Assistant · Network Management Assistant Proposal
 
-完整的 AI 網管助理產品提案資料 — **10 個頁面 + 4 個互動 mockup + 1 個 sales deck**。
+完整的 AI 網管助理產品提案資料 — **10 個頁面 + 4 個互動 mockup + 1 個 sales deck**，分成兩大入口：
+
+- 🎯 **[home-product.html](./home-product.html)** — 產品 / 行銷 Home（PM / MKT / 業務 / 經營層）
+- 🛠 **[home-engineering.html](./home-engineering.html)** — 工程 / 技術 Home（Tech Lead / 工程師 / CIO）
 
 🔗 **Live**: https://network-ai-assistant.vercel.app
 
 ## 📂 從哪裡開始
 
-打開 [`index.html`](./index.html) — 專案入口頁，依您的角色挑一個入口。
+打開 [`index.html`](./index.html) — 主入口（2-card chooser），依您的角色挑一個 home。
 
 ## 📚 內容結構
 

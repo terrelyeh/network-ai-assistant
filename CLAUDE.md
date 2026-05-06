@@ -26,7 +26,9 @@
 
 ```
 network-ai-assistant/
-├── index.html                                專案入口（audience cards + resources）
+├── index.html                                主入口（2-card chooser → product or engineering home）
+├── home-product.html                         🎯 產品 / 行銷 Home（PM/MKT/業務）
+├── home-engineering.html                     🛠 工程 / 技術 Home（Tech Lead/CIO）
 ├── overview-pm-mkt.html                      PM/MKT 客戶故事
 ├── two-modes.html                          產品策略定位（A/B 兩模式）
 ├── system-diagram.html                       高層次系統圖
@@ -55,6 +57,7 @@ network-ai-assistant/
 
 ### 關鍵 framing（已穩定，不要回頭混淆）
 
+- **3 個 home page**：`index.html` (chooser) → `home-product.html` (PM/MKT) 或 `home-engineering.html` (Tech)。`system-diagram.html` 兩邊都連結到（橋接）
 - **2 modes** = 依「誰用」（user role）分：A 員工 / B SMB IT。**不做 Mode C / MSP**（不同 ICP）
 - **Dashboard Builder = wedge product**（不是 Mode B 子功能）— 跨兩個模式可用，藍海競爭
 - **4 dimensions** = 用例維度：Deployment / Monitoring / Troubleshoot / Management

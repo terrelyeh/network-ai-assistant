@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Network AI-Assistant — 產品 / 行銷 Home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-1: #0a1628;
+    --bg-2: #0f1e3a;
+    --surface: rgba(255,255,255,0.04);
+    --surface-2: rgba(255,255,255,0.08);
+    --border: rgba(255,255,255,0.12);
+    --border-strong: rgba(255,255,255,0.22);
+    --text: #f8fafc;
+    --muted: #cbd5e1;
+    --dim: #64748b;
+    --accent: #ff6b35;
+    --cyan: #00d9c5;
+    --good: #10b981;
+    --warn: #fbbf24;
+    --bad: #ef4444;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%);
+    color: var(--text);
+    font-family: 'Inter', 'Noto Sans TC', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    line-height: 1.55;
+  }
+  .container { max-width: 1320px; margin: 0 auto; padding: 0 32px; }
+
+  /* TOP BAR */
+  .top-bar {
+    background: rgba(255,107,53,0.08);
+    border-bottom: 1px solid rgba(255,107,53,0.25);
+    padding: 10px 32px;
+    display: flex; align-items: center; justify-content: center; gap: 14px;
+    font-size: 13px; color: var(--muted);
+    flex-wrap: wrap;
+  }
+  .top-bar strong { color: var(--accent); }
+  .top-bar a {
+    color: var(--cyan); text-decoration: none;
+    padding: 4px 11px;
+    background: var(--surface);
+    border: 1px solid rgba(0,217,197,0.3);
+    border-radius: 6px;
+    font-size: 12.5px; font-weight: 600;
+    transition: all 0.15s;
+  }
+  .top-bar a:hover { background: rgba(0,217,197,0.12); transform: translateY(-1px); }
+
+  body { padding-top: 0; }
+  .main-wrap { padding: 56px 0 80px; }
+
+  /* HERO */
+  .hero { text-align: center; margin-bottom: 56px; }
+  .hero .tag {
+    color: var(--accent);
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .hero h1 {
+    font-size: clamp(40px, 5vw, 60px);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+  .hero h1 .accent { color: var(--accent); }
+  .hero .lead {
+    margin-top: 18px;
+    color: var(--muted);
+    font-size: 18px;
+    max-width: 720px;
+    margin-left: auto; margin-right: auto;
+  }
+  .hero .meta {
+    margin-top: 28px;
+    display: inline-flex;
+    gap: 20px;
+    padding: 10px 22px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 13px;
+    color: var(--muted);
+    flex-wrap: wrap;
+  }
+  .hero .meta strong { color: var(--text); }
+  .hero .meta .dot { color: var(--accent); }
+
+  section { margin-bottom: 56px; }
+  .section-title {
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .section-sub {
+    text-align: center;
+    color: var(--muted);
+    margin-bottom: 32px;
+    font-size: 16px;
+  }
+
+  .audience-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .audience {
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 16px;
+    padding: 24px 20px;
+    transition: all 0.25s;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+  }
+  .audience:hover {
+    background: var(--surface-2);
+    border-color: var(--accent);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(255,107,53,0.15);
+  }
+  .audience-emoji { font-size: 30px; margin-bottom: 10px; }
+  .audience-role {
+    font-size: 16px; font-weight: 700;
+    margin-bottom: 6px; letter-spacing: -0.01em;
+  }
+  .audience-want {
+    color: var(--muted);
+    font-size: 12.5px;
+    font-style: italic;
+    margin-bottom: 16px;
+    line-height: 1.5;
+    flex-grow: 1;
+  }
+  .audience-cta {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 13.5px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .audience-cta .arrow { transition: transform 0.2s; }
+  .audience:hover .audience-cta .arrow { transform: translateX(4px); }
+
+  .resources-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px;
+  }
+  .res-card {
+    background: rgba(0,0,0,0.18);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 28px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.25s;
+    display: flex; flex-direction: column;
+    position: relative; overflow: hidden;
+  }
+  .res-card::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 3px;
+    background: var(--accent);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .res-card:hover::before { transform: scaleX(1); }
+  .res-card:hover {
+    background: rgba(0,0,0,0.28);
+    border-color: var(--border-strong);
+    transform: translateY(-2px);
+  }
+  .res-card.warn::before { background: var(--warn); }
+  .res-card.cyan::before { background: var(--cyan); }
+  .res-head { display: flex; align-items: start; gap: 14px; margin-bottom: 16px; }
+  .res-emoji { font-size: 36px; flex-shrink: 0; }
+  .res-title-block { flex: 1; }
+  .res-tag {
+    display: inline-block;
+    padding: 3px 8px;
+    background: rgba(255,107,53,0.1);
+    color: var(--accent);
+    border-radius: 4px;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .res-tag.tag-warn { color: var(--warn); background: rgba(251,191,36,0.1); }
+  .res-tag.tag-cyan { color: var(--cyan); background: rgba(0,217,197,0.1); }
+  .res-title {
+    font-size: 22px; font-weight: 700;
+    letter-spacing: -0.01em; margin-bottom: 6px;
+  }
+  .res-file { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--dim); }
+  .res-body { color: var(--muted); font-size: 14px; margin-bottom: 14px; line-height: 1.55; flex-grow: 1; }
+  .res-best {
+    background: rgba(255,107,53,0.08);
+    border-left: 3px solid var(--accent);
+    padding: 10px 14px;
+    border-radius: 0 6px 6px 0;
+    color: var(--text);
+    font-size: 13px; line-height: 1.5;
+  }
+  .res-best strong { color: var(--accent); }
+  .res-foot {
+    margin-top: 16px; color: var(--accent);
+    font-weight: 600; font-size: 14px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .res-foot .arrow { transition: transform 0.2s; }
+  .res-card:hover .res-foot .arrow { transform: translateX(4px); }
+
+  /* SWITCH PANEL */
+  .switch-panel {
+    background: linear-gradient(135deg, rgba(0,217,197,0.08), rgba(255,107,53,0.06));
+    border: 1px solid rgba(0,217,197,0.25);
+    border-radius: 18px;
+    padding: 28px 32px;
+    text-align: center;
+  }
+  .switch-panel h3 {
+    font-size: 20px; font-weight: 800;
+    margin-bottom: 8px; letter-spacing: -0.01em;
+  }
+  .switch-panel p { color: var(--muted); font-size: 14px; margin-bottom: 18px; }
+  .switch-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--cyan);
+    color: var(--bg-1);
+    text-decoration: none;
+    padding: 12px 22px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 14.5px;
+    transition: all 0.2s;
+  }
+  .switch-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,217,197,0.3); }
+
+  /* FILES TABLE */
+  .files-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .files-table th, .files-table td {
+    padding: 12px 14px; text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .files-table th {
+    color: var(--accent);
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .foot { margin-top: 56px; text-align: center; color: var(--dim); font-size: 12px; font-style: italic; }
+
+  @media (max-width: 1100px) {
+    .audience-grid { grid-template-columns: 1fr 1fr; }
+    .resources-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 640px) {
+    .audience-grid, .resources-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <span>📍 您在 <strong>產品 / 行銷 Home</strong></span>
+  <a href="index.html">🏠 主入口</a>
+  <a href="home-engineering.html">🛠 切到工程 Home</a>
+</div>
+
+<div class="main-wrap">
+<div class="container">
+
+<!-- HERO -->
+<section class="hero">
+  <div class="tag">PRODUCT &amp; MARKETING HOME</div>
+  <h1>Network <span class="accent">AI-Assistant</span><br>產品 / 行銷 Home</h1>
+  <p class="lead">
+    給 PM、MKT、業務、經營層的入口 — <strong style="color:var(--text);">客戶故事、產品定位、UI mockup、銷售簡報</strong>。
+    <br>不需技術細節就能講完整套產品價值。
+  </p>
+  <div class="meta">
+    <span><span class="dot">●</span> <strong>7</strong> 個頁面</span>
+    <span><span class="dot">●</span> <strong>4</strong> 個 UI mockup</span>
+    <span><span class="dot">●</span> <strong>1</strong> sales pitch deck</span>
+    <span><span class="dot">●</span> 全部離線可用</span>
+  </div>
+</section>
+
+<!-- AUDIENCE QUICK-START -->
+<section>
+  <div class="section-title">⚡ 依角色快速進入</div>
+  <div class="section-sub">您是哪種人？挑一個最符合的入口</div>
+  <div class="audience-grid">
+
+    <a class="audience" href="overview-pm-mkt.html">
+      <div class="audience-emoji">🎯</div>
+      <div class="audience-role">PM / MKT / 業務</div>
+      <div class="audience-want">「我要客戶故事，不要技術細節。要拿來做簡報、放網站、發 EDM。」</div>
+      <div class="audience-cta">PM/MKT 概覽 <span class="arrow">→</span></div>
+    </a>
+
+    <a class="audience" href="two-modes.html">
+      <div class="audience-emoji">🎭</div>
+      <div class="audience-role">看產品定位</div>
+      <div class="audience-want">「快速理解這個產品要賣給誰、有哪幾種使用模式、差異在哪。」</div>
+      <div class="audience-cta">兩模式定位 <span class="arrow">→</span></div>
+    </a>
+
+    <a class="audience" href="use-case-matrix.html">
+      <div class="audience-emoji">📊</div>
+      <div class="audience-role">PM 排 roadmap</div>
+      <div class="audience-want">「4 維度 × 2 模式的完整使用案例，知道先做哪些、後做哪些。」</div>
+      <div class="audience-cta">4×2 使用案例 <span class="arrow">→</span></div>
+    </a>
+
+    <a class="audience" href="mockup-gallery.html">
+      <div class="audience-emoji">🎨</div>
+      <div class="audience-role">看 UI 互動設計</div>
+      <div class="audience-want">「實際點看看 — 員工 chat、IT cockpit、Dashboard Builder、Unified Chat PoC。」</div>
+      <div class="audience-cta">4 個 UI Mockups <span class="arrow">→</span></div>
+    </a>
+
+  </div>
+</section>
+
+<!-- ALL RESOURCES -->
+<section>
+  <div class="section-title">📚 產品 / 行銷資源</div>
+  <div class="section-sub">7 個頁面 + 4 個 mockup · 點卡片進入</div>
+  <div class="resources-grid">
+
+    <a class="res-card" href="overview-pm-mkt.html">
+      <div class="res-head">
+        <div class="res-emoji">🎯</div>
+        <div class="res-title-block">
+          <span class="res-tag">PM / MKT · 客戶故事</span>
+          <div class="res-title">高層次概覽</div>
+          <div class="res-file">overview-pm-mkt.html</div>
+        </div>
+      </div>
+      <div class="res-body">
+        客戶體驗 4 階段（SEE → UNDERSTAND → DECIDE → VERIFY）+ 三大 pillar + KPI + 競爭對比 + 兩 personas。<strong style="color:var(--text);">沒有任何技術術語</strong>，純粹講價值與故事。
+      </div>
+      <div class="res-best"><strong>最適合：</strong>展會、業務 pitch、官網 hero、leave-behind、經營層簡報</div>
+      <div class="res-foot">開啟 <span class="arrow">→</span></div>
+    </a>
+
+    <a class="res-card" href="two-modes.html">
+      <div class="res-head">
+        <div class="res-emoji">🎭</div>
+        <div class="res-title-block">
+          <span class="res-tag">PRODUCT POSITIONING</span>
+          <div class="res-title">兩模式定位</div>
+          <div class="res-file">two-modes.html</div>
+        </div>
+      </div>
+      <div class="res-body">
+        一套後端，兩種模式 — <strong style="color:var(--text);">Mode A 員工 / Mode B SMB IT ⭐</strong>。
+        每個模式對應不同 persona、能力範圍、風險等級。Deliberately 不做 MSP / multi-tenant，把 ICP 做透。
+      </div>
+      <div class="res-best"><strong>最適合：</strong>內部對焦會、產品定位 review、跨部門 kick-off</div>
+      <div class="res-foot">開啟 <span class="arrow">→</span></div>
+    </a>
+
+    <a class="res-card warn" href="use-case-matrix.html">
+      <div class="res-head">
+        <div class="res-emoji">📊</div>
+        <div class="res-title-block">
+          <span class="res-tag tag-warn">USE CASE MATRIX</span>
+          <div class="res-title">4×2 使用案例矩陣</div>
+          <div class="res-file">use-case-matrix.html</div>
+        </div>
+      </div>
+      <div class="res-body">
+        8 個格子（4 維度 × 2 模式）+ 標出 Phase 1/2。<strong style="color:var(--text);">給 PM 排 roadmap 最重要的工具</strong>。
+        含「Phase 1 三個必做格子」推薦與兩季度 roadmap 建議。
+      </div>
+      <div class="res-best"><strong>最適合：</strong>排 roadmap、估工程時程、找 demo 點</div>
+      <div class="res-foot">開啟 <span class="arrow">→</span></div>
+    </a>
+
+    <a class="res-card" href="mockup-gallery.html">
+      <div class="res-head">
+        <div class="res-emoji">🎨</div>
+        <div class="res-title-block">
+          <span class="res-tag">UI MOCKUPS</span>
+          <div class="res-title">Mockup 集錦（4 個互動式 UI）</div>
+          <div class="res-file">mockup-gallery.html</div>
+        </div>
+      </div>
+      <div class="res-body">
+        統合 4 個可實際操作的 UI mockup：<strong style="color:var(--text);">員工 Chat（Mode A）、SMB IT Cockpit（Mode B）、Dashboard Builder Flow、Unified Chat PoC</strong>。每個都能點擊、輸入、看到反應。
+      </div>
+      <div class="res-best"><strong>最適合：</strong>UX 對焦、客戶 demo、設計 review、新人 onboarding</div>
+      <div class="res-foot">開啟 mockup gallery <span class="arrow">→</span></div>
+    </a>
+
+    <a class="res-card warn" href="dashboard-builder-demo.html">
+      <div class="res-head">
+        <div class="res-emoji">📈</div>
+        <div class="res-title-block">
+          <span class="res-tag tag-warn">⭐ WEDGE DEMO</span>
+          <div class="res-title">Dashboard Builder Demo</div>
+          <div class="res-file">dashboard-builder-demo.html</div>
+        </div>
+      </div>
+      <div class="res-body">
+        Wedge product 的<strong style="color:var(--text);">互動式 demo</strong>。8 個可切換場景 — 健康 / AP 負載 / 會議室 / 跨分點 / 設備 timeline / 訪客 Wi-Fi / PoE / Blast Radius。看一次就懂為什麼客戶會 wow。
+      </div>
+      <div class="res-best"><strong>最適合：</strong>展會 demo、給客戶試用、技術業務 pitch</div>
+      <div class="res-foot">開啟 <span class="arrow">→</span></div>
+    </a>
+
+    <a class="res-card" href="pitch-deck.html">
+      <div class="res-head">
+        <div class="res-emoji">🎤</div>
+        <div class="res-title-block">
+          <span class="res-tag">SALES DECK · 10-SLIDE</span>
+          <div class="res-title">Pitch Deck</div>
+          <div class="res-file">pitch-deck.html</div>
+        </div>
+      </div>
+      <div class="res-body">
+        10 張投影片 sales pitch — 主推 Dashboard Builder wedge。從問題、市場、產品、KPI 到 CTA。可直接展會 / leave-behind 用。
+      </div>
+      <div class="res-best"><strong>最適合：</strong>展會、外部 pitch、初次客戶介紹</div>
+      <div class="res-foot">開啟 <span class="arrow">→</span></div>
+    </a>
+
+    <a class="res-card cyan" href="system-diagram.html">
+      <div class="res-head">
+        <div class="res-emoji">🗺</div>
+        <div class="res-title-block">
+          <span class="res-tag tag-cyan">SYSTEM DIAGRAM · 兩邊都有</span>
+          <div class="res-title">高層次系統圖</div>
+          <div class="res-file">system-diagram.html</div>
+        </div>
+      </div>
+      <div class="res-body">
+        系統有<strong style="color:var(--text);">哪些 block · 它們怎麼接</strong>。介於「客戶故事」與「完整技術架構」之間。看一張圖就能講出整套系統的組成。
+      </div>
+      <div class="res-best"><strong>最適合：</strong>技術型業務 / Partner 對接 / 跨部門 kick-off</div>
+      <div class="res-foot">開啟 <span class="arrow">→</span></div>
+    </a>
+
+  </div>
+</section>
+
+<!-- SWITCH PANEL -->
+<section>
+  <div class="switch-panel">
+    <h3>🛠 想看技術細節？</h3>
+    <p>完整架構、Playbook 範例、工程盲點、實作指南都在工程 Home。</p>
+    <a class="switch-btn" href="home-engineering.html">切到 Engineering Home →</a>
+  </div>
+</section>
+
+<div class="foot">
+  📌 Mockup · 純靜態 HTML · 部署於 Vercel
+</div>
+
+</div>
+</div>
+
+</body>
+</html>

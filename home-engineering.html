@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Network AI-Assistant — 工程 / 技術 Home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-1: #0a1628;
+    --bg-2: #0f1e3a;
+    --surface: rgba(255,255,255,0.04);
+    --surface-2: rgba(255,255,255,0.08);
+    --border: rgba(255,255,255,0.12);
+    --border-strong: rgba(255,255,255,0.22);
+    --text: #f8fafc;
+    --muted: #cbd5e1;
+    --dim: #64748b;
+    --accent: #ff6b35;
+    --cyan: #00d9c5;
+    --good: #10b981;
+    --warn: #fbbf24;
+    --bad: #ef4444;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%);
+    color: var(--text);
+    font-family: 'Inter', 'Noto Sans TC', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    line-height: 1.55;
+  }
+  .container { max-width: 1320px; margin: 0 auto; padding: 0 32px; }
+
+  .top-bar {
+    background: rgba(0,217,197,0.08);
+    border-bottom: 1px solid rgba(0,217,197,0.25);
+    padding: 10px 32px;
+    display: flex; align-items: center; justify-content: center; gap: 14px;
+    font-size: 13px; color: var(--muted);
+    flex-wrap: wrap;
+  }
+  .top-bar strong { color: var(--cyan); }
+  .top-bar a {
+    color: var(--accent); text-decoration: none;
+    padding: 4px 11px;
+    background: var(--surface);
+    border: 1px solid rgba(255,107,53,0.3);
+    border-radius: 6px;
+    font-size: 12.5px; font-weight: 600;
+    transition: all 0.15s;
+  }
+  .top-bar a:hover { background: rgba(255,107,53,0.12); transform: translateY(-1px); }
+
+  .main-wrap { padding: 56px 0 80px; }
+
+  .hero { text-align: center; margin-bottom: 56px; }
+  .hero .tag {
+    color: var(--cyan);
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .hero h1 {
+    font-size: clamp(40px, 5vw, 60px);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+  .hero h1 .cyan { color: var(--cyan); }
+  .hero .lead {
+    margin-top: 18px;
+    color: var(--muted);
+    font-size: 18px;
+    max-width: 720px;
+    margin-left: auto; margin-right: auto;
+  }
+  .hero .meta {
+    margin-top: 28px;
+    display: inline-flex;
+    gap: 20px;
+    padding: 10px 22px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 13px;
+    color: var(--muted);
+    flex-wrap: wrap;
+  }
+  .hero .meta strong { color: var(--text); }
+  .hero .meta .dot { color: var(--cyan); }
+
+  section { margin-bottom: 56px; }
+  .section-title {
+    font-size: 13px;
+    color: var(--cyan);
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .section-sub {
+    text-align: center;
+    color: var(--muted);
+    margin-bottom: 32px;
+    font-size: 16px;
+  }
+
+  .audience-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .audience {
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 16px;
+    padding: 24px 20px;
+    transition: all 0.25s;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+  }
+  .audience:hover {
+    background: var(--surface-2);
+    border-color: var(--cyan);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(0,217,197,0.15);
+  }
+  .audience-emoji { font-size: 30px; margin-bottom: 10px; }
+  .audience-role {
+    font-size: 16px; font-weight: 700;
+    margin-bottom: 6px; letter-spacing: -0.01em;
+  }
+  .audience-want {
+    color: var(--muted);
+    font-size: 12.5px;
+    font-style: italic;
+    margin-bottom: 16px;
+    line-height: 1.5;
+    flex-grow: 1;
+  }
+  .audience-cta {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--cyan);
+    font-weight: 600;
+    font-size: 13.5px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .audience-cta .arrow { transition: transform 0.2s; }
+  .audience:hover .audience-cta .arrow { transform: translateX(4px); }
+
+  .resources-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px;
+  }
+  .res-card {
+    background: rgba(0,0,0,0.18);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 28px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.25s;
+    display: flex; flex-direction: column;
+    position: relative; overflow: hidden;
+  }
+  .res-card::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 3px;
+    background: var(--cyan);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .res-card:hover::before { transform: scaleX(1); }
+  .res-card:hover {
+    background: rgba(0,0,0,0.28);
+    border-color: var(--border-strong);
+    transform: translateY(-2px);
+  }
+  .res-card.warn::before { background: var(--warn); }
+  .res-card.danger::before { background: var(--bad); }
+  .res-card.accent::before { background: var(--accent); }
+  .res-head { display: flex; align-items: start; gap: 14px; margin-bottom: 16px; }
+  .res-emoji { font-size: 36px; flex-shrink: 0; }
+  .res-title-block { flex: 1; }
+  .res-tag {
+    display: inline-block;
+    padding: 3px 8px;
+    background: rgba(0,217,197,0.1);
+    color: var(--cyan);
+    border-radius: 4px;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .res-tag.tag-warn { color: var(--warn); background: rgba(251,191,36,0.1); }
+  .res-tag.tag-bad { color: var(--bad); background: rgba(239,68,68,0.1); }
+  .res-tag.tag-accent { color: var(--accent); background: rgba(255,107,53,0.1); }
+  .res-title {
+    font-size: 22px; font-weight: 700;
+    letter-spacing: -0.01em; margin-bottom: 6px;
+  }
+  .res-file { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--dim); }
+  .res-body { color: var(--muted); font-size: 14px; margin-bottom: 14px; line-height: 1.55; flex-grow: 1; }
+  .res-best {
+    background: rgba(0,217,197,0.08);
+    border-left: 3px solid var(--cyan);
+    padding: 10px 14px;
+    border-radius: 0 6px 6px 0;
+    color: var(--text);
+    font-size: 13px; line-height: 1.5;
+  }
+  .res-best strong { color: var(--cyan); }
+  .res-foot {
+    margin-top: 16px; color: var(--cyan);
+    font-weight: 600; font-size: 14px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .res-foot .arrow { transition: transform 0.2s; }
+  .res-card:hover .res-foot .arrow { transform: translateX(4px); }
+
+  .switch-panel {
+    background: linear-gradient(135deg, rgba(255,107,53,0.08), rgba(0,217,197,0.06));
+    border: 1px solid rgba(255,107,53,0.25);
+    border-radius: 18px;
+    padding: 28px 32px;
+    text-align: center;
+  }
+  .switch-panel h3 {
+    font-size: 20px; font-weight: 800;
+    margin-bottom: 8px; letter-spacing: -0.01em;
+  }
+  .switch-panel p { color: var(--muted); font-size: 14px; margin-bottom: 18px; }
+  .switch-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent);
+    color: white;
+    text-decoration: none;
+    padding: 12px 22px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 14.5px;
+    transition: all 0.2s;
+  }
+  .switch-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(255,107,53,0.3); }
+
+  .foot { margin-top: 56px; text-align: center; color: var(--dim); font-size: 12px; font-style: italic; }
+
+  @media (max-width: 1100px) {
+    .audience-grid { grid-template-columns: 1fr 1fr; }
+    .resources-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 640px) {
+    .audience-grid, .resources-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <span>📍 您在 <strong>工程 / 技術 Home</strong></span>
+  <a href="index.html">🏠 主入口</a>
+  <a href="home-product.html">🎯 切到產品 Home</a>
+</div>
+
+<div class="main-wrap">
+<div class="container">
+
+<!-- HERO -->
+<section class="hero">
+  <div class="tag">ENGINEERING &amp; TECHNICAL HOME</div>
+  <h1>Network <span class="cyan">AI-Assistant</span><br>工程 / 技術 Home</h1>
+  <p class="lead">
+    給 Tech Lead、工程師、CIO/技術買家的入口 — <strong style="color:var(--text);">完整架構、實作指南、Playbook、工程盲點</strong>。
+    <br>從 ring system 到 MCP layer，全部展開。
+  </p>
+  <div class="meta">
+    <span><span class="dot">●</span> <strong>5</strong> 個技術頁</span>
+    <span><span class="dot">●</span> <strong>2</strong> 種語言（ZH/EN）</span>
+    <span><span class="dot">●</span> <strong>互動式</strong>架構圖</span>
+    <span><span class="dot">●</span> 全部離線可用</span>
+  </div>
+</section>
+
+<!-- AUDIENCE QUICK-START -->
+<section>
+  <div class="section-title">⚡ 依角色快速進入</div>
+  <div class="section-sub">您是哪種人？挑一個最符合的入口</div>
+  <div class="audience-grid">
+
+    <a class="audience" href="architecture-v2-zh.html">
+      <div class="audience-emoji">🏗</div>
+      <div class="audience-role">工程師 / Tech Lead</div>
+      <div class="audience-want">「我要看完整技術架構、安全機制、運作方式 — 全展開。」</div>
+      <div class="audience-cta">技術架構 v2 <span class="arrow">→</span></div>
+    </a>
+
+    <a class="audience" href="dashboard-builder-implementation.html">
+      <div class="audience-emoji">🔧</div>
+      <div class="audience-role">工程師明天就要開始</div>
+      <div class="audience-want">「PoC spec、API 範例、prompt 範例、widget schema — 全部寫死的實作指南。」</div>
+      <div class="audience-cta">Dashboard 實作指南 <span class="arrow">→</span></div>
+    </a>
+
+    <a class="audience" href="playbook-examples.html">
+      <div class="audience-emoji">📘</div>
+      <div class="audience-role">看 Playbook 真實案例</div>
+      <div class="audience-want">「3 個 case 完整展開到 primitive、prompt、ring 等級。要排 roadmap 跟訓練 CS。」</div>
+      <div class="audience-cta">Playbook 範例 <span class="arrow">→</span></div>
+    </a>
+
+    <a class="audience" href="blind-spots.html">
+      <div class="audience-emoji">⚠</div>
+      <div class="audience-role">技術買家 / CIO</div>
+      <div class="audience-want">「給我看你們考慮過什麼盲點。要證據，不是 marketing。」</div>
+      <div class="audience-cta">12 個工程盲點 <span class="arrow">→</span></div>
+    </a>
+
+  </div>
+</section>
+
+<!-- ALL RESOURCES -->
+<section>
+  <div class="section-title">📚 工程 / 技術資源</div>
+  <div class="section-sub">5 個技術頁 · 點卡片進入</div>
+  <div class="resources-grid">
+
+    <a class="res-card" href="architecture-v2-zh.html">
+      <div class="res-head">
+        <div class="res-emoji">🏗</div>
+        <div class="res-title-block">
+          <span class="res-tag">ENGINEERING · 繁中 / EN</span>
+          <div class="res-title">系統架構（互動版）</div>
+          <div class="res-file">architecture-v2-zh.html ⇄ architecture-v2.html</div>
+        </div>
+      </div>
+      <div class="res-body">
+        6 層完整架構圖 + 點擊任一元件開啟右側 panel 看比喻 / 說明 / 範例。Ring system / MCP / Approval Flow 全部視覺化。<strong style="color:var(--text);">對 Roger v1 加了 9 處改進</strong>。<br><span style="color:var(--cyan);">頁內右上角可切換繁中 ⇄ EN。</span>
+      </div>
+      <div class="res-best"><strong>最適合：</strong>內部技術 review、與 Roger 對焦、企業客戶 deep dive</div>
+      <div class="res-foot">開啟 <span class="arrow">→</span></div>
+    </a>
+
+    <a class="res-card warn" href="dashboard-builder-implementation.html">
+      <div class="res-head">
+        <div class="res-emoji">🔧</div>
+        <div class="res-title-block">
+          <span class="res-tag tag-warn">IMPLEMENTATION GUIDE</span>
+          <div class="res-title">Dashboard Builder 實作指南</div>
+          <div class="res-file">dashboard-builder-implementation.html</div>
+        </div>
+      </div>
+      <div class="res-body">
+        4 個 tab：<strong style="color:var(--text);">實作路徑 / PoC Spec / Eval Pipeline / Widget Library</strong>。
+        2 週 PoC day-by-day 計畫、API endpoint、prompt 範例、8 widget schema 全寫死 — 工程師明天就能開工。
+      </div>
+      <div class="res-best"><strong>最適合：</strong>Eng kickoff、PoC sprint、與 Roger 對焦技術細節</div>
+      <div class="res-foot">開啟 <span class="arrow">→</span></div>
+    </a>
+
+    <a class="res-card warn" href="playbook-examples.html">
+      <div class="res-head">
+        <div class="res-emoji">📘</div>
+        <div class="res-title-block">
+          <span class="res-tag tag-warn">PLAYBOOK CATALOG</span>
+          <div class="res-title">Playbook 範例集</div>
+          <div class="res-file">playbook-examples.html</div>
+        </div>
+      </div>
+      <div class="res-body">
+        三個 playbook 真實案例 — Device Offline（簡單）/ Sticky Client（中等）/ Sonos LAN Discovery（困難）。每個案例展開到<strong style="color:var(--text);">每一個 primitive、每一個 prompt、每一個 ring 等級</strong>。
+      </div>
+      <div class="res-best"><strong>最適合：</strong>排 roadmap 優先順序、CS 訓練、技術 demo、估算工程量</div>
+      <div class="res-foot">開啟 <span class="arrow">→</span></div>
+    </a>
+
+    <a class="res-card danger" href="blind-spots.html">
+      <div class="res-head">
+        <div class="res-emoji">⚠</div>
+        <div class="res-title-block">
+          <span class="res-tag tag-bad">BLIND SPOTS</span>
+          <div class="res-title">工程盲點與陷阱</div>
+          <div class="res-file">blind-spots.html</div>
+        </div>
+      </div>
+      <div class="res-body">
+        12 個被低估的工程議題（含 token 爆炸、跨 vendor 看不到、closed-loop 缺席、eval 退步等）+ 我們的解 + YAML FAQ。<strong style="color:var(--text);">大部分競品根本沒做這些事</strong>。
+      </div>
+      <div class="res-best"><strong>最適合：</strong>抗辯技術型客戶質疑、與 Roger 對焦、Engineering RFC 附件</div>
+      <div class="res-foot">開啟 <span class="arrow">→</span></div>
+    </a>
+
+    <a class="res-card accent" href="system-diagram.html">
+      <div class="res-head">
+        <div class="res-emoji">🗺</div>
+        <div class="res-title-block">
+          <span class="res-tag tag-accent">SYSTEM DIAGRAM · 兩邊都有</span>
+          <div class="res-title">高層次系統圖</div>
+          <div class="res-file">system-diagram.html</div>
+        </div>
+      </div>
+      <div class="res-body">
+        系統有<strong style="color:var(--text);">哪些 block · 它們怎麼接</strong>。介於「客戶故事」與「完整技術架構 v2」之間 — 適合先看完這個再進完整架構。
+      </div>
+      <div class="res-best"><strong>最適合：</strong>對接、跨部門 kick-off、新工程師 onboarding 起點</div>
+      <div class="res-foot">開啟 <span class="arrow">→</span></div>
+    </a>
+
+  </div>
+</section>
+
+<!-- SWITCH PANEL -->
+<section>
+  <div class="switch-panel">
+    <h3>🎯 想看產品定位 / 客戶故事？</h3>
+    <p>PM/MKT 客戶故事、兩模式定位、UI mockups、銷售簡報都在產品 Home。</p>
+    <a class="switch-btn" href="home-product.html">切到 Product Home →</a>
+  </div>
+</section>
+
+<div class="foot">
+  📌 Mockup · 純靜態 HTML · 部署於 Vercel
+</div>
+
+</div>
+</div>
+
+</body>
+</html>
