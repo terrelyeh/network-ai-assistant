@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <defs>
+    <!-- Drop shadow for cards -->
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4"/>
+      <feOffset dx="0" dy="3" result="off"/>
+      <feFlood flood-color="#1a2332" flood-opacity="0.10"/>
+      <feComposite in2="off" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="apps-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E1F4FE"/>
+      <stop offset="1" stop-color="#F1FAFE"/>
+    </linearGradient>
+    <linearGradient id="engine-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#03A9F4"/>
+      <stop offset="1" stop-color="#0288D1"/>
+    </linearGradient>
+    <linearGradient id="skill-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFCF5"/>
+      <stop offset="1" stop-color="#FBF5E5"/>
+    </linearGradient>
+    <linearGradient id="api-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1E3A5F"/>
+      <stop offset="1" stop-color="#15293f"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="14" markerHeight="14" refX="11" refY="7" orient="auto" markerUnits="strokeWidth">
+      <path d="M2,2 L12,7 L2,12 z" fill="#03A9F4"/>
+    </marker>
+    <marker id="arrow-dim" markerWidth="14" markerHeight="14" refX="11" refY="7" orient="auto" markerUnits="strokeWidth">
+      <path d="M2,2 L12,7 L2,12 z" fill="#7d7d7d"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1920" height="1080" fill="#fbfaf5"/>
+
+  <!-- Subtle grid hint -->
+  <rect width="1920" height="1080" fill="url(#bg)" opacity="0.04"/>
+
+  <!-- Top Brand Strip -->
+  <image href="engenius-logo.png" x="80" y="50" width="56" height="56"/>
+  <text x="152" y="82" font-family="Inter, 'Noto Sans TC', sans-serif" font-size="22" font-weight="700" fill="#03A9F4">EnGenius Cloud</text>
+  <text x="152" y="106" font-family="Inter, 'Noto Sans TC', sans-serif" font-size="13" fill="#7d7d7d">AI-powered Network Management Platform</text>
+
+  <!-- Title -->
+  <text x="960" y="120" text-anchor="middle" font-family="Inter, 'Noto Sans TC', sans-serif" font-size="38" font-weight="800" fill="#1a2332" letter-spacing="-0.5">Network AI-Assistant · High-Level Architecture</text>
+  <text x="960" y="156" text-anchor="middle" font-family="Inter, 'Noto Sans TC', sans-serif" font-size="16" fill="#5a6878">3 Applications · 1 AI Engine · 3 Skill Categories · Reuses existing EnGenius Cloud API</text>
+
+  <!-- ============== LAYER 1: APPLICATIONS ============== -->
+  <rect x="120" y="210" width="1680" height="200" rx="20" fill="url(#apps-grad)" stroke="#03A9F4" stroke-width="2" stroke-opacity="0.45"/>
+  <text x="160" y="248" font-family="Inter, 'Noto Sans TC', sans-serif" font-size="13" font-weight="800" fill="#03A9F4" letter-spacing="2">EnGenius Cloud Applications · 給使用者的入口</text>
+
+  <!-- App 1: AI Chat (Mode A) -->
+  <g filter="url(#shadow)">
+    <rect x="160" y="270" width="500" height="120" rx="14" fill="#FFFFFF" stroke="#03A9F4" stroke-width="2"/>
+    <rect x="160" y="270" width="500" height="6" rx="3" fill="#03A9F4"/>
+    <text x="184" y="310" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="#03A9F4" letter-spacing="2">MODE A · 員工自助</text>
+    <text x="184" y="346" font-family="Inter, 'Noto Sans TC', sans-serif" font-size="22" font-weight="800" fill="#1a2332">AI Chat Assistant</text>
+    <text x="184" y="372" font-family="Inter, 'Noto Sans TC', sans-serif" font-size="14" fill="#5a6878">員工自助式網路問題排查 · 不用 call IT</text>
+  </g>
+
+  <!-- App 2: Cockpit (Mode B) -->
+  <g filter="url(#shadow)">
+    <rect x="710" y="270" width="500" height="120" rx="14" fill="#FFFFFF" stroke="#FF6B35" stroke-width="2"/>
+    <rect x="710" y="270" width="500" height="6" rx="3" fill="#FF6B35"/>
+    <text x="734" y="310" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="#FF6B35" letter-spacing="2">MODE B · SMB IT 主軸</text>
+    <text x="734" y="346" font-family="Inter, 'Noto Sans TC', sans-serif" font-size="22" font-weight="800" fill="#1a2332">SMB IT Cockpit</text>
+    <text x="734" y="372" font-family="Inter, 'Noto Sans TC', sans-serif" font-size="14" fill="#5a6878">缺經驗的 IT 也能管好網路 · AI 引導式診斷</text>
+  </g>
+
+  <!-- App 3: Dashboard Builder (Wedge) -->
+  <g filter="url(#shadow)">
+    <rect x="1260" y="270" width="500" height="120" rx="14" fill="#FFFBF0" stroke="#F59E0B" stroke-width="2.5"/>
+    <rect x="1260" y="270" width="500" height="6" rx="3" fill="#F59E0B"/>
+    <text x="1284" y="310" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="#B45309" letter-spacing="2">⭐ WEDGE PRODUCT · 跨模式</text>
+    <text x="1284" y="346" font-family="Inter, 'Noto Sans TC', sans-serif" font-size="22" font-weight="800" fill="#1a2332">AI Dashboard Builder</text>
+    <text x="1284" y="372" font-family="Inter, 'Noto Sans TC', sans-serif" font-size="14" fill="#5a6878">用講的就有 dashboard · A/B 都能用 · 競爭最弱</text>
+  </g>
+
+  <!-- Arrows from apps to AI Engine -->
+  <path d="M 410,400 C 410,440 770,440 770,475" stroke="#03A9F4" stroke-width="2.5" fill="none" stroke-dasharray="0" marker-end="url(#arrow)"/>
+  <path d="M 960,400 L 960,475" stroke="#03A9F4" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+  <path d="M 1510,400 C 1510,440 1150,440 1150,475" stroke="#F59E0B" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- ============== LAYER 2: AI ENGINE ============== -->
+  <g filter="url(#shadow)">
+    <rect x="610" y="478" width="700" height="100" rx="50" fill="url(#engine-grad)"/>
+    <text x="960" y="520" text-anchor="middle" font-family="Inter, 'Noto Sans TC', sans-serif" font-size="13" font-weight="700" fill="#E1F4FE" letter-spacing="3">AI ENGINE · 統一推理層</text>
+    <text x="960" y="552" text-anchor="middle" font-family="Inter, 'Noto Sans TC', sans-serif" font-size="24" font-weight="800" fill="#FFFFFF">EnGenius AI Engine</text>
+  </g>
+
+  <!-- Arrow AI Engine → Skills -->
+  <path d="M 960,580 L 960,640" stroke="#03A9F4" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- ============== LAYER 3: SKILL CATEGORIES ============== -->
+  <rect x="120" y="650" width="1680" height="220" rx="20" fill="url(#skill-grad)" stroke="#F59E0B" stroke-width="2" stroke-opacity="0.4"/>
+  <text x="160" y="688" font-family="Inter, 'Noto Sans TC', sans-serif" font-size="13" font-weight="800" fill="#B45309" letter-spacing="2">Skill Execution · 3 類技能組合（AI 從 closed catalog 挑）</text>
+
+  <!-- Skill 1: Diagnostic -->
+  <g filter="url(#shadow)">
+    <rect x="160" y="710" width="500" height="140" rx="14" fill="#FFFFFF" stroke="#cecece" stroke-width="1.5" stroke-dasharray="6,4"/>
+    <text x="184" y="746" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="#7d7d7d" letter-spacing="1.5">DIAGNOSTIC SKILLS</text>
+    <text x="184" y="778" font-family="Inter, 'Noto Sans TC', sans-serif" font-size="20" font-weight="800" fill="#1a2332">診斷類技能</text>
+    <text x="184" y="808" font-family="Inter, 'Noto Sans TC', sans-serif" font-size="13" fill="#5a6878">Device offline · WiFi 訊號 · WAN/LAN</text>
+    <text x="184" y="828" font-family="Inter, 'Noto Sans TC', sans-serif" font-size="13" fill="#5a6878">redundancy · Sticky client · …</text>
+  </g>
+
+  <!-- Skill 2: Monitoring -->
+  <g filter="url(#shadow)">
+    <rect x="710" y="710" width="500" height="140" rx="14" fill="#FFFFFF" stroke="#cecece" stroke-width="1.5" stroke-dasharray="6,4"/>
+    <text x="734" y="746" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="#7d7d7d" letter-spacing="1.5">MONITORING SKILLS</text>
+    <text x="734" y="778" font-family="Inter, 'Noto Sans TC', sans-serif" font-size="20" font-weight="800" fill="#1a2332">監控類技能</text>
+    <text x="734" y="808" font-family="Inter, 'Noto Sans TC', sans-serif" font-size="13" fill="#5a6878">Device status · Throughput tracking</text>
+    <text x="734" y="828" font-family="Inter, 'Noto Sans TC', sans-serif" font-size="13" fill="#5a6878">Alarm aggregation · Log scanning · …</text>
+  </g>
+
+  <!-- Skill 3: Dashboard Builder -->
+  <g filter="url(#shadow)">
+    <rect x="1260" y="710" width="500" height="140" rx="14" fill="#FFFBF0" stroke="#F59E0B" stroke-width="2.5" stroke-dasharray="0"/>
+    <text x="1284" y="746" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700" fill="#B45309" letter-spacing="1.5">⭐ DASHBOARD BUILDER SKILLS</text>
+    <text x="1284" y="778" font-family="Inter, 'Noto Sans TC', sans-serif" font-size="20" font-weight="800" fill="#1a2332">Widget 組合技能</text>
+    <text x="1284" y="808" font-family="Inter, 'Noto Sans TC', sans-serif" font-size="13" fill="#5a6878">8 widget types: KPI / Time series / Bar /</text>
+    <text x="1284" y="828" font-family="Inter, 'Noto Sans TC', sans-serif" font-size="13" fill="#5a6878">Table / Heatmap / Status grid / …</text>
+  </g>
+
+  <!-- Arrow Skills → API -->
+  <path d="M 960,870 L 960,925" stroke="#03A9F4" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- ============== LAYER 4: API + EXISTING CLOUD ============== -->
+  <g filter="url(#shadow)">
+    <rect x="320" y="930" width="1280" height="100" rx="14" fill="url(#api-grad)"/>
+    <text x="960" y="970" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="#03A9F4" letter-spacing="2">EXISTING ENGENIUS CLOUD · 既有平台 · 不重做</text>
+    <text x="960" y="1004" text-anchor="middle" font-family="Inter, 'Noto Sans TC', sans-serif" font-size="22" font-weight="800" fill="#FFFFFF">EnGenius Device &amp; Cloud RESTful API</text>
+  </g>
+
+  <!-- Footer note -->
+  <text x="1840" y="1064" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="11" fill="#a0a0a0">network-ai-assistant.vercel.app · 2026-05</text>
+</svg>
