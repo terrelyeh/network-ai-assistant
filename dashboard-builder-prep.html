@@ -158,7 +158,9 @@
   }
 
   /* CONTENT */
+  .content { counter-reset: section-num; }
   .content section { margin-bottom: 56px; }
+  .content section:not(.tldr) { counter-increment: section-num; }
   .content section:last-child { margin-bottom: 0; }
   .content h2 {
     font-size: 30px;
@@ -174,6 +176,9 @@
     font-size: 15px;
     color: var(--accent);
     font-weight: 700;
+  }
+  .content h2 .num::before {
+    content: counter(section-num, decimal-leading-zero);
   }
   .content h3 {
     font-size: 20px;
@@ -403,17 +408,22 @@
     color: var(--muted);
     font-size: 15px;
     line-height: 1.7;
+    counter-reset: panel-num;
   }
   .panel-body h2 {
     font-size: 22px; color: var(--text);
     font-weight: 800; letter-spacing: -0.01em;
     margin: 28px 0 12px;
     display: flex; align-items: baseline; gap: 10px;
+    counter-increment: panel-num;
   }
   .panel-body h2:first-child { margin-top: 0; }
   .panel-body h2 .num {
     font-family: 'JetBrains Mono', monospace;
     font-size: 12px; color: var(--accent); font-weight: 700;
+  }
+  .panel-body h2 .num::before {
+    content: counter(panel-num, decimal-leading-zero);
   }
   .panel-body h3 { font-size: 15px; font-weight: 700; color: var(--cyan); margin: 18px 0 8px; letter-spacing: 0.02em; }
   .panel-body p { margin-bottom: 12px; }
@@ -490,33 +500,59 @@
 
   /* TOKENS CTA */
   .tokens-cta {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: linear-gradient(135deg, rgba(3,169,244,0.12), rgba(255,107,53,0.08));
+    display: inline-flex; align-items: center; gap: 10px;
+    background: linear-gradient(135deg, rgba(3,169,244,0.15), rgba(255,107,53,0.10));
     border: 1px solid var(--cyan);
     color: var(--text);
-    padding: 10px 18px;
+    padding: 11px 20px;
     border-radius: 8px;
-    font-size: 14px; font-weight: 600;
+    font-size: 14.5px; font-weight: 600;
     cursor: pointer;
     text-decoration: none;
-    transition: all 0.15s;
+    transition: all 0.18s;
     font-family: inherit;
   }
   .tokens-cta:hover {
-    background: linear-gradient(135deg, rgba(3,169,244,0.20), rgba(255,107,53,0.12));
+    background: linear-gradient(135deg, rgba(3,169,244,0.25), rgba(255,107,53,0.15));
     transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(3,169,244,0.20);
   }
-  .tokens-cta::after { content: '→'; transition: transform 0.2s; }
-  .tokens-cta:hover::after { transform: translateX(3px); }
+  .tokens-cta::after { content: '→'; transition: transform 0.2s; font-size: 16px; }
+  .tokens-cta:hover::after { transform: translateX(4px); }
 
-  .clickable-token {
-    cursor: pointer;
-    text-decoration: underline;
-    text-decoration-style: dotted;
-    text-decoration-color: var(--cyan);
-    text-underline-offset: 3px;
+  .tokens-cta-large {
+    padding: 14px 28px;
+    font-size: 15.5px;
+    border-radius: 10px;
+    border-width: 1.5px;
   }
-  .clickable-token:hover { color: var(--cyan); }
+
+  /* TOKEN PREVIEW (in dedicated section) */
+  .token-preview {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 16px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin: 12px 0 18px;
+  }
+  .t-swatch {
+    width: 38px; height: 38px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    cursor: help;
+    transition: transform 0.15s;
+  }
+  .t-swatch:hover { transform: scale(1.1); }
+  .t-swatch-label {
+    font-size: 12.5px;
+    color: var(--dim);
+    margin-left: auto;
+    font-style: italic;
+  }
 
   /* RELATED */
   .related {
@@ -601,6 +637,7 @@
   <ol>
     <li><a href="#tldr">TL;DR</a></li>
     <li><a href="#s1">為什麼不先寫 Design Guideline</a></li>
+    <li><a href="#s-tokens">EnGenius Cloud Design Tokens</a></li>
     <li><a href="#s2">什麼是 Widget Catalog</a></li>
     <li><a href="#s3">Catalog 的實際存在形式</a></li>
     <li><a href="#s4">Zod 是什麼</a></li>
@@ -630,7 +667,7 @@
 
 <!-- 1 -->
 <section id="s1">
-  <h2><span class="num">01</span>為什麼不先寫 Design Guideline</h2>
+  <h2><span class="num"></span>為什麼不先寫 Design Guideline</h2>
 
   <h3>結論</h3>
   <ul>
@@ -640,20 +677,58 @@
   </ul>
 
   <h3>替代做法（半天搞定）</h3>
-  <p>從既有 EnGenius Cloud dashboard 直接抓 design tokens：主色（accent color）、字體 / 字級階層、card padding / border-radius、chart 配色、spacing scale。整理成一份 <code class="clickable-token" data-open-panel="tokens">design-tokens.md</code> 或 Figma frame，<strong>RD render widget 時直接 reuse 既有 css variables / tailwind tokens</strong>，不會跟既有產品違和。</p>
-
-  <p>
-    <button class="tokens-cta" data-open-panel="tokens">查看 EnGenius Cloud Design Tokens</button>
-  </p>
+  <p>從既有 EnGenius Cloud dashboard 直接抓 design tokens：主色（accent color）、字體 / 字級階層、card padding / border-radius、chart 配色、spacing scale。整理成一份 <code>design-tokens.md</code> 或 Figma frame，<strong>RD render widget 時直接 reuse 既有 css variables / tailwind tokens</strong>，不會跟既有產品違和。</p>
 
   <div class="callout warn">
-    這份 design tokens <strong>不是 design guideline</strong> — 它是「對齊既有」的快照，不是另寫一套規則。
+    這份 design tokens <strong>不是 design guideline</strong> — 它是「對齊既有」的快照，不是另寫一套規則。下一節有完整 token 預覽。
+  </div>
+</section>
+
+<!-- 2 - Design Tokens (dedicated section with panel trigger) -->
+<section id="s-tokens">
+  <h2><span class="num"></span>EnGenius Cloud Design Tokens</h2>
+
+  <p>從既有 <strong>engenius.ai/cloud</strong> 抓的設計 token 快照 — color / typography / spacing / chart palette / shadow / radius。<strong>Widget 視覺實作直接 reuse 這些值</strong>，不要另寫一套 design system。</p>
+
+  <h3>主色預覽</h3>
+  <div class="token-preview">
+    <span class="t-swatch" style="background:#03A9F4" title="brand-primary #03A9F4"></span>
+    <span class="t-swatch" style="background:#2F5BE7" title="brand-secondary #2F5BE7"></span>
+    <span class="t-swatch" style="background:#FFA200" title="cta-orange #FFA200"></span>
+    <span class="t-swatch" style="background:#10B981" title="success #10B981"></span>
+    <span class="t-swatch" style="background:#F59E0B" title="warning #F59E0B"></span>
+    <span class="t-swatch" style="background:#EA3D56" title="danger #EA3D56"></span>
+    <span class="t-swatch" style="background:#A78BFA" title="purple #A78BFA"></span>
+    <span class="t-swatch" style="background:#06B6D4" title="cyan #06B6D4"></span>
+    <span class="t-swatch-label">滑鼠移上去看 hex</span>
+  </div>
+
+  <h3>包含 8 個區塊</h3>
+  <ul>
+    <li><strong>Color tokens</strong> — primary brand / semantic / surface / text / border</li>
+    <li><strong>Chart palette</strong> — categorical 8 色 + sequential gradient（給 heatmap）</li>
+    <li><strong>Typography</strong> — font family、type scale（display / h1-h3 / body / caption）、weight scale</li>
+    <li><strong>Spacing scale</strong> — Tailwind-aligned 4px base（space-1 ~ space-16）</li>
+    <li><strong>Border radius</strong> — sm / md / lg / xl / 2xl / full</li>
+    <li><strong>Shadow</strong> — sm / md / lg / glow（input focus ring）</li>
+    <li><strong>CSS 使用範例</strong> — KPI Card 完整寫法</li>
+    <li><strong>還沒解決的設計疑點</strong> — Dark mode / Recharts 預設色 / 內部 design system</li>
+  </ul>
+
+  <p style="margin-top: 24px;">
+    <button class="tokens-cta tokens-cta-large" data-open-panel="tokens">
+      查看完整 Design Tokens
+    </button>
+  </p>
+
+  <div class="callout">
+    完整 markdown 版本：<a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/docs/design-tokens.md" target="_blank">docs/design-tokens.md</a> — 適合給 design / RD 帶到 Figma 或 <code>tailwind.config.js</code>。
   </div>
 </section>
 
 <!-- 2 -->
 <section id="s2">
-  <h2><span class="num">02</span>什麼是 Widget Catalog</h2>
+  <h2><span class="num"></span>什麼是 Widget Catalog</h2>
 
   <h3>一句話</h3>
   <p><strong>LLM 跟前端之間的「元件菜單」+ 契約</strong> — 預先定義 6-8 種 widget「樂高積木」，AI 只能從中挑、再組合。</p>
@@ -701,7 +776,7 @@ LLM 看 catalog → 決定組合：
 
 <!-- 3 -->
 <section id="s3">
-  <h2><span class="num">03</span>Catalog 的實際存在形式</h2>
+  <h2><span class="num"></span>Catalog 的實際存在形式</h2>
 
   <p>業界做法：<strong>三份東西，但只有「一份 source of truth」</strong>。</p>
 
@@ -758,7 +833,7 @@ docs/
 
 <!-- 4 -->
 <section id="s4">
-  <h2><span class="num">04</span>Zod 是什麼？為什麼用它</h2>
+  <h2><span class="num"></span>Zod 是什麼？為什麼用它</h2>
 
   <p>Zod 是 TypeScript 圈最紅的 schema validation 函式庫。<strong>寫一次 schema，同時得到三個東西</strong>：</p>
   <ol>
@@ -813,7 +888,7 @@ KpiCard.<span class="fn">parse</span>({ title: <span class="str">"本週客戶"<
 
 <!-- 5 -->
 <section id="s5">
-  <h2><span class="num">05</span>怎麼開始做（順序很重要）</h2>
+  <h2><span class="num"></span>怎麼開始做（順序很重要）</h2>
 
   <div class="pitfall">
     <div><strong>錯誤順序（很常見）</strong>：先挑 UI library → 看 component 有什麼 props → 倒回去寫 schema。這會讓 schema 被 library 綁架（冒出 Recharts 特有的 prop 之類），LLM 完全不知道要幹嘛。</div>
@@ -902,7 +977,7 @@ KpiCard.<span class="fn">parse</span>({ title: <span class="str">"本週客戶"<
 
 <!-- 6 -->
 <section id="s6">
-  <h2><span class="num">06</span>角色分工 / 並行進度</h2>
+  <h2><span class="num"></span>角色分工 / 並行進度</h2>
 
   <div class="ascii-diagram">週 1                週 2-3              週 4-6
 ─────────────────  ─────────────────  ─────────────────
@@ -929,7 +1004,7 @@ tokens              + Storybook hookup
 
 <!-- 7 -->
 <section id="s7">
-  <h2><span class="num">07</span>RD 實作 Checklist（每個 widget）</h2>
+  <h2><span class="num"></span>RD 實作 Checklist（每個 widget）</h2>
   <ul class="checklist">
     <li>Zod schema 定義（<code>schemas/widget-name.ts</code>）</li>
     <li>React/Vue component（<code>components/WidgetName.tsx</code>）</li>
@@ -944,7 +1019,7 @@ tokens              + Storybook hookup
 
 <!-- 8 -->
 <section id="s8">
-  <h2><span class="num">08</span>Prompt Engineering Checklist</h2>
+  <h2><span class="num"></span>Prompt Engineering Checklist</h2>
   <ul class="checklist">
     <li>System prompt 列出可用 widget（用 <code>widget-catalog.md</code> 內容）</li>
     <li>LLM tool spec 從 <code>LLM_TOOLS</code> 自動產出（不手寫）</li>
@@ -957,7 +1032,7 @@ tokens              + Storybook hookup
 
 <!-- 9 -->
 <section id="s9">
-  <h2><span class="num">09</span>Common Pitfalls</h2>
+  <h2><span class="num"></span>Common Pitfalls</h2>
 
   <h3>設計面</h3>
   <div class="pitfall"><div><strong>等 design 寫 100 頁 design system 才開始</strong> — wedge PoC 6-8 週要見驗證，等不到</div></div>
@@ -978,12 +1053,12 @@ tokens              + Storybook hookup
 
 <!-- 10 -->
 <section id="s10">
-  <h2><span class="num">10</span>第一週交付物</h2>
+  <h2><span class="num"></span>第一週交付物</h2>
   <p>完成這些就算 setup 完成：</p>
   <table>
     <thead><tr><th>交付物</th><th>Owner</th><th>形式</th></tr></thead>
     <tbody>
-      <tr><td><code class="clickable-token" data-open-panel="tokens">design-tokens.md</code>（從既有 GUI 抓）</td><td>Design</td><td>Markdown / Figma frame</td></tr>
+      <tr><td><code>design-tokens.md</code>（從既有 GUI 抓）</td><td>Design</td><td>Markdown / Figma frame</td></tr>
       <tr><td><code>widgets/schemas/kpi-card.ts</code></td><td>RD</td><td>TypeScript + Zod</td></tr>
       <tr><td><code>widgets/schemas/time-series.ts</code></td><td>RD</td><td>TypeScript + Zod</td></tr>
       <tr><td><code>widgets/registry.ts</code>（含 KPI + Time Series）</td><td>RD</td><td>TypeScript</td></tr>
@@ -996,7 +1071,7 @@ tokens              + Storybook hookup
 
 <!-- 11 -->
 <section id="s11">
-  <h2><span class="num">11</span>Open Questions（要在 kickoff 前定）</h2>
+  <h2><span class="num"></span>Open Questions（要在 kickoff 前定）</h2>
   <ul class="checklist">
     <li>既有 EnGenius Cloud 用的 UI / chart library 是哪些？（決定 reuse vs 新選）</li>
     <li>Stack：React / Vue? Tailwind? CSS-in-JS?</li>
@@ -1050,7 +1125,7 @@ tokens              + Storybook hookup
       <br>來源：engenius.ai/cloud + 推斷常見 dashboard 慣例
     </p>
 
-    <h2><span class="num">01</span>Color · Primary Brand</h2>
+    <h2><span class="num"></span>Color · Primary Brand</h2>
     <div class="token-grid">
       <div class="token-swatch" style="background:#03A9F4"></div>
       <div><div class="token-name">--brand-primary</div></div>
@@ -1119,7 +1194,7 @@ tokens              + Storybook hookup
       <div class="token-desc">一般邊框</div>
     </div>
 
-    <h2><span class="num">02</span>Chart Palette</h2>
+    <h2><span class="num"></span>Chart Palette</h2>
     <p style="font-size:13.5px;">按使用順序 — categorical chart 取前 N 個。<strong>不超過 5 條線</strong>。</p>
     <div class="token-grid">
       <div class="token-swatch" style="background:#03A9F4"></div>
@@ -1157,7 +1232,7 @@ tokens              + Storybook hookup
     <h3>Sequential gradient（heatmap）</h3>
     <div style="height: 28px; border-radius: 6px; background: linear-gradient(90deg, #ECF2FF, #B8D4FB, #69A8F0, #03A9F4, #2F5BE7); border: 1px solid var(--border); margin-bottom: 16px;"></div>
 
-    <h2><span class="num">03</span>Typography</h2>
+    <h2><span class="num"></span>Typography</h2>
     <h3>Font Family</h3>
 <pre>--font-sans: 'Inter', 'Noto Sans TC', -apple-system, sans-serif;
 --font-mono: 'JetBrains Mono', 'Roboto Mono', Consolas, monospace;</pre>
@@ -1178,7 +1253,7 @@ tokens              + Storybook hookup
     </table>
     <p style="font-size:13px; color:var(--dim);">KPI / 表格數字統一用 <code>font-variant-numeric: tabular-nums</code> 等寬數字對齊。</p>
 
-    <h2><span class="num">04</span>Spacing Scale</h2>
+    <h2><span class="num"></span>Spacing Scale</h2>
     <table>
       <thead><tr><th>Token</th><th>Pixels</th><th>用途</th></tr></thead>
       <tbody>
@@ -1193,7 +1268,7 @@ tokens              + Storybook hookup
       </tbody>
     </table>
 
-    <h2><span class="num">05</span>Border Radius</h2>
+    <h2><span class="num"></span>Border Radius</h2>
     <table>
       <thead><tr><th>Token</th><th>Value</th><th>用途</th></tr></thead>
       <tbody>
@@ -1206,7 +1281,7 @@ tokens              + Storybook hookup
       </tbody>
     </table>
 
-    <h2><span class="num">06</span>Shadow</h2>
+    <h2><span class="num"></span>Shadow</h2>
     <table>
       <thead><tr><th>Token</th><th>用途</th></tr></thead>
       <tbody>
@@ -1217,7 +1292,7 @@ tokens              + Storybook hookup
       </tbody>
     </table>
 
-    <h2><span class="num">07</span>使用範例（CSS）</h2>
+    <h2><span class="num"></span>使用範例（CSS）</h2>
 <pre>.kpi-card {
   background: var(--bg-primary);
   border: 1px solid var(--border-subtle);
@@ -1234,7 +1309,7 @@ tokens              + Storybook hookup
   font-variant-numeric: tabular-nums;
 }</pre>
 
-    <h2><span class="num">08</span>還沒解決的設計疑點</h2>
+    <h2><span class="num"></span>還沒解決的設計疑點</h2>
     <ul>
       <li>Dark mode 要不要支援？v1 建議先不做（既有 EnGenius Cloud 也是 light only）</li>
       <li>圖表 library 內建色被覆寫到什麼程度（Recharts 預設色完全不要用？）</li>
