@@ -9,20 +9,20 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg-1: #0a1628;
-    --bg-2: #0f1e3a;
-    --bg-3: #050d1a;
-    --surface: rgba(255,255,255,0.04);
-    --surface-2: rgba(255,255,255,0.08);
-    --border: rgba(255,255,255,0.10);
-    --border-strong: rgba(255,255,255,0.20);
-    --text: #f8fafc;
-    --muted: #cbd5e1;
-    --dim: #64748b;
+    --bg-1: #f5f2ea;
+    --bg-2: #ffffff;
+    --bg-3: #efe9da;
+    --surface: #ffffff;
+    --surface-2: #faf8f3;
+    --border: rgba(15,30,60,0.10);
+    --border-strong: rgba(15,30,60,0.20);
+    --text: #1a2332;
+    --muted: #5a6878;
+    --dim: #97a3b3;
     --accent: #ff6b35;
-    --cyan: #00d9c5;
+    --cyan: #03a9f4;
     --good: #10b981;
-    --warn: #fbbf24;
+    --warn: #f59e0b;
     --bad: #ef4444;
     --purple: #a78bfa;
   }
@@ -40,7 +40,7 @@
   /* Banner */
   .mockup-banner {
     height: 32px;
-    background: linear-gradient(90deg, rgba(255,107,53,0.15), rgba(0,217,197,0.10));
+    background: linear-gradient(90deg, rgba(255,107,53,0.15), rgba(3,169,244,0.10));
     border-bottom: 1px solid rgba(255,107,53,0.3);
     display: flex; align-items: center; justify-content: space-between;
     padding: 0 16px;
@@ -50,10 +50,10 @@
   .mockup-banner strong { color: var(--accent); margin-right: 6px; }
   .mockup-banner a {
     color: var(--cyan); text-decoration: none; font-weight: 600;
-    padding: 4px 10px; border: 1px solid rgba(0,217,197,0.3);
+    padding: 4px 10px; border: 1px solid rgba(3,169,244,0.3);
     border-radius: 6px;
   }
-  .mockup-banner a:hover { background: rgba(0,217,197,0.15); }
+  .mockup-banner a:hover { background: rgba(3,169,244,0.15); }
 
   /* Step indicator */
   .stepbar {
@@ -262,7 +262,7 @@
     opacity: 1;
     color: var(--text);
     border-color: var(--cyan);
-    background: rgba(0,217,197,0.08);
+    background: rgba(3,169,244,0.08);
   }
   .thinking-step.done {
     opacity: 0.7;
@@ -286,8 +286,8 @@
     margin: 0 auto;
   }
   .proposal-card {
-    background: linear-gradient(135deg, rgba(0,217,197,0.08), rgba(255,107,53,0.04));
-    border: 1px solid rgba(0,217,197,0.4);
+    background: linear-gradient(135deg, rgba(3,169,244,0.08), rgba(255,107,53,0.04));
+    border: 1px solid rgba(3,169,244,0.4);
     border-radius: 18px;
     padding: 32px 36px;
   }
@@ -1060,32 +1060,32 @@
           <div style="display:flex;flex-direction:column;gap:6px;font-size:11px;">
             <div style="display:grid;grid-template-columns:80px 1fr 110px;gap:8px;align-items:center;">
               <span>SW-2F</span>
-              <div style="height:14px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;"><div style="width:87%;height:100%;background:var(--warn);"></div></div>
+              <div style="height:14px;background:rgba(15,30,60,0.06);border-radius:4px;overflow:hidden;"><div style="width:87%;height:100%;background:var(--warn);"></div></div>
               <span style="color:var(--warn);">208 / 240W (87%)</span>
             </div>
             <div style="display:grid;grid-template-columns:80px 1fr 110px;gap:8px;align-items:center;">
               <span>SW-3F-Core</span>
-              <div style="height:14px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;"><div style="width:78%;height:100%;background:var(--accent);"></div></div>
+              <div style="height:14px;background:rgba(15,30,60,0.06);border-radius:4px;overflow:hidden;"><div style="width:78%;height:100%;background:var(--accent);"></div></div>
               <span>187 / 240W (78%)</span>
             </div>
             <div style="display:grid;grid-template-columns:80px 1fr 110px;gap:8px;align-items:center;">
               <span>SW-Lab</span>
-              <div style="height:14px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;"><div style="width:80%;height:100%;background:var(--accent);"></div></div>
+              <div style="height:14px;background:rgba(15,30,60,0.06);border-radius:4px;overflow:hidden;"><div style="width:80%;height:100%;background:var(--accent);"></div></div>
               <span>192 / 240W (80%)</span>
             </div>
             <div style="display:grid;grid-template-columns:80px 1fr 110px;gap:8px;align-items:center;">
               <span>SW-1F</span>
-              <div style="height:14px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;"><div style="width:75%;height:100%;background:var(--accent);"></div></div>
+              <div style="height:14px;background:rgba(15,30,60,0.06);border-radius:4px;overflow:hidden;"><div style="width:75%;height:100%;background:var(--accent);"></div></div>
               <span>180 / 240W (75%)</span>
             </div>
             <div style="display:grid;grid-template-columns:80px 1fr 110px;gap:8px;align-items:center;">
               <span>SW-7F</span>
-              <div style="height:14px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;"><div style="width:68%;height:100%;background:var(--cyan);"></div></div>
+              <div style="height:14px;background:rgba(15,30,60,0.06);border-radius:4px;overflow:hidden;"><div style="width:68%;height:100%;background:var(--cyan);"></div></div>
               <span>163 / 240W (68%)</span>
             </div>
             <div style="display:grid;grid-template-columns:80px 1fr 110px;gap:8px;align-items:center;">
               <span>SW-5F</span>
-              <div style="height:14px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;"><div style="width:59%;height:100%;background:var(--cyan);"></div></div>
+              <div style="height:14px;background:rgba(15,30,60,0.06);border-radius:4px;overflow:hidden;"><div style="width:59%;height:100%;background:var(--cyan);"></div></div>
               <span>142 / 240W (59%)</span>
             </div>
           </div>
@@ -1144,7 +1144,7 @@
         <div class="widget span-3">
           <div class="widget-title">拓樸圖 · 影響範圍（紅色 = 維護期失聯）<button class="widget-edit">✏</button></div>
           <svg viewBox="0 0 800 240" style="width:100%;height:auto;">
-            <rect x="340" y="10" width="120" height="32" rx="6" fill="rgba(0,217,197,0.15)" stroke="#00d9c5" stroke-width="2"/>
+            <rect x="340" y="10" width="120" height="32" rx="6" fill="rgba(3,169,244,0.15)" stroke="#00d9c5" stroke-width="2"/>
             <text x="400" y="30" text-anchor="middle" fill="#00d9c5" font-size="12" font-weight="700">🌐 Internet GW</text>
 
             <line x1="400" y1="42" x2="400" y2="70" stroke="#cbd5e1" stroke-width="1.5"/>
@@ -1214,11 +1214,11 @@
         <div class="widget span-2">
           <div class="widget-title">Top 10 最忙 AP（依 client 數）<button class="widget-edit">✏</button></div>
           <div style="display:flex;flex-direction:column;gap:6px;font-size:11px;">
-            <div style="display:grid;grid-template-columns:80px 1fr 50px;gap:8px;align-items:center;"><span>AP-3F-N2</span><div style="height:14px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;"><div style="width:95%;height:100%;background:var(--warn);"></div></div><span>76</span></div>
-            <div style="display:grid;grid-template-columns:80px 1fr 50px;gap:8px;align-items:center;"><span>AP-7F-S1</span><div style="height:14px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;"><div style="width:88%;height:100%;background:var(--warn);"></div></div><span>71</span></div>
-            <div style="display:grid;grid-template-columns:80px 1fr 50px;gap:8px;align-items:center;"><span>AP-2F-N4</span><div style="height:14px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;"><div style="width:72%;height:100%;background:var(--accent);"></div></div><span>58</span></div>
-            <div style="display:grid;grid-template-columns:80px 1fr 50px;gap:8px;align-items:center;"><span>AP-5F-N1</span><div style="height:14px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;"><div style="width:65%;height:100%;background:var(--accent);"></div></div><span>52</span></div>
-            <div style="display:grid;grid-template-columns:80px 1fr 50px;gap:8px;align-items:center;"><span>AP-1F-S3</span><div style="height:14px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;"><div style="width:58%;height:100%;background:var(--cyan);"></div></div><span>47</span></div>
+            <div style="display:grid;grid-template-columns:80px 1fr 50px;gap:8px;align-items:center;"><span>AP-3F-N2</span><div style="height:14px;background:rgba(15,30,60,0.06);border-radius:4px;overflow:hidden;"><div style="width:95%;height:100%;background:var(--warn);"></div></div><span>76</span></div>
+            <div style="display:grid;grid-template-columns:80px 1fr 50px;gap:8px;align-items:center;"><span>AP-7F-S1</span><div style="height:14px;background:rgba(15,30,60,0.06);border-radius:4px;overflow:hidden;"><div style="width:88%;height:100%;background:var(--warn);"></div></div><span>71</span></div>
+            <div style="display:grid;grid-template-columns:80px 1fr 50px;gap:8px;align-items:center;"><span>AP-2F-N4</span><div style="height:14px;background:rgba(15,30,60,0.06);border-radius:4px;overflow:hidden;"><div style="width:72%;height:100%;background:var(--accent);"></div></div><span>58</span></div>
+            <div style="display:grid;grid-template-columns:80px 1fr 50px;gap:8px;align-items:center;"><span>AP-5F-N1</span><div style="height:14px;background:rgba(15,30,60,0.06);border-radius:4px;overflow:hidden;"><div style="width:65%;height:100%;background:var(--accent);"></div></div><span>52</span></div>
+            <div style="display:grid;grid-template-columns:80px 1fr 50px;gap:8px;align-items:center;"><span>AP-1F-S3</span><div style="height:14px;background:rgba(15,30,60,0.06);border-radius:4px;overflow:hidden;"><div style="width:58%;height:100%;background:var(--cyan);"></div></div><span>47</span></div>
           </div>
         </div>
         <div class="widget">
@@ -1234,11 +1234,11 @@
           <div class="widget-title">5GHz Channel Utilization Heatmap (24h) <button class="widget-edit">✏</button></div>
           <div class="heatmap" style="display:grid;grid-template-columns:30px repeat(12,1fr);gap:2px;font-size:10px;color:var(--dim);font-family:'JetBrains Mono';">
             <div>36</div>
-            <div style="height:18px;background:rgba(0,217,197,0.15);border-radius:2px;"></div><div style="height:18px;background:rgba(0,217,197,0.15);border-radius:2px;"></div><div style="height:18px;background:rgba(0,217,197,0.3);border-radius:2px;"></div><div style="height:18px;background:rgba(255,107,53,0.4);border-radius:2px;"></div><div style="height:18px;background:rgba(255,107,53,0.6);border-radius:2px;"></div><div style="height:18px;background:rgba(239,68,68,0.7);border-radius:2px;"></div><div style="height:18px;background:rgba(255,107,53,0.6);border-radius:2px;"></div><div style="height:18px;background:rgba(255,107,53,0.4);border-radius:2px;"></div><div style="height:18px;background:rgba(0,217,197,0.3);border-radius:2px;"></div><div style="height:18px;background:rgba(0,217,197,0.3);border-radius:2px;"></div><div style="height:18px;background:rgba(0,217,197,0.15);border-radius:2px;"></div><div style="height:18px;background:rgba(0,217,197,0.15);border-radius:2px;"></div>
+            <div style="height:18px;background:rgba(3,169,244,0.15);border-radius:2px;"></div><div style="height:18px;background:rgba(3,169,244,0.15);border-radius:2px;"></div><div style="height:18px;background:rgba(3,169,244,0.3);border-radius:2px;"></div><div style="height:18px;background:rgba(255,107,53,0.4);border-radius:2px;"></div><div style="height:18px;background:rgba(255,107,53,0.6);border-radius:2px;"></div><div style="height:18px;background:rgba(239,68,68,0.7);border-radius:2px;"></div><div style="height:18px;background:rgba(255,107,53,0.6);border-radius:2px;"></div><div style="height:18px;background:rgba(255,107,53,0.4);border-radius:2px;"></div><div style="height:18px;background:rgba(3,169,244,0.3);border-radius:2px;"></div><div style="height:18px;background:rgba(3,169,244,0.3);border-radius:2px;"></div><div style="height:18px;background:rgba(3,169,244,0.15);border-radius:2px;"></div><div style="height:18px;background:rgba(3,169,244,0.15);border-radius:2px;"></div>
             <div>44</div>
-            <div style="height:18px;background:rgba(0,217,197,0.15);border-radius:2px;"></div><div style="height:18px;background:rgba(0,217,197,0.3);border-radius:2px;"></div><div style="height:18px;background:rgba(255,107,53,0.4);border-radius:2px;"></div><div style="height:18px;background:rgba(255,107,53,0.6);border-radius:2px;"></div><div style="height:18px;background:rgba(239,68,68,0.7);border-radius:2px;"></div><div style="height:18px;background:rgba(239,68,68,0.7);border-radius:2px;"></div><div style="height:18px;background:rgba(239,68,68,0.7);border-radius:2px;"></div><div style="height:18px;background:rgba(255,107,53,0.6);border-radius:2px;"></div><div style="height:18px;background:rgba(255,107,53,0.4);border-radius:2px;"></div><div style="height:18px;background:rgba(0,217,197,0.3);border-radius:2px;"></div><div style="height:18px;background:rgba(0,217,197,0.15);border-radius:2px;"></div><div style="height:18px;background:rgba(0,217,197,0.15);border-radius:2px;"></div>
+            <div style="height:18px;background:rgba(3,169,244,0.15);border-radius:2px;"></div><div style="height:18px;background:rgba(3,169,244,0.3);border-radius:2px;"></div><div style="height:18px;background:rgba(255,107,53,0.4);border-radius:2px;"></div><div style="height:18px;background:rgba(255,107,53,0.6);border-radius:2px;"></div><div style="height:18px;background:rgba(239,68,68,0.7);border-radius:2px;"></div><div style="height:18px;background:rgba(239,68,68,0.7);border-radius:2px;"></div><div style="height:18px;background:rgba(239,68,68,0.7);border-radius:2px;"></div><div style="height:18px;background:rgba(255,107,53,0.6);border-radius:2px;"></div><div style="height:18px;background:rgba(255,107,53,0.4);border-radius:2px;"></div><div style="height:18px;background:rgba(3,169,244,0.3);border-radius:2px;"></div><div style="height:18px;background:rgba(3,169,244,0.15);border-radius:2px;"></div><div style="height:18px;background:rgba(3,169,244,0.15);border-radius:2px;"></div>
             <div>149</div>
-            <div style="height:18px;background:rgba(0,217,197,0.15);border-radius:2px;"></div><div style="height:18px;background:rgba(0,217,197,0.15);border-radius:2px;"></div><div style="height:18px;background:rgba(0,217,197,0.3);border-radius:2px;"></div><div style="height:18px;background:rgba(0,217,197,0.3);border-radius:2px;"></div><div style="height:18px;background:rgba(255,107,53,0.4);border-radius:2px;"></div><div style="height:18px;background:rgba(255,107,53,0.4);border-radius:2px;"></div><div style="height:18px;background:rgba(255,107,53,0.4);border-radius:2px;"></div><div style="height:18px;background:rgba(0,217,197,0.3);border-radius:2px;"></div><div style="height:18px;background:rgba(0,217,197,0.3);border-radius:2px;"></div><div style="height:18px;background:rgba(0,217,197,0.15);border-radius:2px;"></div><div style="height:18px;background:rgba(0,217,197,0.15);border-radius:2px;"></div><div style="height:18px;background:rgba(0,217,197,0.15);border-radius:2px;"></div>
+            <div style="height:18px;background:rgba(3,169,244,0.15);border-radius:2px;"></div><div style="height:18px;background:rgba(3,169,244,0.15);border-radius:2px;"></div><div style="height:18px;background:rgba(3,169,244,0.3);border-radius:2px;"></div><div style="height:18px;background:rgba(3,169,244,0.3);border-radius:2px;"></div><div style="height:18px;background:rgba(255,107,53,0.4);border-radius:2px;"></div><div style="height:18px;background:rgba(255,107,53,0.4);border-radius:2px;"></div><div style="height:18px;background:rgba(255,107,53,0.4);border-radius:2px;"></div><div style="height:18px;background:rgba(3,169,244,0.3);border-radius:2px;"></div><div style="height:18px;background:rgba(3,169,244,0.3);border-radius:2px;"></div><div style="height:18px;background:rgba(3,169,244,0.15);border-radius:2px;"></div><div style="height:18px;background:rgba(3,169,244,0.15);border-radius:2px;"></div><div style="height:18px;background:rgba(3,169,244,0.15);border-radius:2px;"></div>
           </div>
           <div style="margin-top:6px;font-size:10px;color:var(--dim);text-align:center;font-family:'JetBrains Mono';">channel × 時段 (00:00 → 22:00) · 顏色越紅越忙</div>
         </div>
@@ -1321,7 +1321,7 @@
         <div class="widget span-3">
           <div class="widget-title">7 天連線 / 斷線 Timeline · Sandy-MacBook <button class="widget-edit">✏</button></div>
           <svg viewBox="0 0 700 100" preserveAspectRatio="none" style="height:80px;width:100%;">
-            <rect x="0" y="40" width="700" height="20" fill="rgba(0,217,197,0.08)"/>
+            <rect x="0" y="40" width="700" height="20" fill="rgba(3,169,244,0.08)"/>
             <rect x="20" y="40" width="65" height="20" fill="#00d9c5" opacity="0.6"/>
             <rect x="100" y="40" width="40" height="20" fill="#00d9c5" opacity="0.6"/>
             <rect x="155" y="40" width="80" height="20" fill="#00d9c5" opacity="0.6"/>
@@ -1384,10 +1384,10 @@
         <div class="widget span-2">
           <div class="widget-title">裝置 OS 分布 <button class="widget-edit">✏</button></div>
           <div style="display:flex;flex-direction:column;gap:6px;font-size:11px;">
-            <div style="display:grid;grid-template-columns:60px 1fr 40px;gap:8px;align-items:center;"><span>iOS</span><div style="height:14px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;"><div style="width:62%;height:100%;background:var(--cyan);"></div></div><span>62%</span></div>
-            <div style="display:grid;grid-template-columns:60px 1fr 40px;gap:8px;align-items:center;"><span>Android</span><div style="height:14px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;"><div style="width:31%;height:100%;background:var(--accent);"></div></div><span>31%</span></div>
-            <div style="display:grid;grid-template-columns:60px 1fr 40px;gap:8px;align-items:center;"><span>macOS</span><div style="height:14px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;"><div style="width:5%;height:100%;background:rgba(255,255,255,0.3);"></div></div><span>5%</span></div>
-            <div style="display:grid;grid-template-columns:60px 1fr 40px;gap:8px;align-items:center;"><span>其他</span><div style="height:14px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;"><div style="width:2%;height:100%;background:rgba(255,255,255,0.3);"></div></div><span>2%</span></div>
+            <div style="display:grid;grid-template-columns:60px 1fr 40px;gap:8px;align-items:center;"><span>iOS</span><div style="height:14px;background:rgba(15,30,60,0.06);border-radius:4px;overflow:hidden;"><div style="width:62%;height:100%;background:var(--cyan);"></div></div><span>62%</span></div>
+            <div style="display:grid;grid-template-columns:60px 1fr 40px;gap:8px;align-items:center;"><span>Android</span><div style="height:14px;background:rgba(15,30,60,0.06);border-radius:4px;overflow:hidden;"><div style="width:31%;height:100%;background:var(--accent);"></div></div><span>31%</span></div>
+            <div style="display:grid;grid-template-columns:60px 1fr 40px;gap:8px;align-items:center;"><span>macOS</span><div style="height:14px;background:rgba(15,30,60,0.06);border-radius:4px;overflow:hidden;"><div style="width:5%;height:100%;background:rgba(15,30,60,0.3);"></div></div><span>5%</span></div>
+            <div style="display:grid;grid-template-columns:60px 1fr 40px;gap:8px;align-items:center;"><span>其他</span><div style="height:14px;background:rgba(15,30,60,0.06);border-radius:4px;overflow:hidden;"><div style="width:2%;height:100%;background:rgba(15,30,60,0.3);"></div></div><span>2%</span></div>
           </div>
           <div style="margin-top:8px;font-size:11px;color:var(--dim);">💡 行銷可參考：以 iOS 為主</div>
         </div>
