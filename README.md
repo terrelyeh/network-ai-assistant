@@ -71,7 +71,11 @@
 ### 🛠 Engineering 側（深色 · 技術調性）
 - 底：深藍漸層 `#0a1628 → #0f1e3a`
 - 主 accent：teal `#00d9c5` + 橘 `#ff6b35`
-- 4 個 mockup 也用此 palette（產品 UI 範例必須維持深色）
+- 包含：所有 engineering hub 頁、`dashboard-builder-prep.html`、4 mockup 中的 `unified-chat-mockup.html`
+
+### Mockup 視覺
+3 個 mockup（cockpit / employee-chat / dashboard-builder-flow）跟 marketing 同 palette；
+`unified-chat-mockup.html` 維持深色（chat-first 概念 PoC，獨立調性）。
 
 ### 共通
 - Mode 色：cyan (A · 員工) / 橘 (B · SMB IT)

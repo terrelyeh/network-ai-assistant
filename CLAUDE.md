@@ -124,10 +124,19 @@ network-ai-assistant/
 | Accent (橘) | Mode B · SMB IT · 主軸 | cockpit-mockup |
 | **Warn (黃)** | **Wedge product (Dashboard Builder)** | dashboard-builder-demo / flow |
 
-### Mockup 不變（4 個 mockup 維持原本深色 + teal cyan）
+### Mockup 視覺現況（2026-05 更新）
 
-`employee-chat-mockup.html` / `cockpit-mockup.html` / `dashboard-builder-flow-mockup.html` /
-`unified-chat-mockup.html` 是「產品 UI 的範例」，本身代表產品設計語言 — **不要翻成淺色**。
+3 個 mockup 已翻成 light + sky blue（跟 marketing 同 palette），只剩 1 個保留深色：
+
+| Mockup | 視覺 |
+|---|---|
+| `cockpit-mockup.html` | 🎯 Light（cream + sky blue） |
+| `employee-chat-mockup.html` | 🎯 Light |
+| `dashboard-builder-flow-mockup.html` | 🎯 Light |
+| `unified-chat-mockup.html` | 🛠 **保留深色**（user 決定不翻） |
+
+整個 site 視覺線：marketing pages → 3 個 mockup → wedge demo → engineering docs 都是 light EnGenius 風格；
+只有 `unified-chat-mockup.html` 跟所有 engineering 頁是深色。改其中一邊不要動到另一邊。
 
 ### 命名
 
@@ -186,7 +195,9 @@ curl -sS -o /dev/null -w "%{http_code}\n" https://network-ai-assistant.vercel.ap
 11. **Marketing 頁的 `--cyan` 是 `#03A9F4` sky blue** — 不是 engineering 側的 `#00d9c5` teal。
     在 marketing 檔裡看到 hardcoded `rgba(0,217,197,...)` 一定要改成 `rgba(3,169,244,...)`，反之亦然
 12. **Marketing 頁卡片底色要用實色（如 `#ffffff`）**，不要用 `rgba(...)` 透明色 — 在淺底上會跟頁面 bg 幾乎同色
-13. **改 marketing 頁不要動到 4 個 mockup** — mockup 是「產品 UI 範例」，必須維持深色
+13. **Mockup 視覺要對 palette**：3 個 mockup 已翻 light（cockpit / employee-chat / dashboard-builder-flow），
+    `unified-chat-mockup.html` 仍是深色 — 改 marketing 不會影響 mockup（self-contained），但 hardcoded
+    `rgba(0,217,197,...)` 之類的 cyan 值在 light mockup 是 `rgba(3,169,244,...)`，別搞錯
 14. **JPEG 截圖 tool 對淺色卡片在淺底上會壓縮到看不見**（rgba alpha 卡片尤其明顯）— 不是 bug，是 preview 限制；
     要用 `preview_eval` + `getComputedStyle` / `elementFromPoint` 驗證，別只信 screenshot
 15. **`dashboard-builder-prep.html` 用 CSS counter 自動編號 section** — `<span class="num"></span>` 是空殼，數字由 `::before counter()` 產
