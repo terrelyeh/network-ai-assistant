@@ -27,8 +27,8 @@
 ```
 network-ai-assistant/
 ├── index.html                                主入口（2-card chooser → product or engineering home）
-├── home-product.html                         🎯 產品 / 行銷 Home（PM/MKT/業務）
-├── home-engineering.html                     🛠 工程 / 技術 Home（Tech Lead/CIO）
+├── home-product.html                         🎯 產品 / 行銷（PM/MKT/業務）
+├── home-engineering.html                     🛠 工程 / 技術（Tech Lead/CIO）
 ├── overview-pm-mkt.html                      PM/MKT 客戶故事
 ├── two-modes.html                          產品策略定位（A/B 兩模式）
 ├── system-diagram.html                       高層次系統圖

@@ -2,8 +2,8 @@
 
 完整的 AI 網管助理產品提案資料 — **10 個頁面 + 4 個互動 mockup + 1 個 sales deck**，分成兩大入口：
 
-- 🎯 **[home-product.html](./home-product.html)** — 產品 / 行銷 Home（PM / MKT / 業務 / 經營層）
-- 🛠 **[home-engineering.html](./home-engineering.html)** — 工程 / 技術 Home（Tech Lead / 工程師 / CIO）
+- 🎯 **[home-product.html](./home-product.html)** — 產品 / 行銷（PM / MKT / 業務 / 經營層）
+- 🛠 **[home-engineering.html](./home-engineering.html)** — 工程 / 技術（Tech Lead / 工程師 / CIO）
 
 🔗 **Live**: https://network-ai-assistant.vercel.app
 
