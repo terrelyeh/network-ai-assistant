@@ -123,6 +123,64 @@
   }
   .hero .lead strong { color: var(--text); }
 
+  /* ARCHITECTURE DIAGRAM */
+  .arch-diagram {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 32px 36px 36px;
+    margin-bottom: 56px;
+    box-shadow: 0 4px 14px rgba(15,30,60,0.04);
+  }
+  .arch-diagram .label {
+    font-size: 12px;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .arch-diagram h3 {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.01em;
+    margin-bottom: 8px;
+  }
+  .arch-diagram .arch-sub {
+    color: var(--muted);
+    font-size: 15px;
+    margin-bottom: 22px;
+    line-height: 1.6;
+  }
+  .arch-diagram .arch-sub strong { color: var(--text); }
+  .arch-diagram img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+  .arch-diagram .arch-legend {
+    display: flex;
+    gap: 22px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .arch-diagram .arch-legend .item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .arch-diagram .arch-legend .swatch {
+    width: 14px; height: 14px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
   /* MODES GRID */
   .modes {
     display: grid;
@@ -577,6 +635,23 @@
     員工自己問問題、SMB IT 引導式診斷 — <strong>同一套後端</strong>，UI 隨身分變化。
     <br>每種模式都有<strong>合適的能力範圍與風險等級</strong>，避免一刀切。
   </p>
+</section>
+
+<!-- ARCHITECTURE OVERVIEW -->
+<section class="arch-diagram">
+  <div class="label">High-level Architecture</div>
+  <h3>一張圖看懂：1 個 AI Engine、3 個 App、3 類 Skill</h3>
+  <p class="arch-sub">
+    Mode A 員工自助 + Mode B SMB IT cockpit 共用<strong>同一套 AI Engine 與 skill 集合</strong>，
+    UI 跟風險等級依使用者切。Dashboard Builder 是<strong>跨模式 wedge product</strong>，A/B 都能用。
+    底層 reuse <strong>既有 EnGenius Cloud RESTful API</strong>，不重做。
+  </p>
+  <img src="assets/diagram-architecture-overview.png" alt="Network AI-Assistant 高層次架構：3 個 App（AI Chat / Cockpit / Dashboard Builder）連到 AI Engine，下接 3 類 Skill（Diagnostic / Monitoring / Dashboard Builder），底層 EnGenius Cloud RESTful API">
+  <div class="arch-legend">
+    <div class="item"><span class="swatch" style="background:#03A9F4"></span>Mode A · 員工自助</div>
+    <div class="item"><span class="swatch" style="background:#FF6B35"></span>Mode B · SMB IT 主軸</div>
+    <div class="item"><span class="swatch" style="background:#F59E0B"></span>⭐ Wedge product · Dashboard Builder（跨模式）</div>
+  </div>
 </section>
 
 <!-- TWO MODES -->
