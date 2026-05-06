@@ -344,6 +344,180 @@
     white-space: pre;
   }
 
+  /* RIGHT PANEL */
+  .panel-overlay {
+    position: fixed; inset: 0;
+    background: rgba(5, 13, 26, 0.6);
+    backdrop-filter: blur(2px);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.25s;
+    z-index: 99;
+  }
+  .panel-overlay.open { opacity: 1; pointer-events: auto; }
+
+  .right-panel {
+    position: fixed;
+    top: 0; right: 0; bottom: 0;
+    width: 620px; max-width: 92vw;
+    background: linear-gradient(180deg, var(--bg-2), var(--bg-1));
+    border-left: 1px solid var(--border-strong);
+    transform: translateX(105%);
+    transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+    z-index: 100;
+    overflow-y: auto;
+    box-shadow: -10px 0 40px rgba(0,0,0,0.4);
+  }
+  .right-panel.open { transform: translateX(0); }
+  .panel-header {
+    position: sticky; top: 0;
+    padding: 20px 28px;
+    background: rgba(15,30,58,0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    z-index: 1;
+  }
+  .panel-title {
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .panel-close {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    width: 32px; height: 32px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    transition: all 0.15s;
+  }
+  .panel-close:hover { background: var(--surface-2); border-color: var(--accent); color: var(--accent); }
+
+  .panel-body {
+    padding: 28px 32px 60px;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  .panel-body h2 {
+    font-size: 22px; color: var(--text);
+    font-weight: 800; letter-spacing: -0.01em;
+    margin: 28px 0 12px;
+    display: flex; align-items: baseline; gap: 10px;
+  }
+  .panel-body h2:first-child { margin-top: 0; }
+  .panel-body h2 .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; color: var(--accent); font-weight: 700;
+  }
+  .panel-body h3 { font-size: 15px; font-weight: 700; color: var(--cyan); margin: 18px 0 8px; letter-spacing: 0.02em; }
+  .panel-body p { margin-bottom: 12px; }
+  .panel-body p strong { color: var(--text); }
+  .panel-body ul { margin: 8px 0 14px 22px; }
+  .panel-body li { margin-bottom: 5px; }
+
+  .token-grid {
+    display: grid;
+    grid-template-columns: 28px 1fr auto;
+    gap: 10px 14px;
+    align-items: center;
+    margin: 10px 0 18px;
+    font-size: 13.5px;
+  }
+  .token-swatch {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+  .token-name {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--cyan);
+    font-size: 12.5px;
+  }
+  .token-hex {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .token-desc {
+    grid-column: 2 / -1;
+    color: var(--dim);
+    font-size: 12.5px;
+    margin-top: -8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .panel-body table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    margin: 10px 0 18px;
+  }
+  .panel-body th, .panel-body td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    vertical-align: top;
+  }
+  .panel-body th {
+    font-size: 11px; color: var(--accent);
+    letter-spacing: 0.15em; text-transform: uppercase;
+    font-weight: 700;
+  }
+  .panel-body code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--cyan);
+  }
+  .panel-body pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    font-size: 12.5px;
+    overflow-x: auto;
+    margin: 10px 0 16px;
+  }
+
+  /* TOKENS CTA */
+  .tokens-cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: linear-gradient(135deg, rgba(3,169,244,0.12), rgba(255,107,53,0.08));
+    border: 1px solid var(--cyan);
+    color: var(--text);
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-size: 14px; font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .tokens-cta:hover {
+    background: linear-gradient(135deg, rgba(3,169,244,0.20), rgba(255,107,53,0.12));
+    transform: translateY(-1px);
+  }
+  .tokens-cta::after { content: '→'; transition: transform 0.2s; }
+  .tokens-cta:hover::after { transform: translateX(3px); }
+
+  .clickable-token {
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-decoration-color: var(--cyan);
+    text-underline-offset: 3px;
+  }
+  .clickable-token:hover { color: var(--cyan); }
+
   /* RELATED */
   .related {
     margin-top: 56px;
@@ -466,7 +640,11 @@
   </ul>
 
   <h3>替代做法（半天搞定）</h3>
-  <p>從既有 EnGenius Cloud dashboard 直接抓 design tokens：主色（accent color）、字體 / 字級階層、card padding / border-radius、chart 配色、spacing scale。整理成一份 <code>design-tokens.md</code> 或 Figma frame，<strong>RD render widget 時直接 reuse 既有 css variables / tailwind tokens</strong>，不會跟既有產品違和。</p>
+  <p>從既有 EnGenius Cloud dashboard 直接抓 design tokens：主色（accent color）、字體 / 字級階層、card padding / border-radius、chart 配色、spacing scale。整理成一份 <code class="clickable-token" data-open-panel="tokens">design-tokens.md</code> 或 Figma frame，<strong>RD render widget 時直接 reuse 既有 css variables / tailwind tokens</strong>，不會跟既有產品違和。</p>
+
+  <p>
+    <button class="tokens-cta" data-open-panel="tokens">查看 EnGenius Cloud Design Tokens</button>
+  </p>
 
   <div class="callout warn">
     這份 design tokens <strong>不是 design guideline</strong> — 它是「對齊既有」的快照，不是另寫一套規則。
@@ -805,7 +983,7 @@ tokens              + Storybook hookup
   <table>
     <thead><tr><th>交付物</th><th>Owner</th><th>形式</th></tr></thead>
     <tbody>
-      <tr><td><code>design-tokens.md</code>（從既有 GUI 抓）</td><td>Design</td><td>Markdown / Figma frame</td></tr>
+      <tr><td><code class="clickable-token" data-open-panel="tokens">design-tokens.md</code>（從既有 GUI 抓）</td><td>Design</td><td>Markdown / Figma frame</td></tr>
       <tr><td><code>widgets/schemas/kpi-card.ts</code></td><td>RD</td><td>TypeScript + Zod</td></tr>
       <tr><td><code>widgets/schemas/time-series.ts</code></td><td>RD</td><td>TypeScript + Zod</td></tr>
       <tr><td><code>widgets/registry.ts</code>（含 KPI + Time Series）</td><td>RD</td><td>TypeScript</td></tr>
@@ -859,6 +1037,216 @@ tokens              + Storybook hookup
 
 </div>
 
+<!-- RIGHT PANEL: Design Tokens -->
+<div class="panel-overlay" id="panelOverlay"></div>
+<aside class="right-panel" id="tokensPanel" aria-hidden="true">
+  <div class="panel-header">
+    <span class="panel-title">EnGenius Cloud · Design Tokens</span>
+    <button class="panel-close" id="panelClose" aria-label="關閉">×</button>
+  </div>
+  <div class="panel-body">
+    <p style="font-size: 13.5px; color: var(--dim); margin-bottom: 18px;">
+      這份不是新寫的 design system，是「對齊既有 EnGenius Cloud GUI 的快照」。Widget 視覺實作直接 reuse 這些 token，不要另寫一套。
+      <br>來源：engenius.ai/cloud + 推斷常見 dashboard 慣例
+    </p>
+
+    <h2><span class="num">01</span>Color · Primary Brand</h2>
+    <div class="token-grid">
+      <div class="token-swatch" style="background:#03A9F4"></div>
+      <div><div class="token-name">--brand-primary</div></div>
+      <div class="token-hex">#03A9F4</div>
+      <div class="token-desc">主 accent · CTA 連結 · 圖表主線</div>
+
+      <div class="token-swatch" style="background:#2F5BE7"></div>
+      <div><div class="token-name">--brand-secondary</div></div>
+      <div class="token-hex">#2F5BE7</div>
+      <div class="token-desc">次要藍 · 強調區塊</div>
+
+      <div class="token-swatch" style="background:#291734"></div>
+      <div><div class="token-name">--brand-deep</div></div>
+      <div class="token-hex">#291734</div>
+      <div class="token-desc">深色背景區塊（hero / footer）</div>
+    </div>
+
+    <h3>Semantic</h3>
+    <div class="token-grid">
+      <div class="token-swatch" style="background:#10B981"></div>
+      <div><div class="token-name">--success</div></div>
+      <div class="token-hex">#10B981</div>
+      <div class="token-desc">健康 · 通過 · 良好</div>
+
+      <div class="token-swatch" style="background:#F59E0B"></div>
+      <div><div class="token-name">--warning</div></div>
+      <div class="token-hex">#F59E0B</div>
+      <div class="token-desc">注意 · 警示（非緊急）</div>
+
+      <div class="token-swatch" style="background:#EA3D56"></div>
+      <div><div class="token-name">--danger</div></div>
+      <div class="token-hex">#EA3D56</div>
+      <div class="token-desc">嚴重 · 錯誤 · 紅燈</div>
+
+      <div class="token-swatch" style="background:#FFA200"></div>
+      <div><div class="token-name">--cta-orange</div></div>
+      <div class="token-hex">#FFA200</div>
+      <div class="token-desc">CTA 強調（促購 / 訂閱按鈕）</div>
+    </div>
+
+    <h3>Surface · Text · Border</h3>
+    <div class="token-grid">
+      <div class="token-swatch" style="background:#FFFFFF;border:1px solid var(--border-strong)"></div>
+      <div><div class="token-name">--bg-primary</div></div>
+      <div class="token-hex">#FFFFFF</div>
+      <div class="token-desc">主底色 · 卡片底</div>
+
+      <div class="token-swatch" style="background:#ECF2FF;border:1px solid var(--border)"></div>
+      <div><div class="token-name">--bg-section</div></div>
+      <div class="token-hex">#ECF2FF</div>
+      <div class="token-desc">區塊底色（淺藍灰）</div>
+
+      <div class="token-swatch" style="background:#32373C"></div>
+      <div><div class="token-name">--text-heading</div></div>
+      <div class="token-hex">#32373C</div>
+      <div class="token-desc">標題（H1-H4）</div>
+
+      <div class="token-swatch" style="background:#7D7D7D"></div>
+      <div><div class="token-name">--text-muted</div></div>
+      <div class="token-hex">#7D7D7D</div>
+      <div class="token-desc">次要說明 · 註解</div>
+
+      <div class="token-swatch" style="background:#CECECE"></div>
+      <div><div class="token-name">--border-default</div></div>
+      <div class="token-hex">#CECECE</div>
+      <div class="token-desc">一般邊框</div>
+    </div>
+
+    <h2><span class="num">02</span>Chart Palette</h2>
+    <p style="font-size:13.5px;">按使用順序 — categorical chart 取前 N 個。<strong>不超過 5 條線</strong>。</p>
+    <div class="token-grid">
+      <div class="token-swatch" style="background:#03A9F4"></div>
+      <div><div class="token-name">chart-1</div></div>
+      <div class="token-hex">#03A9F4 Sky blue</div>
+
+      <div class="token-swatch" style="background:#2F5BE7"></div>
+      <div><div class="token-name">chart-2</div></div>
+      <div class="token-hex">#2F5BE7 Deep blue</div>
+
+      <div class="token-swatch" style="background:#FFA200"></div>
+      <div><div class="token-name">chart-3</div></div>
+      <div class="token-hex">#FFA200 Orange</div>
+
+      <div class="token-swatch" style="background:#10B981"></div>
+      <div><div class="token-name">chart-4</div></div>
+      <div class="token-hex">#10B981 Green</div>
+
+      <div class="token-swatch" style="background:#A78BFA"></div>
+      <div><div class="token-name">chart-5</div></div>
+      <div class="token-hex">#A78BFA Purple</div>
+
+      <div class="token-swatch" style="background:#EA3D56"></div>
+      <div><div class="token-name">chart-6</div></div>
+      <div class="token-hex">#EA3D56 Red</div>
+
+      <div class="token-swatch" style="background:#06B6D4"></div>
+      <div><div class="token-name">chart-7</div></div>
+      <div class="token-hex">#06B6D4 Cyan</div>
+
+      <div class="token-swatch" style="background:#F59E0B"></div>
+      <div><div class="token-name">chart-8</div></div>
+      <div class="token-hex">#F59E0B Amber</div>
+    </div>
+    <h3>Sequential gradient（heatmap）</h3>
+    <div style="height: 28px; border-radius: 6px; background: linear-gradient(90deg, #ECF2FF, #B8D4FB, #69A8F0, #03A9F4, #2F5BE7); border: 1px solid var(--border); margin-bottom: 16px;"></div>
+
+    <h2><span class="num">03</span>Typography</h2>
+    <h3>Font Family</h3>
+<pre>--font-sans: 'Inter', 'Noto Sans TC', -apple-system, sans-serif;
+--font-mono: 'JetBrains Mono', 'Roboto Mono', Consolas, monospace;</pre>
+
+    <h3>Type Scale</h3>
+    <table>
+      <thead><tr><th>Token</th><th>Size</th><th>Weight</th><th>用途</th></tr></thead>
+      <tbody>
+        <tr><td><code>--text-display</code></td><td>48px</td><td>900</td><td>Hero / 大標</td></tr>
+        <tr><td><code>--text-h1</code></td><td>32px</td><td>800</td><td>頁面主標</td></tr>
+        <tr><td><code>--text-h2</code></td><td>24px</td><td>700</td><td>區塊標題</td></tr>
+        <tr><td><code>--text-h3</code></td><td>18px</td><td>700</td><td>卡片標題</td></tr>
+        <tr><td><code>--text-body-lg</code></td><td>17px</td><td>400</td><td>Lead / 重要描述</td></tr>
+        <tr><td><code>--text-body</code></td><td>15px</td><td>400</td><td>一般內文</td></tr>
+        <tr><td><code>--text-body-sm</code></td><td>13px</td><td>400</td><td>次要 / 表格 cell</td></tr>
+        <tr><td><code>--text-caption</code></td><td>12px</td><td>600</td><td>標籤 / 註腳</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px; color:var(--dim);">KPI / 表格數字統一用 <code>font-variant-numeric: tabular-nums</code> 等寬數字對齊。</p>
+
+    <h2><span class="num">04</span>Spacing Scale</h2>
+    <table>
+      <thead><tr><th>Token</th><th>Pixels</th><th>用途</th></tr></thead>
+      <tbody>
+        <tr><td><code>--space-1</code></td><td>4px</td><td>hairline / icon offset</td></tr>
+        <tr><td><code>--space-2</code></td><td>8px</td><td>small gap</td></tr>
+        <tr><td><code>--space-3</code></td><td>12px</td><td>inline gap</td></tr>
+        <tr><td><code>--space-4</code></td><td>16px</td><td>card padding inner</td></tr>
+        <tr><td><code>--space-6</code></td><td>24px</td><td>card padding default</td></tr>
+        <tr><td><code>--space-8</code></td><td>32px</td><td>section padding</td></tr>
+        <tr><td><code>--space-12</code></td><td>48px</td><td>major section gap</td></tr>
+        <tr><td><code>--space-16</code></td><td>64px</td><td>hero padding</td></tr>
+      </tbody>
+    </table>
+
+    <h2><span class="num">05</span>Border Radius</h2>
+    <table>
+      <thead><tr><th>Token</th><th>Value</th><th>用途</th></tr></thead>
+      <tbody>
+        <tr><td><code>--radius-sm</code></td><td>4px</td><td>input / small badge</td></tr>
+        <tr><td><code>--radius-md</code></td><td>6px</td><td>button</td></tr>
+        <tr><td><code>--radius-lg</code></td><td>8px</td><td>code block / small card</td></tr>
+        <tr><td><code>--radius-xl</code></td><td>12px</td><td>card default</td></tr>
+        <tr><td><code>--radius-2xl</code></td><td>16px</td><td>hero card / modal</td></tr>
+        <tr><td><code>--radius-full</code></td><td>9999px</td><td>pill / avatar</td></tr>
+      </tbody>
+    </table>
+
+    <h2><span class="num">06</span>Shadow</h2>
+    <table>
+      <thead><tr><th>Token</th><th>用途</th></tr></thead>
+      <tbody>
+        <tr><td><code>--shadow-sm</code> · <code>0 1px 3px rgba(15,30,60,0.06)</code></td><td>卡片 hairline</td></tr>
+        <tr><td><code>--shadow-md</code> · <code>0 4px 12px rgba(15,30,60,0.10)</code></td><td>卡片 hover</td></tr>
+        <tr><td><code>--shadow-lg</code> · <code>0 12px 30px rgba(15,30,60,0.12)</code></td><td>modal / dropdown</td></tr>
+        <tr><td><code>--shadow-glow</code> · <code>0 0 0 3px rgba(3,169,244,0.20)</code></td><td>input focus ring</td></tr>
+      </tbody>
+    </table>
+
+    <h2><span class="num">07</span>使用範例（CSS）</h2>
+<pre>.kpi-card {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+  font-size: var(--text-body);
+  color: var(--text-body);
+}
+.kpi-card .value {
+  font-size: var(--text-display);
+  font-weight: 900;
+  color: var(--text-heading);
+  font-variant-numeric: tabular-nums;
+}</pre>
+
+    <h2><span class="num">08</span>還沒解決的設計疑點</h2>
+    <ul>
+      <li>Dark mode 要不要支援？v1 建議先不做（既有 EnGenius Cloud 也是 light only）</li>
+      <li>圖表 library 內建色被覆寫到什麼程度（Recharts 預設色完全不要用？）</li>
+      <li>已經有 EnGenius 內部的 design system 嗎？這份是 reverse-engineered，正式版要跟 design 部門對齊</li>
+    </ul>
+
+    <p style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 12.5px; color: var(--dim);">
+      完整 markdown 版本：<a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/docs/design-tokens.md" target="_blank">docs/design-tokens.md</a>
+    </p>
+  </div>
+</aside>
+
 <script>
 (() => {
   const sections = Array.from(document.querySelectorAll('main.content section[id]'));
@@ -896,6 +1284,37 @@ tokens              + Storybook hookup
         window.scrollTo({ top, behavior: 'smooth' });
       }
     });
+  });
+
+  // Right panel: design tokens
+  const panel = document.getElementById('tokensPanel');
+  const overlay = document.getElementById('panelOverlay');
+  const closeBtn = document.getElementById('panelClose');
+
+  const openPanel = () => {
+    panel.classList.add('open');
+    overlay.classList.add('open');
+    panel.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  };
+  const closePanel = () => {
+    panel.classList.remove('open');
+    overlay.classList.remove('open');
+    panel.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  };
+
+  document.querySelectorAll('[data-open-panel="tokens"]').forEach(trigger => {
+    trigger.addEventListener('click', (e) => {
+      e.preventDefault();
+      openPanel();
+    });
+  });
+
+  closeBtn.addEventListener('click', closePanel);
+  overlay.addEventListener('click', closePanel);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && panel.classList.contains('open')) closePanel();
   });
 })();
 </script>
