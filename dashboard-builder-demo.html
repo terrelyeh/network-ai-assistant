@@ -176,6 +176,46 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
+  /* Skeleton loading state */
+  .dash .widget {
+    position: relative;
+    overflow: hidden;
+    transition: opacity 0.4s ease, transform 0.4s ease, background 0.4s ease;
+  }
+  .dash .widget.skeleton-mode {
+    background: linear-gradient(90deg,
+      rgba(255,255,255,0.04) 0%,
+      rgba(255,255,255,0.12) 50%,
+      rgba(255,255,255,0.04) 100%);
+    background-size: 200% 100%;
+    animation: dashShimmer 1.4s ease-in-out infinite;
+  }
+  .dash .widget.skeleton-mode > * {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  .dash .widget > * {
+    transition: opacity 0.5s ease;
+  }
+  /* Skeleton bar shapes inside widget */
+  .dash .widget.skeleton-mode::before {
+    content: '';
+    position: absolute;
+    inset: 14px;
+    pointer-events: none;
+    background:
+      linear-gradient(rgba(255,255,255,0.10), rgba(255,255,255,0.10)) 0 0/45% 14px no-repeat,
+      linear-gradient(rgba(255,255,255,0.06), rgba(255,255,255,0.06)) 0 30px/85% 9px no-repeat,
+      linear-gradient(rgba(255,255,255,0.06), rgba(255,255,255,0.06)) 0 48px/70% 9px no-repeat,
+      linear-gradient(rgba(255,255,255,0.06), rgba(255,255,255,0.06)) 0 66px/60% 9px no-repeat;
+    border-radius: 4px;
+    z-index: 1;
+  }
+  @keyframes dashShimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
   /* Typing dots while waiting */
   .typing-bubble {
     display: inline-flex;
@@ -1823,7 +1863,10 @@
 
     // Reset: hide all messages and widgets, scroll to top
     chatMsgs.forEach(m => m.classList.add('reveal-hidden'));
-    widgets.forEach(w => w.classList.add('reveal-hidden'));
+    widgets.forEach(w => {
+      w.classList.add('reveal-hidden');
+      w.classList.remove('skeleton-mode');
+    });
     chatScenario.scrollTop = 0;
 
     const timers = [];
@@ -1862,10 +1905,18 @@
       }
     });
 
-    // Reveal widgets with staggered fade-in
+    // Phase 1: Reveal widgets as skeletons (stagger fade-in)
     delay += 400;
     widgets.forEach((w, i) => {
+      w.classList.add('skeleton-mode');
       const t = setTimeout(() => w.classList.remove('reveal-hidden'), delay + i * 90);
+      timers.push(t);
+    });
+
+    // Phase 2: After all skeletons settled, replace with real content (stagger)
+    const phase2Start = delay + widgets.length * 90 + 900;
+    widgets.forEach((w, i) => {
+      const t = setTimeout(() => w.classList.remove('skeleton-mode'), phase2Start + i * 110);
       timers.push(t);
     });
 
