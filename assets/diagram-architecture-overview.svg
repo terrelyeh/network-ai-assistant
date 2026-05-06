@@ -128,15 +128,15 @@
   </g>
 
   <!-- Arrow Skills → API -->
-  <path d="M 960,870 L 960,925" stroke="#03A9F4" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
+  <path d="M 960,870 L 960,898" stroke="#03A9F4" stroke-width="3" fill="none" marker-end="url(#arrow)"/>
 
   <!-- ============== LAYER 4: API + EXISTING CLOUD ============== -->
   <g filter="url(#shadow)">
-    <rect x="320" y="930" width="1280" height="100" rx="14" fill="url(#api-grad)"/>
-    <text x="960" y="970" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="#03A9F4" letter-spacing="2">EXISTING ENGENIUS CLOUD · 既有平台 · 不重做</text>
-    <text x="960" y="1004" text-anchor="middle" font-family="Inter, 'Noto Sans TC', sans-serif" font-size="22" font-weight="800" fill="#FFFFFF">EnGenius Device &amp; Cloud RESTful API</text>
+    <rect x="320" y="900" width="1280" height="90" rx="14" fill="url(#api-grad)"/>
+    <text x="960" y="936" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" fill="#03A9F4" letter-spacing="2">EXISTING ENGENIUS CLOUD · 既有平台 · 不重做</text>
+    <text x="960" y="966" text-anchor="middle" font-family="Inter, 'Noto Sans TC', sans-serif" font-size="22" font-weight="800" fill="#FFFFFF">EnGenius Device &amp; Cloud RESTful API</text>
   </g>
 
   <!-- Footer note -->
-  <text x="1840" y="1064" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="11" fill="#a0a0a0">network-ai-assistant.vercel.app · 2026-05</text>
+  <text x="1840" y="1024" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="11" fill="#a0a0a0">network-ai-assistant.vercel.app · 2026-05</text>
 </svg>
