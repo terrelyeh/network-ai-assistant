@@ -23,7 +23,7 @@
     --good: #10b981;
     --warn: #fbbf24;
     --bad: #ef4444;
-    --code-bg: #0a1f3a;
+    --code-bg: #16294a;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
@@ -33,7 +33,8 @@
     -webkit-font-smoothing: antialiased;
     min-height: 100vh;
     padding: 0;
-    line-height: 1.65;
+    line-height: 1.75;
+    font-size: 16px;
   }
   .container { max-width: 1280px; margin: 0 auto; padding: 0 32px; }
   a { color: var(--cyan); }
@@ -108,9 +109,9 @@
     position: sticky;
     top: 90px;
     align-self: start;
-    border-left: 1px solid var(--border);
-    padding-left: 18px;
+    padding-left: 30px;
   }
+  .toc ol { padding-left: 0; }
   .toc-title {
     font-size: 11px;
     color: var(--accent);
@@ -125,15 +126,18 @@
   }
   .toc ol li {
     counter-increment: tocnum;
-    margin-bottom: 8px;
-    font-size: 13px;
+    margin-bottom: 10px;
+    font-size: 13.5px;
   }
   .toc ol li a {
     color: var(--muted);
     text-decoration: none;
-    transition: color 0.15s;
+    transition: color 0.15s, border-color 0.15s;
     display: block;
-    line-height: 1.4;
+    line-height: 1.45;
+    padding-left: 10px;
+    border-left: 2px solid transparent;
+    margin-left: -20px;
   }
   .toc ol li a::before {
     content: counter(tocnum) ". ";
@@ -143,6 +147,12 @@
     margin-right: 4px;
   }
   .toc ol li a:hover { color: var(--cyan); }
+  .toc ol li a.active {
+    color: var(--accent);
+    border-left-color: var(--accent);
+    font-weight: 600;
+  }
+  .toc ol li a.active::before { color: var(--accent); }
   @media (max-width: 960px) {
     .toc { position: static; border-left: none; padding-left: 0; padding-top: 0; padding-bottom: 24px; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
   }
@@ -151,37 +161,37 @@
   .content section { margin-bottom: 56px; }
   .content section:last-child { margin-bottom: 0; }
   .content h2 {
-    font-size: 26px;
+    font-size: 30px;
     font-weight: 800;
     letter-spacing: -0.01em;
-    margin-bottom: 18px;
+    margin-bottom: 22px;
     display: flex;
     align-items: baseline;
-    gap: 10px;
+    gap: 12px;
   }
   .content h2 .num {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 14px;
+    font-size: 15px;
     color: var(--accent);
     font-weight: 700;
   }
   .content h3 {
-    font-size: 17px;
+    font-size: 20px;
     font-weight: 700;
-    margin: 28px 0 12px;
+    margin: 32px 0 14px;
     color: var(--text);
   }
   .content h4 {
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 700;
-    margin: 20px 0 8px;
+    margin: 22px 0 10px;
     color: var(--cyan);
     letter-spacing: 0.02em;
   }
-  .content p { margin-bottom: 14px; color: var(--muted); }
+  .content p { margin-bottom: 16px; color: var(--muted); font-size: 16px; }
   .content p strong { color: var(--text); font-weight: 700; }
-  .content ul, .content ol { margin: 12px 0 14px 24px; }
-  .content li { margin-bottom: 6px; color: var(--muted); }
+  .content ul, .content ol { margin: 14px 0 18px 24px; }
+  .content li { margin-bottom: 8px; color: var(--muted); font-size: 16px; }
   .content li strong { color: var(--text); }
 
   /* CODE */
@@ -189,13 +199,13 @@
     background: var(--code-bg);
     border: 1px solid var(--border);
     border-radius: 8px;
-    padding: 18px 20px;
+    padding: 20px 22px;
     overflow-x: auto;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    line-height: 1.6;
-    margin: 14px 0 18px;
-    color: #c9d6e8;
+    font-size: 14px;
+    line-height: 1.7;
+    margin: 16px 0 22px;
+    color: #d8e2f3;
   }
   pre .kw { color: #a78bfa; }
   pre .str { color: #6ee7b7; }
@@ -203,10 +213,10 @@
   pre .fn { color: var(--cyan); }
   code {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 12.5px;
+    font-size: 13.5px;
     background: var(--surface);
     border: 1px solid var(--border);
-    padding: 1px 6px;
+    padding: 2px 7px;
     border-radius: 4px;
     color: var(--cyan);
   }
@@ -215,17 +225,18 @@
   table {
     width: 100%;
     border-collapse: collapse;
-    margin: 14px 0 20px;
-    font-size: 13.5px;
+    margin: 16px 0 24px;
+    font-size: 15px;
   }
   th, td {
     text-align: left;
-    padding: 10px 14px;
+    padding: 12px 16px;
     border-bottom: 1px solid var(--border);
     vertical-align: top;
+    line-height: 1.6;
   }
   th {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--accent);
     font-weight: 700;
     letter-spacing: 0.15em;
@@ -240,10 +251,11 @@
     background: var(--surface);
     border-left: 3px solid var(--cyan);
     border-radius: 0 8px 8px 0;
-    padding: 14px 18px;
-    margin: 16px 0;
-    font-size: 14px;
+    padding: 16px 20px;
+    margin: 18px 0;
+    font-size: 15.5px;
     color: var(--muted);
+    line-height: 1.65;
   }
   .callout.warn { border-left-color: var(--warn); }
   .callout.bad { border-left-color: var(--bad); }
@@ -255,10 +267,11 @@
     border: 1px solid rgba(239,68,68,0.25);
     border-radius: 8px;
     padding: 14px 18px;
-    margin: 10px 0;
-    font-size: 13.5px;
+    margin: 12px 0;
+    font-size: 15px;
     color: var(--muted);
     display: flex; gap: 10px;
+    line-height: 1.6;
   }
   .pitfall::before { content: '❌'; font-size: 16px; flex-shrink: 0; }
   .pitfall strong { color: #fca5a5; }
@@ -268,10 +281,11 @@
     border: 1px solid rgba(16,185,129,0.25);
     border-radius: 8px;
     padding: 14px 18px;
-    margin: 10px 0;
-    font-size: 13.5px;
+    margin: 12px 0;
+    font-size: 15px;
     color: var(--muted);
     display: flex; gap: 10px;
+    line-height: 1.6;
   }
   .good-box::before { content: '✅'; font-size: 16px; flex-shrink: 0; }
   .good-box strong { color: #86efac; }
@@ -279,9 +293,10 @@
   /* CHECKLIST */
   .checklist { list-style: none; margin-left: 0; padding-left: 0; }
   .checklist li {
-    padding: 6px 0 6px 28px;
+    padding: 8px 0 8px 30px;
     position: relative;
-    font-size: 14px;
+    font-size: 15.5px;
+    line-height: 1.6;
   }
   .checklist li::before {
     content: '';
@@ -843,6 +858,47 @@ tokens              + Storybook hookup
 </div>
 
 </div>
+
+<script>
+(() => {
+  const sections = Array.from(document.querySelectorAll('main.content section[id]'));
+  const links = new Map();
+  document.querySelectorAll('.toc ol li a[href^="#"]').forEach(a => {
+    links.set(a.getAttribute('href').slice(1), a);
+  });
+  if (!sections.length || !links.size) return;
+
+  const setActive = (id) => {
+    links.forEach(a => a.classList.remove('active'));
+    const a = links.get(id);
+    if (a) a.classList.add('active');
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    const visible = entries
+      .filter(e => e.isIntersecting)
+      .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+    if (visible[0]) setActive(visible[0].target.id);
+  }, {
+    rootMargin: '-90px 0px -60% 0px',
+    threshold: [0, 0.1, 0.5]
+  });
+
+  sections.forEach(s => observer.observe(s));
+
+  // Smooth scroll on TOC click
+  links.forEach((a, id) => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = document.getElementById(id);
+      if (target) {
+        const top = target.getBoundingClientRect().top + window.scrollY - 80;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
+    });
+  });
+})();
+</script>
 
 </body>
 </html>
