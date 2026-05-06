@@ -410,30 +410,12 @@
     background: linear-gradient(180deg, rgba(15,30,60,0.02), transparent);
     overflow-y: auto;
   }
-  .dash-brand-strip {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding-bottom: 14px;
-    margin-bottom: 18px;
-    border-bottom: 1px solid var(--border);
-  }
-  .dash-brand-strip img {
-    width: 22px;
-    height: 22px;
+  .dash-title img.dash-logo {
+    width: 26px;
+    height: 26px;
     object-fit: contain;
-  }
-  .dash-brand-strip .brand-name {
-    font-size: 12.5px;
-    font-weight: 700;
-    color: var(--cyan);
-    letter-spacing: 0.02em;
-  }
-  .dash-brand-strip .brand-sub {
-    font-size: 11px;
-    color: var(--dim);
-    margin-left: auto;
-    font-family: 'JetBrains Mono', monospace;
+    vertical-align: -7px;
+    margin-right: 4px;
   }
   .dash-header {
     display: flex;
@@ -1083,16 +1065,10 @@
     <!-- ============== DASHBOARD ============== -->
     <div class="dash" id="dashContent">
 
-      <div class="dash-brand-strip">
-        <img src="assets/engenius-logo.png" alt="EnGenius Cloud">
-        <span class="brand-name">EnGenius Cloud</span>
-        <span class="brand-sub">Dashboard Builder · Beta</span>
-      </div>
-
       <!-- ===== Scenario 1: 本週健康 ===== -->
       <div class="scenario s1 active">
         <div class="dash-header">
-          <div class="dash-title">📊 本週健康狀況</div>
+          <div class="dash-title"><img src="assets/engenius-logo.png" class="dash-logo" alt=""> 本週健康狀況</div>
           <div class="dash-meta"><span class="live"></span> Live · 監測 47 設備</div>
         </div>
         <div class="dash-grid" style="grid-template-columns: 1fr 1fr 1fr;">
@@ -1162,7 +1138,7 @@
       <!-- ===== Scenario 2: AP 負載 ===== -->
       <div class="scenario s2">
         <div class="dash-header">
-          <div class="dash-title">🛰 AP 負載儀表板</div>
+          <div class="dash-title"><img src="assets/engenius-logo.png" class="dash-logo" alt=""> AP 負載儀表板</div>
           <div class="dash-meta"><span class="live"></span> Live · 47 APs</div>
         </div>
         <div class="dash-grid" style="grid-template-columns: 1fr 1fr;">
@@ -1225,7 +1201,7 @@
       <!-- ===== Scenario 3: 我的會議室 (Employee) ===== -->
       <div class="scenario s3">
         <div class="dash-header">
-          <div class="dash-title">📍 我的會議室 · 7F North</div>
+          <div class="dash-title"><img src="assets/engenius-logo.png" class="dash-logo" alt=""> 我的會議室 · 7F North</div>
           <div class="dash-meta"><span class="live"></span> Live</div>
         </div>
         <div class="dash-grid" style="grid-template-columns: 1fr 1fr;">
@@ -1269,7 +1245,7 @@
       <!-- ===== Scenario 4: Pro / Cross-site ===== -->
       <div class="scenario s4">
         <div class="dash-header">
-          <div class="dash-title">📈 Site Churn Analysis · This Month</div>
+          <div class="dash-title"><img src="assets/engenius-logo.png" class="dash-logo" alt=""> Site Churn Analysis · This Month</div>
           <div class="dash-meta"><span class="live"></span> Live · 28 sites · scheduled weekly</div>
         </div>
         <div class="dash-grid" style="grid-template-columns: 2fr 1fr;">
@@ -1319,7 +1295,7 @@
       <!-- ===== Scenario 5: 設備 Timeline ===== -->
       <div class="scenario s5">
         <div class="dash-header">
-          <div class="dash-title">💻 Sandy-MacBook · 7 天連線 Timeline</div>
+          <div class="dash-title"><img src="assets/engenius-logo.png" class="dash-logo" alt=""> Sandy-MacBook · 7 天連線 Timeline</div>
           <div class="dash-meta"><span class="live"></span> Live · MAC: AC:DE:48:F2:1C:9B</div>
         </div>
         <div class="dash-grid" style="grid-template-columns: 1fr 1fr 1fr 1fr;">
@@ -1426,7 +1402,7 @@
       <!-- ===== Scenario 6: 訪客 Wi-Fi 報告 ===== -->
       <div class="scenario s6">
         <div class="dash-header">
-          <div class="dash-title">📊 訪客 Wi-Fi · 上月使用報告</div>
+          <div class="dash-title"><img src="assets/engenius-logo.png" class="dash-logo" alt=""> 訪客 Wi-Fi · 上月使用報告</div>
           <div class="dash-meta"><span class="live"></span> 2026-04-01 → 04-30 · 5 分店</div>
         </div>
         <div class="dash-grid" style="grid-template-columns: 1fr 1fr 1fr;">
@@ -1520,7 +1496,7 @@
       <!-- ===== Scenario 7: PoE 容量規劃 ===== -->
       <div class="scenario s7">
         <div class="dash-header">
-          <div class="dash-title">🔌 PoE 預算與容量規劃</div>
+          <div class="dash-title"><img src="assets/engenius-logo.png" class="dash-logo" alt=""> PoE 預算與容量規劃</div>
           <div class="dash-meta"><span class="live"></span> Live · 6 PoE switches · 47 PD devices</div>
         </div>
         <div class="dash-grid" style="grid-template-columns: 1fr 1fr 1fr 1fr;">
@@ -1621,7 +1597,7 @@
       <!-- ===== Scenario 8: 故障 Blast Radius ===== -->
       <div class="scenario s8">
         <div class="dash-header">
-          <div class="dash-title">🗺 Blast Radius · SW-3F-Core 維護影響分析</div>
+          <div class="dash-title"><img src="assets/engenius-logo.png" class="dash-logo" alt=""> Blast Radius · SW-3F-Core 維護影響分析</div>
           <div class="dash-meta"><span class="live"></span> 預定維護：2026-05-09 02:00-04:00</div>
         </div>
         <div class="dash-grid" style="grid-template-columns: 1fr 1fr 1fr 1fr;">
