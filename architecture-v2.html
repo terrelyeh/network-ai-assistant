@@ -65,15 +65,37 @@
     margin-top: 6px;
     font-size: 15px;
   }
-  header .hint {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px 18px;
-    color: var(--muted);
-    font-size: 13px;
-    display: flex; align-items: center; gap: 10px;
+  .canvas-hint {
+    max-width: 1640px;
+    margin: 0 auto 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(135deg, rgba(0,217,197,0.12), rgba(0,217,197,0.04));
+    border: 1px solid rgba(0,217,197,0.4);
+    border-radius: 12px;
+    padding: 12px 20px;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 500;
   }
+  .canvas-hint .pulse {
+    width: 10px; height: 10px;
+    background: var(--cyan); border-radius: 50%;
+    animation: pulse 1.6s infinite;
+    flex-shrink: 0;
+  }
+  .canvas-hint code {
+    background: rgba(0,217,197,0.18);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--cyan);
+    font-weight: 700;
+  }
+  .canvas-hint strong { color: var(--cyan); }
+  .canvas-wrap { max-width: 1640px; margin: 0 auto; }
   header .nav-area { display: flex; flex-direction: column; align-items: end; gap: 10px; }
   header .nav-links { display: flex; gap: 10px; }
   header .nav-link {
@@ -101,14 +123,9 @@
     background: var(--surface-2);
     color: var(--text);
   }
-  header .hint .pulse {
-    width: 8px; height: 8px;
-    background: var(--cyan); border-radius: 50%;
-    animation: pulse 2s infinite;
-  }
   @keyframes pulse {
     0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(1.3); }
+    50% { opacity: 0.4; transform: scale(1.4); }
   }
 
   .canvas {
@@ -126,15 +143,15 @@
   .layer-bg { fill: rgba(255,255,255,0.025); stroke: var(--border); stroke-width: 1; rx: 14; }
   .layer-label {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px; font-weight: 600;
-    letter-spacing: 0.2em;
+    font-size: 14px; font-weight: 700;
+    letter-spacing: 0.18em;
     fill: var(--accent);
     text-transform: uppercase;
     pointer-events: none;
   }
   .layer-sub {
-    font-size: 12px;
-    fill: var(--dim);
+    font-size: 13px;
+    fill: var(--muted);
     pointer-events: none;
   }
 
@@ -168,18 +185,18 @@
   .ring-2 { fill: rgba(239,68,68,0.12); stroke: rgba(239,68,68,0.5); stroke-width: 1.2; rx: 8; }
 
   .label-title {
-    font-size: 14px; font-weight: 700;
+    font-size: 16px; font-weight: 700;
     fill: var(--text);
     pointer-events: none;
   }
   .label-sub {
-    font-size: 11px;
+    font-size: 12.5px;
     fill: var(--muted);
     pointer-events: none;
   }
   .label-mono {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
+    font-size: 11px;
     fill: var(--muted);
     pointer-events: none;
   }
@@ -475,12 +492,15 @@
       <a class="nav-link" href="home-engineering.html">🛠 Engineering</a>
       <a class="nav-link lang" href="architecture-v2-zh.html">繁中 <span>→</span></a>
     </div>
-    <div class="hint">
-      <span class="pulse"></span>
-      <span><strong style="color: var(--text);">Tip:</strong> Click any colored box · Press <code style="background:var(--surface);padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono';font-size:11px;">Esc</code> to close</span>
-    </div>
   </div>
 </header>
+
+<div class="canvas-wrap">
+  <div class="canvas-hint">
+    <span class="pulse"></span>
+    <span><strong>Tip:</strong> Click any colored box for the full explanation · Press <code>Esc</code> or click outside to close</span>
+  </div>
+</div>
 
 <div class="canvas">
 <svg viewBox="0 0 1640 1280" xmlns="http://www.w3.org/2000/svg" id="diagram">
@@ -594,36 +614,36 @@
 
   <g class="clickable" data-explain="engine-router" data-tooltip="Router — pick playbook">
     <rect class="node-engine" x="100" y="450" width="220" height="100"/>
-    <text class="label-title" x="210" y="478" text-anchor="middle">① Router</text>
-    <text class="label-sub" x="210" y="498" text-anchor="middle">Match symptom →</text>
-    <text class="label-sub" x="210" y="514" text-anchor="middle">select playbook</text>
-    <text class="label-mono" x="210" y="534" text-anchor="middle">RAG + metadata filter</text>
+    <text class="label-title" x="210" y="482" text-anchor="middle">① Router</text>
+    <text class="label-sub" x="210" y="504" text-anchor="middle">Match symptom →</text>
+    <text class="label-sub" x="210" y="522" text-anchor="middle">select playbook</text>
+    <text class="label-mono" x="210" y="542" text-anchor="middle">RAG + metadata filter</text>
   </g>
 
   <g class="clickable" data-explain="engine-executor" data-tooltip="Playbook Executor — run YAML">
     <rect class="node-engine" x="360" y="450" width="220" height="100"/>
-    <text class="label-title" x="470" y="478" text-anchor="middle">② Playbook Executor</text>
-    <text class="label-sub" x="470" y="498" text-anchor="middle">Run YAML DAG;</text>
-    <text class="label-sub" x="470" y="514" text-anchor="middle">LLM at gates only</text>
-    <text class="label-mono" x="470" y="534" text-anchor="middle">deterministic backbone</text>
+    <text class="label-title" x="470" y="482" text-anchor="middle">② Playbook Executor</text>
+    <text class="label-sub" x="470" y="504" text-anchor="middle">Run YAML DAG;</text>
+    <text class="label-sub" x="470" y="522" text-anchor="middle">LLM at gates only</text>
+    <text class="label-mono" x="470" y="542" text-anchor="middle">deterministic backbone</text>
   </g>
 
   <g class="clickable" data-explain="engine-safety" data-tooltip="Safety Gate ★ — Ring check">
     <rect class="node-engine" x="620" y="450" width="220" height="100"/>
-    <text class="star" x="830" y="466" text-anchor="end">★ NEW</text>
-    <text class="label-title" x="730" y="478" text-anchor="middle">③ Safety Gate</text>
-    <text class="label-sub" x="730" y="498" text-anchor="middle">Ring 0/1/2 check</text>
-    <text class="label-sub" x="730" y="514" text-anchor="middle">+ blast radius calc</text>
-    <text class="label-mono" x="730" y="534" text-anchor="middle">type-system enforced</text>
+    <text class="star" x="830" y="442" text-anchor="end">★ NEW</text>
+    <text class="label-title" x="730" y="482" text-anchor="middle">③ Safety Gate</text>
+    <text class="label-sub" x="730" y="504" text-anchor="middle">Ring 0/1/2 check</text>
+    <text class="label-sub" x="730" y="522" text-anchor="middle">+ blast radius calc</text>
+    <text class="label-mono" x="730" y="542" text-anchor="middle">type-system enforced</text>
   </g>
 
   <g class="clickable" data-explain="engine-approval" data-tooltip="Approval Flow ★ — human gate">
     <rect class="node-engine" x="880" y="450" width="220" height="100"/>
-    <text class="star" x="1090" y="466" text-anchor="end">★ NEW</text>
-    <text class="label-title" x="990" y="478" text-anchor="middle">④ Approval Flow</text>
-    <text class="label-sub" x="990" y="498" text-anchor="middle">Show evidence,</text>
-    <text class="label-sub" x="990" y="514" text-anchor="middle">rollback, validation</text>
-    <text class="label-mono" x="990" y="534" text-anchor="middle">human-in-the-loop</text>
+    <text class="star" x="1090" y="442" text-anchor="end">★ NEW</text>
+    <text class="label-title" x="990" y="482" text-anchor="middle">④ Approval Flow</text>
+    <text class="label-sub" x="990" y="504" text-anchor="middle">Show evidence,</text>
+    <text class="label-sub" x="990" y="522" text-anchor="middle">rollback, validation</text>
+    <text class="label-mono" x="990" y="542" text-anchor="middle">human-in-the-loop</text>
   </g>
 
   <path class="flow-main" d="M 320 500 L 358 500" marker-end="url(#arr-main)"/>
@@ -701,16 +721,15 @@
        LAYER 5: MCP TOOL LAYER
        ==================================================== -->
   <g class="clickable" data-explain="l5" data-tooltip="MCP Tool Layer">
-    <rect class="layer-bg" x="40" y="985" width="1280" height="90"/>
-    <text class="layer-label" x="60" y="1013">L5 · MCP TOOL LAYER</text>
-    <text class="layer-sub" x="60" y="1031">Standard protocol — shared with customer AI engines</text>
-    <rect class="node-mcp" x="180" y="1010" width="1000" height="55"/>
-    <text class="label-title" x="680" y="1034" text-anchor="middle">🔌 MCP Server (Anthropic Model Context Protocol)</text>
-    <text class="label-mono" x="680" y="1054" text-anchor="middle">Auth · Rate-limit · Normalize · Cache · Tool schemas</text>
+    <rect class="layer-bg" x="40" y="985" width="1280" height="110"/>
+    <text class="layer-label" x="60" y="1013">L5 · MCP TOOL LAYER · Standard protocol, shared with customer AI engines</text>
+    <rect class="node-mcp" x="180" y="1030" width="1000" height="55"/>
+    <text class="label-title" x="680" y="1054" text-anchor="middle">🔌 MCP Server (Anthropic Model Context Protocol)</text>
+    <text class="label-mono" x="680" y="1074" text-anchor="middle">Auth · Rate-limit · Normalize · Cache · Tool schemas</text>
   </g>
 
-  <path class="flow-main" d="M 680 1075 L 680 1130" marker-end="url(#arr-main)"/>
-  <text class="label-mono" x="690" y="1108" fill="rgba(255,255,255,0.6)">REST API</text>
+  <path class="flow-main" d="M 680 1095 L 680 1130" marker-end="url(#arr-main)"/>
+  <text class="label-mono" x="690" y="1118" fill="rgba(255,255,255,0.6)">REST API</text>
 
   <!-- ====================================================
        LAYER 6: DEVICES
@@ -1145,6 +1164,14 @@ document.getElementById('panelClose').addEventListener('click', closePanel);
 
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closePanel();
+});
+
+// Click anywhere outside panel/clickable closes the panel
+document.addEventListener('click', e => {
+  if (!panel.classList.contains('open')) return;
+  if (panel.contains(e.target)) return;
+  if (e.target.closest('.clickable')) return;
+  closePanel();
 });
 </script>
 
