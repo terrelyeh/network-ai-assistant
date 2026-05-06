@@ -9,19 +9,19 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg-1: #0a1628;
-    --bg-2: #0f1e3a;
-    --surface: rgba(255,255,255,0.04);
-    --surface-2: rgba(255,255,255,0.08);
-    --border: rgba(255,255,255,0.12);
-    --border-strong: rgba(255,255,255,0.22);
-    --text: #f8fafc;
-    --muted: #cbd5e1;
-    --dim: #64748b;
+    --bg-1: #f6f8fb;
+    --bg-2: #eef2f7;
+    --surface: #ffffff;
+    --surface-2: #fafbfd;
+    --border: rgba(15,30,60,0.12);
+    --border-strong: rgba(15,30,60,0.20);
+    --text: #1a2332;
+    --muted: #5a6878;
+    --dim: #97a3b3;
     --accent: #ff6b35;
-    --cyan: #00d9c5;
+    --cyan: #03a9f4;
     --good: #10b981;
-    --warn: #fbbf24;
+    --warn: #f59e0b;
     --bad: #ef4444;
     --purple: #a78bfa;
   }
@@ -64,14 +64,14 @@
     text-decoration: none;
     font-size: 12.5px; font-weight: 600;
     padding: 7px 12px;
-    background: rgba(0,217,197,0.08);
-    border: 1px solid rgba(0,217,197,0.35);
+    background: rgba(3,169,244,0.08);
+    border: 1px solid rgba(3,169,244,0.35);
     border-radius: 8px;
     transition: all 0.2s;
     display: inline-flex; align-items: center; gap: 5px;
   }
   .nav-link:hover {
-    background: rgba(0,217,197,0.18);
+    background: rgba(3,169,244,0.18);
     border-color: var(--cyan);
     transform: translateY(-1px);
   }
@@ -185,9 +185,9 @@
   }
   .dash .widget.skeleton-mode {
     background: linear-gradient(90deg,
-      rgba(255,255,255,0.04) 0%,
-      rgba(255,255,255,0.12) 50%,
-      rgba(255,255,255,0.04) 100%);
+      rgba(15,30,60,0.04) 0%,
+      rgba(15,30,60,0.12) 50%,
+      rgba(15,30,60,0.04) 100%);
     background-size: 200% 100%;
     animation: dashShimmer 1.4s ease-in-out infinite;
   }
@@ -205,10 +205,10 @@
     inset: 14px;
     pointer-events: none;
     background:
-      linear-gradient(rgba(255,255,255,0.10), rgba(255,255,255,0.10)) 0 0/45% 14px no-repeat,
-      linear-gradient(rgba(255,255,255,0.06), rgba(255,255,255,0.06)) 0 30px/85% 9px no-repeat,
-      linear-gradient(rgba(255,255,255,0.06), rgba(255,255,255,0.06)) 0 48px/70% 9px no-repeat,
-      linear-gradient(rgba(255,255,255,0.06), rgba(255,255,255,0.06)) 0 66px/60% 9px no-repeat;
+      linear-gradient(rgba(15,30,60,0.10), rgba(15,30,60,0.10)) 0 0/45% 14px no-repeat,
+      linear-gradient(rgba(15,30,60,0.06), rgba(15,30,60,0.06)) 0 30px/85% 9px no-repeat,
+      linear-gradient(rgba(15,30,60,0.06), rgba(15,30,60,0.06)) 0 48px/70% 9px no-repeat,
+      linear-gradient(rgba(15,30,60,0.06), rgba(15,30,60,0.06)) 0 66px/60% 9px no-repeat;
     border-radius: 4px;
     z-index: 1;
   }
@@ -247,15 +247,15 @@
 
   /* DEMO SPLIT */
   .demo {
-    background: rgba(0,0,0,0.25);
+    background: #f6f8fb;
     border: 1px solid var(--border-strong);
     border-radius: 18px;
     overflow: hidden;
     margin-bottom: 48px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    box-shadow: 0 20px 60px rgba(15,30,60,0.12);
   }
   .demo-header {
-    background: rgba(255,255,255,0.04);
+    background: rgba(15,30,60,0.04);
     border-bottom: 1px solid var(--border);
     padding: 14px 22px;
     display: flex;
@@ -380,7 +380,7 @@
     padding: 14px 18px;
     display: flex;
     gap: 8px;
-    background: rgba(0,0,0,0.18);
+    background: #ffffff;
   }
   .chat-input input {
     flex: 1;
@@ -407,7 +407,7 @@
   /* DASHBOARD */
   .dash {
     padding: 24px 28px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+    background: linear-gradient(180deg, rgba(15,30,60,0.02), transparent);
     overflow-y: auto;
   }
   .dash-header {
@@ -457,7 +457,7 @@
 
   /* Widget base */
   .widget {
-    background: rgba(255,255,255,0.04);
+    background: rgba(15,30,60,0.04);
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 16px 18px;
@@ -465,7 +465,7 @@
   }
   .widget:hover {
     border-color: var(--border-strong);
-    background: rgba(255,255,255,0.06);
+    background: rgba(15,30,60,0.06);
   }
   .widget-title {
     font-size: 12px;
@@ -572,10 +572,10 @@
   .hm-cell {
     aspect-ratio: 1;
     border-radius: 2px;
-    background: rgba(0,217,197,0.1);
+    background: rgba(3,169,244,0.1);
   }
-  .hm-cell.l1 { background: rgba(0,217,197,0.15); }
-  .hm-cell.l2 { background: rgba(0,217,197,0.35); }
+  .hm-cell.l1 { background: rgba(3,169,244,0.15); }
+  .hm-cell.l2 { background: rgba(3,169,244,0.35); }
   .hm-cell.l3 { background: rgba(251,191,36,0.4); }
   .hm-cell.l4 { background: rgba(251,191,36,0.65); }
   .hm-cell.l5 { background: rgba(239,68,68,0.6); }
@@ -675,7 +675,7 @@
     gap: 16px;
   }
   .step {
-    background: rgba(0,0,0,0.2);
+    background: #ffffff;
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 22px 20px;
@@ -704,7 +704,7 @@
 
   /* WIDGET LIBRARY */
   .widget-lib {
-    background: rgba(0,0,0,0.18);
+    background: #ffffff;
     border: 1px solid var(--border);
     border-radius: 18px;
     padding: 32px;
@@ -753,8 +753,8 @@
   /* CTA */
   .cta {
     text-align: center;
-    background: linear-gradient(135deg, rgba(0,217,197,0.08), rgba(255,107,53,0.06));
-    border: 1px solid rgba(0,217,197,0.3);
+    background: linear-gradient(135deg, rgba(3,169,244,0.08), rgba(255,107,53,0.06));
+    border: 1px solid rgba(3,169,244,0.3);
     border-radius: 18px;
     padding: 32px;
   }
@@ -772,7 +772,7 @@
     transition: all 0.2s;
   }
   .cta-btn:hover {
-    background: rgba(0,217,197,0.15);
+    background: rgba(3,169,244,0.15);
     border-color: var(--cyan);
     color: var(--cyan);
   }
@@ -1318,7 +1318,7 @@
             <div class="widget-title">7 天連線 / 斷線事件 Timeline</div>
             <svg class="chart-svg" viewBox="0 0 700 100" preserveAspectRatio="none" style="height:80px;">
               <!-- background lanes -->
-              <rect x="0" y="40" width="700" height="20" fill="rgba(0,217,197,0.08)"/>
+              <rect x="0" y="40" width="700" height="20" fill="rgba(3,169,244,0.08)"/>
               <!-- connected segments (cyan) -->
               <rect x="20" y="40" width="65" height="20" fill="#00d9c5" opacity="0.6"/>
               <rect x="100" y="40" width="40" height="20" fill="#00d9c5" opacity="0.6"/>
@@ -1620,7 +1620,7 @@
             <div class="widget-title">拓樸圖 · 影響範圍（紅色 = 維護期失聯）</div>
             <svg viewBox="0 0 800 280" style="width:100%;height:auto;font-family:Inter;">
               <!-- Gateway -->
-              <rect x="340" y="10" width="120" height="36" rx="8" fill="rgba(0,217,197,0.15)" stroke="#00d9c5" stroke-width="2"/>
+              <rect x="340" y="10" width="120" height="36" rx="8" fill="rgba(3,169,244,0.15)" stroke="#00d9c5" stroke-width="2"/>
               <text x="400" y="33" text-anchor="middle" fill="#00d9c5" font-size="13" font-weight="700">🌐 Internet GW</text>
 
               <!-- Core Switch SW-3F-Core (target) -->
