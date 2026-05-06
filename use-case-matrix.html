@@ -260,47 +260,6 @@
     background: linear-gradient(135deg, rgba(255,107,53,0.12), rgba(255,107,53,0.04));
     border-color: rgba(255,107,53,0.5);
   }
-  .cell.priority-1::before {
-    content: '⭐ Phase 1';
-    display: inline-block;
-    background: var(--accent);
-    color: #fff;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    margin-bottom: 8px;
-    width: fit-content;
-  }
-  .cell.priority-2::before {
-    content: 'Phase 2';
-    display: inline-block;
-    background: rgba(251,191,36,0.2);
-    color: var(--warn);
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    margin-bottom: 8px;
-    border: 1px solid rgba(251,191,36,0.4);
-    width: fit-content;
-  }
-  .cell.priority-3::before {
-    content: 'Phase 3';
-    display: inline-block;
-    background: var(--surface-2);
-    color: var(--dim);
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    margin-bottom: 8px;
-    border: 1px solid var(--border);
-    width: fit-content;
-  }
   .cell-title {
     font-size: 14px;
     font-weight: 700;
@@ -504,7 +463,7 @@
   <div class="left">
     <div class="tag">USE CASE MATRIX · 4×2 矩陣</div>
     <h1>Network <span class="accent">AI-Assistant</span> — 4 維度 × 2 模式</h1>
-    <div class="sub">8 個格子 · 給 PM 排 roadmap、給 Eng 估時程、給業務找 demo 點</div>
+    <div class="sub">8 個格子 · 看清楚整個產品有哪些使用案例</div>
   </div>
   <div class="nav-links">
     <a class="nav-link muted-link" href="index.html">🏠 主入口</a>
@@ -518,7 +477,7 @@
   <h2>用<span class="accent">兩個軸</span>看清楚整個產品有哪些<span class="cyan">使用案例</span></h2>
   <p class="lead">
     橫軸 = <strong>2 個使用者模式</strong>（員工 / SMB IT），縱軸 = <strong>4 個應用維度</strong>（在做什麼）。
-    8 個格子 — <strong>標出 phase 後就是工程 roadmap</strong>。
+    每一格代表一個具體的功能 / 體驗 / 故事。
   </p>
 </section>
 
@@ -553,7 +512,7 @@
 
     <!-- Row 1: Deployment -->
     <div class="row-label">
-      <span class="num">DIMENSION ①</span>
+      <span class="num">DIMENSION 1</span>
       <span class="name">📦 Deployment</span>
       <span class="desc">部署 / 設定</span>
     </div>
@@ -569,7 +528,7 @@
 
     <!-- Row 2: Monitoring -->
     <div class="row-label">
-      <span class="num">DIMENSION ②</span>
+      <span class="num">DIMENSION 2</span>
       <span class="name">👁 Monitoring</span>
       <span class="desc">監測 / 觀察</span>
     </div>
@@ -590,7 +549,7 @@
 
     <!-- Row 3: Troubleshoot -->
     <div class="row-label">
-      <span class="num">DIMENSION ③</span>
+      <span class="num">DIMENSION 3</span>
       <span class="name">🔧 Troubleshoot</span>
       <span class="desc">故障排除</span>
     </div>
@@ -611,7 +570,7 @@
 
     <!-- Row 4: Management -->
     <div class="row-label">
-      <span class="num">DIMENSION ④</span>
+      <span class="num">DIMENSION 4</span>
       <span class="name">🛠 Management</span>
       <span class="desc">維運 / 規劃</span>
     </div>
@@ -629,89 +588,12 @@
   </div>
 </section>
 
-<!-- PRIORITY SUMMARY -->
-<section>
-  <h2 style="text-align:center; font-size:24px; font-weight:800; letter-spacing:-0.02em; margin-bottom:6px;">
-    🎯 Phase 1 · 三個必做格子
-  </h2>
-  <p style="text-align:center; color:var(--muted); font-size:14px; margin-bottom:28px;">
-    這三格之中只要做兩個，產品就能上市；做完三個就是完整 v1.0
-  </p>
-
-  <div class="priority">
-    <div class="priority-card">
-      <div class="num">A③</div>
-      <div class="ttl">員工自助 chat 客服</div>
-      <div class="why"><strong>TAM 最大、風險最低、競品最弱。</strong>每個員工都會用 → 入門就能 viral。風險低（純讀為主）→ 不用扛 ring system 全套。</div>
-    </div>
-
-    <div class="priority-card">
-      <div class="num">B② ⭐</div>
-      <div class="ttl">Dashboard Builder（殺手）</div>
-      <div class="why"><strong>SMB IT 最痛的地方。</strong>不會設儀表板 / 不知該看什麼 → 直接消除「Grafana 學一次就放棄」的摩擦。<strong style="color:var(--accent);">這是 demo 一次就 wow 的功能</strong>。</div>
-    </div>
-
-    <div class="priority-card">
-      <div class="num">B③</div>
-      <div class="ttl">SMB IT 診斷 + 引導修復</div>
-      <div class="why"><strong>Roger 原始設計核心。</strong>把 30 分鐘人工診斷壓到 30 秒 + 一鍵修復。完整跑過 ring + approval + closed-loop 的標竿案例。</div>
-    </div>
-  </div>
-</section>
-
-<!-- PHASE ROADMAP -->
-<section class="roadmap">
-  <h3>建議的 Phase Roadmap</h3>
-  <h2>把 8 個格子排成 2 個季度</h2>
-
-  <div class="phase-row">
-    <div class="phase-label">
-      <div class="phase-num">PHASE 1</div>
-      <div class="phase-title">Validate</div>
-      <div class="phase-time">M0–M3 · MVP</div>
-    </div>
-    <div class="phase-content">
-      <strong>目標</strong>：證明兩模式的核心命題成立 — 員工會用、SMB IT 愛用、能省下時間。
-      <br><strong>策略</strong>：全部 read-mostly + 受控 Ring 1，<strong>避開高風險動作</strong>。
-      <div class="phase-cells">
-        <span class="phase-cell-chip">A② 個人 dashboard</span>
-        <span class="phase-cell-chip">A③ 員工自助 chat</span>
-        <span class="phase-cell-chip killer">B② Dashboard Builder ⭐</span>
-        <span class="phase-cell-chip">B③ SMB IT 診斷</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="phase-row">
-    <div class="phase-label">
-      <div class="phase-num">PHASE 2</div>
-      <div class="phase-title">Expand</div>
-      <div class="phase-time">M3–M6 · GA · 拓展功能</div>
-    </div>
-    <div class="phase-content">
-      <strong>目標</strong>：拓展到管理 / 部署維度，把整套 SMB IT 流程做完整。
-      <br><strong>策略</strong>：開放更多 Ring 1 動作 + 引導式部署，仍嚴格守 approval。
-      <div class="phase-cells">
-        <span class="phase-cell-chip">B① 引導式部署</span>
-        <span class="phase-cell-chip">B④ 「我想看 X」式探索</span>
-        <span class="phase-cell-chip">B③+ 更多 playbook（VPN / IPv6 / SD-WAN）</span>
-        <span class="phase-cell-chip">A 補強 · 員工 chat 多語系</span>
-      </div>
-    </div>
-  </div>
-
-  <p style="text-align:center; color:var(--dim); font-size:13px; margin-top:24px; max-width:680px; margin-left:auto; margin-right:auto;">
-    📌 deliberately 不做 MSP / multi-tenant / 跨組織 console — 那是不同 ICP，需要 multi-tenant、billing、white-label。
-    把「公司內 IT」做透再說。架構保留 mode-agnostic，未來真要擴後端不會大改。
-  </p>
-</section>
-
 <!-- CTA -->
 <section class="cta">
   <h3>看完這張矩陣，下一步…</h3>
   <div class="cta-btns">
     <a class="cta-btn" href="two-modes.html">🎭 兩模式詳細介紹</a>
-    <a class="cta-btn" href="playbook-examples.html">📘 Phase 1 Playbook 範例</a>
+    <a class="cta-btn" href="playbook-examples.html">📘 Playbook 範例</a>
     <a class="cta-btn" href="architecture-v2-zh.html">🏗 完整技術架構</a>
     <a class="cta-btn" href="overview-pm-mkt.html">🎯 對外客戶版</a>
   </div>
