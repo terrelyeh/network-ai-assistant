@@ -1,9 +1,11 @@
 # Network AI-Assistant · Network Management Assistant Proposal
 
-完整的 AI 網管助理產品提案資料 — **10 個頁面 + 4 個互動 mockup + 1 個 sales deck**，分成兩大入口：
+完整的 AI 網管助理產品提案資料 — **11 個頁面 + 4 個互動 mockup + 1 個 sales deck + 3 份內部技術文件**，分成兩大入口：
 
-- 🎯 **[home-product.html](./home-product.html)** — 產品 / 行銷（PM / MKT / 業務 / 經營層）
-- 🛠 **[home-engineering.html](./home-engineering.html)** — 工程 / 技術（Tech Lead / 工程師 / CIO）
+- 🎯 **[home-product.html](./home-product.html)** — 產品 / 行銷（PM / MKT / 業務 / 經營層）· 淺色暖米調
+- 🛠 **[home-engineering.html](./home-engineering.html)** — 工程 / 技術（Tech Lead / 工程師 / CIO）· 深色
+
+兩側視覺刻意分流：行銷側對齊既有 EnGenius Cloud（白底 + sky blue + 橘），工程側維持深色技術調性。
 
 🔗 **Live**: https://network-ai-assistant.vercel.app
 
@@ -23,11 +25,17 @@
 - [`playbook-examples.html`](./playbook-examples.html) — 5 個 playbook 範例
 
 ### ⭐ Wedge Product（進入點產品）
-- [`dashboard-builder-demo.html`](./dashboard-builder-demo.html) — 4 場景互動 demo
-- [`dashboard-builder-implementation.html`](./dashboard-builder-implementation.html) — 實作完整指南（4 tab）
+- [`dashboard-builder-demo.html`](./dashboard-builder-demo.html) — 8 場景互動 demo（widget header 用 EnGenius Cloud logo，chat 側用品牌藍）
+- [`dashboard-builder-implementation.html`](./dashboard-builder-implementation.html) — 實作完整指南（4 tab · 客戶/工程深入用）
+- [`dashboard-builder-prep.html`](./dashboard-builder-prep.html) — ★ 前端準備指南（內部 kickoff 對齊 · sticky TOC + 右側滑入 design tokens panel）
 
 > Dashboard Builder 是**跨模式 wedge product**，不是 Mode B 子功能。
 > 行銷上獨立主推、工程上仍是 third skill class。
+
+### 📄 內部技術文件（`docs/`）
+- [`docs/widget-catalog.md`](./docs/widget-catalog.md) — 8 widget 完整規格（schema / 視覺 spec / LLM 使用時機）
+- [`docs/dashboard-builder-implementation-guide.md`](./docs/dashboard-builder-implementation-guide.md) — 前端實作準備指南（人讀 markdown 版）
+- [`docs/design-tokens.md`](./docs/design-tokens.md) — EnGenius Cloud design tokens（colors / typo / spacing / chart palette）
 
 ### 技術深入
 - [`architecture-v2-zh.html`](./architecture-v2-zh.html) ⇄ [`architecture-v2.html`](./architecture-v2.html) — 系統架構互動版（**頁內可切換 繁中 ⇄ EN**）
@@ -52,10 +60,22 @@
 
 ## 📐 設計系統
 
-- 深色主題（`#0a1628` 為基底）
-- 主色：橘 `#ff6b35`、青 `#00d9c5`
-- Mode 色：青 (A · 員工) / 橘 (B · SMB IT)
-- Wedge 色：黃 `#fbbf24`（Dashboard Builder 專屬）
+兩套 palette 對應兩條敘事線：
+
+### 🎯 Marketing 側（淺色 · 對齊 EnGenius Cloud）
+- 底：暖米漸層 `#f5f2ea → #ebe6da`
+- 主 accent：sky blue `#03A9F4`（EnGenius 品牌色）+ 橘 `#ff6b35`（Mode B）
+- 卡片：純白 `#ffffff` + 暖咖啡 tint border + 微陰影
+- 6 頁：home-product / overview-pm-mkt / two-modes / use-case-matrix / mockup-gallery / dashboard-builder-demo
+
+### 🛠 Engineering 側（深色 · 技術調性）
+- 底：深藍漸層 `#0a1628 → #0f1e3a`
+- 主 accent：teal `#00d9c5` + 橘 `#ff6b35`
+- 4 個 mockup 也用此 palette（產品 UI 範例必須維持深色）
+
+### 共通
+- Mode 色：cyan (A · 員工) / 橘 (B · SMB IT)
+- Wedge 色：黃 `#fbbf24` / `#f59e0b`（Dashboard Builder 專屬）
 - 字體：Inter (Latin) + Noto Sans TC (中文) + JetBrains Mono (code)
 
 ## 📝 使用情境

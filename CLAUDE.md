@@ -5,11 +5,14 @@
 ## Project Overview
 
 純靜態 HTML 產品提案網站 — 「**Network AI-Assistant**」AI 網管助理的完整提案資料包。
-10 個策略/技術頁 + 4 個互動式 UI mockup + 1 份 sales pitch deck，部署於 Vercel，
-給 PM / MKT / Eng / 客戶 / 經營層不同對象用。
+11 個策略/技術頁 + 4 個互動式 UI mockup + 1 份 sales pitch deck + 3 份內部技術文件（`docs/`），
+部署於 Vercel。給 PM / MKT / Eng / 客戶 / 經營層不同對象用。
 
 **ICP focus**：deliberately 兩模式 — A 員工 / B SMB IT。不做 MSP / multi-tenant / Pro Console。
 架構保留 mode-agnostic，未來真要擴後端不會大改，但 marketing/positioning 不出現 Mode C。
+
+**Brand alignment**（2026-05 加入）：行銷側對齊既有 EnGenius Cloud GUI（白/暖米底 + sky blue
+`#03A9F4` + 橘 accent）；工程側維持原本深色（深藍底 + teal cyan + 橘 accent）。**兩套 palette 不要混**。
 
 完整功能與內容結構詳見 [README.md](README.md)。
 **Live**: https://network-ai-assistant.vercel.app
@@ -27,20 +30,27 @@
 ```
 network-ai-assistant/
 ├── index.html                                主入口（2-card chooser → product or engineering home）
-├── home-product.html                         🎯 產品 / 行銷（PM/MKT/業務）
-├── home-engineering.html                     🛠 工程 / 技術（Tech Lead/CIO）
+├── home-product.html                         產品 / 行銷 hub（PM/MKT/業務）· 淺色暖米底
+├── home-engineering.html                     工程 / 技術 hub（Tech Lead/CIO）· 深色
 ├── overview-pm-mkt.html                      PM/MKT 客戶故事
-├── two-modes.html                          產品策略定位（A/B 兩模式）
-├── system-diagram.html                       高層次系統圖
+├── two-modes.html                            產品策略定位（A/B 兩模式）
+├── system-diagram.html                       高層次系統圖（兩 hub 共用橋接）
 ├── use-case-matrix.html                      4×2 use case 矩陣
-├── dashboard-builder-demo.html               Dashboard Builder 互動 demo
+├── dashboard-builder-demo.html               Dashboard Builder 互動 demo（widget 用 EnGenius logo）
 ├── dashboard-builder-implementation.html     Dashboard Builder 實作指南（4-tab）
+├── dashboard-builder-prep.html               ★ NEW · Dashboard Builder 前端準備指南（sticky TOC + scrollspy + 右側滑入 design tokens panel）
 ├── mockup-gallery.html                       4 mockup 統合入口
 ├── architecture-v2-zh.html / architecture-v2.html  互動架構圖（ZH ⇄ EN 切換）
 ├── playbook-examples.html                    5 個 playbook 範例
 ├── blind-spots.html                          12 個工程盲點
 ├── pitch-deck.html                           10-slide sales deck
-└── *-mockup.html (4)                         互動式 mockup（Mode A 員工 / Mode B cockpit / Dashboard Builder flow / Unified Chat PoC）
+├── *-mockup.html (4)                         互動式 mockup（員工 chat / cockpit / Dashboard Builder flow / Unified Chat PoC）
+├── assets/
+│   └── engenius-logo.png                     公司 logo（dashboard-builder-demo widget header 用）
+└── docs/                                     內部技術文件（Markdown source）
+    ├── widget-catalog.md                     8 widget 完整規格（給 PM/RD/Design）
+    ├── dashboard-builder-implementation-guide.md  前端實作準備指南（人讀 markdown 版）
+    └── design-tokens.md                      EnGenius Cloud design tokens（colors / typo / spacing / chart palette）
 ```
 
 ## Architecture & Data Flow
@@ -67,28 +77,57 @@ network-ai-assistant/
 
 ## Conventions
 
-### 設計系統 token
+### 雙 Palette（重要 — 不要混）
 
-統一使用 CSS variables（每個檔案 `:root` 都有相同定義）：
+從 2026-05 起整站分兩套 palette。**改檔前先確認該檔是 marketing 側還是 engineering 側**。
+
+#### 🎯 Marketing side（淺色暖米）
+
+6 個檔：`home-product.html` / `overview-pm-mkt.html` / `two-modes.html` / `use-case-matrix.html` /
+`mockup-gallery.html` / `dashboard-builder-demo.html`
 
 ```css
---bg-1: #0a1628;        /* base background */
---accent: #ff6b35;      /* 橘 · 主色 / Mode B */
---cyan: #00d9c5;        /* 青 / Mode A / links */
---purple: #a78bfa;      /* 紫 / 保留 token 不再使用，未來若擴 Mode C 直接復用 */
---warn: #fbbf24;        /* 黃 / Wedge product (Dashboard Builder) */
---good: #10b981;        /* 綠 · ring 0 */
---bad: #ef4444;         /* 紅 · ring 2 */
+--bg-1: #f5f2ea;             /* 暖米底 */
+--bg-2: #ebe6da;             /* 暖米漸層 */
+--surface: #ffffff;          /* 卡片純白 */
+--surface-2: #faf8f3;
+--border: rgba(60,50,35,0.12);  /* 暖咖啡 tint */
+--text: #1a2332;             /* 深海軍藍（不是純黑） */
+--muted: #5a6878;
+--accent: #ff6b35;           /* 橘 · 保留 */
+--cyan: #03a9f4;             /* ★ EnGenius sky blue */
+--warn: #f59e0b;             /* 黃（略深於工程側）*/
 ```
 
-### 顏色語義（嚴格遵守）
+#### 🛠 Engineering side（深色）
+
+其他所有頁（`home-engineering.html` / `architecture-v2*.html` / `dashboard-builder-implementation.html` /
+`dashboard-builder-prep.html` / `playbook-examples.html` / `blind-spots.html` / `system-diagram.html` / `index.html` /
+`pitch-deck.html` / 4 mockup）
+
+```css
+--bg-1: #0a1628;             /* 深藍底 */
+--bg-2: #0f1e3a;
+--surface: rgba(255,255,255,0.04);
+--border: rgba(255,255,255,0.12);
+--text: #f8fafc;
+--accent: #ff6b35;           /* 橘 · 主色 / Mode B */
+--cyan: #00d9c5;             /* teal / Mode A / links */
+--warn: #fbbf24;             /* 黃 / Wedge */
+```
+
+### 顏色語義（兩側共通）
 
 | 顏色 | 對應 | 例 |
 |---|---|---|
-| Cyan | Mode A · 員工 | employee-chat-mockup |
+| Cyan | Mode A · 員工 / brand link | employee-chat-mockup（teal）/ marketing 頁的 link（sky blue）|
 | Accent (橘) | Mode B · SMB IT · 主軸 | cockpit-mockup |
 | **Warn (黃)** | **Wedge product (Dashboard Builder)** | dashboard-builder-demo / flow |
-| Purple | _保留未用_（為來日 Mode C 預留） | — |
+
+### Mockup 不變（4 個 mockup 維持原本深色 + teal cyan）
+
+`employee-chat-mockup.html` / `cockpit-mockup.html` / `dashboard-builder-flow-mockup.html` /
+`unified-chat-mockup.html` 是「產品 UI 的範例」，本身代表產品設計語言 — **不要翻成淺色**。
 
 ### 命名
 
@@ -100,16 +139,13 @@ network-ai-assistant/
 
 - 大部分頁用 `<a class="nav-link muted-link" href="...">`（非 current 狀態）
 - `architecture-v2-zh.html` / `architecture-v2.html` 例外用 `<a class="nav-link" href="...">`（無 muted-link）
+- `dashboard-builder-prep.html` 用簡化的 3-link top nav（主入口 / 產品入口 / 工程入口），不重複內容頁的全 list
 - 縮排不一致：mockup-gallery 用 4 spaces，architecture 用 6 spaces
 - 加新頁時要更新**所有 9 個內容頁** + index.html（mockup 不需更新 nav）
 
 ## Current Status
 
-- ✅ 10 內容頁 + 4 mockup + sales deck 全部 live
-- ✅ Mode C 已砍 — focus 兩模式（A 員工 / B SMB IT）
-- ✅ Dashboard Builder 為 wedge product
-- ✅ EN / ZH 架構整合（一張 card + 頁內切換）
-- ✅ 全部 nav 互通
+功能清單詳見 [README.md](README.md)。
 
 ### 🔜 Next Steps（無使用者明確指定，視需要）
 
@@ -118,7 +154,7 @@ network-ai-assistant/
 - OG image / social preview meta tags
 - 加入 Vercel Analytics（看流量）
 - 補 Mode A 員工 chat 的更多 playbook 範例
-- 將 freemium 定價放回（先前已移除 placeholder）
+- `docs/widget-catalog.md` schema 用 Zod 寫成 TypeScript 範例檔（給 RD starter）
 
 ## Deployment
 
@@ -143,10 +179,18 @@ curl -sS -o /dev/null -w "%{http_code}\n" https://network-ai-assistant.vercel.ap
 4. **Mockup 的「回」連結指向 gallery** 而不是 index — 別誤改回 index
 5. **`AI-Assistant` 才是 highlighted span**（不是 Network）— 改 brand 文字時注意 span 結構
 6. **Dashboard Builder 視覺色用 warn (黃)** 不是 accent (橘)，因為它是 wedge 不是 Mode B 子功能
-7. **加新頁要更新 nav 9 處 + index.html 3-4 處**（resource cards、files table、count）— 漏一處會不一致
+7. **加新頁要更新 nav + index.html**（resource cards、files table、count）— 漏一處會不一致
 8. **index.html 的 page count 出現在 3 個位置**：hero meta、resources section title、各種 narrative 文字
-9. **不要把 mockup 加進 nav 10 link 列表** — mockup 只從 mockup-gallery 進入，不出現在內容頁 nav
+9. **不要把 mockup 加進內容頁 nav 列表** — mockup 只從 mockup-gallery 進入
 10. **檔案列表表格用 `⇄` 符號**（U+21C4）標明 ZH ⇄ EN 兩個檔案是 mirror
+11. **Marketing 頁的 `--cyan` 是 `#03A9F4` sky blue** — 不是 engineering 側的 `#00d9c5` teal。
+    在 marketing 檔裡看到 hardcoded `rgba(0,217,197,...)` 一定要改成 `rgba(3,169,244,...)`，反之亦然
+12. **Marketing 頁卡片底色要用實色（如 `#ffffff`）**，不要用 `rgba(...)` 透明色 — 在淺底上會跟頁面 bg 幾乎同色
+13. **改 marketing 頁不要動到 4 個 mockup** — mockup 是「產品 UI 範例」，必須維持深色
+14. **JPEG 截圖 tool 對淺色卡片在淺底上會壓縮到看不見**（rgba alpha 卡片尤其明顯）— 不是 bug，是 preview 限制；
+    要用 `preview_eval` + `getComputedStyle` / `elementFromPoint` 驗證，別只信 screenshot
+15. **`dashboard-builder-prep.html` 用 CSS counter 自動編號 section** — `<span class="num"></span>` 是空殼，數字由 `::before counter()` 產
+    新增/刪除 section 不用改數字，但 TOC 那邊的 `<li>` 順序要對
 
 ## 詳細文件
 
