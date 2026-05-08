@@ -648,6 +648,107 @@
   .alert-row .msg-text { color: var(--text); flex: 1; line-height: 1.4; }
   .alert-row .ts { color: var(--dim); font-family: 'JetBrains Mono', monospace; font-size: 10px; flex-shrink: 0; }
 
+  /* Follow-up suggestion chips (in chat, after final AI msg) */
+  .followup-chips {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--border);
+    align-self: flex-start;
+    max-width: 92%;
+  }
+  .followup-chips .chip-label {
+    font-size: 10.5px;
+    color: var(--dim);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 700;
+    flex-basis: 100%;
+    margin-bottom: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(3,169,244,0.07);
+    border: 1px solid rgba(3,169,244,0.40);
+    color: var(--cyan);
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .chip:hover {
+    background: rgba(3,169,244,0.16);
+    border-color: var(--cyan);
+    transform: translateY(-1px);
+  }
+  .chip.action {
+    background: rgba(255,107,53,0.07);
+    border-color: rgba(255,107,53,0.40);
+    color: var(--accent);
+  }
+  .chip.action:hover {
+    background: rgba(255,107,53,0.16);
+    border-color: var(--accent);
+  }
+
+  /* Dashboard action toolbar (in dash side, below widgets) */
+  .dash-toolbar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 14px 0 4px;
+    margin-top: 18px;
+    border-top: 1px solid var(--border);
+    align-items: center;
+  }
+  .dash-toolbar .toolbar-label {
+    font-size: 10.5px;
+    color: var(--dim);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    margin-right: 6px;
+  }
+  .toolbar-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    padding: 7px 13px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .toolbar-btn:hover {
+    background: var(--surface-2);
+    border-color: var(--cyan);
+    color: var(--cyan);
+  }
+  .toolbar-btn.primary {
+    background: var(--cyan);
+    border-color: var(--cyan);
+    color: #ffffff;
+  }
+  .toolbar-btn.primary:hover {
+    background: #0288d1;
+    color: #ffffff;
+    border-color: #0288d1;
+  }
+
   /* Vertical Client Timeline (scenario 5) */
   .client-info-card {
     background: var(--surface-2);
@@ -1039,6 +1140,12 @@
             <div class="ai-name">🤖 Network AI-Assistant</div>
             已儲存 ✓ 之後從首頁可以直接看。<br>要再加什麼面板隨時跟我說，例如「再加一個會議室趨勢」。
           </div>
+          <div class="followup-chips">
+            <span class="chip-label">下一步建議</span>
+            <button class="chip">💬 Top 5 問題逐一展開</button>
+            <button class="chip">💬 對比上週同期</button>
+            <button class="chip action">📅 排週一發 IT 群組</button>
+          </div>
         </div>
 
         <!-- ===== Scenario 2 ===== -->
@@ -1061,6 +1168,12 @@
             <div class="ai-name">🤖 Network AI-Assistant</div>
             建好了。我看到 AP-3F-N2 跟 AP-7F-S1 已經連續 3 天 utilization &gt; 85%，<strong style="color:var(--warn);">建議 7 天內加 1 台輔助 AP</strong>。要我列預算估算嗎？
           </div>
+          <div class="followup-chips">
+            <span class="chip-label">下一步建議</span>
+            <button class="chip">💬 N3 過去 30 天 load 趨勢</button>
+            <button class="chip">💬 假日 vs 工作日對比</button>
+            <button class="chip action">⚙️ 啟用自動 load balance</button>
+          </div>
         </div>
 
         <!-- ===== Scenario 3 ===== -->
@@ -1081,6 +1194,12 @@
           <div class="msg ai">
             <div class="ai-name">🤖 Network AI-Assistant</div>
             建好了 ✓ 您現在訊號 -62 dBm（良好）。<br>如果之後變差，按下「回報問題」我會幫您聯繫 IT。
+          </div>
+          <div class="followup-chips">
+            <span class="chip-label">下一步建議</span>
+            <button class="chip">💬 7F North 一起看</button>
+            <button class="chip">💬 過去 7 天同時段都會壞嗎？</button>
+            <button class="chip action">💾 永久存為「我的會議室」</button>
           </div>
         </div>
 
@@ -1107,6 +1226,12 @@
             <div class="ai-name">🤖 Network AI-Assistant</div>
             Scheduled ✓ Also exposing as REST endpoint at <code style="font-family:'JetBrains Mono';font-size:11px;background:var(--surface);padding:1px 6px;border-radius:4px;color:var(--cyan);">/api/dashboards/site-churn-202605</code> for your Grafana.
           </div>
+          <div class="followup-chips">
+            <span class="chip-label">Next Steps</span>
+            <button class="chip">💬 Drill into worst-churn AP</button>
+            <button class="chip">💬 Compare vs last quarter</button>
+            <button class="chip action">📤 Send to leadership team</button>
+          </div>
         </div>
 
         <!-- ===== Scenario 5: 找某台設備的 timeline ===== -->
@@ -1132,6 +1257,12 @@
             <div class="ai-name">🤖 Network AI-Assistant</div>
             已建立 ✓ 我看到一個 <strong style="color:var(--accent);">明顯 pattern</strong>：Sandy 每天下午 3 點左右會出現訊號掉到 −78 dBm 的事件 — 對照地點，那時段她在 7F 會議室。<br>那台會議室常用的 <code>AP-7F-N3</code> 上週也被偵測到 sticky client 問題（之前在 cockpit 看過）— <strong>很可能是同一個根因</strong>。要我跑 sticky_client playbook 嗎？
           </div>
+          <div class="followup-chips">
+            <span class="chip-label">下一步建議</span>
+            <button class="chip">💬 7F 還有哪些 device 同 pattern？</button>
+            <button class="chip action">🎫 建 ticket 修 AP-7F-N3</button>
+            <button class="chip action">📩 通知 Sandy 處理中</button>
+          </div>
         </div>
 
         <!-- ===== Scenario 7: PoE 容量規劃 ===== -->
@@ -1154,6 +1285,12 @@
           <div class="msg ai">
             <div class="ai-name">🤖 Network AI-Assistant</div>
             已生 ✓ <strong style="color:var(--accent);">注意：SW-2F 已用 87%，再加 1 台 30W (Class 4) 攝影機就會超預算</strong>。建議：3 台接 SW-2F、2 台接 SW-3F（剩 41% 預算）。<br>另外 SW-2F port Gi1/0/8 過去 7 天有 3 次 PoE over-current 事件 — 那台舊 AP 可能 PSU 老化，建議汰換。
+          </div>
+          <div class="followup-chips">
+            <span class="chip-label">下一步建議</span>
+            <button class="chip">💬 模擬加 5 台後 headroom</button>
+            <button class="chip">💬 PoE+ vs PoE++ 升級比較</button>
+            <button class="chip action">📋 輸出採購規格表</button>
           </div>
         </div>
 
@@ -1178,6 +1315,12 @@
           <div class="msg ai">
             <div class="ai-name">🤖 Network AI-Assistant</div>
             已生 ✓ <strong style="color:var(--bad);">警告：SW-3F-Core 是單點 — 沒有冗餘路徑</strong>。下游 6 個 AP 與 ~18 個 client 會全斷。<br>建議維護視窗：<strong style="color:var(--cyan);">週六 02:00-04:00</strong>（過去 8 週此時段流量最低，平均只有 3 個 client）。CTO 辦公室在 3F 受影響，建議事先通知。要我幫您起草通知信嗎？
+          </div>
+          <div class="followup-chips">
+            <span class="chip-label">下一步建議</span>
+            <button class="chip">💬 其他 critical switch redundancy</button>
+            <button class="chip action">📅 排定週六 02:00 維護</button>
+            <button class="chip action">📩 草擬通知信</button>
           </div>
         </div>
 
@@ -1204,6 +1347,12 @@
           <div class="msg ai">
             <div class="ai-name">🤖 Network AI-Assistant</div>
             已建立 ✓ 也可 export CSV 給行銷直接做 pivot。<br>看到一個<strong style="color:var(--accent);">有趣 insight</strong>：Branch-Taipei 平均停留 28 分鐘但回頭率只 12%（其他店 25-30%）— 可能是位置或服務問題，要幫您查嗎？
+          </div>
+          <div class="followup-chips">
+            <span class="chip-label">下一步建議</span>
+            <button class="chip">💬 對比去年同期成長</button>
+            <button class="chip">💬 哪間分店訪客最多</button>
+            <button class="chip action">📅 排每月 1 號自動寄</button>
           </div>
         </div>
 
@@ -1285,6 +1434,13 @@
             </div>
           </div>
         </div>
+        <div class="dash-toolbar">
+          <span class="toolbar-label">DASHBOARD ACTIONS</span>
+          <button class="toolbar-btn">💾 儲存</button>
+          <button class="toolbar-btn primary">📅 排週一 9:00 自動發 IT 群組</button>
+          <button class="toolbar-btn">📤 PDF</button>
+          <button class="toolbar-btn">🔗 分享</button>
+        </div>
       </div>
 
       <!-- ===== Scenario 2: AP 負載 ===== -->
@@ -1348,6 +1504,13 @@
             </div>
           </div>
         </div>
+        <div class="dash-toolbar">
+          <span class="toolbar-label">DASHBOARD ACTIONS</span>
+          <button class="toolbar-btn">💾 儲存</button>
+          <button class="toolbar-btn primary">⚙️ 套用 load balance 建議</button>
+          <button class="toolbar-btn">📤 PDF</button>
+          <button class="toolbar-btn">🔗 分享</button>
+        </div>
       </div>
 
       <!-- ===== Scenario 3: 我的會議室 (Employee) ===== -->
@@ -1391,6 +1554,13 @@
             <p style="margin-top:8px;font-size:12px;color:var(--dim);">點下後 AI 會先嘗試診斷，無法解決才轉給 IT</p>
           </div>
 
+        </div>
+        <div class="dash-toolbar">
+          <span class="toolbar-label">DASHBOARD ACTIONS</span>
+          <button class="toolbar-btn primary">💾 永久存為「我的會議室」</button>
+          <button class="toolbar-btn">📅 排程</button>
+          <button class="toolbar-btn">📤 PDF</button>
+          <button class="toolbar-btn">🔗 分享</button>
         </div>
       </div>
 
@@ -1441,6 +1611,13 @@
             <div style="font-size:11px;color:var(--cyan);margin-top:8px;font-family:'JetBrains Mono';">REST: /api/dashboards/site-churn-202605</div>
           </div>
 
+        </div>
+        <div class="dash-toolbar">
+          <span class="toolbar-label">DASHBOARD ACTIONS</span>
+          <button class="toolbar-btn">💾 Save</button>
+          <button class="toolbar-btn primary">📅 Schedule weekly Mon 9 AM</button>
+          <button class="toolbar-btn">📤 Export PDF</button>
+          <button class="toolbar-btn">🔗 Share</button>
         </div>
       </div>
 
@@ -1590,6 +1767,13 @@
           </div>
 
         </div>
+        <div class="dash-toolbar">
+          <span class="toolbar-label">DASHBOARD ACTIONS</span>
+          <button class="toolbar-btn">💾 儲存</button>
+          <button class="toolbar-btn primary">🎫 建 ticket → 修 AP-7F-N3</button>
+          <button class="toolbar-btn">📤 PDF</button>
+          <button class="toolbar-btn">🔗 分享</button>
+        </div>
       </div>
 
       <!-- ===== Scenario 6: 訪客 Wi-Fi 報告 ===== -->
@@ -1683,6 +1867,13 @@
             </div>
           </div>
 
+        </div>
+        <div class="dash-toolbar">
+          <span class="toolbar-label">DASHBOARD ACTIONS</span>
+          <button class="toolbar-btn">💾 儲存</button>
+          <button class="toolbar-btn primary">📅 排每月 1 號自動寄行銷</button>
+          <button class="toolbar-btn">📤 匯出 CSV</button>
+          <button class="toolbar-btn">🔗 分享</button>
         </div>
       </div>
 
@@ -1784,6 +1975,13 @@
             </div>
           </div>
 
+        </div>
+        <div class="dash-toolbar">
+          <span class="toolbar-label">DASHBOARD ACTIONS</span>
+          <button class="toolbar-btn">💾 儲存</button>
+          <button class="toolbar-btn primary">📋 輸出採購規格表</button>
+          <button class="toolbar-btn">📤 PDF</button>
+          <button class="toolbar-btn">🔗 分享</button>
         </div>
       </div>
 
@@ -1906,6 +2104,13 @@
             </div>
           </div>
 
+        </div>
+        <div class="dash-toolbar">
+          <span class="toolbar-label">DASHBOARD ACTIONS</span>
+          <button class="toolbar-btn">💾 儲存</button>
+          <button class="toolbar-btn primary">📅 排定週六 02:00 維護</button>
+          <button class="toolbar-btn">📩 草擬通知信</button>
+          <button class="toolbar-btn">🔗 分享</button>
         </div>
       </div>
 
