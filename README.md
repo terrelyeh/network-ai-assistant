@@ -25,7 +25,7 @@
 - [`playbook-examples.html`](./playbook-examples.html) — 5 個 playbook 範例
 
 ### ⭐ Wedge Product（進入點產品）
-- [`dashboard-builder-demo.html`](./dashboard-builder-demo.html) — 8 場景互動 demo（widget header 用 EnGenius Cloud logo，chat 側用品牌藍）
+- [`dashboard-builder-demo.html`](./dashboard-builder-demo.html) — 10 場景互動 demo（widget header 用 EnGenius Cloud logo，chat 側用品牌藍）
 - [`dashboard-builder-implementation.html`](./dashboard-builder-implementation.html) — 實作完整指南（4 tab · 客戶/工程深入用）
 - [`dashboard-builder-prep.html`](./dashboard-builder-prep.html) — ★ 前端準備指南（內部 kickoff 對齊 · sticky TOC + 右側滑入 design tokens panel）
 
