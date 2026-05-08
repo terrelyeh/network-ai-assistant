@@ -554,7 +554,7 @@
 
 - [ ] System prompt 列出 catalog（這份文件 paste 進去）
 - [ ] 每個 widget 一個 tool definition（schema 對齊上面）
-- [ ] Few-shot examples：取 8 個 scenario 各 1 組（user query → tool calls）
+- [ ] Few-shot examples：取 9 個 scenario 各 1 組（user query → tool calls）
 - [ ] Closed-set rule：「只能用 catalog 裡 11 個 widget，不能發明」
 - [ ] Combo rules：dashboard 上限 widget 數量（建議 ≤ 6）
 - [ ] 完整 prompt 模板見 [`prompt-templates.md`](./prompt-templates.md)

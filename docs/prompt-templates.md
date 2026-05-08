@@ -321,7 +321,7 @@ export const widgetTools = Object.entries(widgetRegistry).map(([name, def]) => (
 
 ---
 
-## Few-shot Examples（對應 demo 的 8 個 scenario）
+## Few-shot Examples（對應 demo 的 9 個 scenario）
 
 把這些塞進 Stage 2 system prompt 的 `# Examples` 區，能顯著提升選擇正確率。
 
@@ -335,6 +335,7 @@ export const widgetTools = Object.entries(widgetRegistry).map(([name, def]) => (
 | 6 | 「訪客 Wi-Fi 用了多少」 | `render_sankey` × 1（流向）+ `render_kpi_card` × 1（總流量） |
 | 7 | 「PoE 還夠不夠插新設備」 | `render_gauge` × 1（PoE budget）+ `render_table` × 1（current 用量分布） |
 | 8 | 「這台 switch 壞了會影響誰」 | `render_topology` × 1（hierarchical layout）+ `render_alert_list` × 1 |
+| 9 | 「上月頻寬都被誰吃了」 | `render_gauge` × 1（訂閱頻寬 87%）+ `render_kpi_card` × 3（總流量 / 日峰值 / 月最高峰）+ `render_sankey` × 1（部門 → SSID → 應用）+ `render_bar_chart` × 1（Top 10 user）+ `render_time_series` × 1（峰值趨勢 + 上限線）+ `render_table` × 1（部門明細） |
 
 ### 範例：scenario 7 完整 few-shot
 

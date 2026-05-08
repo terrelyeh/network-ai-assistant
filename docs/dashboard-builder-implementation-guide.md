@@ -324,7 +324,7 @@ tokens              + Storybook hookup
 
 [Prompt Eng]
 讀 widget-catalog   寫 system prompt     few-shot 調優
-熟悉 LLM tool API   接 LLM API          測 8 個 scenario
+熟悉 LLM tool API   接 LLM API          測 9 個 scenario
 ```
 
 **關鍵**：不要等 design 把 8 個都畫完才開始 RD。Design / RD / Prompt Eng 三條線**並行**，靠 Zod schema 對齊。
@@ -348,7 +348,7 @@ tokens              + Storybook hookup
 
 - [ ] System prompt 列出可用 widget（用 `widget-catalog.md` 內容）
 - [ ] LLM tool spec 從 `LLM_TOOLS` 自動產出（不手寫）
-- [ ] Few-shot examples：8 個 scenario 各 1 組（user query → tool calls）
+- [ ] Few-shot examples：9 個 scenario 各 1 組（user query → tool calls）
 - [ ] Closed-set rule：明確告訴 LLM「只能用 catalog 裡的 widget，不能發明」
 - [ ] Combo rules：限定 dashboard 上限 widget 數（建議 ≤ 6）
 - [ ] Validation：LLM 回傳的每個 widget JSON 都過 Zod，壞了重 prompt
@@ -397,7 +397,7 @@ tokens              + Storybook hookup
 - [widget-catalog.md](./widget-catalog.md) — 11 個 widget 的詳細規格（給人看的版本）
 - [prompt-templates.md](./prompt-templates.md) — LLM system prompt + 11 個 tool defs + few-shot examples
 - [../dashboard-builder-implementation.html](../dashboard-builder-implementation.html) — 工程實作指南（4-tab 互動頁）
-- [../dashboard-builder-demo.html](../dashboard-builder-demo.html) — 8 個 scenario 的互動 demo
+- [../dashboard-builder-demo.html](../dashboard-builder-demo.html) — 9 個 scenario 的互動 demo
 
 ---
 

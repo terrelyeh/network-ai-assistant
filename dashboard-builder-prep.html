@@ -995,7 +995,7 @@ tokens              + Storybook hookup
 
 [Prompt Eng]
 讀 widget-catalog   寫 system prompt    few-shot 調優
-熟悉 LLM tool API   接 LLM API          測 8 個 scenario</div>
+熟悉 LLM tool API   接 LLM API          測 9 個 scenario</div>
 
   <div class="callout">
     <strong>關鍵</strong>：不要等 design 把 8 個都畫完才開始 RD。Design / RD / Prompt Eng 三條線<strong>並行</strong>，靠 Zod schema 對齊。
@@ -1023,7 +1023,7 @@ tokens              + Storybook hookup
   <ul class="checklist">
     <li>System prompt 列出可用 widget（用 <code>widget-catalog.md</code> 內容）</li>
     <li>LLM tool spec 從 <code>LLM_TOOLS</code> 自動產出（不手寫）</li>
-    <li>Few-shot examples：8 個 scenario 各 1 組（user query → tool calls）</li>
+    <li>Few-shot examples：9 個 scenario 各 1 組（user query → tool calls）</li>
     <li>Closed-set rule：明確告訴 LLM「只能用 catalog 裡的 widget，不能發明」</li>
     <li>Combo rules：限定 dashboard 上限 widget 數（建議 ≤ 6）</li>
     <li>Validation：LLM 回傳的每個 widget JSON 都過 Zod，壞了重 prompt</li>

@@ -1105,6 +1105,9 @@
   <button class="tab" data-scenario="s8">
     <span>故障 Blast Radius</span><span class="mode-badge">MODE B</span>
   </button>
+  <button class="tab" data-scenario="s9">
+    <span>頻寬都被誰吃了</span><span class="mode-badge">MODE B</span>
+  </button>
 </div>
 
 <!-- DEMO -->
@@ -1356,6 +1359,42 @@
             <button class="chip">💬 對比去年同期成長</button>
             <button class="chip">💬 哪間分店訪客最多</button>
             <button class="chip action">📅 排每月 1 號自動寄</button>
+          </div>
+        </div>
+
+        <!-- ===== Scenario 9: 上月頻寬都被誰吃了 ===== -->
+        <div class="scenario s9">
+          <div class="msg user">老闆問我們頻寬還夠不夠用 — 上個月頻寬都被誰吃了？</div>
+          <div class="msg ai">
+            <div class="ai-name">🤖 Network AI-Assistant</div>
+            這題要回答兩個層次 — 「<strong style="color:var(--text);">現在還剩多少</strong>」+「<strong style="color:var(--text);">主要被誰吃</strong>」。我幫您建一個跨資料的<strong style="color:var(--text);">頻寬使用分析</strong> dashboard：
+            <ul>
+              <li>訂閱頻寬利用率 <strong>Gauge</strong>（看離爆掉還多遠）</li>
+              <li>總流量 / 平均日峰值 / 頂峰當下利用率（KPI × 3）</li>
+              <li><strong>Sankey：部門 → SSID → Top 5 應用</strong>（看流量怎麼流）</li>
+              <li>Top 10 重度使用者（Bar）</li>
+              <li>每日峰值趨勢（Time Series — 看是否快撞頻寬上限）</li>
+              <li>部門明細表 + AI 限流建議</li>
+            </ul>
+            <div class="msg-actions">
+              <button class="msg-btn primary">✓ 建立</button>
+              <button class="msg-btn">先排除訪客流量</button>
+            </div>
+          </div>
+          <div class="msg user">建立</div>
+          <div class="msg ai">
+            <div class="ai-name">🤖 Network AI-Assistant</div>
+            已建立 ✓<br>
+            <strong style="color:var(--accent);">關鍵發現</strong>：上月峰值利用率達 <strong>87%</strong>（500 Mbps 訂閱）—— 估 2-3 個月內會撞上限。<br>
+            <strong style="color:var(--warn);">主要消耗</strong>：Marketing 部門吃 <strong>34%</strong>（其中 YouTube + Meta 占 71%）。<br>
+            <strong style="color:var(--good);">建議</strong>：先對 streaming 類別做 QoS 限流（可在尖峰時段降到 30 Mbps），可省下 18% 頻寬，相當於<strong>延後升頻寬 6-9 個月</strong>。
+          </div>
+          <div class="followup-chips">
+            <span class="chip-label">下一步建議</span>
+            <button class="chip">💬 預測撞上限的時間</button>
+            <button class="chip">💬 比較同業頻寬利用率</button>
+            <button class="chip action">⚙️ 套用 streaming QoS 限流</button>
+            <button class="chip action">📋 輸出採購評估</button>
           </div>
         </div>
 
@@ -1841,15 +1880,59 @@
           </div>
 
           <div class="widget" style="grid-column: span 1;">
-            <div class="widget-title">裝置 OS 分布</div>
-            <div class="bar-list">
-              <div class="bar-row"><div class="lbl">iOS</div><div class="bar-track"><div class="bar-fill" style="width:62%; background:var(--cyan);"></div></div><div class="num">62%</div></div>
-              <div class="bar-row"><div class="lbl">Android</div><div class="bar-track"><div class="bar-fill" style="width:31%; background:var(--accent);"></div></div><div class="num">31%</div></div>
-              <div class="bar-row"><div class="lbl">macOS</div><div class="bar-track"><div class="bar-fill" style="width:5%;"></div></div><div class="num">5%</div></div>
-              <div class="bar-row"><div class="lbl">其他</div><div class="bar-track"><div class="bar-fill" style="width:2%;"></div></div><div class="num">2%</div></div>
+            <div class="widget-title">
+              訪客流向 · OS → 應用
+              <span style="font-size:10px;font-weight:600;color:var(--warn);background:rgba(251,191,36,0.15);padding:2px 6px;border-radius:3px;margin-left:8px;letter-spacing:0.05em;">P2 · Sankey</span>
             </div>
-            <div style="margin-top:10px;font-size:11px;color:var(--dim);">
-              💡 行銷可參考：以 iOS 為主的客群
+            <svg viewBox="0 0 280 170" style="width:100%;height:auto;font-family:Inter;">
+              <!-- Curved flow bands (drawn first so node bars overlay edges) -->
+              <!-- iOS (62%) → Social (28%) -->
+              <path d="M 18,16 C 110,16 170,12 256,12 L 256,33 C 170,33 110,38 18,55 Z" fill="rgba(3,169,244,0.55)"/>
+              <!-- iOS → Streaming (22%) -->
+              <path d="M 18,55 C 110,55 170,55 256,55 L 256,72 C 170,72 110,72 18,75 Z" fill="rgba(3,169,244,0.40)"/>
+              <!-- iOS → Browsing (12%) -->
+              <path d="M 18,75 C 110,75 170,93 256,93 L 256,103 C 170,103 110,98 18,90 Z" fill="rgba(3,169,244,0.25)"/>
+
+              <!-- Android (31%) → Social (15%) -->
+              <path d="M 18,93 C 110,93 170,18 256,18 L 256,32 C 170,32 110,108 18,108 Z" fill="rgba(255,107,53,0.50)" opacity="0.7"/>
+              <!-- Android → Streaming (10%) -->
+              <path d="M 18,108 C 110,108 170,55 256,55 L 256,65 C 170,65 110,118 18,118 Z" fill="rgba(255,107,53,0.35)" opacity="0.7"/>
+              <!-- Android → Browsing (6%) -->
+              <path d="M 18,118 C 110,118 170,93 256,93 L 256,99 C 170,99 110,124 18,124 Z" fill="rgba(255,107,53,0.22)" opacity="0.7"/>
+
+              <!-- macOS+其他 (7%) → 平均分散到 3 categories -->
+              <path d="M 18,124 C 110,124 170,32 256,32 L 256,40 C 170,40 110,131 18,131 Z" fill="rgba(100,116,139,0.30)"/>
+              <path d="M 18,131 C 110,131 170,65 256,65 L 256,72 C 170,72 110,138 18,138 Z" fill="rgba(100,116,139,0.30)"/>
+              <path d="M 18,138 C 110,138 170,99 256,99 L 256,105 C 170,105 110,144 18,144 Z" fill="rgba(100,116,139,0.30)"/>
+
+              <!-- LEFT nodes (OS) -->
+              <rect x="14" y="16" width="6" height="74" rx="2" fill="#03A9F4"/>
+              <text x="22" y="14" font-size="10" font-weight="700" fill="#1a2332">iOS</text>
+              <text x="22" y="92" font-size="9" fill="#5a6878">62%</text>
+
+              <rect x="14" y="93" width="6" height="35" rx="2" fill="#ff6b35"/>
+              <text x="22" y="91" font-size="10" font-weight="700" fill="#1a2332">Android</text>
+              <text x="22" y="138" font-size="9" fill="#5a6878">31%</text>
+
+              <rect x="14" y="124" width="6" height="22" rx="2" fill="#94a3b8"/>
+              <text x="22" y="139" font-size="9" font-weight="600" fill="#1a2332">macOS+其他</text>
+              <text x="22" y="153" font-size="9" fill="#5a6878">7%</text>
+
+              <!-- RIGHT nodes (App categories) -->
+              <rect x="260" y="12" width="6" height="28" rx="2" fill="#1a2332"/>
+              <text x="256" y="9" font-size="10" font-weight="700" fill="#1a2332" text-anchor="end">Social</text>
+              <text x="256" y="46" font-size="9" fill="#5a6878" text-anchor="end">43%</text>
+
+              <rect x="260" y="55" width="6" height="17" rx="2" fill="#1a2332"/>
+              <text x="256" y="52" font-size="10" font-weight="700" fill="#1a2332" text-anchor="end">Streaming</text>
+              <text x="256" y="80" font-size="9" fill="#5a6878" text-anchor="end">32%</text>
+
+              <rect x="260" y="93" width="6" height="12" rx="2" fill="#1a2332"/>
+              <text x="256" y="91" font-size="10" font-weight="700" fill="#1a2332" text-anchor="end">Browsing</text>
+              <text x="256" y="118" font-size="9" fill="#5a6878" text-anchor="end">18%</text>
+            </svg>
+            <div style="margin-top:6px;font-size:11px;color:var(--dim);">
+              💡 iOS 客群 + Social 應用 = 28% 主要流量 — 行銷可針對 IG / FB 投放
             </div>
           </div>
 
@@ -1888,39 +1971,128 @@
         </div>
         <div class="dash-grid" style="grid-template-columns: 1fr 1fr 1fr 1fr;">
 
-          <div class="widget" style="grid-column: span 1;">
-            <div class="widget-title">PoE 總預算</div>
-            <div class="kpi-value" style="font-size:32px;">1,440<span style="font-size:14px;color:var(--muted);"> W</span></div>
-            <div class="kpi-trend">6 switches · 各 240W</div>
+          <!-- Big Gauge: 全網 PoE 預算利用率 -->
+          <div class="widget" style="grid-column: span 2;">
+            <div class="widget-title">
+              全網 PoE 預算利用率
+              <span style="font-size:10px;font-weight:600;color:var(--accent);background:rgba(255,107,53,0.12);padding:2px 6px;border-radius:3px;margin-left:8px;letter-spacing:0.05em;">P1 · Gauge</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:18px;padding:8px 4px;">
+              <svg viewBox="0 0 140 90" style="width:160px;height:auto;flex-shrink:0;">
+                <defs>
+                  <linearGradient id="poe-gauge-bg" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#10b981"/>
+                    <stop offset="55%" stop-color="#10b981"/>
+                    <stop offset="70%" stop-color="#fbbf24"/>
+                    <stop offset="90%" stop-color="#ef4444"/>
+                  </linearGradient>
+                </defs>
+                <path d="M15,80 A55,55 0 0,1 125,80" stroke="rgba(60,50,35,0.10)" stroke-width="10" fill="none" stroke-linecap="round"/>
+                <path d="M15,80 A55,55 0 0,1 125,80" stroke="url(#poe-gauge-bg)" stroke-width="10" fill="none" stroke-linecap="round" stroke-dasharray="173" stroke-dashoffset="45"/>
+                <line x1="70" y1="80" x2="105" y2="40" stroke="#1a2332" stroke-width="2.5" stroke-linecap="round"/>
+                <circle cx="70" cy="80" r="4" fill="#1a2332"/>
+                <text x="70" y="62" text-anchor="middle" font-size="22" font-weight="800" fill="#1a2332" font-family="Inter">74%</text>
+              </svg>
+              <div>
+                <div style="font-size:13px;color:var(--muted);margin-bottom:4px;">已用 / 總預算</div>
+                <div style="font-size:20px;font-weight:800;color:var(--text);">1,072<span style="font-size:12px;color:var(--muted);"> / 1,440 W</span></div>
+                <div style="font-size:11px;color:var(--warn);margin-top:6px;">⚠ 達 70% warning · 距 90% critical 還有 16pp</div>
+                <div style="font-size:11px;color:var(--muted);margin-top:2px;">6 switches · 各 240W</div>
+              </div>
+            </div>
           </div>
-          <div class="widget" style="grid-column: span 1;">
-            <div class="widget-title">已用功耗</div>
-            <div class="kpi-value" style="font-size:32px;color:var(--warn);">1,072<span style="font-size:14px;color:var(--muted);"> W</span></div>
-            <div class="kpi-trend down">使用率 74%</div>
-          </div>
+
+          <!-- KPI: 剩餘預算 -->
           <div class="widget" style="grid-column: span 1;">
             <div class="widget-title">剩餘預算</div>
             <div class="kpi-value" style="font-size:32px;">368<span style="font-size:14px;color:var(--muted);"> W</span></div>
             <div class="kpi-trend">≈ 12 台 30W 設備</div>
           </div>
+
+          <!-- KPI: 異常事件 -->
           <div class="widget" style="grid-column: span 1;">
             <div class="widget-title">異常事件 (7d)</div>
             <div class="kpi-value" style="font-size:32px;color:var(--bad);">3</div>
             <div class="kpi-trend down">過大電流 + flap</div>
           </div>
 
+          <!-- 6 mini-Gauge grid -->
           <div class="widget" style="grid-column: span 4;">
-            <div class="widget-title">各 Switch PoE 使用率</div>
-            <div class="bar-list">
-              <div class="bar-row"><div class="lbl">SW-2F</div><div class="bar-track"><div class="bar-fill warn" style="width:87%"></div></div><div class="num">208 / 240W (87%)</div></div>
-              <div class="bar-row"><div class="lbl">SW-3F-Core</div><div class="bar-track"><div class="bar-fill" style="width:78%"></div></div><div class="num">187 / 240W (78%)</div></div>
-              <div class="bar-row"><div class="lbl">SW-1F</div><div class="bar-track"><div class="bar-fill" style="width:75%"></div></div><div class="num">180 / 240W (75%)</div></div>
-              <div class="bar-row"><div class="lbl">SW-7F</div><div class="bar-track"><div class="bar-fill" style="width:68%"></div></div><div class="num">163 / 240W (68%)</div></div>
-              <div class="bar-row"><div class="lbl">SW-5F</div><div class="bar-track"><div class="bar-fill" style="width:59%"></div></div><div class="num">142 / 240W (59%)</div></div>
-              <div class="bar-row"><div class="lbl">SW-Lab</div><div class="bar-track"><div class="bar-fill" style="width:80%"></div></div><div class="num">192 / 240W (80%)</div></div>
+            <div class="widget-title">
+              各 Switch PoE 使用率
+              <span style="font-size:10px;font-weight:600;color:var(--accent);background:rgba(255,107,53,0.12);padding:2px 6px;border-radius:3px;margin-left:8px;letter-spacing:0.05em;">P1 · Gauge × 6</span>
             </div>
-            <div style="margin-top:6px;font-size:11px;color:var(--warn);">
-              ⚠ SW-2F 接近上限 — 不適合再加高耗電設備
+            <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-top:8px;">
+
+              <!-- SW-2F · 87% critical -->
+              <div style="text-align:center;">
+                <svg viewBox="0 0 100 65" style="width:100%;height:auto;">
+                  <path d="M12,55 A38,38 0 0,1 88,55" stroke="rgba(60,50,35,0.10)" stroke-width="7" fill="none" stroke-linecap="round"/>
+                  <path d="M12,55 A38,38 0 0,1 88,55" stroke="#ef4444" stroke-width="7" fill="none" stroke-linecap="round" stroke-dasharray="120" stroke-dashoffset="16"/>
+                  <text x="50" y="52" text-anchor="middle" font-size="18" font-weight="800" fill="#ef4444">87%</text>
+                </svg>
+                <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:2px;">SW-2F</div>
+                <div style="font-size:10px;color:var(--muted);">208 / 240 W</div>
+              </div>
+
+              <!-- SW-Lab · 80% warning -->
+              <div style="text-align:center;">
+                <svg viewBox="0 0 100 65" style="width:100%;height:auto;">
+                  <path d="M12,55 A38,38 0 0,1 88,55" stroke="rgba(60,50,35,0.10)" stroke-width="7" fill="none" stroke-linecap="round"/>
+                  <path d="M12,55 A38,38 0 0,1 88,55" stroke="#fbbf24" stroke-width="7" fill="none" stroke-linecap="round" stroke-dasharray="120" stroke-dashoffset="24"/>
+                  <text x="50" y="52" text-anchor="middle" font-size="18" font-weight="800" fill="#fbbf24">80%</text>
+                </svg>
+                <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:2px;">SW-Lab</div>
+                <div style="font-size:10px;color:var(--muted);">192 / 240 W</div>
+              </div>
+
+              <!-- SW-3F-Core · 78% warning -->
+              <div style="text-align:center;">
+                <svg viewBox="0 0 100 65" style="width:100%;height:auto;">
+                  <path d="M12,55 A38,38 0 0,1 88,55" stroke="rgba(60,50,35,0.10)" stroke-width="7" fill="none" stroke-linecap="round"/>
+                  <path d="M12,55 A38,38 0 0,1 88,55" stroke="#fbbf24" stroke-width="7" fill="none" stroke-linecap="round" stroke-dasharray="120" stroke-dashoffset="26"/>
+                  <text x="50" y="52" text-anchor="middle" font-size="18" font-weight="800" fill="#fbbf24">78%</text>
+                </svg>
+                <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:2px;">SW-3F-Core</div>
+                <div style="font-size:10px;color:var(--muted);">187 / 240 W</div>
+              </div>
+
+              <!-- SW-1F · 75% warning -->
+              <div style="text-align:center;">
+                <svg viewBox="0 0 100 65" style="width:100%;height:auto;">
+                  <path d="M12,55 A38,38 0 0,1 88,55" stroke="rgba(60,50,35,0.10)" stroke-width="7" fill="none" stroke-linecap="round"/>
+                  <path d="M12,55 A38,38 0 0,1 88,55" stroke="#fbbf24" stroke-width="7" fill="none" stroke-linecap="round" stroke-dasharray="120" stroke-dashoffset="30"/>
+                  <text x="50" y="52" text-anchor="middle" font-size="18" font-weight="800" fill="#fbbf24">75%</text>
+                </svg>
+                <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:2px;">SW-1F</div>
+                <div style="font-size:10px;color:var(--muted);">180 / 240 W</div>
+              </div>
+
+              <!-- SW-7F · 68% good -->
+              <div style="text-align:center;">
+                <svg viewBox="0 0 100 65" style="width:100%;height:auto;">
+                  <path d="M12,55 A38,38 0 0,1 88,55" stroke="rgba(60,50,35,0.10)" stroke-width="7" fill="none" stroke-linecap="round"/>
+                  <path d="M12,55 A38,38 0 0,1 88,55" stroke="#10b981" stroke-width="7" fill="none" stroke-linecap="round" stroke-dasharray="120" stroke-dashoffset="38"/>
+                  <text x="50" y="52" text-anchor="middle" font-size="18" font-weight="800" fill="#10b981">68%</text>
+                </svg>
+                <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:2px;">SW-7F</div>
+                <div style="font-size:10px;color:var(--muted);">163 / 240 W</div>
+              </div>
+
+              <!-- SW-5F · 59% good -->
+              <div style="text-align:center;">
+                <svg viewBox="0 0 100 65" style="width:100%;height:auto;">
+                  <path d="M12,55 A38,38 0 0,1 88,55" stroke="rgba(60,50,35,0.10)" stroke-width="7" fill="none" stroke-linecap="round"/>
+                  <path d="M12,55 A38,38 0 0,1 88,55" stroke="#10b981" stroke-width="7" fill="none" stroke-linecap="round" stroke-dasharray="120" stroke-dashoffset="49"/>
+                  <text x="50" y="52" text-anchor="middle" font-size="18" font-weight="800" fill="#10b981">59%</text>
+                </svg>
+                <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:2px;">SW-5F</div>
+                <div style="font-size:10px;color:var(--muted);">142 / 240 W</div>
+              </div>
+
+            </div>
+            <div style="margin-top:10px;font-size:11px;color:var(--warn);">
+              ⚠ SW-2F 已達 critical 區（≥ 90% 即無法保證 PoE+），不建議再加高耗電設備
             </div>
           </div>
 
@@ -2018,7 +2190,10 @@
           </div>
 
           <div class="widget" style="grid-column: span 4;">
-            <div class="widget-title">拓樸圖 · 影響範圍（紅色 = 維護期失聯）</div>
+            <div class="widget-title">
+              Topology Graph · 影響範圍（紅色 = 維護期失聯）
+              <span style="font-size:10px;font-weight:600;color:var(--warn);background:rgba(251,191,36,0.15);padding:2px 6px;border-radius:3px;margin-left:8px;letter-spacing:0.05em;">P2 · hierarchical</span>
+            </div>
             <svg viewBox="0 0 800 280" style="width:100%;height:auto;font-family:Inter;">
               <!-- Gateway -->
               <rect x="340" y="10" width="120" height="36" rx="8" fill="rgba(3,169,244,0.15)" stroke="#00d9c5" stroke-width="2"/>
@@ -2113,6 +2288,297 @@
           <button class="toolbar-btn">💾 儲存</button>
           <button class="toolbar-btn primary">📅 排定週六 02:00 維護</button>
           <button class="toolbar-btn">📩 草擬通知信</button>
+          <button class="toolbar-btn">🔗 分享</button>
+        </div>
+      </div>
+
+      <!-- ===== Scenario 9: 上月頻寬都被誰吃了 ===== -->
+      <div class="scenario s9">
+        <div class="dash-header">
+          <div class="dash-title"><img src="assets/engenius-logo.png" class="dash-logo" alt=""> 頻寬使用分析 · 2026-04</div>
+          <div class="dash-meta"><span class="live"></span> 30 天彙整 · 訂閱 500 Mbps · 8 部門</div>
+        </div>
+        <div class="dash-grid" style="grid-template-columns: 1fr 1fr 1fr 1fr;">
+
+          <!-- KPI: 總流量 -->
+          <div class="widget" style="grid-column: span 1;">
+            <div class="widget-title">上月總流量</div>
+            <div class="kpi-value" style="font-size:32px;">14.2<span style="font-size:14px;color:var(--muted);"> TB</span></div>
+            <div class="kpi-trend up">↑ 23% (vs 2026-03)</div>
+          </div>
+
+          <!-- KPI: 平均日峰值 -->
+          <div class="widget" style="grid-column: span 1;">
+            <div class="widget-title">平均日峰值</div>
+            <div class="kpi-value" style="font-size:32px;color:var(--warn);">387<span style="font-size:14px;color:var(--muted);"> Mbps</span></div>
+            <div class="kpi-trend down">峰值利用率 77%</div>
+          </div>
+
+          <!-- KPI: 頂峰當下利用率 -->
+          <div class="widget" style="grid-column: span 1;">
+            <div class="widget-title">月內最高峰</div>
+            <div class="kpi-value" style="font-size:32px;color:var(--bad);">435<span style="font-size:14px;color:var(--muted);"> Mbps</span></div>
+            <div class="kpi-trend down">2026-04-19 14:30</div>
+          </div>
+
+          <!-- Gauge: 訂閱頻寬利用率 -->
+          <div class="widget" style="grid-column: span 1;">
+            <div class="widget-title">
+              訂閱頻寬利用率
+              <span style="font-size:10px;font-weight:600;color:var(--accent);background:rgba(255,107,53,0.12);padding:2px 6px;border-radius:3px;margin-left:6px;letter-spacing:0.05em;">P1 · Gauge</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:4px 0;">
+              <svg viewBox="0 0 100 65" style="width:90px;height:auto;flex-shrink:0;">
+                <path d="M12,55 A38,38 0 0,1 88,55" stroke="rgba(60,50,35,0.10)" stroke-width="7" fill="none" stroke-linecap="round"/>
+                <path d="M12,55 A38,38 0 0,1 88,55" stroke="#ef4444" stroke-width="7" fill="none" stroke-linecap="round" stroke-dasharray="120" stroke-dashoffset="16"/>
+                <text x="50" y="52" text-anchor="middle" font-size="18" font-weight="800" fill="#ef4444">87%</text>
+              </svg>
+              <div style="font-size:11px;color:var(--muted);line-height:1.6;">
+                <div><strong style="color:var(--text);">435 / 500 Mbps</strong></div>
+                <div style="color:var(--bad);">已進 critical 區</div>
+                <div style="margin-top:2px;">≈ 2-3 個月撞上限</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sankey: 部門 → SSID → Top 5 App -->
+          <div class="widget" style="grid-column: span 4;">
+            <div class="widget-title">
+              流量流向 · 部門 → SSID → 應用類別
+              <span style="font-size:10px;font-weight:600;color:var(--warn);background:rgba(251,191,36,0.15);padding:2px 6px;border-radius:3px;margin-left:8px;letter-spacing:0.05em;">P2 · Sankey 3-tier</span>
+            </div>
+            <svg viewBox="0 0 800 280" style="width:100%;height:auto;font-family:Inter;">
+
+              <!-- =============== TIER 1 → TIER 2 (Department → SSID) =============== -->
+              <!-- Marketing (34%) → Office SSID (28%) -->
+              <path d="M 18,16 C 200,16 240,16 396,16 L 396,82 C 240,82 200,32 18,32 Z" fill="rgba(255,107,53,0.45)"/>
+              <!-- Marketing → Mobile SSID (6%) -->
+              <path d="M 18,32 C 200,32 240,108 396,108 L 396,118 C 240,118 200,42 18,42 Z" fill="rgba(255,107,53,0.30)"/>
+
+              <!-- Engineering (22%) → Office SSID (20%) -->
+              <path d="M 18,42 C 200,42 240,82 396,82 L 396,127 C 240,127 200,82 18,82 Z" fill="rgba(3,169,244,0.45)"/>
+              <!-- Engineering → Mobile SSID (2%) -->
+              <path d="M 18,82 C 200,82 240,118 396,118 L 396,122 C 240,122 200,86 18,86 Z" fill="rgba(3,169,244,0.30)"/>
+
+              <!-- Sales (16%) → Office SSID (14%) -->
+              <path d="M 18,86 C 200,86 240,127 396,127 L 396,156 C 240,156 200,116 18,116 Z" fill="rgba(16,185,129,0.45)"/>
+              <!-- Sales → Mobile (2%) -->
+              <path d="M 18,116 C 200,116 240,122 396,122 L 396,126 C 240,126 200,120 18,120 Z" fill="rgba(16,185,129,0.30)"/>
+
+              <!-- Operations (12%) → Office (10%) -->
+              <path d="M 18,120 C 200,120 240,156 396,156 L 396,178 C 240,178 200,142 18,142 Z" fill="rgba(245,158,11,0.40)"/>
+              <!-- Operations → Mobile (2%) -->
+              <path d="M 18,142 C 200,142 240,126 396,126 L 396,131 C 240,131 200,146 18,146 Z" fill="rgba(245,158,11,0.28)"/>
+
+              <!-- Guest (10%) → Guest SSID (10%) -->
+              <path d="M 18,146 C 200,146 240,178 396,178 L 396,200 C 240,200 200,168 18,168 Z" fill="rgba(168,85,247,0.40)"/>
+
+              <!-- Other depts (6%) → Office (5%) -->
+              <path d="M 18,168 C 200,168 240,200 396,200 L 396,212 C 240,212 200,180 18,180 Z" fill="rgba(100,116,139,0.30)"/>
+              <!-- Other → Mobile (1%) -->
+              <path d="M 18,180 C 200,180 240,131 396,131 L 396,134 C 240,134 200,184 18,184 Z" fill="rgba(100,116,139,0.22)"/>
+
+              <!-- =============== TIER 2 → TIER 3 (SSID → App Category) =============== -->
+              <!-- Office SSID → Streaming (38% of total) -->
+              <path d="M 402,16 C 580,16 620,16 776,16 L 776,98 C 620,98 580,62 402,62 Z" fill="rgba(99,102,241,0.45)"/>
+              <!-- Office → Productivity (24%) -->
+              <path d="M 402,62 C 580,62 620,108 776,108 L 776,160 C 620,160 580,108 402,108 Z" fill="rgba(99,102,241,0.40)"/>
+              <!-- Office → Web (12%) -->
+              <path d="M 402,108 C 580,108 620,170 776,170 L 776,196 C 620,196 580,134 402,134 Z" fill="rgba(99,102,241,0.32)"/>
+              <!-- Office → Other (3%) -->
+              <path d="M 402,134 C 580,134 620,206 776,206 L 776,212 C 620,212 580,140 402,140 Z" fill="rgba(99,102,241,0.22)"/>
+
+              <!-- Mobile SSID → Streaming + Web mix -->
+              <path d="M 402,142 C 580,142 620,98 776,98 L 776,108 C 620,108 580,150 402,150 Z" fill="rgba(20,184,166,0.45)"/>
+              <path d="M 402,150 C 580,150 620,196 776,196 L 776,212 C 620,212 580,164 402,164 Z" fill="rgba(20,184,166,0.32)"/>
+
+              <!-- Guest SSID → Streaming + Social Web -->
+              <path d="M 402,164 C 580,164 620,160 776,160 L 776,170 C 620,170 580,176 402,176 Z" fill="rgba(168,85,247,0.45)"/>
+              <path d="M 402,176 C 580,176 620,212 776,212 L 776,222 C 620,222 580,184 402,184 Z" fill="rgba(168,85,247,0.32)"/>
+
+              <!-- =============== NODE BARS =============== -->
+              <!-- LEFT: Departments (Tier 1) -->
+              <rect x="14" y="16" width="6" height="26" rx="2" fill="#ff6b35"/>
+              <text x="22" y="14" font-size="11" font-weight="700" fill="#1a2332">Marketing</text>
+              <text x="22" y="48" font-size="9" fill="#5a6878">34% · 4.83 TB</text>
+
+              <rect x="14" y="42" width="6" height="44" rx="2" fill="#03A9F4"/>
+              <text x="22" y="40" font-size="11" font-weight="700" fill="#1a2332" opacity="0">.</text>
+              <text x="22" y="68" font-size="11" font-weight="700" fill="#1a2332">Engineering</text>
+              <text x="22" y="92" font-size="9" fill="#5a6878">22%</text>
+
+              <rect x="14" y="86" width="6" height="34" rx="2" fill="#10b981"/>
+              <text x="22" y="106" font-size="11" font-weight="700" fill="#1a2332">Sales</text>
+              <text x="22" y="125" font-size="9" fill="#5a6878">16%</text>
+
+              <rect x="14" y="120" width="6" height="26" rx="2" fill="#f59e0b"/>
+              <text x="22" y="136" font-size="11" font-weight="700" fill="#1a2332">Operations</text>
+              <text x="22" y="155" font-size="9" fill="#5a6878">12%</text>
+
+              <rect x="14" y="146" width="6" height="22" rx="2" fill="#a855f7"/>
+              <text x="22" y="160" font-size="11" font-weight="700" fill="#1a2332">Guest</text>
+              <text x="22" y="178" font-size="9" fill="#5a6878">10%</text>
+
+              <rect x="14" y="168" width="6" height="16" rx="2" fill="#64748b"/>
+              <text x="22" y="180" font-size="11" font-weight="700" fill="#1a2332">Other</text>
+              <text x="22" y="195" font-size="9" fill="#5a6878">6%</text>
+
+              <!-- MID: SSIDs (Tier 2) -->
+              <rect x="396" y="16" width="6" height="118" rx="2" fill="#6366f1"/>
+              <text x="406" y="14" font-size="11" font-weight="700" fill="#1a2332">Office SSID</text>
+              <text x="406" y="76" font-size="9" fill="#5a6878">77%</text>
+
+              <rect x="396" y="142" width="6" height="22" rx="2" fill="#14b8a6"/>
+              <text x="406" y="156" font-size="11" font-weight="700" fill="#1a2332">Mobile SSID</text>
+              <text x="406" y="170" font-size="9" fill="#5a6878">13%</text>
+
+              <rect x="396" y="172" width="6" height="14" rx="2" fill="#a855f7"/>
+              <text x="406" y="184" font-size="11" font-weight="700" fill="#1a2332">Guest SSID</text>
+              <text x="406" y="198" font-size="9" fill="#5a6878">10%</text>
+
+              <!-- RIGHT: App categories (Tier 3) -->
+              <rect x="780" y="16" width="6" height="82" rx="2" fill="#ef4444"/>
+              <text x="776" y="14" font-size="11" font-weight="700" fill="#1a2332" text-anchor="end">📺 Streaming</text>
+              <text x="776" y="60" font-size="9" fill="#5a6878" text-anchor="end">42%</text>
+              <text x="776" y="74" font-size="9" fill="#ef4444" text-anchor="end">⚠ YouTube · Meta</text>
+
+              <rect x="780" y="108" width="6" height="52" rx="2" fill="#0ea5e9"/>
+              <text x="776" y="106" font-size="11" font-weight="700" fill="#1a2332" text-anchor="end">💼 Productivity</text>
+              <text x="776" y="140" font-size="9" fill="#5a6878" text-anchor="end">26% · M365 · Slack</text>
+
+              <rect x="780" y="170" width="6" height="42" rx="2" fill="#10b981"/>
+              <text x="776" y="168" font-size="11" font-weight="700" fill="#1a2332" text-anchor="end">🌐 Web</text>
+              <text x="776" y="196" font-size="9" fill="#5a6878" text-anchor="end">22%</text>
+
+              <rect x="780" y="216" width="6" height="14" rx="2" fill="#94a3b8"/>
+              <text x="776" y="226" font-size="11" font-weight="700" fill="#1a2332" text-anchor="end">其他</text>
+              <text x="776" y="240" font-size="9" fill="#5a6878" text-anchor="end">10%</text>
+
+              <!-- Tier labels -->
+              <text x="17" y="265" font-size="9" font-weight="700" fill="#5a6878" letter-spacing="0.1em">部門</text>
+              <text x="395" y="265" font-size="9" font-weight="700" fill="#5a6878" letter-spacing="0.1em">SSID</text>
+              <text x="780" y="265" font-size="9" font-weight="700" fill="#5a6878" text-anchor="end" letter-spacing="0.1em">應用類別</text>
+            </svg>
+          </div>
+
+          <!-- Bar: Top 10 重度使用者 -->
+          <div class="widget" style="grid-column: span 2;">
+            <div class="widget-title">Top 10 重度使用者（個人）</div>
+            <div class="bar-list">
+              <div class="bar-row"><div class="lbl">Mike Chen (MKT)</div><div class="bar-track"><div class="bar-fill warn" style="width:92%"></div></div><div class="num">312 GB</div></div>
+              <div class="bar-row"><div class="lbl">Anna Lin (MKT)</div><div class="bar-track"><div class="bar-fill warn" style="width:81%"></div></div><div class="num">274 GB</div></div>
+              <div class="bar-row"><div class="lbl">David Wu (ENG)</div><div class="bar-track"><div class="bar-fill" style="width:68%"></div></div><div class="num">231 GB</div></div>
+              <div class="bar-row"><div class="lbl">Sandy Yeh (MKT)</div><div class="bar-track"><div class="bar-fill" style="width:62%"></div></div><div class="num">209 GB</div></div>
+              <div class="bar-row"><div class="lbl">Roger Lai (ENG)</div><div class="bar-track"><div class="bar-fill" style="width:55%"></div></div><div class="num">186 GB</div></div>
+              <div class="bar-row"><div class="lbl">Jenny Liu (MKT)</div><div class="bar-track"><div class="bar-fill" style="width:48%"></div></div><div class="num">163 GB</div></div>
+              <div class="bar-row"><div class="lbl">Tony Lin (SAL)</div><div class="bar-track"><div class="bar-fill" style="width:42%"></div></div><div class="num">142 GB</div></div>
+            </div>
+            <div style="margin-top:6px;font-size:11px;color:var(--accent);">
+              ⚠ Marketing 部門佔據 Top 10 中 4 席（前 2 名都是）— 與 Sankey 結論一致
+            </div>
+          </div>
+
+          <!-- Time Series: 每日峰值趨勢 -->
+          <div class="widget" style="grid-column: span 2;">
+            <div class="widget-title">每日峰值趨勢（含 500 Mbps 上限）</div>
+            <svg class="chart-svg" viewBox="0 0 600 110" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="g9-bw" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#ef4444" stop-opacity="0.35"/>
+                  <stop offset="100%" stop-color="#ef4444" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <!-- 500 Mbps ceiling line -->
+              <line x1="0" y1="12" x2="600" y2="12" stroke="#ef4444" stroke-width="1" stroke-dasharray="3,3"/>
+              <text x="4" y="9" font-size="9" fill="#ef4444" font-family="JetBrains Mono">500 Mbps · 訂閱上限</text>
+              <!-- 90% critical -->
+              <line x1="0" y1="22" x2="600" y2="22" stroke="#fbbf24" stroke-width="0.6" stroke-dasharray="2,2"/>
+              <text x="4" y="32" font-size="8" fill="#fbbf24" font-family="JetBrains Mono">90% critical</text>
+              <!-- area + line: daily peaks rising -->
+              <path d="M0,75 L20,72 L40,68 L60,63 L80,67 L100,60 L120,55 L140,52 L160,48 L180,55 L200,42 L220,40 L240,38 L260,42 L280,33 L300,30 L320,28 L340,35 L360,25 L380,22 L400,28 L420,18 L440,16 L460,22 L480,17 L500,15 L520,20 L540,16 L560,18 L580,17 L600,14 L600,110 L0,110 Z" fill="url(#g9-bw)"/>
+              <path d="M0,75 L20,72 L40,68 L60,63 L80,67 L100,60 L120,55 L140,52 L160,48 L180,55 L200,42 L220,40 L240,38 L260,42 L280,33 L300,30 L320,28 L340,35 L360,25 L380,22 L400,28 L420,18 L440,16 L460,22 L480,17 L500,15 L520,20 L540,16 L560,18 L580,17 L600,14" stroke="#ef4444" stroke-width="2" fill="none"/>
+              <!-- highlight 4/19 spike -->
+              <circle cx="400" cy="28" r="3.5" fill="#ef4444"/>
+              <text x="380" y="48" font-size="9" fill="#ef4444" font-family="Inter" font-weight="600">4/19 · 435 Mbps</text>
+              <!-- x-axis -->
+              <g font-size="9" fill="#64748b" font-family="JetBrains Mono">
+                <text x="0" y="106">04/01</text><text x="195" y="106">04/10</text><text x="395" y="106">04/20</text><text x="565" y="106">04/30</text>
+              </g>
+            </svg>
+            <div style="margin-top:4px;font-size:11px;color:var(--accent);">
+              ↗ 峰值持續逼近上限（線性外推 6-9 月會撞 500 Mbps）— 限流可延後升級
+            </div>
+          </div>
+
+          <!-- Table: 部門明細 + AI 限流建議 -->
+          <div class="widget" style="grid-column: span 4;">
+            <div class="widget-title">部門明細 + AI 限流建議</div>
+            <table class="table-w">
+              <thead>
+                <tr>
+                  <th>部門</th>
+                  <th>月流量</th>
+                  <th>佔比</th>
+                  <th>主要應用</th>
+                  <th>峰值貢獻</th>
+                  <th>AI 限流建議</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Marketing</strong></td>
+                  <td class="num">4.83 TB</td>
+                  <td><span class="badge-mini bad">34%</span></td>
+                  <td>YouTube · Meta · TikTok</td>
+                  <td class="num">142 Mbps</td>
+                  <td><strong style="color:var(--good);">尖峰 streaming 限 30 Mbps · 省 12%</strong></td>
+                </tr>
+                <tr>
+                  <td>Engineering</td>
+                  <td class="num">3.12 TB</td>
+                  <td><span class="badge-mini warn">22%</span></td>
+                  <td>GitHub · Slack · M365</td>
+                  <td class="num">95 Mbps</td>
+                  <td>合理用途 — 不限流</td>
+                </tr>
+                <tr>
+                  <td>Sales</td>
+                  <td class="num">2.27 TB</td>
+                  <td><span class="badge-mini">16%</span></td>
+                  <td>Salesforce · Zoom · M365</td>
+                  <td class="num">68 Mbps</td>
+                  <td>合理用途 — 不限流</td>
+                </tr>
+                <tr>
+                  <td>Operations</td>
+                  <td class="num">1.70 TB</td>
+                  <td><span class="badge-mini">12%</span></td>
+                  <td>ERP · M365 · Web</td>
+                  <td class="num">42 Mbps</td>
+                  <td>合理用途 — 不限流</td>
+                </tr>
+                <tr>
+                  <td>Guest</td>
+                  <td class="num">1.42 TB</td>
+                  <td><span class="badge-mini">10%</span></td>
+                  <td>Streaming · Social</td>
+                  <td class="num">52 Mbps</td>
+                  <td><strong style="color:var(--good);">guest 全時段限 50 Mbps · 省 6%</strong></td>
+                </tr>
+              </tbody>
+            </table>
+            <div style="margin-top:8px;font-size:11px;color:var(--good);">
+              💡 <strong>AI 整體建議</strong>：套用 Marketing streaming + Guest 限流 = 預估省下 <strong>18% 頻寬</strong>，相當於延後升頻寬 6-9 個月。風險：Marketing 反應 — 建議事先溝通並排例外清單。
+            </div>
+          </div>
+
+        </div>
+        <div class="dash-toolbar">
+          <span class="toolbar-label">DASHBOARD ACTIONS</span>
+          <button class="toolbar-btn">💾 儲存</button>
+          <button class="toolbar-btn primary">⚙️ 套用 streaming QoS 限流</button>
+          <button class="toolbar-btn">📋 採購評估</button>
+          <button class="toolbar-btn">📤 PDF</button>
           <button class="toolbar-btn">🔗 分享</button>
         </div>
       </div>
@@ -2257,6 +2723,7 @@
     s6: { t: '場景 6 · 訪客 Wi-Fi 使用報告（給行銷）', m: 'B · SMB IT' },
     s7: { t: '場景 7 · PoE 容量規劃與電源管理', m: 'B · SMB IT' },
     s8: { t: '場景 8 · 故障 Blast Radius（維護前影響分析）', m: 'B · SMB IT' },
+    s9: { t: '場景 9 · 上月頻寬都被誰吃了（容量 + 流向跨資料分析）', m: 'B · SMB IT' },
   };
 
   let activeAnimation = null;
@@ -2359,10 +2826,10 @@
     activeAnimation = timers;
   }
 
-  // Activate a given scenario by id (s1-s8). Updates tabs, scenario panes,
+  // Activate a given scenario by id (s1-s9). Updates tabs, scenario panes,
   // header title/mode pill, animation, and document title.
   function selectScenario(scenario) {
-    if (!/^s[1-8]$/.test(scenario)) scenario = 's1';
+    if (!/^s[1-9]$/.test(scenario)) scenario = 's1';
     document.querySelectorAll('.tab').forEach(t => {
       t.classList.toggle('active', t.getAttribute('data-scenario') === scenario);
     });
@@ -2389,13 +2856,13 @@
   // Hash change (back/forward / paste URL with #sN)
   window.addEventListener('hashchange', () => {
     const hash = location.hash.slice(1);
-    if (/^s[1-8]$/.test(hash)) selectScenario(hash);
+    if (/^s[1-9]$/.test(hash)) selectScenario(hash);
   });
 
   // Initial load — read hash, fallback to s1
   window.addEventListener('load', () => {
     const hash = location.hash.slice(1);
-    selectScenario(/^s[1-8]$/.test(hash) ? hash : 's1');
+    selectScenario(/^s[1-9]$/.test(hash) ? hash : 's1');
   });
 </script>
 
