@@ -169,10 +169,13 @@
   }
 
   /* Sequential reveal animation */
-  .chat .msg, .dash .widget {
+  .chat .msg, .dash .widget, .followup-chips, .dash-toolbar {
     transition: opacity 0.4s ease, transform 0.4s ease;
   }
-  .chat .msg.reveal-hidden, .dash .widget.reveal-hidden {
+  .chat .msg.reveal-hidden,
+  .dash .widget.reveal-hidden,
+  .followup-chips.reveal-hidden,
+  .dash-toolbar.reveal-hidden {
     opacity: 0;
     transform: translateY(10px);
   }
@@ -2265,13 +2268,17 @@
 
     const chatMsgs = [...chatScenario.querySelectorAll('.msg')];
     const widgets = dashScenario ? [...dashScenario.querySelectorAll('.widget')] : [];
+    const chips = chatScenario.querySelector('.followup-chips');
+    const toolbar = dashScenario ? dashScenario.querySelector('.dash-toolbar') : null;
 
-    // Reset: hide all messages and widgets, scroll to top
+    // Reset: hide all messages, widgets, chips, toolbar; scroll to top
     chatMsgs.forEach(m => m.classList.add('reveal-hidden'));
     widgets.forEach(w => {
       w.classList.add('reveal-hidden');
       w.classList.remove('skeleton-mode');
     });
+    if (chips) chips.classList.add('reveal-hidden');
+    if (toolbar) toolbar.classList.add('reveal-hidden');
     chatScenario.scrollTop = 0;
 
     const timers = [];
@@ -2310,6 +2317,15 @@
       }
     });
 
+    // Reveal chat chips after all chat messages have appeared
+    if (chips) {
+      const chipsT = setTimeout(() => {
+        chips.classList.remove('reveal-hidden');
+        chatScenario.scrollTop = chatScenario.scrollHeight;
+      }, delay + 250);
+      timers.push(chipsT);
+    }
+
     // Phase 1: Reveal widgets as skeletons (stagger fade-in)
     delay += 400;
     widgets.forEach((w, i) => {
@@ -2324,6 +2340,13 @@
       const t = setTimeout(() => w.classList.remove('skeleton-mode'), phase2Start + i * 110);
       timers.push(t);
     });
+
+    // Reveal dash toolbar last — after all widgets fully rendered
+    if (toolbar) {
+      const toolbarTime = phase2Start + widgets.length * 110 + 350;
+      const tbT = setTimeout(() => toolbar.classList.remove('reveal-hidden'), toolbarTime);
+      timers.push(tbT);
+    }
 
     activeAnimation = timers;
   }
