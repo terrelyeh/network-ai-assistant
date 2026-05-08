@@ -165,6 +165,7 @@ network-ai-assistant/
 - 加入 Vercel Analytics（看流量）
 - 補 Mode A 員工 chat 的更多 playbook 範例
 - `docs/widget-catalog.md` schema 用 Zod 寫成 TypeScript 範例檔（給 RD starter）
+- **demo.html refine 互動擴充**（4 hero 場景：S1 / S5 / S7 / S10）— spec 已寫在 [`docs/refine-demo-plan.md`](docs/refine-demo-plan.md)，源檔頂部有 HTML comment 標 candidate
 
 ## Deployment
 
