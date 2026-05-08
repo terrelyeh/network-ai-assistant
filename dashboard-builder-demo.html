@@ -2123,22 +2123,44 @@
     activeAnimation = timers;
   }
 
+  // Activate a given scenario by id (s1-s8). Updates tabs, scenario panes,
+  // header title/mode pill, animation, and document title.
+  function selectScenario(scenario) {
+    if (!/^s[1-8]$/.test(scenario)) scenario = 's1';
+    document.querySelectorAll('.tab').forEach(t => {
+      t.classList.toggle('active', t.getAttribute('data-scenario') === scenario);
+    });
+    document.querySelectorAll('.scenario').forEach(s => {
+      s.classList.toggle('active', s.classList.contains(scenario));
+    });
+    document.getElementById('demoTitle').textContent = titles[scenario].t;
+    document.getElementById('demoMode').textContent = titles[scenario].m;
+    document.title = titles[scenario].t + ' · Dashboard Builder Demo';
+    animateScenario(scenario);
+  }
+
+  // Tab click → update URL hash (so each scenario has a shareable URL)
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => {
       const scenario = tab.getAttribute('data-scenario');
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      document.querySelectorAll('.scenario').forEach(s => {
-        s.classList.toggle('active', s.classList.contains(scenario));
-      });
-      document.getElementById('demoTitle').textContent = titles[scenario].t;
-      document.getElementById('demoMode').textContent = titles[scenario].m;
-      animateScenario(scenario);
+      if (location.hash.slice(1) !== scenario) {
+        history.pushState(null, '', '#' + scenario);
+      }
+      selectScenario(scenario);
     });
   });
 
-  // Run initial animation for default scenario (s1)
-  window.addEventListener('load', () => animateScenario('s1'));
+  // Hash change (back/forward / paste URL with #sN)
+  window.addEventListener('hashchange', () => {
+    const hash = location.hash.slice(1);
+    if (/^s[1-8]$/.test(hash)) selectScenario(hash);
+  });
+
+  // Initial load — read hash, fallback to s1
+  window.addEventListener('load', () => {
+    const hash = location.hash.slice(1);
+    selectScenario(/^s[1-8]$/.test(hash) ? hash : 's1');
+  });
 </script>
 
 </body>
