@@ -16,7 +16,7 @@
 
 ---
 
-## Widget 列表（v1 限定 8 種）
+## Widget 列表（v1 共 11 種）
 
 | # | Widget | Tool name | 主要用途 | 優先級 |
 |---|---|---|---|---|
@@ -27,10 +27,14 @@
 | 5 | Status Grid | `render_status_grid` | 設備健康燈號 | P1 |
 | 6 | Heatmap | `render_heatmap` | 時間 × 維度熱力 | P1 |
 | 7 | Alert List | `render_alert_list` | 告警清單 | P1 |
-| 8 | Site Map | `render_site_map` | 地理 / 拓樸分布 | P2 |
+| 8 | Gauge | `render_gauge` | 有上限指標（utilization / capacity） | P1 |
+| 9 | Site Map | `render_site_map` | Site 地理分布 | P2 |
+| 10 | Topology Graph | `render_topology` | 網路拓樸 / blast radius | P2 |
+| 11 | Sankey | `render_sankey` | 流量 / 應用流向 | P2 |
 
-> P0 是 MVP 必要 — 跑通整個 loop 用這 4 種就夠（驗證 wedge thesis 不需要 8 個都做）。
-> P1/P2 等 P0 通了再補。
+> **P0（4 個）** 是 MVP 必要 — 跑通整個 loop 用這 4 種就夠（驗證 wedge thesis 不需要全做）。
+> **P0 + P1（共 8 個）** 是 Phase 1 MVP 的目標範圍。
+> **P2（3 個 networking 進階 widget）**等 MVP 通了再補 — 這 3 個視覺實作較重（force-directed graph / sankey lib）。
 
 ---
 
@@ -318,27 +322,218 @@
 
 ---
 
-### 8. Site Map (P2)
+### 8. Gauge (P1)
 
-**Tool name**: `render_site_map`
+**Tool name**: `render_gauge`
 
-**用途**：地圖或拓樸圖呈現 site 分布。最複雜，留 P2。
+**用途**：顯示「有上限」的指標 — 頻寬利用率、PoE budget、CPU、AP 連線數等。比 KPI Card 多了「離爆掉還多遠」的視覺暗示。
 
 **Input schema**:
 ```json
 {
   "title": "string",
-  "mode": "geo | topology",
+  "value": "number",          // 當前值
+  "max": "number",            // 上限（100% 對應的數字）
+  "unit": "string",           // e.g., "%", "Mbps", "W"
+  "thresholds": {             // optional
+    "warning": "number",      // e.g., 70 (% of max) → 黃
+    "critical": "number"      // e.g., 90 (% of max) → 紅
+  },
+  "format": "number | percent | bytes"
+}
+```
+
+**範例 JSON**:
+```json
+{
+  "title": "PoE budget · SW-1F",
+  "value": 287,
+  "max": 370,
+  "unit": "W",
+  "thresholds": { "warning": 70, "critical": 90 },
+  "format": "number"
+}
+```
+
+**視覺 spec**：
+- 半圓弧或 270° 弧形 gauge，依空間決定
+- 三段染色：good = cyan、warning = amber、critical = red
+- 中央顯示當前值 + 單位，下方小字 `287 / 370 W`
+
+**Reference image**: `docs/widget-refs/gauge.png` （TODO）
+
+**LLM 使用時機**：
+- 使用者問「還有多少容量」、「PoE 夠不夠」、「頻寬剩多少」
+- 任何 `current / max` 的 ratio 指標
+- ⚠️ 如果指標沒有合理的 max（例如「客戶總數」），用 KPI Card 而不是 Gauge
+
+---
+
+### 9. Site Map (P2)
+
+**Tool name**: `render_site_map`
+
+**用途**：多 site 在地理上的分布（地圖底圖 + 站點 marker）。**只做 geo，不含拓樸**（拓樸是另一個 widget）。
+
+**Input schema**:
+```json
+{
+  "title": "string",
   "nodes": [
-    { "id": "string", "label": "string", "lat": "number", "lon": "number", "status": "good | warning | critical" }
+    {
+      "id": "string",
+      "label": "string",
+      "lat": "number",
+      "lon": "number",
+      "status": "good | warning | critical",
+      "score": "number"       // optional, 0-100
+    }
   ],
-  "edges": [  // topology mode 才用
-    { "from": "string", "to": "string" }
+  "map_style": "light | dark | satellite"  // optional
+}
+```
+
+**範例 JSON**:
+```json
+{
+  "title": "全台分點健康分布",
+  "nodes": [
+    { "id": "hq", "label": "HQ 台北", "lat": 25.0330, "lon": 121.5654, "status": "good", "score": 94 },
+    { "id": "tch", "label": "Branch 台中", "lat": 24.1477, "lon": 120.6736, "status": "warning", "score": 76 }
   ]
 }
 ```
 
+**視覺 spec**：
+- 底圖用 light style（matching marketing palette）
+- Marker 顏色對應 status；點擊跳出 mini summary
+- 沒有 lat/lon 的 site → 退化成 Status Grid（前端 fallback）
+
 **Reference image**: `docs/widget-refs/site-map.png` （TODO）
+
+**LLM 使用時機**：
+- 多 site / 連鎖店 / 多分點客戶問「全部分點狀況」
+- ⚠️ 單 site 客戶不要選這個，用 Status Grid
+
+---
+
+### 10. Topology Graph (P2)
+
+**Tool name**: `render_topology`
+
+**用途**：網路拓樸圖 — switch / AP / router 的連線關係。最常用於「故障 blast radius」、「上下游影響分析」。**這是 networking dashboard 的差異化 widget**，generic BI 工具做不好。
+
+**Input schema**:
+```json
+{
+  "title": "string",
+  "nodes": [
+    {
+      "id": "string",
+      "label": "string",
+      "type": "router | switch | ap | client | gateway",
+      "status": "good | warning | critical | offline",
+      "metric": "number"      // optional, 顯示在 node 上 (e.g., 連線數)
+    }
+  ],
+  "edges": [
+    {
+      "from": "string",       // node id
+      "to": "string",
+      "health": "good | degraded | down",
+      "label": "string"       // optional, e.g., "1Gbps", "Gi0/12"
+    }
+  ],
+  "layout": "force | hierarchical | manual"  // 預設 force
+}
+```
+
+**範例 JSON**:
+```json
+{
+  "title": "AP-3F 故障 blast radius",
+  "nodes": [
+    { "id": "core", "label": "Core SW", "type": "switch", "status": "good" },
+    { "id": "ap3f", "label": "AP-3F-N2", "type": "ap", "status": "critical", "metric": 0 },
+    { "id": "c1", "label": "Client × 18", "type": "client", "status": "offline" }
+  ],
+  "edges": [
+    { "from": "core", "to": "ap3f", "health": "down", "label": "Gi0/12" },
+    { "from": "ap3f", "to": "c1", "health": "down" }
+  ],
+  "layout": "hierarchical"
+}
+```
+
+**視覺 spec**：
+- Node icon 依 type（switch / AP 圖示）
+- Edge 染色依 health；down 的 edge 用紅色虛線
+- Force layout 預設；hierarchical 適合「上下游」場景
+- 推薦 lib：[Cytoscape.js](https://js.cytoscape.org/) 或 [React Flow](https://reactflow.dev/)
+
+**Reference image**: `docs/widget-refs/topology.png` （TODO）
+
+**LLM 使用時機**：
+- 「這台壞掉會影響誰」「上游是誰」「為什麼這群 client 都斷了」
+- 故障定位、維護前 impact 分析、跨層級問題追蹤
+- ⚠️ Node 數 > 50 時要 cluster / filter，不要全攤開
+
+---
+
+### 11. Sankey (P2)
+
+**Tool name**: `render_sankey`
+
+**用途**：流量流向圖 — 流量「從哪來、去哪、各佔多少」。常用於應用流量分析、VLAN 流向、訪客 → 內網的分流。
+
+**Input schema**:
+```json
+{
+  "title": "string",
+  "nodes": [
+    { "id": "string", "label": "string", "category": "string" }
+  ],
+  "flows": [
+    {
+      "source": "string",     // node id
+      "target": "string",
+      "value": "number",      // 流量大小（用於 band 寬度）
+      "unit": "string"        // e.g., "GB", "Mbps", "sessions"
+    }
+  ]
+}
+```
+
+**範例 JSON**:
+```json
+{
+  "title": "本週訪客 Wi-Fi 流量去向",
+  "nodes": [
+    { "id": "guest", "label": "Guest SSID", "category": "source" },
+    { "id": "youtube", "label": "YouTube", "category": "app" },
+    { "id": "social", "label": "Social", "category": "app" },
+    { "id": "other", "label": "Other", "category": "app" }
+  ],
+  "flows": [
+    { "source": "guest", "target": "youtube", "value": 142, "unit": "GB" },
+    { "source": "guest", "target": "social", "value": 87, "unit": "GB" },
+    { "source": "guest", "target": "other", "value": 34, "unit": "GB" }
+  ]
+}
+```
+
+**視覺 spec**：
+- Sankey band 寬度與 `value` 成比例
+- 同 category node 縱向對齊
+- Hover band 顯示 source → target 詳細
+- 推薦 lib：[D3-Sankey](https://github.com/d3/d3-sankey) 或 [Apache ECharts Sankey](https://echarts.apache.org/)
+
+**Reference image**: `docs/widget-refs/sankey.png` （TODO）
+
+**LLM 使用時機**：
+- 「流量都去哪了」「誰在吃頻寬」「VLAN 之間怎麼流」
+- 行銷 / IT 看訪客 Wi-Fi 流向
+- ⚠️ Flow 數 > 30 視覺會混亂，前端要做 top N 截斷
 
 ---
 
@@ -360,8 +555,9 @@
 - [ ] System prompt 列出 catalog（這份文件 paste 進去）
 - [ ] 每個 widget 一個 tool definition（schema 對齊上面）
 - [ ] Few-shot examples：取 8 個 scenario 各 1 組（user query → tool calls）
-- [ ] Closed-set rule：「只能用 catalog 裡的 widget，不能發明」
+- [ ] Closed-set rule：「只能用 catalog 裡 11 個 widget，不能發明」
 - [ ] Combo rules：dashboard 上限 widget 數量（建議 ≤ 6）
+- [ ] 完整 prompt 模板見 [`prompt-templates.md`](./prompt-templates.md)
 
 ---
 

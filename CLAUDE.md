@@ -48,7 +48,8 @@ network-ai-assistant/
 ├── assets/
 │   └── engenius-logo.png                     公司 logo（dashboard-builder-demo widget header 用）
 └── docs/                                     內部技術文件（Markdown source）
-    ├── widget-catalog.md                     8 widget 完整規格（給 PM/RD/Design）
+    ├── widget-catalog.md                     11 widget 完整規格（P0/P1/P2 · 給 PM/RD/Design）
+    ├── prompt-templates.md                   LLM system prompt 模板 + 11 tool defs + few-shot
     ├── dashboard-builder-implementation-guide.md  前端實作準備指南（人讀 markdown 版）
     └── design-tokens.md                      EnGenius Cloud design tokens（colors / typo / spacing / chart palette）
 ```

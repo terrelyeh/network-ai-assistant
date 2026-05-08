@@ -731,7 +731,7 @@
   <h2><span class="num"></span>什麼是 Widget Catalog</h2>
 
   <h3>一句話</h3>
-  <p><strong>LLM 跟前端之間的「元件菜單」+ 契約</strong> — 預先定義 6-8 種 widget「樂高積木」，AI 只能從中挑、再組合。</p>
+  <p><strong>LLM 跟前端之間的「元件菜單」+ 契約</strong> — 預先定義 11 種 widget「樂高積木」（P0 4 個 + P1 4 個 + P2 3 個），AI 只能從中挑、再組合。</p>
 
   <h3>為什麼需要</h3>
   <table>
@@ -739,9 +739,9 @@
       <tr><th>沒有 catalog</th><th>有 catalog</th></tr>
     </thead>
     <tbody>
-      <tr><td>LLM 會 hallucinate 出前端做不出來的 chart</td><td>LLM 只能挑 8 個已知 widget</td></tr>
-      <tr><td>前端要處理 unexpected schema</td><td>前端只實作 8 個 component，輸入永遠對齊</td></tr>
-      <tr><td>Design 跟不上 AI 的天馬行空</td><td>Design 只畫 8 種，AI 組出來都符合視覺語言</td></tr>
+      <tr><td>LLM 會 hallucinate 出前端做不出來的 chart</td><td>LLM 只能挑 11 個已知 widget</td></tr>
+      <tr><td>前端要處理 unexpected schema</td><td>前端只實作 11 個 component，輸入永遠對齊</td></tr>
+      <tr><td>Design 跟不上 AI 的天馬行空</td><td>Design 只畫 11 種，AI 組出來都符合視覺語言</td></tr>
       <tr><td>Demo 給客戶時邊界模糊</td><td>「我們能做什麼」一目了然</td></tr>
     </tbody>
   </table>
@@ -1047,7 +1047,7 @@ tokens              + Storybook hookup
   <div class="pitfall"><div><strong>手寫兩份（schema + tool spec）</strong> — 維護災難，一定會 drift</div></div>
 
   <h3>範圍面</h3>
-  <div class="pitfall"><div><strong>第一版做 8 個 widget</strong> — 太貪心，先做 P0 4 個跑通整個 loop</div></div>
+  <div class="pitfall"><div><strong>第一版做 11 個 widget</strong> — 太貪心，先做 P0 4 個跑通整個 loop，再依 P1 / P2 漸進</div></div>
   <div class="pitfall"><div><strong>沒定 widget 上限</strong> — dashboard 一次塞 12 個 widget，使用者看不懂</div></div>
 </section>
 
@@ -1087,7 +1087,7 @@ tokens              + Storybook hookup
   <a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/docs/widget-catalog.md">
     <div class="r-label">Widget Catalog</div>
     <div class="r-title">widget-catalog.md</div>
-    <div class="r-desc">8 個 widget 的詳細規格 — schema、視覺 spec、LLM 使用時機</div>
+    <div class="r-desc">11 個 widget 的詳細規格 — schema、視覺 spec、LLM 使用時機</div>
   </a>
   <a href="dashboard-builder-implementation.html">
     <div class="r-label">Implementation Guide</div>

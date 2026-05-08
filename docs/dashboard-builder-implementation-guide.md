@@ -40,15 +40,15 @@
 ## 2. 什麼是 Widget Catalog
 
 ### 一句話
-**LLM 跟前端之間的「元件菜單」+ 契約** — 預先定義 6-8 種 widget「樂高積木」，AI 只能從中挑、再組合。
+**LLM 跟前端之間的「元件菜單」+ 契約** — 預先定義 11 種 widget「樂高積木」（P0 4 + P1 4 + P2 3），AI 只能從中挑、再組合。
 
 ### 為什麼需要
 
 | 沒有 catalog | 有 catalog |
 |---|---|
-| LLM 會 hallucinate 出前端做不出來的 chart | LLM 只能挑 8 個已知 widget |
-| 前端要處理 unexpected schema | 前端只實作 8 個 component，輸入永遠對齊 |
-| Design 跟不上 AI 的天馬行空 | Design 只畫 8 種，AI 組出來都符合視覺語言 |
+| LLM 會 hallucinate 出前端做不出來的 chart | LLM 只能挑 11 個已知 widget |
+| 前端要處理 unexpected schema | 前端只實作 11 個 component，輸入永遠對齊 |
+| Design 跟不上 AI 的天馬行空 | Design 只畫 11 種，AI 組出來都符合視覺語言 |
 | Demo 給客戶時邊界模糊 | 「我們能做什麼」一目了然 |
 
 ### 工作流程示意
@@ -370,7 +370,7 @@ tokens              + Storybook hookup
 - ❌ **手寫兩份（schema + tool spec）** — 維護災難，一定會 drift
 
 ### 範圍面
-- ❌ **第一版做 8 個 widget** — 太貪心，先做 P0 4 個跑通整個 loop
+- ❌ **第一版做 11 個 widget** — 太貪心，先做 P0 4 個跑通整個 loop，再依 P1 / P2 漸進
 - ❌ **沒定 widget 上限** — dashboard 一次塞 12 個 widget，使用者看不懂
 
 ---
@@ -394,7 +394,8 @@ tokens              + Storybook hookup
 
 ## 11. 相關文件
 
-- [widget-catalog.md](./widget-catalog.md) — 8 個 widget 的詳細規格（給人看的版本）
+- [widget-catalog.md](./widget-catalog.md) — 11 個 widget 的詳細規格（給人看的版本）
+- [prompt-templates.md](./prompt-templates.md) — LLM system prompt + 11 個 tool defs + few-shot examples
 - [../dashboard-builder-implementation.html](../dashboard-builder-implementation.html) — 工程實作指南（4-tab 互動頁）
 - [../dashboard-builder-demo.html](../dashboard-builder-demo.html) — 8 個 scenario 的互動 demo
 
