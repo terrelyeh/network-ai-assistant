@@ -648,6 +648,158 @@
   .alert-row .msg-text { color: var(--text); flex: 1; line-height: 1.4; }
   .alert-row .ts { color: var(--dim); font-family: 'JetBrains Mono', monospace; font-size: 10px; flex-shrink: 0; }
 
+  /* Vertical Client Timeline (scenario 5) */
+  .client-info-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    display: grid;
+    grid-template-columns: auto 1fr auto 1fr;
+    gap: 6px 16px;
+    font-size: 11.5px;
+    margin-bottom: 14px;
+    align-items: center;
+  }
+  .client-info-card .k { color: var(--dim); font-weight: 500; letter-spacing: 0.04em; }
+  .client-info-card .v { color: var(--text); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+  .cap-pill {
+    display: inline-block;
+    font-size: 9.5px;
+    padding: 1.5px 5px;
+    border-radius: 3px;
+    background: var(--surface-2);
+    color: var(--muted);
+    margin-right: 3px;
+    font-weight: 700;
+    border: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .cap-pill.active {
+    background: var(--cyan);
+    color: #fff;
+    border-color: var(--cyan);
+  }
+  .signal-bars { font-family: monospace; color: var(--good); letter-spacing: 1px; }
+  .signal-bars.weak { color: var(--warn); }
+
+  .timeline-date {
+    display: inline-block;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 3px 11px;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+  }
+
+  .timeline-vert {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+  }
+  .timeline-vert .ev {
+    position: relative;
+    padding-bottom: 14px;
+    display: grid;
+    grid-template-columns: 70px 1fr;
+    align-items: start;
+    gap: 0;
+  }
+  .timeline-vert .ev::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 18px;
+    bottom: 0;
+    width: 2px;
+    background: var(--cyan);
+    opacity: 0.55;
+  }
+  .timeline-vert .ev:last-child::before { display: none; }
+  .timeline-vert .ev.bad::before { background: var(--bad); }
+  .timeline-vert .ev.warn::before { background: var(--warn); }
+
+  .timeline-vert .dot {
+    position: absolute;
+    left: 0;
+    top: 14px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--cyan);
+    border: 3px solid #ffffff;
+    box-shadow: 0 0 0 1px var(--cyan);
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 9px;
+  }
+  .timeline-vert .ev.bad .dot {
+    background: var(--bad);
+    box-shadow: 0 0 0 1px var(--bad);
+  }
+  .timeline-vert .ev.warn .dot {
+    background: var(--warn);
+    box-shadow: 0 0 0 1px var(--warn);
+  }
+
+  .timeline-vert .time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 600;
+    padding-top: 14px;
+    padding-left: 26px;
+  }
+  .timeline-vert .body {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 13px;
+    margin-left: 6px;
+  }
+  .timeline-vert .ev.bad .body { border-color: rgba(239,68,68,0.40); background: rgba(239,68,68,0.04); }
+  .timeline-vert .ev.warn .body { border-color: rgba(245,158,11,0.40); background: rgba(245,158,11,0.04); }
+  .timeline-vert .ap-pill {
+    display: inline-block;
+    background: var(--cyan);
+    color: #fff;
+    padding: 2px 9px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    font-weight: 700;
+    margin-right: 6px;
+  }
+  .timeline-vert .ev.bad .ap-pill { background: var(--bad); }
+  .timeline-vert .ssid-tag {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .timeline-vert .ssid-tag.bad { color: var(--bad); }
+  .timeline-vert .desc {
+    font-size: 12.5px;
+    color: var(--text);
+    margin-top: 4px;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .timeline-vert .meta {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
   /* Scenario hidden by default */
   .scenario { display: none; }
   .scenario.active { display: contents; }
@@ -1295,103 +1447,144 @@
       <!-- ===== Scenario 5: 設備 Timeline ===== -->
       <div class="scenario s5">
         <div class="dash-header">
-          <div class="dash-title"><img src="assets/engenius-logo.png" class="dash-logo" alt=""> Sandy-MacBook · 7 天連線 Timeline</div>
+          <div class="dash-title"><img src="assets/engenius-logo.png" class="dash-logo" alt=""> Sandy-MacBook · 連線 Timeline</div>
           <div class="dash-meta"><span class="live"></span> Live · MAC: AC:DE:48:F2:1C:9B</div>
         </div>
         <div class="dash-grid" style="grid-template-columns: 1fr 1fr 1fr 1fr;">
 
           <div class="widget" style="grid-column: span 1;">
-            <div class="widget-title">連線總時長</div>
-            <div class="kpi-value" style="font-size:32px;">42<span style="font-size:14px;color:var(--muted);"> hr</span></div>
-            <div class="kpi-trend">過去 7 天</div>
+            <div class="widget-title">本日連線</div>
+            <div class="kpi-value" style="font-size:32px;">8<span style="font-size:14px;color:var(--muted);"> hr 35m</span></div>
+            <div class="kpi-trend">06:00 - 18:00 期間</div>
           </div>
           <div class="widget" style="grid-column: span 1;">
             <div class="widget-title">斷線次數</div>
-            <div class="kpi-value" style="font-size:32px;color:var(--bad);">17</div>
-            <div class="kpi-trend down">較異常 (其他 device 平均 2-3)</div>
+            <div class="kpi-value" style="font-size:32px;color:var(--bad);">3</div>
+            <div class="kpi-trend down">高於同樓層平均 (0.5)</div>
           </div>
           <div class="widget" style="grid-column: span 1;">
             <div class="widget-title">漫遊次數</div>
-            <div class="kpi-value" style="font-size:32px;">38</div>
-            <div class="kpi-trend">含 12 次失敗</div>
+            <div class="kpi-value" style="font-size:32px;">6</div>
+            <div class="kpi-trend">含 1 次失敗</div>
           </div>
           <div class="widget" style="grid-column: span 1;">
-            <div class="widget-title">平均訊號</div>
-            <div class="kpi-value" style="font-size:32px;color:var(--warn);">−68 <span style="font-size:14px;color:var(--muted);">dBm</span></div>
-            <div class="kpi-trend down">下午 3 點 dropping 到 −78</div>
+            <div class="widget-title">最差訊號</div>
+            <div class="kpi-value" style="font-size:32px;color:var(--bad);">−78 <span style="font-size:14px;color:var(--muted);">dBm</span></div>
+            <div class="kpi-trend down">15:00 PM · 7F 會議室</div>
           </div>
 
-          <div class="widget" style="grid-column: span 4;">
-            <div class="widget-title">7 天連線 / 斷線事件 Timeline</div>
-            <svg class="chart-svg" viewBox="0 0 700 100" preserveAspectRatio="none" style="height:80px;">
-              <!-- background lanes -->
-              <rect x="0" y="40" width="700" height="20" fill="rgba(3,169,244,0.08)"/>
-              <!-- connected segments (cyan) -->
-              <rect x="20" y="40" width="65" height="20" fill="#00d9c5" opacity="0.6"/>
-              <rect x="100" y="40" width="40" height="20" fill="#00d9c5" opacity="0.6"/>
-              <rect x="155" y="40" width="80" height="20" fill="#00d9c5" opacity="0.6"/>
-              <rect x="250" y="40" width="55" height="20" fill="#00d9c5" opacity="0.6"/>
-              <rect x="320" y="40" width="35" height="20" fill="#00d9c5" opacity="0.6"/>
-              <rect x="370" y="40" width="70" height="20" fill="#00d9c5" opacity="0.6"/>
-              <rect x="455" y="40" width="50" height="20" fill="#00d9c5" opacity="0.6"/>
-              <rect x="520" y="40" width="60" height="20" fill="#00d9c5" opacity="0.6"/>
-              <rect x="595" y="40" width="40" height="20" fill="#00d9c5" opacity="0.6"/>
-              <rect x="650" y="40" width="40" height="20" fill="#00d9c5" opacity="0.6"/>
-              <!-- disconnect markers (red) -->
-              <circle cx="92" cy="50" r="4" fill="#ef4444"/>
-              <circle cx="148" cy="50" r="4" fill="#ef4444"/>
-              <circle cx="242" cy="50" r="4" fill="#ef4444"/>
-              <circle cx="312" cy="50" r="4" fill="#ef4444"/>
-              <circle cx="362" cy="50" r="4" fill="#ef4444"/>
-              <circle cx="447" cy="50" r="4" fill="#ef4444"/>
-              <circle cx="512" cy="50" r="4" fill="#ef4444"/>
-              <circle cx="588" cy="50" r="4" fill="#ef4444"/>
-              <circle cx="642" cy="50" r="4" fill="#ef4444"/>
-              <g font-size="10" fill="#64748b" font-family="JetBrains Mono">
-                <text x="0" y="98">週一</text><text x="100" y="98">週二</text><text x="200" y="98">週三</text>
-                <text x="300" y="98">週四</text><text x="400" y="98">週五</text><text x="500" y="98">週六</text>
-                <text x="600" y="98">週日</text>
-              </g>
-              <g font-size="10" fill="#cbd5e1">
-                <text x="5" y="35">連線</text>
-              </g>
-            </svg>
-            <div style="margin-top:6px;font-size:11px;color:var(--dim);font-family:'JetBrains Mono';">
-              青色 = 連線時段 · <span style="color:#ef4444;">●</span> 紅點 = 斷線事件 (共 17 次)
+          <!-- LEFT: vertical timeline -->
+          <div class="widget" style="grid-column: span 3;">
+            <div class="widget-title">當日連線 Timeline</div>
+
+            <!-- Device info header (mimic engenius client detail card) -->
+            <div class="client-info-card">
+              <span class="k">Last Seen</span><span class="v">2 minutes ago</span>
+              <span class="k">Client OS</span><span class="v">macOS 14</span>
+              <span class="k">MAC</span><span class="v">AC:DE:48:F2:1C:9B</span>
+              <span class="k">RSSI</span><span class="v"><span class="signal-bars weak">▮▮▮▯</span> −68 dBm</span>
+              <span class="k">IP</span><span class="v">10.0.7.142</span>
+              <span class="k">Capability</span><span class="v"><span class="cap-pill">AC</span><span class="cap-pill">2.4G</span><span class="cap-pill active">5G</span></span>
             </div>
+
+            <div class="timeline-date">2026 / 05 / 06 · 週三</div>
+
+            <ul class="timeline-vert">
+              <!-- 09:15 connect -->
+              <li class="ev">
+                <span class="dot">✓</span>
+                <span class="time">09:15:00 AM</span>
+                <div class="body">
+                  <span class="ap-pill">AP-3F-S1</span><span class="ssid-tag">SSID:Office</span>
+                  <div class="desc">初次連線</div>
+                  <div class="meta">RSSI −58 dBm · 5GHz · session start</div>
+                </div>
+              </li>
+
+              <!-- 11:08 roam -->
+              <li class="ev">
+                <span class="dot">↔</span>
+                <span class="time">11:08:00 AM</span>
+                <div class="body">
+                  <span class="ap-pill">AP-3F-S2</span><span class="ssid-tag">SSID:Office</span>
+                  <div class="desc">Roamed from AP-3F-S1</div>
+                  <div class="meta">Session 1h 53m · smooth 5GHz roam · −62 dBm</div>
+                </div>
+              </li>
+
+              <!-- 14:55 enter problem zone -->
+              <li class="ev">
+                <span class="dot">↔</span>
+                <span class="time">14:55:00 PM</span>
+                <div class="body">
+                  <span class="ap-pill">AP-7F-N3</span><span class="ssid-tag">SSID:Office</span>
+                  <div class="desc">Roamed from AP-3F-S2 — 進入 7F 會議室</div>
+                  <div class="meta">−65 dBm · Session start</div>
+                </div>
+              </li>
+
+              <!-- 15:00 signal degrade -->
+              <li class="ev warn">
+                <span class="dot">!</span>
+                <span class="time">15:00:00 PM</span>
+                <div class="body">
+                  <span class="ap-pill" style="background:var(--warn);">AP-7F-N3</span><span class="ssid-tag" style="color:var(--warn);">Signal Drop</span>
+                  <div class="desc">訊號開始下降到 −78 dBm</div>
+                  <div class="meta">仍黏在 N3 沒切換（sticky behavior）</div>
+                </div>
+              </li>
+
+              <!-- 15:31 disconnect -->
+              <li class="ev bad">
+                <span class="dot">✗</span>
+                <span class="time">15:31:00 PM</span>
+                <div class="body">
+                  <span class="ap-pill">AP-7F-N3</span><span class="ssid-tag bad">Disconnected</span>
+                  <div class="desc">斷線 — 嘗試漫遊到 AP-7F-N4 失敗</div>
+                  <div class="meta">RSSI −82 dBm · 1m 8s gap</div>
+                </div>
+              </li>
+
+              <!-- 15:42 reconnect -->
+              <li class="ev">
+                <span class="dot">✓</span>
+                <span class="time">15:42:00 PM</span>
+                <div class="body">
+                  <span class="ap-pill">AP-7F-N4</span><span class="ssid-tag">SSID:Office</span>
+                  <div class="desc">重新連線成功</div>
+                  <div class="meta">−61 dBm · 5GHz · Pre-associated band-steering</div>
+                </div>
+              </li>
+
+              <!-- 17:50 leave 7F -->
+              <li class="ev">
+                <span class="dot">↔</span>
+                <span class="time">17:50:00 PM</span>
+                <div class="body">
+                  <span class="ap-pill">AP-2F-N1</span><span class="ssid-tag">SSID:Office</span>
+                  <div class="desc">Roamed from AP-7F-N4 — 離開 7F</div>
+                  <div class="meta">−59 dBm · smooth roam</div>
+                </div>
+              </li>
+            </ul>
           </div>
 
-          <div class="widget" style="grid-column: span 2;">
-            <div class="widget-title">漫遊歷史（最近 12 次）</div>
-            <table class="table-w">
-              <thead><tr><th>時間</th><th>從 → 到</th><th>結果</th></tr></thead>
-              <tbody>
-                <tr><td>15:42</td><td>AP-7F-N3 → AP-7F-N4</td><td><span class="badge-mini good">成功</span></td></tr>
-                <tr><td>15:31</td><td>AP-7F-N3 → ✗</td><td><span class="badge-mini bad">失敗 · 斷線</span></td></tr>
-                <tr><td>15:18</td><td>AP-7F-N3 → AP-7F-N4</td><td><span class="badge-mini good">成功</span></td></tr>
-                <tr><td>14:55</td><td>AP-3F-S1 → AP-7F-N3</td><td><span class="badge-mini good">成功</span></td></tr>
-                <tr><td>14:32</td><td>AP-7F-N3 → ✗</td><td><span class="badge-mini bad">失敗 · 訊號弱</span></td></tr>
-                <tr><td>11:08</td><td>AP-3F-S1 → AP-3F-S2</td><td><span class="badge-mini good">成功</span></td></tr>
-                <tr><td>09:15</td><td>(連線)</td><td><span class="badge-mini good">→ AP-3F-S1</span></td></tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div class="widget" style="grid-column: span 2;">
-            <div class="widget-title">異常事件 + AI 觀察</div>
+          <!-- RIGHT: AI observations -->
+          <div class="widget" style="grid-column: span 1;">
+            <div class="widget-title">AI 觀察 + 建議</div>
             <div class="alert-row">
               <div class="ico">🔴</div>
-              <div class="msg-text"><strong>每天 15:00–16:00 訊號掉到 −78 dBm</strong> — 對應地點 7F 會議室</div>
-              <div class="ts">7×</div>
+              <div class="msg-text"><strong>15:00–15:42 PM</strong> 訊號掉到 −78 dBm — 對應地點 7F 會議室</div>
+              <div class="ts">today</div>
             </div>
             <div class="alert-row">
               <div class="ico">🟡</div>
-              <div class="msg-text">12 次漫遊失敗 — 全發生在 <code>AP-7F-N3</code> 附近</div>
+              <div class="msg-text">過去 7 天，每天下午同一時段都出現相似 pattern</div>
               <div class="ts">7d</div>
             </div>
             <div class="alert-row">
               <div class="ico">💡</div>
-              <div class="msg-text"><strong>AI 觀察</strong>：與 cockpit 偵測到的 sticky client 案是<strong style="color:var(--accent);">同一個根因</strong> — 修了 <code>AP-7F-N3</code>，Sandy 的問題大概率一起解掉</div>
+              <div class="msg-text"><strong>AI 觀察</strong>：與 cockpit 偵測到的 <code>AP-7F-N3</code> sticky client 案是<strong style="color:var(--accent);">同一個根因</strong> — 修了 N3，Sandy 的問題大概率一起解</div>
               <div class="ts">AI</div>
             </div>
           </div>
