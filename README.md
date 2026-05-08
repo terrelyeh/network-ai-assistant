@@ -33,8 +33,8 @@
 > 行銷上獨立主推、工程上仍是 third skill class。
 
 ### 📄 內部技術文件（`docs/`）
-- [`docs/widget-catalog.md`](./docs/widget-catalog.md) — 11 widget 完整規格（P0/P1/P2 三 tier · schema / 視覺 spec / LLM 使用時機）
-- [`docs/prompt-templates.md`](./docs/prompt-templates.md) — LLM 系統提示模板 + 11 個 tool definitions + few-shot examples
+- [`docs/widget-catalog.md`](./docs/widget-catalog.md) — 12 widget 完整規格（P0/P1/P2 三 tier · schema / 視覺 spec / LLM 使用時機）
+- [`docs/prompt-templates.md`](./docs/prompt-templates.md) — LLM 系統提示模板 + 12 個 tool definitions + few-shot examples
 - [`docs/dashboard-builder-implementation-guide.md`](./docs/dashboard-builder-implementation-guide.md) — 前端實作準備指南（人讀 markdown 版）
 - [`docs/design-tokens.md`](./docs/design-tokens.md) — EnGenius Cloud design tokens（colors / typo / spacing / chart palette）
 

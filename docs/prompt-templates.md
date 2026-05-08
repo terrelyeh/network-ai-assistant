@@ -1,6 +1,6 @@
 # Prompt Templates — Dashboard Builder
 
-> **目的**：把 [`widget-catalog.md`](./widget-catalog.md) 的 11 個 widget schema 翻成「可以直接丟給 Claude 的 LLM 提示」。
+> **目的**：把 [`widget-catalog.md`](./widget-catalog.md) 的 12 個 widget schema 翻成「可以直接丟給 Claude 的 LLM 提示」。
 >
 > 給 Prompt Engineer / 後端 RD 抓來貼進 production 程式碼用。每個區塊都標明放哪個檔案、何時用。
 >
@@ -23,7 +23,7 @@ User input
 ┌───────────────────────────────┐
 │  Stage 2 · Widget Composer    │  → Sonnet (準確度高)
 │  prompts/select_widgets.md    │  + Anthropic tool use API
-│  + 11 個 tool definitions     │  Output: tool_use blocks
+│  + 12 個 tool definitions     │  Output: tool_use blocks
 └───────────────┬───────────────┘
                 │
                 ▼
@@ -104,14 +104,14 @@ Output: {"scope":"multi_site","time_range":"last_30d","metrics":["device_health"
 
 ## Stage 2 · Widget Composer
 
-**檔案**：`prompts/select_widgets.md` + 11 個 tool definitions
+**檔案**：`prompts/select_widgets.md` + 12 個 tool definitions
 **模型**：Claude Sonnet 4.6
 **輸入**：Stage 1 的 intent JSON
 **輸出**：1-6 個 widget tool_use blocks
 
 ### Closed-set 約束的兩道防線
 
-1. **Prompt 層**：system prompt 明確說「只能用以下 11 個 tool，不可發明」
+1. **Prompt 層**：system prompt 明確說「只能用以下 12 個 tool，不可發明」
 2. **API 層**：用 Anthropic tool use 的 `tool_choice: { type: "any" }` — 模型「必須」呼叫某個 tool，不能輸出 free text。配合 `tools` 陣列只放這 11 個 → 物理上不可能輸出未定義的 widget。
 
 第二道防線是真正的 closed-set 保證。Prompt 層只是輔助說明。
@@ -172,7 +172,7 @@ Call widget tools directly. Each tool call is one widget on the dashboard.
 
 ```typescript
 import Anthropic from "@anthropic-ai/sdk";
-import { widgetTools } from "./widget-tools"; // 11 個 tool defs，下方產生方式
+import { widgetTools } from "./widget-tools"; // 12 個 tool defs，下方產生方式
 
 const client = new Anthropic();
 
@@ -217,7 +217,7 @@ export const widgetTools = Object.entries(widgetRegistry).map(([name, def]) => (
 
 ### 手寫範例（給沒用 Zod 的後端參考）
 
-完整 11 個 tool 的 JSON Schema 太長 — 這裡列 3 個代表性的（其他依 [`widget-catalog.md`](./widget-catalog.md) 的 schema 翻譯即可）：
+完整 12 個 tool 的 JSON Schema 太長 — 這裡列 3 個代表性的（其他依 [`widget-catalog.md`](./widget-catalog.md) 的 schema 翻譯即可）：
 
 #### `render_kpi_card` (P0)
 
@@ -321,7 +321,7 @@ export const widgetTools = Object.entries(widgetRegistry).map(([name, def]) => (
 
 ---
 
-## Few-shot Examples（對應 demo 的 9 個 scenario）
+## Few-shot Examples（對應 demo 的 10 個 scenario）
 
 把這些塞進 Stage 2 system prompt 的 `# Examples` 區，能顯著提升選擇正確率。
 
@@ -336,6 +336,7 @@ export const widgetTools = Object.entries(widgetRegistry).map(([name, def]) => (
 | 7 | 「PoE 還夠不夠插新設備」 | `render_gauge` × 1（PoE budget）+ `render_table` × 1（current 用量分布） |
 | 8 | 「這台 switch 壞了會影響誰」 | `render_topology` × 1（hierarchical layout）+ `render_alert_list` × 1 |
 | 9 | 「上月頻寬都被誰吃了」 | `render_gauge` × 1（訂閱頻寬 87%）+ `render_kpi_card` × 3（總流量 / 日峰值 / 月最高峰）+ `render_sankey` × 1（部門 → SSID → 應用）+ `render_bar_chart` × 1（Top 10 user）+ `render_time_series` × 1（峰值趨勢 + 上限線）+ `render_table` × 1（部門明細） |
+| 10 | 「3F 哪邊訊號最差」 | `render_coverage_map` × 1（3F 平面圖 + RSSI 熱力 + AP 位置 + 死角 annotation + 建議加 AP 位置）+ `render_kpi_card` × 4（平均 RSSI / 覆蓋率 / 死角面積 / 連線設備）+ `render_status_grid` × 1（6 AP 健康燈號）+ `render_bar_chart` × 1（各區域 RSSI 排名）+ `render_alert_list` × 1（AI 建議） |
 
 ### 範例：scenario 7 完整 few-shot
 
@@ -411,6 +412,7 @@ Production 上線前，每個 widget 至少 5 個 golden case：
 | Site Map | 1 site / 100 sites / 無 lat/lon → fallback / 跨洲 |
 | Topology | 線性 chain / 樹狀 / 有環 / disconnected node / > 50 nodes |
 | Sankey | 1 → 1 / 1 → N / 多層 / value=0 / 同 source 多 target |
+| Coverage Map | 1 樓層 / 多 AP 重疊覆蓋 / 死角 annotation / 無平面圖 → fallback / 建議加 AP 模擬 |
 
 跑 eval 的 D1/D2/D3 標準見 [`dashboard-builder-implementation.html` Tab 3](../dashboard-builder-implementation.html#t3)。
 
@@ -419,13 +421,13 @@ Production 上線前，每個 widget 至少 5 個 golden case：
 ## 維護紀律
 
 - **Schema 改動**：先改 [`widget-catalog.md`](./widget-catalog.md) → 改 Zod → 自動 regenerate tool defs → 新增 eval case
-- **新增第 12 個 widget**：走 RFC 流程（見 implementation.html Tab 4「未來擴充」），不要 sprint task 直接加
+- **新增第 13 個 widget**：走 RFC 流程（見 implementation.html Tab 4「未來擴充」），不要 sprint task 直接加
 - **Few-shot 更新**：每加一個 widget 至少配 1 個 few-shot；每 quarter review 一次正確率回頭調整
 
 ---
 
 ## 相關文件
 
-- [widget-catalog.md](./widget-catalog.md) — 11 widget input schema 詳細規格（這份文件的 source）
+- [widget-catalog.md](./widget-catalog.md) — 12 widget input schema 詳細規格（這份文件的 source）
 - [dashboard-builder-implementation-guide.md](./dashboard-builder-implementation-guide.md) — Pre-kickoff 工程準備
 - [../dashboard-builder-implementation.html](../dashboard-builder-implementation.html) — 工程實作指南（4-tab 互動頁，含 eval pipeline）

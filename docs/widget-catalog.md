@@ -16,7 +16,7 @@
 
 ---
 
-## Widget 列表（v1 共 11 種）
+## Widget 列表（v1 共 12 種）
 
 | # | Widget | Tool name | 主要用途 | 優先級 |
 |---|---|---|---|---|
@@ -25,16 +25,18 @@
 | 3 | Bar Chart | `render_bar_chart` | Top N / 排名 | P0 ✅ MVP |
 | 4 | Table | `render_table` | 結構化清單 | P0 ✅ MVP |
 | 5 | Status Grid | `render_status_grid` | 設備健康燈號 | P1 |
-| 6 | Heatmap | `render_heatmap` | 時間 × 維度熱力 | P1 |
+| 6 | Heatmap | `render_heatmap` | 時間 × 維度熱力（grid） | P1 |
 | 7 | Alert List | `render_alert_list` | 告警清單 | P1 |
 | 8 | Gauge | `render_gauge` | 有上限指標（utilization / capacity） | P1 |
 | 9 | Site Map | `render_site_map` | Site 地理分布 | P2 |
 | 10 | Topology Graph | `render_topology` | 網路拓樸 / blast radius | P2 |
 | 11 | Sankey | `render_sankey` | 流量 / 應用流向 | P2 |
+| 12 | Coverage Map | `render_coverage_map` | 樓層平面圖 + Wi-Fi 訊號熱力 | P2 |
 
 > **P0（4 個）** 是 MVP 必要 — 跑通整個 loop 用這 4 種就夠（驗證 wedge thesis 不需要全做）。
 > **P0 + P1（共 8 個）** 是 Phase 1 MVP 的目標範圍。
-> **P2（3 個 networking 進階 widget）**等 MVP 通了再補 — 這 3 個視覺實作較重（force-directed graph / sankey lib）。
+> **P2（4 個 networking 進階 widget）** 等 MVP 通了再補 — 這 4 個視覺實作較重（force-directed graph / sankey lib / floor plan rendering）。
+> **與 generic Heatmap 的差別**：Coverage Map 是 **空間** 維度（X-Y 座標 + 平面圖底圖 + AP icon overlay），Heatmap 是 **二維 grid**（rows × cols）。Wi-Fi 廠商招牌視覺不該硬塞進同一個 schema。
 
 ---
 
@@ -537,6 +539,102 @@
 
 ---
 
+### 12. Coverage Map (P2)
+
+**Tool name**: `render_coverage_map`
+
+**用途**：樓層平面圖 + Wi-Fi 訊號熱力（RSSI / SNR / 利用率）+ AP 位置 overlay。**這是 Wi-Fi 廠商的招牌視覺**（Cisco DNA / Aruba / Ubiquiti 都有），networking 差異化能力。
+
+**為什麼不用 Heatmap**：Heatmap 是 grid（rows × cols）；Coverage Map 是 X-Y 空間插值 + 不規則形狀的平面圖底圖 + AP icon。schema 差太多，硬塞會違和。
+
+**Input schema**:
+```json
+{
+  "title": "string",
+  "floorplan": {
+    "width": "number",            // 平面圖寬（米或像素）
+    "height": "number",
+    "background_url": "string",   // optional, 平面圖底圖
+    "rooms": [                    // optional, 房間/區域標記
+      { "x": "number", "y": "number", "w": "number", "h": "number", "label": "string", "type": "meeting | office | corridor | other" }
+    ]
+  },
+  "aps": [
+    {
+      "id": "string",
+      "label": "string",
+      "x": "number",              // 座標（floorplan 內）
+      "y": "number",
+      "model": "string",          // optional, e.g., "ECW230"
+      "status": "good | warning | critical | offline",
+      "tx_power": "number"        // optional, dBm
+    }
+  ],
+  "signal_grid": {
+    "metric": "rssi | snr | channel_util",
+    "data": [                     // 稀疏點：未列的座標靠插值
+      { "x": "number", "y": "number", "value": "number" }
+    ],
+    "color_scale": "diverging | sequential",
+    "thresholds": {               // optional, 顏色帶分界
+      "good": "number",           // e.g., -65 dBm
+      "warning": "number",        // e.g., -75 dBm
+      "critical": "number"        // e.g., -85 dBm（再差就 dead zone）
+    }
+  },
+  "annotations": [                // optional, 標出 dead zone / suggested AP placement
+    { "type": "dead_zone | suggested_ap", "x": "number", "y": "number", "w": "number", "h": "number", "label": "string" }
+  ]
+}
+```
+
+**範例 JSON**:
+```json
+{
+  "title": "3F Wi-Fi Coverage · 5GHz",
+  "floorplan": {
+    "width": 60, "height": 30,
+    "rooms": [
+      { "x": 2, "y": 2, "w": 8, "h": 6, "label": "會議室 A", "type": "meeting" },
+      { "x": 12, "y": 2, "w": 20, "h": 14, "label": "Open Office", "type": "office" },
+      { "x": 50, "y": 18, "w": 8, "h": 10, "label": "會議室 B", "type": "meeting" }
+    ]
+  },
+  "aps": [
+    { "id": "ap1", "label": "AP-3F-N1", "x": 8, "y": 5, "model": "ECW230", "status": "good" },
+    { "id": "ap2", "label": "AP-3F-N2", "x": 22, "y": 8, "model": "ECW230", "status": "warning" },
+    { "id": "ap3", "label": "AP-3F-S1", "x": 40, "y": 20, "model": "ECW230", "status": "good" }
+  ],
+  "signal_grid": {
+    "metric": "rssi",
+    "data": [/* sparse points or rasterized grid */],
+    "color_scale": "diverging",
+    "thresholds": { "good": -65, "warning": -75, "critical": -85 }
+  },
+  "annotations": [
+    { "type": "dead_zone", "x": 50, "y": 22, "w": 8, "h": 6, "label": "會議室 B 死角 · 18m²" },
+    { "type": "suggested_ap", "x": 53, "y": 24, "w": 1, "h": 1, "label": "建議加 AP" }
+  ]
+}
+```
+
+**視覺 spec**：
+- 平面圖底圖（room 矩形 + 牆壁）
+- AP icon（與 Topology Graph 同一套 cone icon，狀態色帶 ring）
+- 訊號強度用 **radial gradient overlay** 從每個 AP 擴散，多 AP 區域用 max 值合併
+- 顏色帶：good = 綠透明、warning = 黃透明、critical = 紅透明、dead zone 純紅實塊
+- Suggested AP 位置用虛線圓 + 「建議加 AP」標籤
+- 推薦 lib：[Leaflet](https://leafletjs.com/)（自訂 CRS 當 floorplan）/ [d3-contour](https://github.com/d3/d3-contour) for interpolation
+
+**Reference image**: `docs/widget-refs/coverage-map.png` （TODO）
+
+**LLM 使用時機**：
+- 「3F 哪邊訊號最差」「會議室訊號差要加 AP 嗎」「7F 覆蓋夠不夠」
+- 員工抱怨 follow-up（接 S3「我的會議室 Wi-Fi」的 IT 視角延伸）
+- ⚠️ 樓層需要有平面圖資料（座標系統、房間 metadata）— 沒有的話退化成 Status Grid
+
+---
+
 ## RD 實作 Checklist
 
 每個 widget 要交付：
@@ -554,8 +652,8 @@
 
 - [ ] System prompt 列出 catalog（這份文件 paste 進去）
 - [ ] 每個 widget 一個 tool definition（schema 對齊上面）
-- [ ] Few-shot examples：取 9 個 scenario 各 1 組（user query → tool calls）
-- [ ] Closed-set rule：「只能用 catalog 裡 11 個 widget，不能發明」
+- [ ] Few-shot examples：取 10 個 scenario 各 1 組（user query → tool calls）
+- [ ] Closed-set rule：「只能用 catalog 裡 12 個 widget，不能發明」
 - [ ] Combo rules：dashboard 上限 widget 數量（建議 ≤ 6）
 - [ ] 完整 prompt 模板見 [`prompt-templates.md`](./prompt-templates.md)
 

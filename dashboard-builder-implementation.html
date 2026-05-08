@@ -569,7 +569,7 @@
       <p>
         <strong>① LLM 只在「判斷」用</strong>（解析、選擇）<br>
         <strong>② 不讓 LLM 寫 SQL</strong>（讓 backend 翻譯，安全 + 可 cache）<br>
-        <strong>③ 限定 widget library 11 種</strong>（避免 hallucination）<br>
+        <strong>③ 限定 widget library 12 種</strong>（避免 hallucination）<br>
         <strong>④ 二段式 LLM</strong>（Haiku 解析 + Sonnet 選擇，平衡成本）
       </p>
     </div>
@@ -700,7 +700,7 @@
           <li>先 commit Phase 0 PoC（2 週、1-2 人）— 不要先想 production</li>
           <li>PoC 過了才 hire 第二批人</li>
           <li><strong>Day 1 就建 eval pipeline</strong>（不要拖）</li>
-          <li>限定 widget library 11 種（P0/P1/P2 三階段交付）</li>
+          <li>限定 widget library 12 種（P0/P1/P2 三階段交付）</li>
           <li>二段式 LLM</li>
           <li>大部分 primitive、MCP、ring 系統可重用</li>
         </ul>
@@ -759,7 +759,7 @@
       <li>❌ 持久化儲存（每次 refresh 重來）</li>
       <li>❌ 真實 production telemetry（用 mock data）</li>
       <li>❌ Mobile 適配</li>
-      <li>❌ 完整 11 widget（PoC 只做 3 種 P0）</li>
+      <li>❌ 完整 12 widget（PoC 只做 3 種 P0）</li>
       <li>❌ Eval pipeline（這留 Phase 1）</li>
     </ul>
   </div>
@@ -894,9 +894,9 @@ Response: { ... full dashboard ... }</pre>
       <p>
         <strong>下方是 PoC 階段用的雛形</strong>（限 3 個 widget · 純 prompt-engineering 風格）—
         驗證自然語言→dashboard 概念可行，刻意做小。<br>
-        <strong>Production 完整版</strong>（11 個 widget · Anthropic tool use API · 完整 few-shot）見
+        <strong>Production 完整版</strong>（12 個 widget · Anthropic tool use API · 完整 few-shot）見
         <a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/docs/prompt-templates.md" style="color: var(--cyan);"><code>docs/prompt-templates.md</code></a> —
-        含 system prompt、11 個 tool definitions（Zod → JSON Schema）、9 scenario 對應的 few-shot examples、
+        含 system prompt、12 個 tool definitions（Zod → JSON Schema）、10 scenario 對應的 few-shot examples、
         以及 closed-set 約束怎麼寫進 prompt。
       </p>
     </div>
@@ -1221,17 +1221,17 @@ Given the intent JSON, return 1-4 widgets array.
 
   <div class="tab-hero">
     <div class="badge">TAB 4 · WIDGET LIBRARY</div>
-    <h2>11 種 widget · <span class="accent">完整 schema</span></h2>
+    <h2>12 種 widget · <span class="accent">完整 schema</span></h2>
     <p class="lead">
       限定 widget set = 限定 LLM 選擇空間 = 提高準確度。
       每個 widget 包含：<strong>視覺、JSON Schema、data source 約定、何時用</strong>。
-      分 P0 / P1 / P2 三 tier 漸進交付。
+      分 P0 / P1 / P2 三 tier · 4+4+4 對稱交付。
     </p>
   </div>
 
   <!-- Why limited -->
   <div class="section">
-    <h3>為什麼限定 11 種</h3>
+    <h3>為什麼限定 12 種</h3>
     <h2>設計哲學</h2>
     <div class="grid-2">
       <div class="card bad">
@@ -1244,7 +1244,7 @@ Given the intent JSON, return 1-4 widgets array.
         </ul>
       </div>
       <div class="card cyan">
-        <h4>✅ 限定 11 種 widget</h4>
+        <h4>✅ 限定 12 種 widget</h4>
         <ul>
           <li>LLM 選擇準確率 &gt; 90%</li>
           <li>UX 統一</li>
@@ -1256,11 +1256,11 @@ Given the intent JSON, return 1-4 widgets array.
 
     <!-- Tier overview -->
     <div style="margin-top: 18px; padding: 14px 18px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 8px;">
-      <div style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px;">優先級分組（11 widget · 3 tier）</div>
+      <div style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px;">優先級分組（12 widget · 3 tier · 4+4+4）</div>
       <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; font-size: 13px;">
         <div><strong style="color: var(--cyan);">P0 · MVP 起手（4）</strong><br><span style="color: var(--muted);">KPI · Time Series · Bar · Table</span></div>
         <div><strong style="color: var(--accent);">P1 · MVP 完整（4）</strong><br><span style="color: var(--muted);">Status Grid · Heatmap · Alert List · Gauge</span></div>
-        <div><strong style="color: var(--warn);">P2 · 進階差異化（3）</strong><br><span style="color: var(--muted);">Site Map · Topology · Sankey</span></div>
+        <div><strong style="color: var(--warn);">P2 · 進階差異化（4）</strong><br><span style="color: var(--muted);">Site Map · Topology · Sankey · Coverage Map</span></div>
       </div>
     </div>
     <div class="callout">
@@ -1276,7 +1276,7 @@ Given the intent JSON, return 1-4 widgets array.
 
     <!-- Widget 1: KPI -->
     <div class="widget-card">
-      <div class="widget-num">WIDGET 1 / 11 · P0</div>
+      <div class="widget-num">WIDGET 1 / 12 · P0</div>
       <h4>📊 KPI Card</h4>
       <p style="color: var(--muted);">單一數字 + 趨勢箭頭。最常用 widget。</p>
       <div class="widget-grid">
@@ -1297,7 +1297,7 @@ Given the intent JSON, return 1-4 widgets array.
 
     <!-- Widget 2: Time Series -->
     <div class="widget-card">
-      <div class="widget-num">WIDGET 2 / 11 · P0</div>
+      <div class="widget-num">WIDGET 2 / 12 · P0</div>
       <h4>📈 Time Series (Line / Area)</h4>
       <p style="color: var(--muted);">趨勢隨時間變化。可選擇 line 或 area。</p>
       <div class="widget-grid">
@@ -1319,7 +1319,7 @@ Given the intent JSON, return 1-4 widgets array.
 
     <!-- Widget 3: Bar Chart -->
     <div class="widget-card">
-      <div class="widget-num">WIDGET 3 / 11 · P0</div>
+      <div class="widget-num">WIDGET 3 / 12 · P0</div>
       <h4>📊 Bar Chart</h4>
       <p style="color: var(--muted);">Top N 排名。最常用於「最忙」「最差」「最多」。</p>
       <div class="widget-grid">
@@ -1343,7 +1343,7 @@ Given the intent JSON, return 1-4 widgets array.
 
     <!-- Widget 4: Table -->
     <div class="widget-card">
-      <div class="widget-num">WIDGET 4 / 11 · P0</div>
+      <div class="widget-num">WIDGET 4 / 12 · P0</div>
       <h4>📋 Table</h4>
       <p style="color: var(--muted);">行列資料。適合需要看細節的 list 類型。</p>
       <div class="widget-grid">
@@ -1367,7 +1367,7 @@ Given the intent JSON, return 1-4 widgets array.
 
     <!-- Widget 5: Status Grid -->
     <div class="widget-card">
-      <div class="widget-num">WIDGET 5 / 11 · P1</div>
+      <div class="widget-num">WIDGET 5 / 12 · P1</div>
       <h4>🟢 Status Grid</h4>
       <p style="color: var(--muted);">設備健康燈號。一格一設備，大量設備一眼掃。</p>
       <div class="widget-grid">
@@ -1398,7 +1398,7 @@ Given the intent JSON, return 1-4 widgets array.
 
     <!-- Widget 6: Heatmap -->
     <div class="widget-card">
-      <div class="widget-num">WIDGET 6 / 11 · P1</div>
+      <div class="widget-num">WIDGET 6 / 12 · P1</div>
       <h4>🔥 Heatmap</h4>
       <p style="color: var(--muted);">時間 × 維度。常用於 channel utilization。</p>
       <div class="widget-grid">
@@ -1427,7 +1427,7 @@ Given the intent JSON, return 1-4 widgets array.
 
     <!-- Widget 7: Alert List -->
     <div class="widget-card">
-      <div class="widget-num">WIDGET 7 / 11 · P1</div>
+      <div class="widget-num">WIDGET 7 / 12 · P1</div>
       <h4>⚠ Alert List</h4>
       <p style="color: var(--muted);">告警清單。每行一個 alert。</p>
       <div class="widget-grid">
@@ -1450,7 +1450,7 @@ Given the intent JSON, return 1-4 widgets array.
 
     <!-- Widget 8: Gauge -->
     <div class="widget-card">
-      <div class="widget-num">WIDGET 8 / 11 · P1</div>
+      <div class="widget-num">WIDGET 8 / 12 · P1</div>
       <h4>⏱ Gauge</h4>
       <p style="color: var(--muted);">「有上限」的指標。比 KPI Card 多了「離爆掉還多遠」的視覺暗示。</p>
       <div class="widget-grid">
@@ -1477,7 +1477,7 @@ Given the intent JSON, return 1-4 widgets array.
 
     <!-- Widget 9: Site Map -->
     <div class="widget-card">
-      <div class="widget-num">WIDGET 9 / 11 · P2</div>
+      <div class="widget-num">WIDGET 9 / 12 · P2</div>
       <h4>🗺 Site Map</h4>
       <p style="color: var(--muted);">多 site 在地理上的分布（地圖底圖 + 站點 marker）。只做 geo。</p>
       <div class="widget-grid">
@@ -1502,7 +1502,7 @@ Given the intent JSON, return 1-4 widgets array.
 
     <!-- Widget 10: Topology Graph -->
     <div class="widget-card">
-      <div class="widget-num">WIDGET 10 / 11 · P2</div>
+      <div class="widget-num">WIDGET 10 / 12 · P2</div>
       <h4>🕸 Topology Graph</h4>
       <p style="color: var(--muted);">網路拓樸 — switch / AP / client 連線關係。故障 blast radius 必備。<strong style="color:var(--warn);">Networking 差異化 widget</strong>。</p>
       <div class="widget-grid">
@@ -1534,7 +1534,7 @@ Given the intent JSON, return 1-4 widgets array.
 
     <!-- Widget 11: Sankey -->
     <div class="widget-card">
-      <div class="widget-num">WIDGET 11 / 11 · P2</div>
+      <div class="widget-num">WIDGET 11 / 12 · P2</div>
       <h4>🌊 Sankey</h4>
       <p style="color: var(--muted);">流量流向圖。「從哪來、去哪、各佔多少」— 應用流量、訪客 Wi-Fi 去向。</p>
       <div class="widget-grid">
@@ -1560,6 +1560,54 @@ Given the intent JSON, return 1-4 widgets array.
           <div class="row"><strong>必填</strong>: title, nodes, flows (source/target/value)</div>
           <div class="row"><strong>選填</strong>: unit</div>
           <div class="row"><strong>推薦 lib</strong>: D3-Sankey / ECharts</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Widget 12: Coverage Map -->
+    <div class="widget-card">
+      <div class="widget-num">WIDGET 12 / 12 · P2</div>
+      <h4>🛜 Coverage Map</h4>
+      <p style="color: var(--muted);">樓層平面圖 + Wi-Fi 訊號熱力 + AP 位置 overlay。<strong style="color:var(--warn);">Wi-Fi 廠商招牌視覺</strong>（Cisco DNA / Aruba 都有）。空間維度，不是 grid Heatmap。</p>
+      <div class="widget-grid">
+        <div class="vis-mock">
+          <div class="mini-title">3F Wi-Fi Coverage · 5GHz</div>
+          <svg viewBox="0 0 140 60" style="width:100%;height:50px;margin-top:4px;">
+            <!-- Floorplan rooms -->
+            <rect x="4" y="4" width="36" height="22" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+            <rect x="44" y="4" width="60" height="22" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+            <rect x="108" y="4" width="28" height="22" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+            <rect x="4" y="30" width="80" height="26" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+            <rect x="88" y="30" width="48" height="26" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+            <!-- Coverage gradients -->
+            <defs>
+              <radialGradient id="cov1" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="rgba(16,185,129,0.55)"/>
+                <stop offset="100%" stop-color="rgba(16,185,129,0)"/>
+              </radialGradient>
+              <radialGradient id="cov2" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="rgba(251,191,36,0.45)"/>
+                <stop offset="100%" stop-color="rgba(251,191,36,0)"/>
+              </radialGradient>
+            </defs>
+            <circle cx="22" cy="15" r="22" fill="url(#cov1)"/>
+            <circle cx="74" cy="42" r="26" fill="url(#cov1)"/>
+            <circle cx="100" cy="20" r="18" fill="url(#cov2)"/>
+            <!-- Dead zone -->
+            <rect x="115" y="38" width="20" height="16" fill="rgba(239,68,68,0.30)" stroke="#ef4444" stroke-width="0.5" stroke-dasharray="2,1"/>
+            <text x="125" y="50" text-anchor="middle" font-size="5" fill="#ef4444" font-weight="700">死角</text>
+            <!-- AP markers -->
+            <circle cx="22" cy="15" r="2" fill="#10b981" stroke="#fff" stroke-width="0.5"/>
+            <circle cx="74" cy="42" r="2" fill="#10b981" stroke="#fff" stroke-width="0.5"/>
+            <circle cx="100" cy="20" r="2" fill="#fbbf24" stroke="#fff" stroke-width="0.5"/>
+          </svg>
+        </div>
+        <div class="widget-meta">
+          <div class="row"><strong>type</strong>: coverage_map</div>
+          <div class="row"><strong>適用</strong>: 樓層 Wi-Fi 覆蓋 / 死角分析 / AP 規劃</div>
+          <div class="row"><strong>必填</strong>: title, floorplan, aps, signal_grid</div>
+          <div class="row"><strong>選填</strong>: annotations (dead_zone, suggested_ap)</div>
+          <div class="row"><strong>推薦 lib</strong>: Leaflet (custom CRS) / d3-contour</div>
         </div>
       </div>
     </div>
@@ -1609,7 +1657,7 @@ Given the intent JSON, return 1-4 widgets array.
   <!-- Extension -->
   <div class="section">
     <h3>未來擴充</h3>
-    <h2>➕ 第 9 個 widget 怎麼加</h2>
+    <h2>➕ 第 13 個 widget 怎麼加</h2>
     <ol>
       <li><strong>Eng RFC</strong>：寫一份 RFC 說明為什麼需要、與既有 widget 的差異</li>
       <li><strong>Schema 設計</strong>：JSON Schema + Pydantic model</li>

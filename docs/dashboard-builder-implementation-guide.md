@@ -40,15 +40,15 @@
 ## 2. 什麼是 Widget Catalog
 
 ### 一句話
-**LLM 跟前端之間的「元件菜單」+ 契約** — 預先定義 11 種 widget「樂高積木」（P0 4 + P1 4 + P2 3），AI 只能從中挑、再組合。
+**LLM 跟前端之間的「元件菜單」+ 契約** — 預先定義 12 種 widget「樂高積木」（P0 4 + P1 4 + P2 4），AI 只能從中挑、再組合。
 
 ### 為什麼需要
 
 | 沒有 catalog | 有 catalog |
 |---|---|
-| LLM 會 hallucinate 出前端做不出來的 chart | LLM 只能挑 11 個已知 widget |
-| 前端要處理 unexpected schema | 前端只實作 11 個 component，輸入永遠對齊 |
-| Design 跟不上 AI 的天馬行空 | Design 只畫 11 種，AI 組出來都符合視覺語言 |
+| LLM 會 hallucinate 出前端做不出來的 chart | LLM 只能挑 12 個已知 widget |
+| 前端要處理 unexpected schema | 前端只實作 12 個 component，輸入永遠對齊 |
+| Design 跟不上 AI 的天馬行空 | Design 只畫 12 種，AI 組出來都符合視覺語言 |
 | Demo 給客戶時邊界模糊 | 「我們能做什麼」一目了然 |
 
 ### 工作流程示意
@@ -324,7 +324,7 @@ tokens              + Storybook hookup
 
 [Prompt Eng]
 讀 widget-catalog   寫 system prompt     few-shot 調優
-熟悉 LLM tool API   接 LLM API          測 9 個 scenario
+熟悉 LLM tool API   接 LLM API          測 10 個 scenario
 ```
 
 **關鍵**：不要等 design 把 8 個都畫完才開始 RD。Design / RD / Prompt Eng 三條線**並行**，靠 Zod schema 對齊。
@@ -348,7 +348,7 @@ tokens              + Storybook hookup
 
 - [ ] System prompt 列出可用 widget（用 `widget-catalog.md` 內容）
 - [ ] LLM tool spec 從 `LLM_TOOLS` 自動產出（不手寫）
-- [ ] Few-shot examples：9 個 scenario 各 1 組（user query → tool calls）
+- [ ] Few-shot examples：10 個 scenario 各 1 組（user query → tool calls）
 - [ ] Closed-set rule：明確告訴 LLM「只能用 catalog 裡的 widget，不能發明」
 - [ ] Combo rules：限定 dashboard 上限 widget 數（建議 ≤ 6）
 - [ ] Validation：LLM 回傳的每個 widget JSON 都過 Zod，壞了重 prompt
@@ -370,7 +370,7 @@ tokens              + Storybook hookup
 - ❌ **手寫兩份（schema + tool spec）** — 維護災難，一定會 drift
 
 ### 範圍面
-- ❌ **第一版做 11 個 widget** — 太貪心，先做 P0 4 個跑通整個 loop，再依 P1 / P2 漸進
+- ❌ **第一版做 12 個 widget** — 太貪心，先做 P0 4 個跑通整個 loop，再依 P1 / P2 漸進
 - ❌ **沒定 widget 上限** — dashboard 一次塞 12 個 widget，使用者看不懂
 
 ---
@@ -394,10 +394,10 @@ tokens              + Storybook hookup
 
 ## 11. 相關文件
 
-- [widget-catalog.md](./widget-catalog.md) — 11 個 widget 的詳細規格（給人看的版本）
-- [prompt-templates.md](./prompt-templates.md) — LLM system prompt + 11 個 tool defs + few-shot examples
+- [widget-catalog.md](./widget-catalog.md) — 12 個 widget 的詳細規格（給人看的版本）
+- [prompt-templates.md](./prompt-templates.md) — LLM system prompt + 12 個 tool defs + few-shot examples
 - [../dashboard-builder-implementation.html](../dashboard-builder-implementation.html) — 工程實作指南（4-tab 互動頁）
-- [../dashboard-builder-demo.html](../dashboard-builder-demo.html) — 9 個 scenario 的互動 demo
+- [../dashboard-builder-demo.html](../dashboard-builder-demo.html) — 10 個 scenario 的互動 demo
 
 ---
 
