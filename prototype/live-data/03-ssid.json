@@ -1,0 +1,24 @@
+{
+  "ids": {
+    "org_id": "642e46559e9da83590cb9a07",
+    "hv_id": "659e94d5c9254decf73d5a94",
+    "network_id": "672c2fe8582ad89824fc86cf",
+    "hierarchy_view_id": "659e94d5c9254decf73d5a94",
+    "ssid_profile_id": "672c2fe8582ad89824fc86d1"
+  },
+  "ssid_profile_candidates": [
+    {
+      "ssid_profile_id": "672c2fe8582ad89824fc86d1",
+      "ssid_name": "EnGenius WiFi",
+      "ssid_category": "General",
+      "is_enable": true,
+      "is_used_by_lan_ports": false,
+      "is_hidden": false,
+      "is_emergency_wifi": false,
+      "network_id": "672c2fe8582ad89824fc86cf",
+      "hierarchy_view_id": "659e94d5c9254decf73d5a94",
+      "org_id": "642e46559e9da83590cb9a07"
+    }
+  ]
+}
+

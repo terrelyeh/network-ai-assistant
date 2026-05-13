@@ -1,0 +1,32 @@
+{
+  "ids": {
+    "org_id": "671a1fa12103d1fdf8485781"
+  },
+  "inventory_response_meta": [
+    {
+      "response_size": 1
+    }
+  ],
+  "device_candidates": [
+    {
+      "device_id": "661502922cb988f5f6d16b1b",
+      "hierarchy_view_id": "671a200f61d4560193555107",
+      "network_id": "671a1fcd2103d1fdf8485786",
+      "network_name": "Intel",
+      "name": "ESG610-6971",
+      "type": "gateway",
+      "model": "ESG610",
+      "series": "Cloud",
+      "mac": "00:03:7f:66:69:71",
+      "license_status": "active",
+      "license_type": "pro",
+      "serial_number": "2445L4QPJ6PK",
+      "registered_by": "franny.huang@senao.com",
+      "created_time": 1729826624000,
+      "modified_time": 1729826624000,
+      "registered_time": 1729826624000,
+      "expired_date": 1933404946000
+    }
+  ]
+}
+

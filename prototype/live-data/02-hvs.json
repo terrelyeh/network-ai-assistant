@@ -1,0 +1,31 @@
+{
+  "ids": {
+    "org_id": "642e46559e9da83590cb9a07",
+    "root_hv_id": "642e46559e9da83590cb9a08",
+    "hv_id": "659e94d5c9254decf73d5a94",
+    "network_id": "672c2fe8582ad89824fc86cf"
+  },
+  "hv_candidates": [
+    {
+      "hv_id": "642e46559e9da83590cb9a08",
+      "hv_name": "root",
+      "org_id": "642e46559e9da83590cb9a07"
+    },
+    {
+      "hv_id": "659e94d5c9254decf73d5a94",
+      "hv_name": "9F_Cubicle",
+      "parent_hierarchy_view_id": "642e46559e9da83590cb9a08",
+      "org_id": "642e46559e9da83590cb9a07"
+    }
+  ],
+  "network_candidates": [
+    {
+      "network_id": "672c2fe8582ad89824fc86cf",
+      "name": "7F_shieldingRoom",
+      "network_name": "7F_shieldingRoom",
+      "hierarchy_view_id": "659e94d5c9254decf73d5a94",
+      "org_id": "642e46559e9da83590cb9a07"
+    }
+  ]
+}
+
