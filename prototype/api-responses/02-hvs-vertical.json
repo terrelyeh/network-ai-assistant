@@ -1,0 +1,44 @@
+{
+  "ids": {
+    "org_id": "671a1fa12103d1fdf8485781",
+    "root_hv_id": "671a1fa12103d1fdf8485782",
+    "hv_id": "671a200f61d4560193555107",
+    "network_id": "671a1fcd2103d1fdf8485786"
+  },
+  "hv_candidates": [
+    {
+      "hv_id": "671a1fa12103d1fdf8485782",
+      "hv_name": "root",
+      "org_id": "671a1fa12103d1fdf8485781"
+    },
+    {
+      "hv_id": "671a200f61d4560193555107",
+      "hv_name": "Taipei",
+      "parent_hierarchy_view_id": "671a1fa12103d1fdf8485782",
+      "org_id": "671a1fa12103d1fdf8485781"
+    },
+    {
+      "hv_id": "671a20252103d1fdf848578d",
+      "hv_name": "US",
+      "parent_hierarchy_view_id": "671a1fa12103d1fdf8485782",
+      "org_id": "671a1fa12103d1fdf8485781"
+    }
+  ],
+  "network_candidates": [
+    {
+      "network_id": "671a1fcd2103d1fdf8485786",
+      "name": "Intel",
+      "network_name": "Intel",
+      "hierarchy_view_id": "671a200f61d4560193555107",
+      "org_id": "671a1fa12103d1fdf8485781"
+    },
+    {
+      "network_id": "672c7881582ad89824fc8748",
+      "name": "LA",
+      "network_name": "LA",
+      "hierarchy_view_id": "671a20252103d1fdf848578d",
+      "org_id": "671a1fa12103d1fdf8485781"
+    }
+  ]
+}
+

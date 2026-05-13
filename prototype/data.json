@@ -1,0 +1,337 @@
+{
+  "orgs": {
+    "ids": {
+      "org_id": "5e410f44e91984972fd50a22"
+    },
+    "org_candidates": [
+      {
+        "org_id": "5e410f44e91984972fd50a22",
+        "org_name": "Main_Org",
+        "country": "Taiwan",
+        "time_zone": "Asia/Taipei"
+      },
+      {
+        "org_id": "605d957f88ec783796d18b8a",
+        "org_name": "terrel",
+        "country": "Taiwan",
+        "time_zone": "Asia/Taipei"
+      },
+      {
+        "org_id": "671a1fa12103d1fdf8485781",
+        "org_name": "Vertical Solution Wizard Demo",
+        "country": "Taiwan",
+        "time_zone": "Asia/Taipei"
+      },
+      {
+        "org_id": "5edef0cdc06b40405bf43ee3",
+        "org_name": "ann-AP",
+        "country": "Taiwan",
+        "time_zone": "Asia/Taipei"
+      },
+      {
+        "org_id": "642e46559e9da83590cb9a07",
+        "org_name": "Gordon",
+        "country": "Taiwan",
+        "time_zone": "Asia/Taipei"
+      }
+    ]
+  },
+  "hvs_gordon": {
+    "ids": {
+      "org_id": "642e46559e9da83590cb9a07",
+      "root_hv_id": "642e46559e9da83590cb9a08",
+      "hv_id": "659e94d5c9254decf73d5a94",
+      "network_id": "672c2fe8582ad89824fc86cf"
+    },
+    "hv_candidates": [
+      {
+        "hv_id": "642e46559e9da83590cb9a08",
+        "hv_name": "root",
+        "org_id": "642e46559e9da83590cb9a07"
+      },
+      {
+        "hv_id": "659e94d5c9254decf73d5a94",
+        "hv_name": "9F_Cubicle",
+        "parent_hierarchy_view_id": "642e46559e9da83590cb9a08",
+        "org_id": "642e46559e9da83590cb9a07"
+      }
+    ],
+    "network_candidates": [
+      {
+        "network_id": "672c2fe8582ad89824fc86cf",
+        "name": "7F_shieldingRoom",
+        "network_name": "7F_shieldingRoom",
+        "hierarchy_view_id": "659e94d5c9254decf73d5a94",
+        "org_id": "642e46559e9da83590cb9a07"
+      }
+    ]
+  },
+  "hvs_vertical": {
+    "ids": {
+      "org_id": "671a1fa12103d1fdf8485781",
+      "root_hv_id": "671a1fa12103d1fdf8485782",
+      "hv_id": "671a200f61d4560193555107",
+      "network_id": "671a1fcd2103d1fdf8485786"
+    },
+    "hv_candidates": [
+      {
+        "hv_id": "671a1fa12103d1fdf8485782",
+        "hv_name": "root",
+        "org_id": "671a1fa12103d1fdf8485781"
+      },
+      {
+        "hv_id": "671a200f61d4560193555107",
+        "hv_name": "Taipei",
+        "parent_hierarchy_view_id": "671a1fa12103d1fdf8485782",
+        "org_id": "671a1fa12103d1fdf8485781"
+      },
+      {
+        "hv_id": "671a20252103d1fdf848578d",
+        "hv_name": "US",
+        "parent_hierarchy_view_id": "671a1fa12103d1fdf8485782",
+        "org_id": "671a1fa12103d1fdf8485781"
+      }
+    ],
+    "network_candidates": [
+      {
+        "network_id": "671a1fcd2103d1fdf8485786",
+        "name": "Intel",
+        "network_name": "Intel",
+        "hierarchy_view_id": "671a200f61d4560193555107",
+        "org_id": "671a1fa12103d1fdf8485781"
+      },
+      {
+        "network_id": "672c7881582ad89824fc8748",
+        "name": "LA",
+        "network_name": "LA",
+        "hierarchy_view_id": "671a20252103d1fdf848578d",
+        "org_id": "671a1fa12103d1fdf8485781"
+      }
+    ]
+  },
+  "hvs_main": {
+    "ids": {
+      "org_id": "5e410f44e91984972fd50a22",
+      "root_hv_id": "5e410f44e91984972fd50a23",
+      "hv_id": "5f61d37726045338ff7c1728",
+      "network_id": "5e410f45e91984972fd50a25"
+    },
+    "hv_candidates": [
+      {
+        "hv_id": "5e410f44e91984972fd50a23",
+        "hv_name": "root",
+        "org_id": "5e410f44e91984972fd50a22"
+      },
+      {
+        "hv_id": "5f61d37726045338ff7c1728",
+        "hv_name": "test hv",
+        "parent_hierarchy_view_id": "5e410f44e91984972fd50a23",
+        "org_id": "5e410f44e91984972fd50a22"
+      }
+    ],
+    "network_candidates": [
+      {
+        "network_id": "5e410f45e91984972fd50a25",
+        "name": "Main_Network",
+        "network_name": "Main_Network",
+        "hierarchy_view_id": "5e410f44e91984972fd50a23",
+        "org_id": "5e410f44e91984972fd50a22"
+      },
+      {
+        "network_id": "5e4cf3f545a1004fed20bf9c",
+        "name": "Sec_Network",
+        "network_name": "Sec_Network",
+        "hierarchy_view_id": "5e410f44e91984972fd50a23",
+        "org_id": "5e410f44e91984972fd50a22"
+      },
+      {
+        "network_id": "5ea283a1d5f6b23a755a7d57",
+        "name": "New_1.3.10",
+        "network_name": "New_1.3.10",
+        "hierarchy_view_id": "5e410f44e91984972fd50a23",
+        "org_id": "5e410f44e91984972fd50a22"
+      },
+      {
+        "network_id": "5eb65b74168e1dc524517a36",
+        "name": "Third_Network",
+        "network_name": "Third_Network",
+        "hierarchy_view_id": "5e410f44e91984972fd50a23",
+        "org_id": "5e410f44e91984972fd50a22"
+      },
+      {
+        "network_id": "5ed61bf39c5be310fc8ca74a",
+        "name": "Block message",
+        "network_name": "Block message",
+        "hierarchy_view_id": "5e410f44e91984972fd50a23",
+        "org_id": "5e410f44e91984972fd50a22"
+      },
+      {
+        "network_id": "5ee9b48bdf7b3341de7acb06",
+        "name": "NEW",
+        "network_name": "NEW",
+        "hierarchy_view_id": "5e410f44e91984972fd50a23",
+        "org_id": "5e410f44e91984972fd50a22"
+      },
+      {
+        "network_id": "5f06e3d55817bc2c44a39638",
+        "name": "Test",
+        "network_name": "Test",
+        "hierarchy_view_id": "5e410f44e91984972fd50a23",
+        "org_id": "5e410f44e91984972fd50a22"
+      },
+      {
+        "network_id": "5f2a4d1efbd197b393614b59",
+        "name": "Test_again",
+        "network_name": "Test_again",
+        "hierarchy_view_id": "5e410f44e91984972fd50a23",
+        "org_id": "5e410f44e91984972fd50a22"
+      },
+      {
+        "network_id": "5f44e3bf8d76694cd10a17a2",
+        "name": "fff",
+        "network_name": "fff",
+        "hierarchy_view_id": "5e410f44e91984972fd50a23",
+        "org_id": "5e410f44e91984972fd50a22"
+      },
+      {
+        "network_id": "60596f9b91fa1b5543471b93",
+        "name": "FGFGFGF",
+        "network_name": "FGFGFGF",
+        "hierarchy_view_id": "5f61d37726045338ff7c1728",
+        "org_id": "5e410f44e91984972fd50a22"
+      }
+    ]
+  },
+  "hvs_ann": {
+    "ids": {
+      "org_id": "5edef0cdc06b40405bf43ee3",
+      "root_hv_id": "5edef0cdc06b40405bf43ee4",
+      "network_id": "5ee18e5ecae7ad77e2c1d11a"
+    },
+    "hv_candidates": [
+      {
+        "hv_id": "5edef0cdc06b40405bf43ee4",
+        "hv_name": "root",
+        "org_id": "5edef0cdc06b40405bf43ee3"
+      }
+    ],
+    "network_candidates": [
+      {
+        "network_id": "5ee18e5ecae7ad77e2c1d11a",
+        "name": "Air Guard",
+        "network_name": "Air Guard",
+        "hierarchy_view_id": "5edef0cdc06b40405bf43ee4",
+        "org_id": "5edef0cdc06b40405bf43ee3"
+      }
+    ]
+  },
+  "ssid": {
+    "ids": {
+      "org_id": "642e46559e9da83590cb9a07",
+      "hv_id": "659e94d5c9254decf73d5a94",
+      "network_id": "672c2fe8582ad89824fc86cf",
+      "hierarchy_view_id": "659e94d5c9254decf73d5a94",
+      "ssid_profile_id": "672c2fe8582ad89824fc86d1"
+    },
+    "ssid_profile_candidates": [
+      {
+        "ssid_profile_id": "672c2fe8582ad89824fc86d1",
+        "ssid_name": "EnGenius WiFi",
+        "ssid_category": "General",
+        "is_enable": true,
+        "is_used_by_lan_ports": false,
+        "is_hidden": false,
+        "is_emergency_wifi": false,
+        "network_id": "672c2fe8582ad89824fc86cf",
+        "hierarchy_view_id": "659e94d5c9254decf73d5a94",
+        "org_id": "642e46559e9da83590cb9a07"
+      }
+    ]
+  },
+  "inventory": {
+    "ids": {
+      "org_id": "671a1fa12103d1fdf8485781"
+    },
+    "inventory_response_meta": [
+      {
+        "response_size": 1
+      }
+    ],
+    "device_candidates": [
+      {
+        "device_id": "661502922cb988f5f6d16b1b",
+        "hierarchy_view_id": "671a200f61d4560193555107",
+        "network_id": "671a1fcd2103d1fdf8485786",
+        "network_name": "Intel",
+        "name": "ESG610-6971",
+        "type": "gateway",
+        "model": "ESG610",
+        "series": "Cloud",
+        "mac": "00:03:7f:66:69:71",
+        "license_status": "active",
+        "license_type": "pro",
+        "serial_number": "2445L4QPJ6PK",
+        "registered_by": "franny.huang@senao.com",
+        "created_time": 1729826624000,
+        "modified_time": 1729826624000,
+        "registered_time": 1729826624000,
+        "expired_date": 1933404946000
+      }
+    ]
+  },
+  "licenses": {
+    "ids": {
+      "org_id": "671a1fa12103d1fdf8485781"
+    },
+    "license_response_meta": [
+      {
+        "response_size": 3,
+        "available_ai_tokens": 0
+      }
+    ],
+    "license_candidates": [
+      {
+        "license_id": "6737e5c1bf062eba6b600415",
+        "license_key": "6737E5-AEA0B0-0A6A59-8AB15F",
+        "license_key_model": "SPC-Senao-3YR",
+        "license_type": "secupoint",
+        "license_category": "gateway",
+        "status": "active",
+        "mac": "00:03:7f:66:69:71",
+        "duration": 1095,
+        "seats": 5,
+        "time_remaining": 551,
+        "issued_date": 1731716526000,
+        "activated_date": 1731716609000
+      },
+      {
+        "license_id": "66150021daad70b23cd1bd40",
+        "license_key": "661500-0EB554-099CAE-8AB85E",
+        "license_key_model": "GW-1LW-EDU",
+        "license_type": "pro",
+        "license_category": "gateway",
+        "status": "expired",
+        "mac": "00:03:7f:66:69:71",
+        "duration": 365,
+        "seats": 0,
+        "time_remaining": 0,
+        "issued_date": 1712652302000,
+        "activated_date": 1744188946000
+      },
+      {
+        "license_id": "66150061daad70b23cd1bd42",
+        "license_key": "661500-566437-08596E-8AE85F",
+        "license_key_model": "GW-5LW-EDU",
+        "license_type": "pro",
+        "license_category": "gateway",
+        "status": "active",
+        "mac": "00:03:7f:66:69:71",
+        "duration": 1825,
+        "seats": 0,
+        "time_remaining": 1790,
+        "issued_date": 1712652374000,
+        "activated_date": 1775724946000
+      }
+    ]
+  }
+}

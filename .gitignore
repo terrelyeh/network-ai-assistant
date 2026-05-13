@@ -16,3 +16,6 @@ node_modules/
 dist/
 *.log
 .vercel
+
+# RD-provided skills package (separate repo, do not vendor)
+api-skills/

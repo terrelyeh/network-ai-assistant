@@ -1,0 +1,38 @@
+{
+  "ids": {
+    "org_id": "5e410f44e91984972fd50a22"
+  },
+  "org_candidates": [
+    {
+      "org_id": "5e410f44e91984972fd50a22",
+      "org_name": "Main_Org",
+      "country": "Taiwan",
+      "time_zone": "Asia/Taipei"
+    },
+    {
+      "org_id": "605d957f88ec783796d18b8a",
+      "org_name": "terrel",
+      "country": "Taiwan",
+      "time_zone": "Asia/Taipei"
+    },
+    {
+      "org_id": "671a1fa12103d1fdf8485781",
+      "org_name": "Vertical Solution Wizard Demo",
+      "country": "Taiwan",
+      "time_zone": "Asia/Taipei"
+    },
+    {
+      "org_id": "5edef0cdc06b40405bf43ee3",
+      "org_name": "ann-AP",
+      "country": "Taiwan",
+      "time_zone": "Asia/Taipei"
+    },
+    {
+      "org_id": "642e46559e9da83590cb9a07",
+      "org_name": "Gordon",
+      "country": "Taiwan",
+      "time_zone": "Asia/Taipei"
+    }
+  ]
+}
+

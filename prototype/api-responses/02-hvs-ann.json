@@ -1,0 +1,24 @@
+{
+  "ids": {
+    "org_id": "5edef0cdc06b40405bf43ee3",
+    "root_hv_id": "5edef0cdc06b40405bf43ee4",
+    "network_id": "5ee18e5ecae7ad77e2c1d11a"
+  },
+  "hv_candidates": [
+    {
+      "hv_id": "5edef0cdc06b40405bf43ee4",
+      "hv_name": "root",
+      "org_id": "5edef0cdc06b40405bf43ee3"
+    }
+  ],
+  "network_candidates": [
+    {
+      "network_id": "5ee18e5ecae7ad77e2c1d11a",
+      "name": "Air Guard",
+      "network_name": "Air Guard",
+      "hierarchy_view_id": "5edef0cdc06b40405bf43ee4",
+      "org_id": "5edef0cdc06b40405bf43ee3"
+    }
+  ]
+}
+

@@ -1,0 +1,94 @@
+{
+  "ids": {
+    "org_id": "5e410f44e91984972fd50a22",
+    "root_hv_id": "5e410f44e91984972fd50a23",
+    "hv_id": "5f61d37726045338ff7c1728",
+    "network_id": "5e410f45e91984972fd50a25"
+  },
+  "hv_candidates": [
+    {
+      "hv_id": "5e410f44e91984972fd50a23",
+      "hv_name": "root",
+      "org_id": "5e410f44e91984972fd50a22"
+    },
+    {
+      "hv_id": "5f61d37726045338ff7c1728",
+      "hv_name": "test hv",
+      "parent_hierarchy_view_id": "5e410f44e91984972fd50a23",
+      "org_id": "5e410f44e91984972fd50a22"
+    }
+  ],
+  "network_candidates": [
+    {
+      "network_id": "5e410f45e91984972fd50a25",
+      "name": "Main_Network",
+      "network_name": "Main_Network",
+      "hierarchy_view_id": "5e410f44e91984972fd50a23",
+      "org_id": "5e410f44e91984972fd50a22"
+    },
+    {
+      "network_id": "5e4cf3f545a1004fed20bf9c",
+      "name": "Sec_Network",
+      "network_name": "Sec_Network",
+      "hierarchy_view_id": "5e410f44e91984972fd50a23",
+      "org_id": "5e410f44e91984972fd50a22"
+    },
+    {
+      "network_id": "5ea283a1d5f6b23a755a7d57",
+      "name": "New_1.3.10",
+      "network_name": "New_1.3.10",
+      "hierarchy_view_id": "5e410f44e91984972fd50a23",
+      "org_id": "5e410f44e91984972fd50a22"
+    },
+    {
+      "network_id": "5eb65b74168e1dc524517a36",
+      "name": "Third_Network",
+      "network_name": "Third_Network",
+      "hierarchy_view_id": "5e410f44e91984972fd50a23",
+      "org_id": "5e410f44e91984972fd50a22"
+    },
+    {
+      "network_id": "5ed61bf39c5be310fc8ca74a",
+      "name": "Block message",
+      "network_name": "Block message",
+      "hierarchy_view_id": "5e410f44e91984972fd50a23",
+      "org_id": "5e410f44e91984972fd50a22"
+    },
+    {
+      "network_id": "5ee9b48bdf7b3341de7acb06",
+      "name": "NEW",
+      "network_name": "NEW",
+      "hierarchy_view_id": "5e410f44e91984972fd50a23",
+      "org_id": "5e410f44e91984972fd50a22"
+    },
+    {
+      "network_id": "5f06e3d55817bc2c44a39638",
+      "name": "Test",
+      "network_name": "Test",
+      "hierarchy_view_id": "5e410f44e91984972fd50a23",
+      "org_id": "5e410f44e91984972fd50a22"
+    },
+    {
+      "network_id": "5f2a4d1efbd197b393614b59",
+      "name": "Test_again",
+      "network_name": "Test_again",
+      "hierarchy_view_id": "5e410f44e91984972fd50a23",
+      "org_id": "5e410f44e91984972fd50a22"
+    },
+    {
+      "network_id": "5f44e3bf8d76694cd10a17a2",
+      "name": "fff",
+      "network_name": "fff",
+      "hierarchy_view_id": "5e410f44e91984972fd50a23",
+      "org_id": "5e410f44e91984972fd50a22"
+    },
+    {
+      "network_id": "60596f9b91fa1b5543471b93",
+      "name": "FGFGFGF",
+      "network_name": "FGFGFGF",
+      "hierarchy_view_id": "5f61d37726045338ff7c1728",
+      "org_id": "5e410f44e91984972fd50a22"
+    }
+  ]
+}
+

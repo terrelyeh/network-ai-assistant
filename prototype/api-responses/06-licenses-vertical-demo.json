@@ -1,0 +1,56 @@
+{
+  "ids": {
+    "org_id": "671a1fa12103d1fdf8485781"
+  },
+  "license_response_meta": [
+    {
+      "response_size": 3,
+      "available_ai_tokens": 0
+    }
+  ],
+  "license_candidates": [
+    {
+      "license_id": "6737e5c1bf062eba6b600415",
+      "license_key": "6737E5-AEA0B0-0A6A59-8AB15F",
+      "license_key_model": "SPC-Senao-3YR",
+      "license_type": "secupoint",
+      "license_category": "gateway",
+      "status": "active",
+      "mac": "00:03:7f:66:69:71",
+      "duration": 1095,
+      "seats": 5,
+      "time_remaining": 551,
+      "issued_date": 1731716526000,
+      "activated_date": 1731716609000
+    },
+    {
+      "license_id": "66150021daad70b23cd1bd40",
+      "license_key": "661500-0EB554-099CAE-8AB85E",
+      "license_key_model": "GW-1LW-EDU",
+      "license_type": "pro",
+      "license_category": "gateway",
+      "status": "expired",
+      "mac": "00:03:7f:66:69:71",
+      "duration": 365,
+      "seats": 0,
+      "time_remaining": 0,
+      "issued_date": 1712652302000,
+      "activated_date": 1744188946000
+    },
+    {
+      "license_id": "66150061daad70b23cd1bd42",
+      "license_key": "661500-566437-08596E-8AE85F",
+      "license_key_model": "GW-5LW-EDU",
+      "license_type": "pro",
+      "license_category": "gateway",
+      "status": "active",
+      "mac": "00:03:7f:66:69:71",
+      "duration": 1825,
+      "seats": 0,
+      "time_remaining": 1790,
+      "issued_date": 1712652374000,
+      "activated_date": 1775724946000
+    }
+  ]
+}
+

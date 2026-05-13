@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live PoC · Dashboard Builder + EnGenius Cloud API</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-1: #f5f2ea;
+    --bg-2: #ebe6da;
+    --surface: #ffffff;
+    --surface-2: #faf8f3;
+    --border: rgba(60,50,35,0.12);
+    --border-strong: rgba(60,50,35,0.22);
+    --text: #1a2332;
+    --muted: #5a6878;
+    --dim: #97a3b3;
+    --accent: #ff6b35;
+    --cyan: #03a9f4;
+    --good: #10b981;
+    --warn: #f59e0b;
+    --bad: #ef4444;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%);
+    color: var(--text);
+    font-family: 'Inter', 'Noto Sans TC', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .container { max-width: 1640px; margin: 0 auto; padding: 24px 32px 64px; }
+
+  /* Banner */
+  .banner {
+    background: linear-gradient(135deg, rgba(3,169,244,0.10), rgba(255,107,53,0.08));
+    border: 1px solid rgba(3,169,244,0.30);
+    border-radius: 12px;
+    padding: 18px 26px;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .banner .tag {
+    display: inline-block;
+    background: var(--cyan);
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 8px;
+  }
+  .banner h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 4px; }
+  .banner p { color: var(--muted); font-size: 13.5px; }
+  .banner .env-pill {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .banner .env-pill strong { color: var(--cyan); }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 22px;
+  }
+  @media (max-width: 1100px) { .layout { grid-template-columns: 1fr; } }
+
+  /* CHAT side */
+  .chat-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 22px;
+    height: fit-content;
+    position: sticky;
+    top: 24px;
+  }
+  .chat-panel .label {
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.25em;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+  .chat-panel h2 {
+    font-size: 17px;
+    font-weight: 800;
+    margin-bottom: 18px;
+    letter-spacing: -0.01em;
+  }
+  .msg {
+    padding: 11px 14px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+  .msg.user {
+    background: var(--cyan);
+    color: #fff;
+    border-bottom-right-radius: 4px;
+    align-self: flex-end;
+    margin-left: 24px;
+  }
+  .msg.ai {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-bottom-left-radius: 4px;
+    color: var(--text);
+    margin-right: 24px;
+  }
+  .msg.ai .ai-name {
+    font-size: 10.5px;
+    color: var(--cyan);
+    font-weight: 700;
+    margin-bottom: 4px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .tool-call {
+    background: #0f1e3a;
+    color: #d8e2f3;
+    border-radius: 8px;
+    padding: 8px 11px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    margin: 6px 0;
+    line-height: 1.5;
+  }
+  .tool-call .op { color: #6ee7b7; font-weight: 600; }
+  .tool-call .arg { color: #a78bfa; }
+  .tool-call .res { color: #fbbf24; }
+
+  /* DASHBOARD side */
+  .dash {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 26px;
+    box-shadow: 0 1px 3px rgba(60,50,35,0.06);
+  }
+  .dash-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 14px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .dash-title {
+    font-size: 19px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .dash-title img { width: 26px; height: 26px; }
+  .dash-meta {
+    color: var(--dim);
+    font-size: 12.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .dash-meta .live {
+    width: 7px;
+    height: 7px;
+    background: var(--good);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.35; }
+  }
+
+  /* Widgets */
+  .widget-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+  .widget {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+  .widget-title {
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 10px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .kpi-value {
+    font-size: 34px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--text);
+  }
+  .kpi-value .unit { font-size: 14px; color: var(--muted); font-weight: 600; margin-left: 3px; }
+  .kpi-sub {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 12.5px;
+  }
+  .kpi-sub.bad { color: var(--bad); }
+  .kpi-sub.warn { color: var(--warn); }
+  .kpi-sub.good { color: var(--good); }
+
+  /* Org access table */
+  .org-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .org-table th {
+    text-align: left;
+    padding: 9px 12px;
+    background: var(--surface-2);
+    color: var(--accent);
+    font-size: 10.5px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 700;
+    border-bottom: 1px solid var(--border);
+  }
+  .org-table td {
+    padding: 11px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  .org-table tr:last-child td { border-bottom: none; }
+  .org-table td.name { font-weight: 700; }
+  .org-table td.mono { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); }
+  .badge {
+    display: inline-block;
+    padding: 2.5px 9px;
+    border-radius: 999px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .badge.good { background: rgba(16,185,129,0.12); color: var(--good); border: 1px solid rgba(16,185,129,0.4); }
+  .badge.warn { background: rgba(245,158,11,0.12); color: #b45309; border: 1px solid rgba(245,158,11,0.4); }
+  .badge.bad  { background: rgba(239,68,68,0.10); color: var(--bad); border: 1px solid rgba(239,68,68,0.4); }
+  .badge.dim  { background: var(--surface); color: var(--dim); border: 1px solid var(--border); }
+  .badge.cyan { background: rgba(3,169,244,0.10); color: var(--cyan); border: 1px solid rgba(3,169,244,0.4); }
+
+  /* Network tree */
+  .tree { font-size: 13px; }
+  .tree ul { list-style: none; padding-left: 22px; }
+  .tree > ul { padding-left: 0; }
+  .tree li { position: relative; padding: 4px 0 4px 18px; }
+  .tree li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 14px;
+    width: 12px;
+    height: 1px;
+    background: var(--border-strong);
+  }
+  .tree li.org::before { display: none; }
+  .tree li.org { padding-left: 0; padding-top: 8px; padding-bottom: 4px; font-weight: 700; }
+  .tree li .net-name { color: var(--cyan); font-family: 'JetBrains Mono', monospace; font-size: 12.5px; }
+  .tree li .net-hv { color: var(--dim); font-size: 11px; margin-left: 6px; }
+
+  /* License list */
+  .lic-item {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 12px;
+    padding: 11px 14px;
+    background: var(--surface-2);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    margin-bottom: 8px;
+    align-items: center;
+  }
+  .lic-item.expired { border-color: rgba(239,68,68,0.4); background: rgba(239,68,68,0.04); }
+  .lic-key { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text); font-weight: 600; }
+  .lic-mac { color: var(--dim); font-size: 11px; margin-top: 2px; font-family: 'JetBrains Mono', monospace; }
+  .lic-days {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--muted);
+  }
+
+  /* Section heading */
+  .sect {
+    margin-top: 28px;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 12px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* AI observations */
+  .alert-row {
+    display: flex;
+    align-items: start;
+    gap: 10px;
+    padding: 10px 13px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  .alert-row.bad { border-left: 3px solid var(--bad); }
+  .alert-row.warn { border-left: 3px solid var(--warn); }
+  .alert-row.info { border-left: 3px solid var(--cyan); }
+  .alert-row .ico { font-size: 16px; flex-shrink: 0; }
+
+  /* Chips */
+  .chips {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--border);
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .chips .lbl {
+    flex-basis: 100%;
+    font-size: 10.5px;
+    color: var(--dim);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(3,169,244,0.07);
+    border: 1px solid rgba(3,169,244,0.40);
+    color: var(--cyan);
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .chip:hover { background: rgba(3,169,244,0.16); transform: translateY(-1px); }
+  .chip.action { background: rgba(255,107,53,0.07); border-color: rgba(255,107,53,0.40); color: var(--accent); }
+  .chip.action:hover { background: rgba(255,107,53,0.16); }
+
+  /* Toolbar */
+  .toolbar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 14px 0 4px;
+    margin-top: 18px;
+    border-top: 1px solid var(--border);
+    align-items: center;
+  }
+  .toolbar .lbl {
+    font-size: 10.5px;
+    color: var(--dim);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    margin-right: 6px;
+  }
+  .tb-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    padding: 7px 13px;
+    border-radius: 7px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .tb-btn:hover { background: var(--surface-2); border-color: var(--cyan); color: var(--cyan); }
+  .tb-btn.primary { background: var(--cyan); border-color: var(--cyan); color: #fff; }
+  .tb-btn.primary:hover { background: #0288d1; color: #fff; }
+
+  .source-note {
+    margin-top: 32px;
+    padding: 14px 18px;
+    background: rgba(15,30,60,0.03);
+    border: 1px dashed var(--border-strong);
+    border-radius: 10px;
+    font-size: 12px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1.6;
+  }
+  .source-note a { color: var(--cyan); }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- BANNER -->
+<div class="banner">
+  <div>
+    <div class="tag">LIVE POC · REAL API DATA</div>
+    <h1>Dashboard Builder × EnGenius Cloud API · 真實連線 PoC</h1>
+    <p>所有數字、設備、授權都來自 <strong>falcon.staging.engenius.ai</strong> 的真實 API 回應，非模擬資料</p>
+  </div>
+  <div class="env-pill">env: <strong>staging</strong> · auth: <strong>viewer</strong> · ts: <span id="ts"></span></div>
+</div>
+
+<div class="layout">
+
+  <!-- LEFT: chat showing the flow -->
+  <aside class="chat-panel">
+    <div class="label">LLM Agent Trace</div>
+    <h2>使用者問 → AI 自動呼叫 skill</h2>
+
+    <div class="msg user">我管的這些 org 現在狀況怎樣？</div>
+
+    <div class="msg ai">
+      <div class="ai-name">🤖 Network AI-Assistant</div>
+      好的，我先列出您能存取的所有組織。
+      <div class="tool-call"><span class="op">→ get_user_orgs</span><br>orgs: <span class="res">5</span></div>
+    </div>
+
+    <div class="msg ai">
+      <div class="ai-name">🤖 Network AI-Assistant</div>
+      逐一查每個 org 的 hierarchy view 跟 network 結構。
+      <div class="tool-call">→ <span class="op">get_hierarchy_views</span> × 5<br>networks: <span class="res">14 total</span></div>
+    </div>
+
+    <div class="msg ai">
+      <div class="ai-name">🤖 Network AI-Assistant</div>
+      抓有 inventory access 的 org → 設備清單 + 授權狀態。
+      <div class="tool-call">→ <span class="op">get_inventory</span><br><span class="arg">orgId=Vertical Demo</span><br>devices: <span class="res">1</span></div>
+      <div class="tool-call">→ <span class="op">get_licenses</span><br>licenses: <span class="res">3</span> (1 expired)</div>
+    </div>
+
+    <div class="msg ai">
+      <div class="ai-name">🤖 Network AI-Assistant</div>
+      抓 Gordon network 的 SSID + 政策設定（您是 viewer，可讀）。
+      <div class="tool-call">→ <span class="op">get_ssid_profiles</span><br>SSIDs: <span class="res">EnGenius WiFi</span></div>
+      <div class="tool-call">→ <span class="op">get_general_policy_plus</span><br>policy: <span class="res">48KB returned</span></div>
+    </div>
+
+    <div class="msg ai">
+      <div class="ai-name">🤖 Network AI-Assistant</div>
+      <strong>已組好 dashboard ✓</strong> 右側展示。注意 2 件事：<br>
+      • <span style="color:var(--bad);">1 個 license 已過期</span>（Vertical Demo / GW-1LW-EDU）<br>
+      • <span style="color:var(--warn);">2 個 org 因 plan / 權限限制無法看 inventory</span>
+    </div>
+  </aside>
+
+  <!-- RIGHT: real dashboard -->
+  <main class="dash">
+
+    <div class="dash-header">
+      <div class="dash-title">
+        <img src="../assets/engenius-logo.png" alt="EnGenius Cloud">
+        Multi-Org & License Overview
+      </div>
+      <div class="dash-meta"><span class="live"></span> Live · data fetched 2026-05-13</div>
+    </div>
+
+    <!-- KPI ROW -->
+    <div class="widget-grid">
+      <div class="widget">
+        <div class="widget-title">Total Orgs</div>
+        <div class="kpi-value" id="kpi-orgs">–</div>
+        <div class="kpi-sub" id="kpi-orgs-sub">– 個帳號可存取</div>
+      </div>
+      <div class="widget">
+        <div class="widget-title">Total Networks</div>
+        <div class="kpi-value" id="kpi-networks">–</div>
+        <div class="kpi-sub">跨所有 org 的網路總數</div>
+      </div>
+      <div class="widget">
+        <div class="widget-title">Devices Visible</div>
+        <div class="kpi-value" id="kpi-devices">–</div>
+        <div class="kpi-sub" id="kpi-devices-sub">– 可存取 org</div>
+      </div>
+      <div class="widget">
+        <div class="widget-title">License 警示</div>
+        <div class="kpi-value" id="kpi-licenses" style="color:var(--bad);">–</div>
+        <div class="kpi-sub bad" id="kpi-licenses-sub">– 個已過期</div>
+      </div>
+    </div>
+
+    <!-- ORG TABLE -->
+    <div class="sect">Org Access Matrix</div>
+    <table class="org-table" id="org-table">
+      <thead>
+        <tr><th>Org</th><th>Org ID</th><th>Networks</th><th>Inventory</th><th>備註</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <!-- NETWORK TREE + DEVICE INVENTORY -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:24px;">
+      <div>
+        <div class="sect" style="margin-top:0;">Network Hierarchy</div>
+        <div class="tree" id="tree"></div>
+      </div>
+      <div>
+        <div class="sect" style="margin-top:0;">Device Inventory（可存取）</div>
+        <table class="org-table" id="device-table">
+          <thead><tr><th>Device</th><th>Type</th><th>Network</th><th>License</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- LICENSE LIFECYCLE -->
+    <div class="sect">License Lifecycle (Vertical Solution Wizard Demo)</div>
+    <div id="lic-list"></div>
+
+    <!-- SSID CONFIG -->
+    <div class="sect">SSID Configuration (Gordon / 7F_shieldingRoom)</div>
+    <div id="ssid-list"></div>
+
+    <!-- AI OBSERVATIONS -->
+    <div class="sect">AI 觀察</div>
+    <div class="alert-row bad">
+      <div class="ico">🔴</div>
+      <div><strong>1 個 license 已過期 (Vertical Solution Wizard Demo)</strong> — <code style="font-family:'JetBrains Mono';font-size:11.5px;background:var(--surface);padding:1px 5px;border-radius:3px;color:var(--cyan);">GW-1LW-EDU</code>（gateway，MAC 00:03:7f:66:69:71）。建議優先處理續約。</div>
+    </div>
+    <div class="alert-row warn">
+      <div class="ico">⚠️</div>
+      <div><strong>2 個 org 受權限/Plan 限制無法看 inventory</strong> — Gordon (viewer-only) 跟 terrel (Basic plan)。若需完整檢視，升級或調整邀請角色。</div>
+    </div>
+    <div class="alert-row info">
+      <div class="ico">💡</div>
+      <div><strong>Main_Org 有 10 個 network 但您不可存取</strong> — 跟管理員確認是否需要邀請（適合做 multi-org 客戶場景驗證）。</div>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+      <span class="lbl">DASHBOARD ACTIONS</span>
+      <button class="tb-btn">💾 儲存</button>
+      <button class="tb-btn primary">🛒 取得 GW-1LW-EDU 續約報價</button>
+      <button class="tb-btn">📤 匯出 PDF</button>
+      <button class="tb-btn">🔗 分享</button>
+    </div>
+
+    <!-- CHIPS -->
+    <div class="chips">
+      <span class="lbl">下一步建議</span>
+      <button class="chip">💬 列出所有快到期的 license</button>
+      <button class="chip">💬 對比 5 個 org 的設備分布</button>
+      <button class="chip action">📩 通知 Vertical Demo 管理員續約</button>
+      <button class="chip action">🎫 為 Main_Org 申請 viewer 權限</button>
+    </div>
+
+    <!-- SOURCE NOTE -->
+    <div class="source-note">
+      Real API responses saved at <a href="./api-responses/" target="_blank">prototype/api-responses/</a> ·
+      LLM tool spec → operation_id mapping:<br>
+      <code>get_user_orgs · get_hierarchy_views · get_inventory · get_licenses · get_ssid_profiles · get_general_policy_plus</code>
+    </div>
+  </main>
+
+</div>
+
+</div>
+
+<script>
+// Real data fetched from falcon.staging.engenius.ai
+// Last fetch: 2026-05-13
+const ORG_LOOKUP = {
+  "5e410f44e91984972fd50a22": { name: "Main_Org", access: "no-inventory" },
+  "605d957f88ec783796d18b8a": { name: "terrel", access: "basic-plan" },
+  "671a1fa12103d1fdf8485781": { name: "Vertical Solution Wizard Demo", access: "full" },
+  "5edef0cdc06b40405bf43ee3": { name: "ann-AP", access: "no-inventory" },
+  "642e46559e9da83590cb9a07": { name: "Gordon", access: "network-viewer" }
+};
+
+document.getElementById('ts').textContent = new Date().toISOString().slice(0,19).replace('T',' ');
+
+fetch('./data.json').then(r => r.json()).then(data => {
+  // ---- ORG SUMMARY ----
+  const orgs = data.orgs?.org_candidates || [];
+  document.getElementById('kpi-orgs').textContent = orgs.length;
+  document.getElementById('kpi-orgs-sub').textContent = `staging 環境 · ${orgs.length} 個帳號可存取`;
+
+  // ---- NETWORK COUNT ----
+  const hvBuckets = { gordon: data.hvs_gordon, vertical: data.hvs_vertical, main: data.hvs_main, ann: data.hvs_ann };
+  let totalNets = 0;
+  const netByOrg = {};
+  Object.entries(hvBuckets).forEach(([k, d]) => {
+    if (d?.network_candidates) {
+      totalNets += d.network_candidates.length;
+      const orgId = d.network_candidates[0]?.org_id || d.hv_candidates?.[0]?.org_id;
+      if (orgId) netByOrg[orgId] = d.network_candidates;
+    }
+  });
+  document.getElementById('kpi-networks').textContent = totalNets;
+
+  // ---- DEVICES ----
+  const devices = data.inventory?.device_candidates || [];
+  document.getElementById('kpi-devices').textContent = devices.length;
+  document.getElementById('kpi-devices-sub').textContent = `1 個 org 可存取 inventory`;
+
+  // ---- LICENSES ----
+  const licenses = data.licenses?.license_candidates || [];
+  const expired = licenses.filter(l => l.status === 'expired').length;
+  document.getElementById('kpi-licenses').textContent = expired;
+  document.getElementById('kpi-licenses-sub').textContent = `共 ${licenses.length} 個 license 中`;
+
+  // ---- ORG TABLE ----
+  const tbody = document.querySelector('#org-table tbody');
+  orgs.forEach(o => {
+    const nets = netByOrg[o.org_id] || (o.org_id === '642e46559e9da83590cb9a07' ? data.hvs_gordon?.network_candidates : null) || [];
+    const info = ORG_LOOKUP[o.org_id] || {};
+    let access, accessNote;
+    if (info.access === 'full') { access = '<span class="badge good">✓ 可存取</span>'; accessNote = 'PRO plan · 有完整 org 權限'; }
+    else if (info.access === 'basic-plan') { access = '<span class="badge warn">PLAN</span>'; accessNote = '帳號限定 BASIC，需升級才能列 inventory'; }
+    else if (info.access === 'network-viewer') { access = '<span class="badge cyan">VIEWER</span>'; accessNote = '受邀為 network viewer，無法列 org-wide inventory'; }
+    else { access = '<span class="badge dim">N/A</span>'; accessNote = 'API 權限拒絕'; }
+    tbody.insertAdjacentHTML('beforeend', `
+      <tr>
+        <td class="name">${o.org_name}</td>
+        <td class="mono">${o.org_id}</td>
+        <td>${nets.length || '–'}</td>
+        <td>${access}</td>
+        <td style="color:var(--muted);font-size:12.5px;">${accessNote}</td>
+      </tr>
+    `);
+  });
+
+  // ---- NETWORK TREE ----
+  const tree = document.getElementById('tree');
+  const ul = document.createElement('ul');
+  Object.entries(hvBuckets).forEach(([k, d]) => {
+    if (!d?.network_candidates) return;
+    const orgId = d.network_candidates[0]?.org_id || d.hv_candidates?.[0]?.org_id;
+    const orgName = ORG_LOOKUP[orgId]?.name || k;
+    const hvList = d.hv_candidates || [];
+    const li = document.createElement('li');
+    li.className = 'org';
+    li.innerHTML = `🏢 ${orgName} <span style="color:var(--dim);font-weight:400;">(${d.network_candidates.length} networks)</span>`;
+    const nestedUl = document.createElement('ul');
+    d.network_candidates.forEach(n => {
+      const hv = hvList.find(h => h.hv_id === n.hierarchy_view_id);
+      const hvName = hv?.hv_name || 'root';
+      const subLi = document.createElement('li');
+      subLi.innerHTML = `<span class="net-name">${n.network_name}</span><span class="net-hv">/ HV: ${hvName}</span>`;
+      nestedUl.appendChild(subLi);
+    });
+    li.appendChild(nestedUl);
+    ul.appendChild(li);
+  });
+  tree.appendChild(ul);
+
+  // ---- DEVICE TABLE ----
+  const dtbody = document.querySelector('#device-table tbody');
+  if (devices.length === 0) {
+    dtbody.insertAdjacentHTML('beforeend', '<tr><td colspan="4" style="color:var(--dim);text-align:center;padding:18px;">無可存取的 inventory</td></tr>');
+  }
+  devices.forEach(d => {
+    const lic = (d.license_status === 'active') ? '<span class="badge good">ACTIVE</span>' : '<span class="badge bad">' + (d.license_status || '–').toUpperCase() + '</span>';
+    dtbody.insertAdjacentHTML('beforeend', `
+      <tr>
+        <td class="name">${d.name}<div class="mono" style="color:var(--dim);font-size:11px;">${d.mac}</div></td>
+        <td><span class="badge cyan">${d.type.toUpperCase()}</span></td>
+        <td><span class="mono">${d.network_name}</span></td>
+        <td>${lic}<div class="mono" style="color:var(--dim);font-size:11px;margin-top:2px;">${d.license_type || ''}</div></td>
+      </tr>
+    `);
+  });
+
+  // ---- LICENSE LIST ----
+  const ll = document.getElementById('lic-list');
+  licenses.forEach(l => {
+    const days = l.time_remaining ? `${Math.round(l.time_remaining/86400000)} days left` : '0 days';
+    const expired = l.status === 'expired';
+    const statusBadge = expired ? '<span class="badge bad">EXPIRED</span>' : '<span class="badge good">ACTIVE</span>';
+    ll.insertAdjacentHTML('beforeend', `
+      <div class="lic-item ${expired ? 'expired' : ''}">
+        <div>
+          <div class="lic-key">${l.license_key_model} · <span style="color:var(--dim);font-weight:400;">${l.license_key}</span></div>
+          <div class="lic-mac">MAC ${l.mac} · category=${l.license_category} · type=${l.license_type}</div>
+        </div>
+        <div>${statusBadge}</div>
+        <div class="lic-days">${days}</div>
+      </div>
+    `);
+  });
+
+  // ---- SSID LIST ----
+  const ssids = data.ssid?.ssid_profile_candidates || [];
+  const sl = document.getElementById('ssid-list');
+  ssids.forEach(s => {
+    sl.insertAdjacentHTML('beforeend', `
+      <div class="lic-item">
+        <div>
+          <div class="lic-key">${s.ssid_name}</div>
+          <div class="lic-mac">category=${s.ssid_category} · is_hidden=${s.is_hidden} · is_emergency=${s.is_emergency_wifi}</div>
+        </div>
+        <div>${s.is_enable ? '<span class="badge good">ENABLED</span>' : '<span class="badge dim">DISABLED</span>'}</div>
+        <div class="lic-days">network_id ${s.network_id.slice(-6)}</div>
+      </div>
+    `);
+  });
+}).catch(err => {
+  console.error('Failed loading data.json:', err);
+  document.querySelector('main.dash').insertAdjacentHTML('afterbegin',
+    '<div style="background:rgba(239,68,68,0.1);border:1px solid var(--bad);padding:14px;border-radius:8px;margin-bottom:16px;color:var(--bad);">' +
+    'Failed to load <code>data.json</code>. 確認在 prototype/ 資料夾下用 <code>python3 -m http.server</code> 啟動本地服務，' +
+    '或直接 <code>cd prototype && open dashboard-live.html</code>（部分瀏覽器 file:// 會擋 fetch）' +
+    '</div>'
+  );
+});
+</script>
+
+</body>
+</html>
