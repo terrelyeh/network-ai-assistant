@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Dashboard Builder · Live Canvas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-1: #f5f2ea;
+    --bg-2: #ebe6da;
+    --surface: #ffffff;
+    --surface-2: #faf8f3;
+    --border: rgba(60,50,35,0.12);
+    --border-strong: rgba(60,50,35,0.25);
+    --text: #1a2332;
+    --muted: #5a6878;
+    --dim: #97a3b3;
+    --accent: #ff6b35;
+    --cyan: #03a9f4;
+    --good: #10b981;
+    --warn: #f59e0b;
+    --bad: #ef4444;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%);
+    color: var(--text);
+    font-family: 'Inter', 'Noto Sans TC', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-size: 16px;
+    line-height: 1.55;
+    min-height: 100vh;
+  }
+  .canvas { max-width: 1680px; margin: 0 auto; padding: 28px 40px 60px; }
+
+  /* HEADER */
+  .canvas-header {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px 28px;
+    margin-bottom: 22px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 24px;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(60,50,35,0.05);
+  }
+  .canvas-header .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-right: 1px solid var(--border);
+    padding-right: 24px;
+  }
+  .canvas-header .brand img { width: 38px; height: 38px; }
+  .canvas-header .brand-name {
+    font-size: 13px;
+    color: var(--cyan);
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+  .canvas-header .brand-sub {
+    font-size: 11px;
+    color: var(--dim);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.04em;
+    margin-top: 2px;
+  }
+  .canvas-header .question {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .canvas-header .q-label {
+    font-size: 10.5px;
+    color: var(--dim);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .canvas-header .q-text {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  .canvas-header .gen-info {
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .canvas-header .gen-info .ok { color: var(--good); font-weight: 700; }
+  .canvas-header .gen-info .ts { color: var(--cyan); font-weight: 700; font-size: 12.5px; }
+
+  /* TOOL TRACE STRIP (collapsible, shows what AI did) */
+  .trace-strip {
+    background: #0f1e3a;
+    border-radius: 10px;
+    padding: 12px 18px;
+    margin-bottom: 22px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    color: #d8e2f3;
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .trace-strip .label {
+    color: #6ee7b7;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    font-size: 11px;
+  }
+  .trace-strip .op {
+    color: #a78bfa;
+    background: rgba(167,139,250,0.10);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11.5px;
+  }
+  .trace-strip .arrow { color: #475569; }
+  .trace-strip .result { color: #fbbf24; font-weight: 700; }
+
+  /* SCENARIO TAG */
+  .scenario-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(3,169,244,0.10);
+    border: 1px solid rgba(3,169,244,0.35);
+    color: var(--cyan);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+
+  /* MAIN DASHBOARD GRID */
+  .dash-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .widget {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 26px;
+    box-shadow: 0 1px 3px rgba(60,50,35,0.05);
+    opacity: 0;
+    transform: translateY(12px);
+    animation: reveal 0.5s ease forwards;
+  }
+  @keyframes reveal {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .widget:nth-child(1) { animation-delay: 0.05s; }
+  .widget:nth-child(2) { animation-delay: 0.15s; }
+  .widget:nth-child(3) { animation-delay: 0.25s; }
+  .widget:nth-child(4) { animation-delay: 0.35s; }
+  .widget:nth-child(5) { animation-delay: 0.45s; }
+  .widget:nth-child(6) { animation-delay: 0.55s; }
+  .widget:nth-child(7) { animation-delay: 0.65s; }
+  .w-title {
+    font-size: 11px;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+
+  /* KPI Card */
+  .kpi-num {
+    font-size: clamp(40px, 4.4vw, 64px);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--text);
+  }
+  .kpi-num .unit { font-size: 0.32em; color: var(--muted); font-weight: 600; margin-left: 4px; }
+  .kpi-num.bad { color: var(--bad); }
+  .kpi-num.warn { color: var(--warn); }
+  .kpi-num.good { color: var(--good); }
+  .kpi-sub { margin-top: 8px; font-size: 13.5px; color: var(--muted); }
+  .kpi-sub.bad { color: var(--bad); }
+  .kpi-sub.warn { color: var(--warn); }
+  .kpi-sub.good { color: var(--good); }
+
+  /* Floor Status Grid */
+  .widget.floors-w { grid-column: span 2; }
+  .floor-row {
+    display: grid;
+    grid-template-columns: 130px 1fr 65px 56px;
+    gap: 14px;
+    align-items: center;
+    padding: 11px 16px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--good);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+  .floor-row.warning { border-left-color: var(--warn); background: rgba(245,158,11,0.05); }
+  .floor-row.critical { border-left-color: var(--bad); background: rgba(239,68,68,0.05); }
+  .floor-row .name { font-weight: 700; font-size: 14.5px; }
+  .floor-row .ap-count { font-size: 12px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+  .floor-row .clients {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--cyan);
+    font-weight: 700;
+    text-align: right;
+    font-size: 15px;
+  }
+  .floor-row .score {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 800;
+    text-align: right;
+    font-size: 18px;
+    color: var(--good);
+  }
+  .floor-row.warning .score { color: var(--warn); }
+  .floor-row.critical .score { color: var(--bad); }
+  .floor-row .issue {
+    grid-column: 1 / -1;
+    color: var(--bad);
+    font-size: 12.5px;
+    margin-top: 4px;
+    font-style: italic;
+    padding-left: 4px;
+  }
+  .floor-row.warning .issue { color: #b45309; }
+
+  /* Top APs Bar */
+  .widget.aps-w { grid-column: span 2; }
+  .ap-row { margin-bottom: 13px; }
+  .ap-row .top-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+  }
+  .ap-row .name {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 13.5px;
+    color: var(--text);
+  }
+  .ap-row .name.bad { color: var(--bad); }
+  .ap-row .name.warn { color: #b45309; }
+  .ap-row .right {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .ap-row .right .clients { color: var(--text); font-weight: 800; }
+  .ap-row .right .util { margin-left: 8px; color: var(--muted); }
+  .ap-row .bar-bg {
+    height: 12px;
+    background: var(--surface-2);
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .ap-row .bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    background: var(--cyan);
+    width: 0;
+    animation: barFill 0.9s ease-out forwards;
+    animation-delay: 0.5s;
+  }
+  .ap-row .bar-fill.bad { background: var(--bad); }
+  .ap-row .bar-fill.warn { background: var(--warn); }
+  @keyframes barFill {
+    to { width: var(--target); }
+  }
+  .ap-row .issue-line {
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--bad);
+    font-style: italic;
+  }
+
+  /* AI Observations */
+  .widget.ai-w { grid-column: span 4; }
+  .ai-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .ai-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--cyan);
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+  .ai-card.critical { border-left-color: var(--bad); background: rgba(239,68,68,0.04); }
+  .ai-card.warning { border-left-color: var(--warn); background: rgba(245,158,11,0.04); }
+  .ai-card .level {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    color: var(--cyan);
+  }
+  .ai-card.critical .level { color: var(--bad); }
+  .ai-card.warning .level { color: var(--warn); }
+  .ai-card .text {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.55;
+    margin-bottom: 8px;
+  }
+  .ai-card .text strong { color: var(--text); font-weight: 700; }
+  .ai-card.critical .text strong { color: var(--bad); }
+  .ai-card .roi {
+    font-size: 12px;
+    color: var(--muted);
+    font-style: italic;
+    padding-top: 6px;
+    border-top: 1px dashed var(--border);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  /* ACTION TOOLBAR */
+  .toolbar {
+    margin-top: 22px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+    align-items: center;
+  }
+  .toolbar .lbl {
+    font-size: 10.5px;
+    color: var(--dim);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    margin-right: 6px;
+  }
+  .tb-btn {
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .tb-btn:hover { background: var(--surface-2); border-color: var(--cyan); color: var(--cyan); }
+  .tb-btn.primary { background: var(--cyan); border-color: var(--cyan); color: #fff; }
+  .tb-btn.primary:hover { background: #0288d1; color: #fff; }
+
+  /* CHIPS */
+  .chips {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--border);
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .chips .lbl {
+    flex-basis: 100%;
+    font-size: 10.5px;
+    color: var(--dim);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 2px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .chip {
+    background: rgba(3,169,244,0.07);
+    border: 1px solid rgba(3,169,244,0.40);
+    color: var(--cyan);
+    padding: 6px 13px;
+    border-radius: 16px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .chip:hover { background: rgba(3,169,244,0.16); transform: translateY(-1px); }
+  .chip.action { background: rgba(255,107,53,0.07); border-color: rgba(255,107,53,0.40); color: var(--accent); }
+  .chip.action:hover { background: rgba(255,107,53,0.16); }
+</style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <!-- HEADER · Question + Brand + Gen Info -->
+  <div class="canvas-header">
+    <div class="brand">
+      <img src="../assets/engenius-logo.png" alt="EnGenius Cloud">
+      <div>
+        <div class="brand-name">EnGenius Cloud · AI Builder</div>
+        <div class="brand-sub">live dashboard composition</div>
+      </div>
+    </div>
+    <div class="question">
+      <div class="q-label">USER ASKED</div>
+      <div class="q-text">客房 Wi-Fi 哪幾層樓在出問題？</div>
+    </div>
+    <div class="gen-info">
+      <span class="ok">✓ Generated</span> in <span class="ts" id="gen-time">2.4s</span><br>
+      <span style="color:var(--dim);">via 5 skill ops · 4 widgets composed</span>
+    </div>
+  </div>
+
+  <!-- TOOL TRACE (transparency) -->
+  <div class="trace-strip">
+    <span class="label">AI CALLED:</span>
+    <span class="op">get_user_orgs</span><span class="arrow">→</span><span class="result">1 org</span>
+    <span class="op">get_hierarchy_views</span><span class="arrow">→</span><span class="result">9 floors</span>
+    <span class="op">subscribe_channel_utilization × 50</span><span class="arrow">→</span><span class="result">live</span>
+    <span class="op">subscribe_client_list × 9</span><span class="arrow">→</span><span class="result">247 clients</span>
+    <span class="op">render_widgets</span><span class="arrow">→</span><span class="result">4 widgets</span>
+  </div>
+
+  <span class="scenario-tag">🏨 Hospitality · Grand Plaza Hotel · Taipei</span>
+
+  <!-- KPI ROW -->
+  <div class="dash-grid">
+    <div class="widget">
+      <div class="w-title">Guests Connected Now</div>
+      <div class="kpi-num">247<span class="unit">人</span></div>
+      <div class="kpi-sub">across 50 APs · 9 floors</div>
+    </div>
+    <div class="widget">
+      <div class="w-title">Avg Signal</div>
+      <div class="kpi-num">−64<span class="unit">dBm</span></div>
+      <div class="kpi-sub good">良好 · 客戶體驗 OK</div>
+    </div>
+    <div class="widget">
+      <div class="w-title">Critical Floors</div>
+      <div class="kpi-num bad">2<span class="unit">層</span></div>
+      <div class="kpi-sub bad">3F 過載 · 5F 訊號弱</div>
+    </div>
+    <div class="widget">
+      <div class="w-title">Guest Satisfaction Proxy</div>
+      <div class="kpi-num warn">87<span class="unit">/100</span></div>
+      <div class="kpi-sub warn">略低於目標 92</div>
+    </div>
+
+    <!-- FLOOR STATUS GRID (span 2) -->
+    <div class="widget floors-w">
+      <div class="w-title">📍 各樓層健康分數</div>
+      <div class="floor-row good">
+        <div><div class="name">1F Lobby/Pool</div><div class="ap-count">8 APs</div></div>
+        <div></div>
+        <div class="clients">38</div>
+        <div class="score">92</div>
+      </div>
+      <div class="floor-row good">
+        <div><div class="name">2F</div><div class="ap-count">6 APs</div></div>
+        <div></div>
+        <div class="clients">32</div>
+        <div class="score">88</div>
+      </div>
+      <div class="floor-row warning">
+        <div><div class="name">3F</div><div class="ap-count">6 APs</div></div>
+        <div></div>
+        <div class="clients">47</div>
+        <div class="score">64</div>
+        <div class="issue">⚠ AP-3F-Hall-N3 過載：47 clients 在一台 AP</div>
+      </div>
+      <div class="floor-row good">
+        <div><div class="name">4F</div><div class="ap-count">6 APs</div></div>
+        <div></div>
+        <div class="clients">30</div>
+        <div class="score">85</div>
+      </div>
+      <div class="floor-row critical">
+        <div><div class="name">5F</div><div class="ap-count">6 APs</div></div>
+        <div></div>
+        <div class="clients">22</div>
+        <div class="score">58</div>
+        <div class="issue">⚠ AP-5F-N1 訊號偏弱 −78 dBm（標準應 −65 dBm）</div>
+      </div>
+      <div class="floor-row good">
+        <div><div class="name">6F</div><div class="ap-count">6 APs</div></div>
+        <div></div>
+        <div class="clients">25</div>
+        <div class="score">82</div>
+      </div>
+      <div class="floor-row good">
+        <div><div class="name">7F</div><div class="ap-count">6 APs</div></div>
+        <div></div>
+        <div class="clients">18</div>
+        <div class="score">90</div>
+      </div>
+      <div class="floor-row good">
+        <div><div class="name">8F Restaurant</div><div class="ap-count">4 APs</div></div>
+        <div></div>
+        <div class="clients">31</div>
+        <div class="score">87</div>
+      </div>
+      <div class="floor-row good">
+        <div><div class="name">9F Spa</div><div class="ap-count">2 APs</div></div>
+        <div></div>
+        <div class="clients">4</div>
+        <div class="score">91</div>
+      </div>
+    </div>
+
+    <!-- TOP APs BAR CHART (span 2) -->
+    <div class="widget aps-w">
+      <div class="w-title">🔥 Top 5 高負載 AP</div>
+      <div class="ap-row">
+        <div class="top-line">
+          <span class="name bad">AP-3F-Hall-N3</span>
+          <span class="right"><span class="clients">47</span> clients<span class="util">· util 87%</span></span>
+        </div>
+        <div class="bar-bg"><div class="bar-fill bad" style="--target: 87%;"></div></div>
+        <div class="issue-line">⚠ 過載 — 超過設計上限 30 clients</div>
+      </div>
+      <div class="ap-row">
+        <div class="top-line">
+          <span class="name warn">AP-1F-Lobby-W</span>
+          <span class="right"><span class="clients">38</span> clients<span class="util">· util 65%</span></span>
+        </div>
+        <div class="bar-bg"><div class="bar-fill warn" style="--target: 65%;"></div></div>
+      </div>
+      <div class="ap-row">
+        <div class="top-line">
+          <span class="name">AP-8F-Restaurant</span>
+          <span class="right"><span class="clients">31</span> clients<span class="util">· util 58%</span></span>
+        </div>
+        <div class="bar-bg"><div class="bar-fill" style="--target: 58%;"></div></div>
+      </div>
+      <div class="ap-row">
+        <div class="top-line">
+          <span class="name">AP-2F-N2</span>
+          <span class="right"><span class="clients">28</span> clients<span class="util">· util 52%</span></span>
+        </div>
+        <div class="bar-bg"><div class="bar-fill" style="--target: 52%;"></div></div>
+      </div>
+      <div class="ap-row">
+        <div class="top-line">
+          <span class="name bad">AP-5F-N1</span>
+          <span class="right"><span class="clients">22</span> clients<span class="util">· util 78%</span></span>
+        </div>
+        <div class="bar-bg"><div class="bar-fill bad" style="--target: 78%;"></div></div>
+        <div class="issue-line">⚠ 訊號偏弱 −78 dBm — client 黏住即使訊號差</div>
+      </div>
+    </div>
+
+    <!-- AI OBSERVATIONS (span 4) -->
+    <div class="widget ai-w">
+      <div class="w-title">🤖 AI 觀察 + 行動建議</div>
+      <div class="ai-grid">
+        <div class="ai-card critical">
+          <div class="level">🔴 CRITICAL</div>
+          <div class="text"><strong>AP-3F-Hall-N3 過載</strong>：47 clients 在一台 AP，超過設計上限 30。建議 3F 走廊中段加一台輔助 AP。</div>
+          <div class="roi">💰 預估 30 天減少 35% 客訴</div>
+        </div>
+        <div class="ai-card warning">
+          <div class="level">🟡 WARNING</div>
+          <div class="text"><strong>AP-5F-N1 訊號偏弱</strong>：實際 −78 dBm（標準應 −65 dBm）。可能 PoE 老化或被遮蔽。</div>
+          <div class="roi">💰 建議到場檢查 PoE 供電</div>
+        </div>
+        <div class="ai-card">
+          <div class="level">💡 ADVISORY</div>
+          <div class="text"><strong>Lobby + Pool 高峰時段 18:00-22:00</strong>：建議排程 PoE budget 啟用 backup AP，提前 30 分鐘 warm up。</div>
+          <div class="roi">💰 優化夜間客戶體驗</div>
+        </div>
+      </div>
+
+      <!-- TOOLBAR -->
+      <div class="toolbar">
+        <span class="lbl">DASHBOARD ACTIONS</span>
+        <button class="tb-btn primary">🎫 建 ticket 給 IT 修 AP-3F-Hall-N3</button>
+        <button class="tb-btn">💾 儲存到首頁</button>
+        <button class="tb-btn">📅 排每日早上 9 點發報告</button>
+        <button class="tb-btn">📤 PDF 匯出</button>
+      </div>
+
+      <!-- CHIPS -->
+      <div class="chips">
+        <span class="lbl">下一步建議</span>
+        <button class="chip">💬 3F 加 AP 後預估改善多少？</button>
+        <button class="chip">💬 對比上週末同時段</button>
+        <button class="chip">💬 看 5F 過去 24 小時訊號趨勢</button>
+        <button class="chip action">📩 通知大廳經理 18:00 高峰準備</button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>
