@@ -167,6 +167,19 @@
     background: rgba(255,107,53,0.2);
     color: var(--accent);
   }
+  .api-status {
+    display: inline-block;
+    font-size: 9.5px;
+    padding: 1.5px 5px;
+    border-radius: 3px;
+    margin-left: 5px;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    vertical-align: 1px;
+  }
+  .api-status.ok { background: rgba(16,185,129,0.15); color: var(--good); }
+  .api-status.partial { background: rgba(245,158,11,0.15); color: #b45309; }
+  .api-status.miss { background: rgba(239,68,68,0.12); color: var(--bad); }
 
   /* Sequential reveal animation */
   .chat .msg, .dash .widget, .followup-chips, .dash-toolbar {
@@ -1082,6 +1095,22 @@
   </div>
 </header>
 
+<!-- ALIGNMENT BANNER -->
+<section style="margin: 0 0 22px 0;">
+  <div style="background: linear-gradient(135deg, rgba(3,169,244,0.10), rgba(16,185,129,0.06)); border: 1px solid rgba(3,169,244,0.30); border-radius: 12px; padding: 16px 22px;">
+    <div style="font-size: 11px; color: var(--cyan); font-weight: 700; letter-spacing: 0.2em; font-family: 'JetBrains Mono', monospace; text-transform: uppercase; margin-bottom: 6px;">
+      ✅ API 對齊狀態 · 2026-05-13 更新
+    </div>
+    <div style="font-size: 14px; color: var(--text); line-height: 1.65;">
+      下面 10 個場景中 <strong>6 個已用真實 senao-api-skills 驗證過</strong> · <strong>3 個需 RD 補歷史 API</strong> · <strong>1 個微補</strong>。<br>
+      <span style="color: var(--muted); font-size: 13px;">看 3 個跑通 staging 真實 API 的 PoC：
+      <a href="prototype/dashboard-live.html" style="color: var(--cyan); font-weight: 600;">prototype/dashboard-live.html</a> ·
+      完整對應表（widget ↔ skill op）：
+      <a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/docs/skill-to-widget-mapping.md" style="color: var(--cyan); font-weight: 600;" target="_blank">docs/skill-to-widget-mapping.md</a></span>
+    </div>
+  </div>
+</section>
+
 <!-- HERO -->
 <section class="hero">
   <div class="pre">INTERACTIVE DEMO · 互動式範例</div>
@@ -1096,34 +1125,34 @@
 <!-- TABS -->
 <div class="tabs">
   <button class="tab active" data-scenario="s1">
-    <span>本週健康狀況</span><span class="mode-badge">MODE B</span>
+    <span>本週健康狀況</span><span class="mode-badge">MODE B</span><span class="api-status partial" title="部分 API 已備好，需 RD 補歷史 anomaly API">🟡 PARTIAL</span>
   </button>
   <button class="tab" data-scenario="s2">
-    <span>哪些 AP 太忙</span><span class="mode-badge">MODE B</span>
+    <span>哪些 AP 太忙</span><span class="mode-badge">MODE B</span><span class="api-status ok" title="subscribe_channel_utilization + subscribe_client_list 完整支援">✅ READY</span>
   </button>
   <button class="tab" data-scenario="s3">
-    <span>我的會議室 Wi-Fi</span><span class="mode-badge">MODE A</span>
+    <span>我的會議室 Wi-Fi</span><span class="mode-badge">MODE A</span><span class="api-status ok" title="rpc_client_info_list + subscribe_ping/speedtest 完整支援">✅ READY</span>
   </button>
   <button class="tab" data-scenario="s4">
-    <span>跨分點客戶分析</span><span class="mode-badge">MODE B</span>
+    <span>跨分點客戶分析</span><span class="mode-badge">MODE B</span><span class="api-status miss" title="需要 client churn 歷史 API，目前 skill 沒有">🔴 NEEDS HIST</span>
   </button>
   <button class="tab" data-scenario="s5">
-    <span>找某台設備的 timeline</span><span class="mode-badge">MODE B</span>
+    <span>找某台設備的 timeline</span><span class="mode-badge">MODE B</span><span class="api-status miss" title="需要 client session 歷史 timeline API，目前只有即時 client info">🔴 NEEDS HIST</span>
   </button>
   <button class="tab" data-scenario="s6">
-    <span>訪客 Wi-Fi 報告</span><span class="mode-badge">MODE B</span>
+    <span>訪客 Wi-Fi 報告</span><span class="mode-badge">MODE B</span><span class="api-status miss" title="需要 guest session 歷史用量聚合 API">🔴 NEEDS HIST</span>
   </button>
   <button class="tab" data-scenario="s7">
-    <span>PoE 容量規劃</span><span class="mode-badge">MODE B</span>
+    <span>PoE 容量規劃</span><span class="mode-badge">MODE B</span><span class="api-status partial" title="subscribe_port_stat 可用，但 PoE 細節欄位待確認">🟡 PARTIAL</span>
   </button>
   <button class="tab" data-scenario="s8">
-    <span>故障 Blast Radius</span><span class="mode-badge">MODE B</span>
+    <span>故障 Blast Radius</span><span class="mode-badge">MODE B</span><span class="api-status ok" title="subscribe_arp_list + subscribe_fdb_list 可建拓樸">✅ READY</span>
   </button>
   <button class="tab" data-scenario="s9">
-    <span>頻寬都被誰吃了</span><span class="mode-badge">MODE B</span>
+    <span>頻寬都被誰吃了</span><span class="mode-badge">MODE B</span><span class="api-status ok" title="subscribe_throughput + subscribe_client_list 可支援">✅ READY</span>
   </button>
   <button class="tab" data-scenario="s10">
-    <span>3F 哪邊訊號最差</span><span class="mode-badge">MODE B</span>
+    <span>3F 哪邊訊號最差</span><span class="mode-badge">MODE B</span><span class="api-status ok" title="rpc_wifi_scan + rpc_all_chan_util 可掃，但 floor plan overlay 需 RD 補 site data">🟡 PARTIAL</span>
   </button>
 </div>
 
