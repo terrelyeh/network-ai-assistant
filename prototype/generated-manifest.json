@@ -1,0 +1,88 @@
+{
+  "generated_at_session_start": "2026-05-13T17:58:00",
+  "entries": [
+    {
+      "timestamp": "2026-05-13T17:43:00",
+      "filename": "canvas.html",
+      "question": "我管的這些 org 跟 license 狀況怎樣？",
+      "scenario": "Multi-Org & License Audit",
+      "ops_called": [
+        "get_user_orgs",
+        "get_hierarchy_views",
+        "get_inventory",
+        "get_licenses"
+      ],
+      "widgets": [
+        "KPI×4",
+        "Table",
+        "License Lifecycle",
+        "AI Cards×3"
+      ],
+      "data_source": "falcon.staging.engenius.ai",
+      "gen_time_ms": 2400,
+      "tag": "audit"
+    },
+    {
+      "timestamp": "2026-05-13T17:50:00",
+      "filename": "canvas-network-audit.html",
+      "question": "Gordon 公司 7F_shieldingRoom 的網路設定有沒有合規問題？",
+      "scenario": "Network Configuration Audit",
+      "ops_called": [
+        "get_hierarchy_views",
+        "get_ssid_profiles",
+        "get_general_policy_plus",
+        "get_network_acls × 3"
+      ],
+      "widgets": [
+        "KPI×4",
+        "SSID Card",
+        "Policy Grid (6 sections)",
+        "ACL Status",
+        "AI Audit"
+      ],
+      "data_source": "falcon.staging.engenius.ai",
+      "gen_time_ms": 1800,
+      "tag": "security"
+    },
+    {
+      "timestamp": "2026-05-13T17:55:00",
+      "filename": "canvas-team-access.html",
+      "question": "Vertical Demo 這個 org 有誰能存取？外部/內部分佈？",
+      "scenario": "Team Access Audit",
+      "ops_called": [
+        "get_user_orgs",
+        "get_org_memberships_overall"
+      ],
+      "widgets": [
+        "KPI×4",
+        "Member Roster",
+        "Domain Chart",
+        "AI Cards×3"
+      ],
+      "data_source": "falcon.staging.engenius.ai",
+      "gen_time_ms": 1200,
+      "tag": "access"
+    },
+    {
+      "timestamp": "2026-05-13T18:04:15.875902",
+      "filename": "canvas-20260513-180254.html",
+      "question": "License 到期時程規劃 + 預算估算",
+      "scenario": "License Renewal Planning",
+      "ops_called": [
+        "get_user_orgs",
+        "get_licenses",
+        "get_inventory"
+      ],
+      "widgets": [
+        "KPI×4",
+        "Timeline",
+        "License Detail",
+        "Cost Table",
+        "AI Cards×3"
+      ],
+      "data_source": "falcon.staging.engenius.ai",
+      "gen_time_ms": 1950,
+      "tag": "license"
+    }
+  ]
+}

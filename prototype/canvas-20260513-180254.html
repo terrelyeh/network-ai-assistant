@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>AI Builder · License Risk Drill (just generated)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-1:#f5f2ea; --bg-2:#ebe6da; --surface:#fff; --surface-2:#faf8f3;
+    --border:rgba(60,50,35,0.12); --border-strong:rgba(60,50,35,0.25);
+    --text:#1a2332; --muted:#5a6878; --dim:#97a3b3;
+    --accent:#ff6b35; --cyan:#03a9f4; --good:#10b981; --warn:#f59e0b; --bad:#ef4444;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:linear-gradient(135deg,var(--bg-1),var(--bg-2)); color:var(--text);
+    font-family:'Inter','Noto Sans TC',-apple-system,sans-serif; -webkit-font-smoothing:antialiased;
+    font-size:16px; line-height:1.55; min-height:100vh; }
+  .canvas { max-width:1680px; margin:0 auto; padding:28px 40px 60px; }
+  .canvas-header { background:var(--surface); border:1px solid var(--border); border-radius:16px;
+    padding:22px 28px; margin-bottom:14px; display:grid; grid-template-columns:auto 1fr auto;
+    gap:24px; align-items:center; box-shadow:0 1px 3px rgba(60,50,35,0.05); }
+  .brand { display:flex; align-items:center; gap:12px; border-right:1px solid var(--border); padding-right:24px; }
+  .brand img { width:38px; height:38px; }
+  .brand-name { font-size:13px; color:var(--cyan); font-weight:700; font-family:'JetBrains Mono',monospace; }
+  .brand-sub { font-size:11px; color:var(--dim); font-family:'JetBrains Mono',monospace; margin-top:2px; }
+  .q-label { font-size:10.5px; color:var(--dim); letter-spacing:0.25em; text-transform:uppercase; font-weight:700; font-family:'JetBrains Mono',monospace; }
+  .q-text { font-size:22px; font-weight:800; letter-spacing:-0.01em; margin-top:4px; }
+  .gen-info { text-align:right; font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); line-height:1.5; }
+  .gen-info .ok { color:var(--good); font-weight:700; }
+  .gen-info .ts { color:var(--cyan); font-weight:700; }
+  .gen-info .fresh { color:var(--accent); font-weight:800; }
+
+  .file-strip {
+    background:#0f1e3a; border-radius:10px; padding:10px 18px; margin-bottom:12px;
+    font-family:'JetBrains Mono',monospace; font-size:12px; color:#d8e2f3;
+    display:flex; gap:14px; flex-wrap:wrap; align-items:center; justify-content:space-between;
+  }
+  .file-strip .path { color:#6ee7b7; font-weight:600; }
+  .file-strip .badge { background:rgba(16,185,129,0.20); color:#6ee7b7;
+    padding:3px 10px; border-radius:999px; font-size:10.5px; font-weight:700; letter-spacing:0.1em; }
+
+  .trace { background:#0f1e3a; border-radius:10px; padding:12px 18px; margin-bottom:22px;
+    font-family:'JetBrains Mono',monospace; font-size:12.5px; color:#d8e2f3;
+    display:flex; gap:14px; flex-wrap:wrap; align-items:center; }
+  .trace .label { color:#6ee7b7; font-weight:700; letter-spacing:0.1em; font-size:11px; }
+  .trace .op { color:#a78bfa; background:rgba(167,139,250,0.10); padding:2px 8px; border-radius:4px; font-size:11.5px; }
+  .trace .arrow { color:#475569; }
+  .trace .result { color:#fbbf24; font-weight:700; }
+
+  .grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+  .widget { background:var(--surface); border:1px solid var(--border); border-radius:14px;
+    padding:22px 26px; box-shadow:0 1px 3px rgba(60,50,35,0.05);
+    opacity:0; transform:translateY(12px); animation:reveal 0.5s ease forwards; }
+  @keyframes reveal { to { opacity:1; transform:translateY(0); } }
+  .widget:nth-child(1) { animation-delay:0.05s; }
+  .widget:nth-child(2) { animation-delay:0.13s; }
+  .widget:nth-child(3) { animation-delay:0.21s; }
+  .widget:nth-child(4) { animation-delay:0.29s; }
+  .widget:nth-child(5) { animation-delay:0.37s; }
+  .w-title { font-size:11px; color:var(--accent); font-family:'JetBrains Mono',monospace;
+    letter-spacing:0.22em; text-transform:uppercase; font-weight:700; margin-bottom:14px; }
+  .kpi-num { font-size:clamp(40px,4.4vw,64px); font-weight:900; line-height:1; letter-spacing:-0.04em; color:var(--text); }
+  .kpi-num.bad { color:var(--bad); } .kpi-num.warn { color:var(--warn); } .kpi-num.good { color:var(--good); }
+  .kpi-num .unit { font-size:0.32em; color:var(--muted); font-weight:600; margin-left:4px; }
+  .kpi-sub { margin-top:8px; font-size:13px; color:var(--muted); }
+  .kpi-sub.bad { color:var(--bad); } .kpi-sub.warn { color:var(--warn); } .kpi-sub.good { color:var(--good); }
+
+  /* Timeline view */
+  .widget.tl-w { grid-column:span 4; }
+  .timeline { position:relative; padding:24px 0 12px; }
+  .timeline::before {
+    content:''; position:absolute; left:0; right:0; top:50%;
+    height:2px; background:var(--border-strong); transform:translateY(-50%);
+  }
+  .tl-events { display:grid; grid-template-columns:repeat(5,1fr); gap:18px; position:relative; }
+  .tl-event { position:relative; padding-top:42px; text-align:center; }
+  .tl-event::before {
+    content:''; position:absolute; left:50%; top:14px; transform:translateX(-50%);
+    width:18px; height:18px; border-radius:50%; background:var(--surface);
+    border:3px solid var(--cyan); z-index:2;
+  }
+  .tl-event.expired::before { background:var(--bad); border-color:var(--bad); }
+  .tl-event.warning::before { background:var(--warn); border-color:var(--warn); }
+  .tl-event.now::before { background:var(--accent); border-color:var(--accent); }
+  .tl-event.future::before { background:var(--surface-2); border-color:var(--dim); }
+  .tl-event .label { font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--dim);
+    letter-spacing:0.15em; text-transform:uppercase; font-weight:700; margin-bottom:4px; }
+  .tl-event .name { font-family:'JetBrains Mono',monospace; font-size:12.5px; font-weight:700; color:var(--text); }
+  .tl-event.expired .name { color:var(--bad); }
+  .tl-event.warning .name { color:var(--warn); }
+  .tl-event.now .name { color:var(--accent); }
+  .tl-event .date { font-size:11.5px; color:var(--muted); margin-top:3px; font-family:'JetBrains Mono',monospace; }
+
+  /* License detail row with bar */
+  .widget.lic-w { grid-column:span 4; }
+  .lic-detail { display:grid; grid-template-columns:1fr 120px 130px; gap:16px;
+    padding:16px 18px; background:var(--surface-2); border:1px solid var(--border);
+    border-radius:10px; margin-bottom:10px; align-items:center; }
+  .lic-detail.expired { border-color:rgba(239,68,68,0.4); background:rgba(239,68,68,0.05); }
+  .lic-detail .model { font-family:'JetBrains Mono',monospace; font-weight:800; font-size:15px; }
+  .lic-detail .key { font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--muted); margin-top:3px; }
+  .lic-detail .mac { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--dim); margin-top:1px; }
+  .lic-detail .bar-bg { height:10px; background:var(--surface); border:1px solid var(--border);
+    border-radius:999px; overflow:hidden; margin-top:8px; }
+  .lic-detail .bar-fill { height:100%; background:var(--good); width:0;
+    animation:barfill 0.9s ease-out forwards; animation-delay:0.5s; }
+  .lic-detail .bar-fill.bad { background:var(--bad); }
+  .lic-detail .bar-fill.warn { background:var(--warn); }
+  @keyframes barfill { to { width:var(--target); } }
+  .badge { display:inline-block; padding:3px 11px; border-radius:999px; font-size:11px;
+    font-weight:700; font-family:'JetBrains Mono',monospace; }
+  .badge.good { background:rgba(16,185,129,0.12); color:var(--good); border:1px solid rgba(16,185,129,0.4); }
+  .badge.bad  { background:rgba(239,68,68,0.10); color:var(--bad); border:1px solid rgba(239,68,68,0.4); }
+  .badge.warn { background:rgba(245,158,11,0.12); color:#b45309; border:1px solid rgba(245,158,11,0.4); }
+  .lic-detail .right-info { text-align:right; }
+  .lic-detail .days-big { font-family:'JetBrains Mono',monospace; font-weight:900;
+    font-size:22px; color:var(--text); line-height:1; }
+  .lic-detail.expired .days-big { color:var(--bad); }
+  .lic-detail .days-label { font-size:11px; color:var(--dim); margin-top:4px;
+    font-family:'JetBrains Mono',monospace; }
+
+  /* Renewal cost panel */
+  .widget.cost-w { grid-column:span 2; }
+  .cost-row { display:flex; justify-content:space-between; padding:10px 0;
+    border-bottom:1px solid var(--border); font-size:14px; }
+  .cost-row:last-child { border-bottom:none; }
+  .cost-row .k { color:var(--muted); }
+  .cost-row .v { font-family:'JetBrains Mono',monospace; font-weight:700; color:var(--text); }
+  .cost-row.total { padding-top:14px; margin-top:8px; border-top:2px solid var(--border-strong); border-bottom:none; }
+  .cost-row.total .k { font-weight:700; color:var(--text); }
+  .cost-row.total .v { font-size:18px; color:var(--accent); }
+
+  /* AI */
+  .widget.ai-w { grid-column:span 2; }
+  .ai-card { background:var(--surface-2); border:1px solid var(--border); border-left:4px solid var(--cyan);
+    border-radius:10px; padding:14px 16px; margin-bottom:10px; }
+  .ai-card.critical { border-left-color:var(--bad); background:rgba(239,68,68,0.04); }
+  .ai-card.warning { border-left-color:var(--warn); background:rgba(245,158,11,0.04); }
+  .ai-card .level { font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:700;
+    letter-spacing:0.2em; text-transform:uppercase; margin-bottom:6px; color:var(--cyan); }
+  .ai-card.critical .level { color:var(--bad); }
+  .ai-card.warning .level { color:var(--warn); }
+  .ai-card .text { font-size:13.5px; line-height:1.55; }
+  .ai-card .text code { font-family:'JetBrains Mono',monospace; font-size:12px;
+    background:var(--surface); padding:1px 5px; border-radius:3px; color:var(--cyan); border:1px solid var(--border); }
+  .ai-card .text strong { font-weight:700; }
+
+  .toolbar { margin-top:22px; display:flex; gap:8px; flex-wrap:wrap; padding-top:18px;
+    border-top:1px solid var(--border); align-items:center; }
+  .toolbar .lbl { font-size:10.5px; color:var(--dim); letter-spacing:0.18em;
+    text-transform:uppercase; font-weight:700; font-family:'JetBrains Mono',monospace; margin-right:6px; }
+  .tb-btn { background:var(--surface); border:1px solid var(--border-strong); color:var(--text);
+    padding:8px 15px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; }
+  .tb-btn:hover { background:var(--surface-2); border-color:var(--cyan); color:var(--cyan); }
+  .tb-btn.primary { background:var(--cyan); border-color:var(--cyan); color:#fff; }
+</style>
+</head>
+<body>
+<div class="canvas">
+
+<div class="canvas-header">
+  <div class="brand">
+    <img src="../assets/engenius-logo.png" alt="">
+    <div>
+      <div class="brand-name">EnGenius Cloud · AI Builder</div>
+      <div class="brand-sub">live · falcon.staging.engenius.ai</div>
+    </div>
+  </div>
+  <div>
+    <div class="q-label">USER ASKED</div>
+    <div class="q-text">License 到期時程規劃 + 預算估算</div>
+  </div>
+  <div class="gen-info">
+    <span class="fresh">★ FRESH</span> generated <span class="ts">just now</span><br>
+    <span style="color:var(--dim);">3 skill ops · 5 widgets · timeline lens</span>
+  </div>
+</div>
+
+<div class="file-strip">
+  <div>
+    📂 <span class="path">/Users/terrelyeh/.../prototype/canvas-20260513-180254.html</span>
+    · 14KB · 5 widgets
+  </div>
+  <span class="badge">✓ JUST WRITTEN</span>
+</div>
+
+<div class="trace">
+  <span class="label">AI CALLED:</span>
+  <span class="op">get_user_orgs</span><span class="arrow">→</span><span class="result">5 orgs</span>
+  <span class="op">get_licenses</span><span class="arrow">→</span><span class="result">3 licenses</span>
+  <span class="op">get_inventory</span><span class="arrow">→</span><span class="result">1 gateway</span>
+</div>
+
+<div class="grid">
+  <div class="widget">
+    <div class="w-title">Total Licenses</div>
+    <div class="kpi-num">3</div>
+    <div class="kpi-sub">在此 org</div>
+  </div>
+  <div class="widget">
+    <div class="w-title">已過期</div>
+    <div class="kpi-num bad">1</div>
+    <div class="kpi-sub bad">GW-1LW-EDU</div>
+  </div>
+  <div class="widget">
+    <div class="w-title">下一個到期</div>
+    <div class="kpi-num warn">551<span class="unit">天</span></div>
+    <div class="kpi-sub warn">SPC-Senao-3YR (~1.5y)</div>
+  </div>
+  <div class="widget">
+    <div class="w-title">續約預算估算</div>
+    <div class="kpi-num">$3.2<span class="unit">K USD</span></div>
+    <div class="kpi-sub">未來 24 月</div>
+  </div>
+
+  <div class="widget tl-w">
+    <div class="w-title">📅 License 到期時間軸</div>
+    <div class="timeline">
+      <div class="tl-events">
+        <div class="tl-event expired">
+          <div class="label">已過期</div>
+          <div class="name">GW-1LW-EDU</div>
+          <div class="date">expired</div>
+        </div>
+        <div class="tl-event now">
+          <div class="label">現在</div>
+          <div class="name">2026-05-13</div>
+          <div class="date">today</div>
+        </div>
+        <div class="tl-event warning">
+          <div class="label">+551d</div>
+          <div class="name">SPC-Senao-3YR</div>
+          <div class="date">~2027-11</div>
+        </div>
+        <div class="tl-event future">
+          <div class="label">+1790d</div>
+          <div class="name">GW-5LW-EDU</div>
+          <div class="date">~2031-04</div>
+        </div>
+        <div class="tl-event future">
+          <div class="label">建議</div>
+          <div class="name">續約 GW-1LW-EDU</div>
+          <div class="date">本月</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="widget lic-w">
+    <div class="w-title">📋 License 詳細（依優先級排序）</div>
+    <div class="lic-detail expired">
+      <div>
+        <div class="model">GW-1LW-EDU <span class="badge bad" style="margin-left:8px;">PRIORITY 1</span></div>
+        <div class="key">661500-0EB554-099CAE-8AB85E · 1-year EDU plan</div>
+        <div class="mac">MAC 00:03:7f:66:69:71 · gateway ESG610-6971</div>
+      </div>
+      <div><span class="badge bad">EXPIRED</span></div>
+      <div class="right-info">
+        <div class="days-big">0</div>
+        <div class="days-label">days · 已過期</div>
+        <div class="bar-bg"><div class="bar-fill bad" style="--target:2%;"></div></div>
+      </div>
+    </div>
+    <div class="lic-detail">
+      <div>
+        <div class="model">SPC-Senao-3YR <span class="badge warn" style="margin-left:8px;">PRIORITY 2</span></div>
+        <div class="key">SPC subscription · 3-year duration</div>
+        <div class="mac">covers gateway · 18 months remaining</div>
+      </div>
+      <div><span class="badge good">ACTIVE</span></div>
+      <div class="right-info">
+        <div class="days-big">551</div>
+        <div class="days-label">days · 建議 60d 前提醒</div>
+        <div class="bar-bg"><div class="bar-fill warn" style="--target:50%;"></div></div>
+      </div>
+    </div>
+    <div class="lic-detail">
+      <div>
+        <div class="model">GW-5LW-EDU <span class="badge dim" style="margin-left:8px;">OK</span></div>
+        <div class="key">661500-566437-08596E-8AE85F · 5-year EDU plan</div>
+        <div class="mac">MAC 00:03:7f:66:69:71 · gateway 備援 license</div>
+      </div>
+      <div><span class="badge good">ACTIVE</span></div>
+      <div class="right-info">
+        <div class="days-big">1,790</div>
+        <div class="days-label">days · 健康</div>
+        <div class="bar-bg"><div class="bar-fill" style="--target:98%;"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="widget cost-w">
+    <div class="w-title">💰 預算估算（24 個月）</div>
+    <div class="cost-row">
+      <span class="k">GW-1LW-EDU 立即續約 (1y)</span>
+      <span class="v">$280</span>
+    </div>
+    <div class="cost-row">
+      <span class="k">SPC-Senao 3YR 續約 (Q4 2027)</span>
+      <span class="v">$2,400</span>
+    </div>
+    <div class="cost-row">
+      <span class="k">緩衝（升級 / 新設備）</span>
+      <span class="v">$500</span>
+    </div>
+    <div class="cost-row total">
+      <span class="k">24 個月預估</span>
+      <span class="v">$3,180</span>
+    </div>
+    <div style="margin-top:14px; padding:10px 12px; background:rgba(3,169,244,0.06); border:1px solid rgba(3,169,244,0.3); border-radius:8px; font-size:12px; color:var(--cyan); line-height:1.5;">
+      💡 預估只算這 1 個 org · 全 5 個 org 完整預算需更高權限
+    </div>
+  </div>
+
+  <div class="widget ai-w">
+    <div class="w-title">🤖 AI 觀察 + 建議</div>
+    <div class="ai-card critical">
+      <div class="level">🔴 ACTION NOW</div>
+      <div class="text"><strong>GW-1LW-EDU 已過期</strong>。雖然 GW-5LW 還有效（裝置實際正常），但帳目上有 1 張 expired license — 建議本月內續約或停用。</div>
+    </div>
+    <div class="ai-card warning">
+      <div class="level">🟡 18 MONTHS</div>
+      <div class="text"><strong>SPC-Senao-3YR 將於 ~2027-11 到期</strong>。建議 <code>2027-09-13</code> 開始準備（60 天前），避免最後一刻搶救。</div>
+    </div>
+    <div class="ai-card">
+      <div class="level">💡 AUTOMATE</div>
+      <div class="text">建議排程：<code>get_licenses</code> 每月 1 號自動跑 + 過期前 60/30/7 天分階段通知。</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="widget" style="grid-column:span 4; margin-top:16px;">
+  <div class="toolbar" style="margin-top:0; border-top:none; padding-top:0;">
+    <span class="lbl">DASHBOARD ACTIONS</span>
+    <button class="tb-btn primary">🛒 立即取得 GW-1LW-EDU 續約報價</button>
+    <button class="tb-btn">📅 排 SPC 60 天前提醒</button>
+    <button class="tb-btn">📤 匯出預算 PDF 給採購</button>
+    <button class="tb-btn">📅 排每月自動 license 健檢</button>
+  </div>
+</div>
+
+</div>
+</body>
+</html>
