@@ -1,11 +1,15 @@
 # Network AI-Assistant · Network Management Assistant Proposal
 
-完整的 AI 網管助理產品提案資料 — **11 個頁面 + 4 個互動 mockup + 1 個 sales deck + 3 份內部技術文件**，分成兩大入口：
+整合或開發兩條產品線：
 
-- 🎯 **[home-product.html](./home-product.html)** — 產品 / 行銷（PM / MKT / 業務 / 經營層）· 淺色暖米調
-- 🛠 **[home-engineering.html](./home-engineering.html)** — 工程 / 技術（Tech Lead / 工程師 / CIO）· 深色
+- **Line 1** — 在既有 EnGenius Cloud 網管平台**內**整合 AI Chat 助理（員工自助 + SMB IT 駕駛艙）
+- **Line 2** ⭐ **現 focus** — 把 Cloud API 包成 SKILL，給 AI coding agent（Claude Code）用，並基於情境**動態生成 dashboard**
 
-兩側視覺刻意分流：行銷側對齊既有 EnGenius Cloud（白底 + sky blue + 橘），工程側維持深色技術調性。
+完整 14 個策略/技術頁 + 4 個 mockup + 1 sales deck + 7 份內部技術文件 + Live PoC 連真實 staging API。
+
+- 🎯 **[home-product.html](./home-product.html)** — 產品 / 行銷 hub
+- 🛠 **[home-engineering.html](./home-engineering.html)** — 工程 / 技術 hub
+- 🧪 **[prototype/scenarios.html](./prototype/scenarios.html)** ★ — Live PoC 展示集（真實 API 串通）
 
 🔗 **Live**: https://network-ai-assistant.vercel.app
 
@@ -33,10 +37,30 @@
 > 行銷上獨立主推、工程上仍是 third skill class。
 
 ### 📄 內部技術文件（`docs/`）
+
+**Line 2（Dashboard Builder + SKILL）對齊文件**：
 - [`docs/widget-catalog.md`](./docs/widget-catalog.md) — 12 widget 完整規格（P0/P1/P2 三 tier · schema / 視覺 spec / LLM 使用時機）
-- [`docs/prompt-templates.md`](./docs/prompt-templates.md) — LLM 系統提示模板 + 12 個 tool definitions + few-shot examples
-- [`docs/dashboard-builder-implementation-guide.md`](./docs/dashboard-builder-implementation-guide.md) — 前端實作準備指南（人讀 markdown 版）
-- [`docs/design-tokens.md`](./docs/design-tokens.md) — EnGenius Cloud design tokens（colors / typo / spacing / chart palette）
+- [`docs/skill-to-widget-mapping.md`](./docs/skill-to-widget-mapping.md) ★ — widget ↔ 真實 op 對齊表 + RD action items + 場景對齊度
+- [`docs/prompt-templates.md`](./docs/prompt-templates.md) — LLM 系統提示模板 + 12 tool definitions + few-shot examples
+- [`docs/dashboard-builder-implementation-guide.md`](./docs/dashboard-builder-implementation-guide.md) — 前端實作準備指南
+- [`docs/design-tokens.md`](./docs/design-tokens.md) — EnGenius Cloud design tokens
+
+**展會 / Booth 用**：
+- [`docs/booth-presenter-cheatsheet.md`](./docs/booth-presenter-cheatsheet.md) ★ — 操作員 1-page 操作指南（鍵盤 / talking script / 救命 5 條 / Q&A）
+- [`docs/refine-demo-plan.md`](./docs/refine-demo-plan.md) — demo 互動擴充規劃
+
+### 🧪 Live PoC（`prototype/`）
+
+連真實 EnGenius Cloud staging API（`falcon.staging.engenius.ai`）跑通的 dashboard 集：
+
+- [`prototype/scenarios.html`](./prototype/scenarios.html) ★ — Booth 操作員 menu
+- [`prototype/canvas.html`](./prototype/canvas.html) — Multi-Org & License Audit
+- [`prototype/canvas-network-audit.html`](./prototype/canvas-network-audit.html) — Network Config Audit (Gordon)
+- [`prototype/canvas-team-access.html`](./prototype/canvas-team-access.html) — Team Access Audit
+- [`prototype/generated-log.html`](./prototype/generated-log.html) — 自動 refresh log，每次 AI 生新 dashboard 都會跳新 entry（booth 觀眾看 productivity）
+- [`prototype/booth-hospitality.html`](./prototype/booth-hospitality.html) — 5-phase 預錄飯店場景 demo（救命 backup）
+- [`prototype/dashboard-live.html`](./prototype/dashboard-live.html) — 3-tab 整合版 PoC（含 LLM agent trace）
+- [`prototype/live-data/*.json`](./prototype/live-data/) — 最新真實 API 回應
 
 ### 技術深入
 - [`architecture-v2-zh.html`](./architecture-v2-zh.html) ⇄ [`architecture-v2.html`](./architecture-v2.html) — 系統架構互動版（**頁內可切換 繁中 ⇄ EN**）

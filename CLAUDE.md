@@ -1,210 +1,238 @@
 # CLAUDE.md — Network AI-Assistant Proposal Site
 
-> Last updated: 2026-05-06
+> Last updated: 2026-05-13
 
 ## Project Overview
 
-純靜態 HTML 產品提案網站 — 「**Network AI-Assistant**」AI 網管助理的完整提案資料包。
-11 個策略/技術頁 + 4 個互動式 UI mockup + 1 份 sales pitch deck + 3 份內部技術文件（`docs/`），
-部署於 Vercel。給 PM / MKT / Eng / 客戶 / 經營層不同對象用。
-
-**ICP focus**：deliberately 兩模式 — A 員工 / B SMB IT。不做 MSP / multi-tenant / Pro Console。
-架構保留 mode-agnostic，未來真要擴後端不會大改，但 marketing/positioning 不出現 Mode C。
-
-**Brand alignment**（2026-05 加入）：行銷側對齊既有 EnGenius Cloud GUI（白/暖米底 + sky blue
-`#03A9F4` + 橘 accent）；工程側維持原本深色（深藍底 + teal cyan + 橘 accent）。**兩套 palette 不要混**。
+純靜態 HTML 產品提案網站 — 「**Network AI-Assistant**」AI 網管助理。
+**目前 focus：Product Line 2（Dashboard Builder + EnGenius Cloud SKILLs）**。
 
 完整功能與內容結構詳見 [README.md](README.md)。
 **Live**: https://network-ai-assistant.vercel.app
 
+## 🎯 兩條產品線（重要 — 兩線不要混）
+
+| | Line 1 · Cloud-Embedded AI | **Line 2 · SKILL + AI Coding Agent ★ 現 focus** |
+|---|---|---|
+| 整合位置 | 既有 EnGenius Cloud GUI 內 | 外部 AI tool（Claude Code）打 API |
+| 使用者 | 員工 / SMB IT（cloud 用戶）| 進階 user / SI / partner |
+| 互動 | Chat box inside cloud | Skill call + dynamic dashboard |
+| 主要對應檔 | mockup-gallery 4 mockups（employee/cockpit/unified-chat）| Dashboard Builder demo + 整個 `prototype/` PoC |
+| 狀態 | 視覺 mockup 完成，整合未開始 | **PoC 已跑通真實 staging API** |
+
+**ICP 不變**：A 員工 / B SMB IT 兩模式都涵蓋。Dashboard Builder = wedge product 跨模式。
+
 ## Tech Stack
 
-- **純靜態 HTML**（無 build 步驟、無 framework、無 backend）
-- **Vanilla JS** for 所有互動（tabs、modals、chat、Cmd+K palette）
+- **純靜態 HTML**（無 build / framework / backend），CSS + JS inline 每個檔自包
+- **Vanilla JS** for 所有互動
 - **Google Fonts CDN**：Inter / Noto Sans TC / JetBrains Mono
 - **部署**：Vercel（push to main → auto-redeploy ~30s）
 - **GitHub**：terrelyeh/network-ai-assistant
+- **PoC 跑真 API**：Python 3 + `uv` venv + `requests`（用 RD 給的 `api-skills/` 套件，本機 gitignored）
 
 ## Directory Structure
 
 ```
 network-ai-assistant/
-├── index.html                                主入口（2-card chooser → product or engineering home）
-├── home-product.html                         產品 / 行銷 hub（PM/MKT/業務）· 淺色暖米底
-├── home-engineering.html                     工程 / 技術 hub（Tech Lead/CIO）· 深色
-├── overview-pm-mkt.html                      PM/MKT 客戶故事
-├── two-modes.html                            產品策略定位（A/B 兩模式）
-├── system-diagram.html                       高層次系統圖（兩 hub 共用橋接）
-├── use-case-matrix.html                      4×2 use case 矩陣
-├── dashboard-builder-demo.html               Dashboard Builder 互動 demo（widget 用 EnGenius logo）
-├── dashboard-builder-implementation.html     Dashboard Builder 實作指南（4-tab）
-├── dashboard-builder-prep.html               ★ NEW · Dashboard Builder 前端準備指南（sticky TOC + scrollspy + 右側滑入 design tokens panel）
-├── mockup-gallery.html                       4 mockup 統合入口
-├── architecture-v2-zh.html / architecture-v2.html  互動架構圖（ZH ⇄ EN 切換）
-├── playbook-examples.html                    5 個 playbook 範例
-├── blind-spots.html                          12 個工程盲點
-├── pitch-deck.html                           10-slide sales deck
-├── *-mockup.html (4)                         互動式 mockup（員工 chat / cockpit / Dashboard Builder flow / Unified Chat PoC）
+├── 14 個內容頁 HTML（index / home-product / home-engineering / overview-pm-mkt
+│   / two-modes / system-diagram / use-case-matrix / mockup-gallery
+│   / dashboard-builder-demo / dashboard-builder-implementation
+│   / dashboard-builder-prep / architecture-v2-zh / architecture-v2
+│   / playbook-examples / blind-spots / pitch-deck）
+├── 4 個 mockup HTML（employee-chat / cockpit / dashboard-builder-flow / unified-chat）
 ├── assets/
-│   └── engenius-logo.png                     公司 logo（dashboard-builder-demo widget header 用）
-└── docs/                                     內部技術文件（Markdown source）
-    ├── widget-catalog.md                     12 widget 完整規格（P0/P1/P2 · 給 PM/RD/Design）
-    ├── prompt-templates.md                   LLM system prompt 模板 + 12 tool defs + few-shot
-    ├── dashboard-builder-implementation-guide.md  前端實作準備指南（人讀 markdown 版）
-    └── design-tokens.md                      EnGenius Cloud design tokens（colors / typo / spacing / chart palette）
+│   ├── engenius-logo.png
+│   ├── diagram-architecture-overview.png   一張高層次架構圖（給投影片用）
+│   └── diagram-architecture-overview.svg   ↑ SVG 原檔
+├── docs/                                   給 RD / 設計 / prompt eng 的對齊文件
+│   ├── widget-catalog.md                   12 widgets 完整規格（P0/P1/P2）
+│   ├── prompt-templates.md                 LLM system prompt + tool defs + few-shot
+│   ├── dashboard-builder-implementation-guide.md  前端實作準備指南
+│   ├── design-tokens.md                    EnGenius Cloud design tokens
+│   ├── skill-to-widget-mapping.md          ★ widget ↔ op 對齊文件（含 RD action items）
+│   ├── booth-presenter-cheatsheet.md       ★ 展會操作員 cheat sheet
+│   └── refine-demo-plan.md                 demo refine 互動規劃
+├── prototype/                              ★ Line 2 PoC + 展會用 dashboard
+│   ├── canvas.html                         Multi-Org Audit dashboard（真實 staging API）
+│   ├── canvas-network-audit.html           Network Config Audit
+│   ├── canvas-team-access.html             Team Access Audit
+│   ├── canvas-<TS>.html                    Timestamped 新生 dashboard（demo workflow）
+│   ├── scenarios.html                      Booth 操作員 menu（list 所有 canvas）
+│   ├── generated-log.html                  ★ 自動 refresh 的「AI 今天生過什麼」log
+│   ├── generated-manifest.json             ↑ 每生一張 dashboard 就 append entry
+│   ├── booth-hospitality.html              預錄 5-phase 飯店場景 demo（純戲劇 backup）
+│   ├── booth-data/hospitality.json         ↑ 合成假資料
+│   ├── api-responses/*.json                早期保留的真實 API 回應
+│   ├── live-data/*.json                    ★ 最新真實 staging API 回應
+│   ├── data.json                           dashboard-live.html 用的聚合 JSON
+│   └── dashboard-live.html                 3-tab 整合版 PoC（含 LLM agent trace）
+└── api-skills/                             RD 給的 senao-api-skills v0.1.0（gitignored，本機用）
 ```
 
 ## Architecture & Data Flow
 
-每個 HTML 檔**完全 self-contained**（CSS + JS 都 inline，無共用 assets）。
-這代表：改一個檔案不影響其他，但加 CSS token / 共用樣式時要 manually sync。
+每個 HTML 檔**完全 self-contained**。
 
-### 兩套 nav 風格
+### 兩線視覺切分（不要混）
 
-| 類型 | 應用 | 結構 |
+| 線 | 對應檔案 | Palette |
 |---|---|---|
-| **內容頁 nav** | 10 個策略/技術頁 | `<header>` 含 `.nav-links`，list 10 個 page link |
-| **Mockup banner** | 4 個 mockup 檔 | 頂部 `.mockup-banner` 單一「← 回 Mockup 列表」連結 |
-
-### 關鍵 framing（已穩定，不要回頭混淆）
-
-- **3 個 home page**：`index.html` (chooser) → `home-product.html` (PM/MKT) 或 `home-engineering.html` (Tech)。`system-diagram.html` 兩邊都連結到（橋接）
-- **2 modes** = 依「誰用」（user role）分：A 員工 / B SMB IT。**不做 Mode C / MSP**（不同 ICP）
-- **Dashboard Builder = wedge product**（不是 Mode B 子功能）— 跨兩個模式可用，藍海競爭
-- **4 dimensions** = 用例維度：Deployment / Monitoring / Troubleshoot / Management
-- 工程上 Dashboard Builder 仍是 **third skill class**（與 Diagnostic / Monitoring playbooks 並列），架構不變
-- Marketing 上 Dashboard Builder **獨立成 wedge** 主推（跨模式可用，藍海競爭）
-- 架構保留 mode-agnostic — 未來真要擴 Mode C / MSP，後端不會大改
+| 行銷（Line 2 對外故事） | home-product / overview-pm-mkt / two-modes / use-case-matrix / mockup-gallery / dashboard-builder-demo / **prototype/* 全部** / 3 個 light mockup | 淺色暖米 + sky blue `#03A9F4` |
+| 工程（含 unified-chat） | home-engineering / architecture-v2*  / dashboard-builder-implementation / dashboard-builder-prep / playbook-examples / blind-spots / system-diagram / index / pitch-deck / unified-chat-mockup | 深色 + teal `#00d9c5` |
 
 ## Conventions
 
-### 雙 Palette（重要 — 不要混）
-
-從 2026-05 起整站分兩套 palette。**改檔前先確認該檔是 marketing 側還是 engineering 側**。
-
-#### 🎯 Marketing side（淺色暖米）
-
-6 個檔：`home-product.html` / `overview-pm-mkt.html` / `two-modes.html` / `use-case-matrix.html` /
-`mockup-gallery.html` / `dashboard-builder-demo.html`
+### 雙 Palette（重要）
 
 ```css
---bg-1: #f5f2ea;             /* 暖米底 */
---bg-2: #ebe6da;             /* 暖米漸層 */
---surface: #ffffff;          /* 卡片純白 */
---surface-2: #faf8f3;
---border: rgba(60,50,35,0.12);  /* 暖咖啡 tint */
---text: #1a2332;             /* 深海軍藍（不是純黑） */
---muted: #5a6878;
---accent: #ff6b35;           /* 橘 · 保留 */
---cyan: #03a9f4;             /* ★ EnGenius sky blue */
---warn: #f59e0b;             /* 黃（略深於工程側）*/
+/* Marketing / Prototype 側 — 淺色暖米 */
+--bg-1: #f5f2ea;   --bg-2: #ebe6da;   --surface: #ffffff;
+--border: rgba(60,50,35,0.12);   --text: #1a2332;
+--accent: #ff6b35;   --cyan: #03a9f4;   --warn: #f59e0b;
+
+/* Engineering 側 — 深色 */
+--bg-1: #0a1628;   --bg-2: #0f1e3a;   --surface: rgba(255,255,255,0.04);
+--border: rgba(255,255,255,0.12);   --text: #f8fafc;
+--accent: #ff6b35;   --cyan: #00d9c5;   --warn: #fbbf24;
 ```
 
-#### 🛠 Engineering side（深色）
+### 顏色語義
 
-其他所有頁（`home-engineering.html` / `architecture-v2*.html` / `dashboard-builder-implementation.html` /
-`dashboard-builder-prep.html` / `playbook-examples.html` / `blind-spots.html` / `system-diagram.html` / `index.html` /
-`pitch-deck.html` / 4 mockup）
-
-```css
---bg-1: #0a1628;             /* 深藍底 */
---bg-2: #0f1e3a;
---surface: rgba(255,255,255,0.04);
---border: rgba(255,255,255,0.12);
---text: #f8fafc;
---accent: #ff6b35;           /* 橘 · 主色 / Mode B */
---cyan: #00d9c5;             /* teal / Mode A / links */
---warn: #fbbf24;             /* 黃 / Wedge */
-```
-
-### 顏色語義（兩側共通）
-
-| 顏色 | 對應 | 例 |
+| Cyan | Accent (橘) | Warn (黃) |
 |---|---|---|
-| Cyan | Mode A · 員工 / brand link | employee-chat-mockup（teal）/ marketing 頁的 link（sky blue）|
-| Accent (橘) | Mode B · SMB IT · 主軸 | cockpit-mockup |
-| **Warn (黃)** | **Wedge product (Dashboard Builder)** | dashboard-builder-demo / flow |
+| Mode A · 員工 / brand link | Mode B · SMB IT / 主軸 | **Wedge product (Dashboard Builder)** |
 
-### Mockup 視覺現況（2026-05 更新）
+### 命名 / Nav
 
-3 個 mockup 已翻成 light + sky blue（跟 marketing 同 palette），只剩 1 個保留深色：
-
-| Mockup | 視覺 |
-|---|---|
-| `cockpit-mockup.html` | 🎯 Light（cream + sky blue） |
-| `employee-chat-mockup.html` | 🎯 Light |
-| `dashboard-builder-flow-mockup.html` | 🎯 Light |
-| `unified-chat-mockup.html` | 🛠 **保留深色**（user 決定不翻） |
-
-整個 site 視覺線：marketing pages → 3 個 mockup → wedge demo → engineering docs 都是 light EnGenius 風格；
-只有 `unified-chat-mockup.html` 跟所有 engineering 頁是深色。改其中一邊不要動到另一邊。
-
-### 命名
-
-- 品牌：**Network AI-Assistant** — `AI-Assistant` 部分用 `<span class="accent">` 標亮
+- 品牌：**Network AI-Assistant**（`AI-Assistant` 部分用 `<span class="accent">` 標亮）
 - HTML 檔名：kebab-case
-- 中英混用 OK，但對外面向（hero / titles）優先繁中
+- 大部分頁 nav：`<a class="nav-link muted-link" href="...">`
+- 加新頁要更新所有內容頁 nav + index.html
 
-### Nav links 編輯時注意
+## 🎯 Line 2 PoC 現況（Dashboard Builder 工作流）
 
-- 大部分頁用 `<a class="nav-link muted-link" href="...">`（非 current 狀態）
-- `architecture-v2-zh.html` / `architecture-v2.html` 例外用 `<a class="nav-link" href="...">`（無 muted-link）
-- `dashboard-builder-prep.html` 用簡化的 3-link top nav（主入口 / 產品入口 / 工程入口），不重複內容頁的全 list
-- 縮排不一致：mockup-gallery 用 4 spaces，architecture 用 6 spaces
-- 加新頁時要更新**所有 9 個內容頁** + index.html（mockup 不需更新 nav）
+**目標**：訪客問問題 → 操作員跑 SKILL → AI 用真實 API 結果生 dashboard HTML →
+preview 視窗顯示 → 觀眾看到 wow。
+
+### 已跑通的 6 個真實 API ops（讀取類）
+
+```python
+# 在 api-skills/ 目錄，已驗證 staging 可呼叫：
+init-orgs/get_user_orgs           # 5 orgs
+hvs/get_hierarchy_views           # 14 networks (Gordon 含 7F_shieldingRoom)
+org-devices/get_inventory         # 1 device (Vertical Demo / ESG610 gateway)
+org-licenses/get_licenses         # 3 licenses (1 expired)
+networks/get_ssid_profiles        # 1 SSID
+networks/get_general_policy_plus  # 32 policy fields
+networks/get_network_acls         # all 3 access types empty
+team-members/get_org_memberships_overall  # 3 members (黃依雯/Antony/Terrel)
+```
+
+### 已驗證流程
+
+```bash
+cd api-skills && source .venv/bin/activate
+export MANAGE_SYSTEM_URL="https://falcon.staging.engenius.ai"
+export API_KEY="<從 user 帳號生成>"
+# 跑 skill → JSON → 我讀 → 寫 canvas-<TS>.html → preview 自動顯示
+```
+
+### Booth 展會工作流（驗證 work）
+
+```
+prototype/generated-log.html ── (auto-poll 2s) ──┐
+                                                  │
+[訪客問問題]                                       │
+   ↓                                              │
+[操作員] Claude Code 跑 skill                     │
+   ↓                                              │
+[操作員] 告訴我「生 X 場景」                      │
+   ↓                                              │
+[我] 寫 canvas-<TS>.html + 加 entry 到 manifest   │
+   ↓ ────────────────────────────────────────────┘
+[generated-log] 新 entry 綠光 fresh 動畫，counter +1
+```
+
+## ⚠️ 重要：Line 2 SKILL 限制（2026-05-13 確認）
+
+### 能跑（有 scripts/）
+
+`init-orgs / hvs / networks / org-devices / org-licenses / org-network-groups /
+org-network-templates / org-backups / team-members / engenius-env`
+
+### 不能跑（只有 SKILL.md 文件，沒有 scripts/）
+
+`network-ap-troubleshoot / network-gateway-troubleshoot / network-switch-troubleshoot`
+
+→ subscribe_stat / subscribe_throughput / subscribe_channel_utilization 等
+**即時監控類 op 目前不能執行**。要 RD 補 scripts/ 才能做 Level 2「watch this tick」live demo。
+**Dolphin 平台支援也還在 RD 開發中**。
+
+### 影響的 demo 場景
+
+- ✅ 能做：Multi-org audit / Network config audit / License lifecycle / Team access — 都是讀取類 GET ops
+- ❌ 不能做：Real-time AP health / Live throughput / Sticky client hunt — 需要 subscribe_*
+- ❌ 不能做：歷史聚合（過去 N 天趨勢）— 沒有 history API
 
 ## Current Status
 
-功能清單詳見 [README.md](README.md)。
+### ✅ 已完成（Line 2 PoC）
+- senao-api-skills 跑通 real falcon.staging API（6+ GET ops）
+- 4 個 canvas dashboard（multi-org / network audit / team access / license renewal）
+- scenarios.html booth menu
+- generated-log.html 自動 refresh 的歷史 log
+- booth-hospitality.html 預錄版（救命 backup）
+- alignment doc + cheat sheet 完整
 
-### 🔜 Next Steps（無使用者明確指定，視需要）
+### 🔜 Next Steps（Line 2 focus）
 
-- 真實 design partner 試用驗證 wedge thesis
-- 客製 domain（取代 Vercel default）
-- OG image / social preview meta tags
-- 加入 Vercel Analytics（看流量）
-- 補 Mode A 員工 chat 的更多 playbook 範例
-- `docs/widget-catalog.md` schema 用 Zod 寫成 TypeScript 範例檔（給 RD starter）
-- **demo.html refine 互動擴充**（4 hero 場景：S1 / S5 / S7 / S10）— spec 已寫在 [`docs/refine-demo-plan.md`](docs/refine-demo-plan.md)，源檔頂部有 HTML comment 標 candidate
+優先：
+1. **dry-run 真實 booth 流程** — 模擬訪客問題 → 跑 skill → 生 dashboard → log 跳新 entry
+2. **擴 vertical 場景** — 不限飯店，按真實 staging 資料能做的（multi-org audit / security audit / license / team access 等）
+3. **跟 RD 對齊** — 缺的 troubleshoot scripts + 歷史 API（Dolphin 補丁也是）
+4. **booth presenter dry-run** — 用 cheat sheet 演練 3 遍 90 秒主秀
 
-## Deployment
-
-```bash
-# 改 HTML → push → Vercel auto-redeploy
-git add .
-git commit -m "..."
-git push
-# 30-60 秒後 live: https://network-ai-assistant.vercel.app
-```
-
-驗證：
-```bash
-curl -sS -o /dev/null -w "%{http_code}\n" https://network-ai-assistant.vercel.app
-```
+次優先：
+- Vercel deploy 對應的 marketing 頁面 polish（行銷部分先擺著）
 
 ## Common Pitfalls
 
-1. **macOS sed 需 `-i ''`** — 不是 GNU sed，in-place 要 empty string 參數
-2. **架構檔有兩份（ZH + EN）** — 改架構內容要兩份都改，否則 EN 會落後
-3. **每個 HTML 檔是 self-contained** — 改 CSS token 不會影響其他檔，要全域改要 sed across files
-4. **Mockup 的「回」連結指向 gallery** 而不是 index — 別誤改回 index
-5. **`AI-Assistant` 才是 highlighted span**（不是 Network）— 改 brand 文字時注意 span 結構
-6. **Dashboard Builder 視覺色用 warn (黃)** 不是 accent (橘)，因為它是 wedge 不是 Mode B 子功能
-7. **加新頁要更新 nav + index.html**（resource cards、files table、count）— 漏一處會不一致
-8. **index.html 的 page count 出現在 3 個位置**：hero meta、resources section title、各種 narrative 文字
-9. **不要把 mockup 加進內容頁 nav 列表** — mockup 只從 mockup-gallery 進入
-10. **檔案列表表格用 `⇄` 符號**（U+21C4）標明 ZH ⇄ EN 兩個檔案是 mirror
-11. **Marketing 頁的 `--cyan` 是 `#03A9F4` sky blue** — 不是 engineering 側的 `#00d9c5` teal。
-    在 marketing 檔裡看到 hardcoded `rgba(0,217,197,...)` 一定要改成 `rgba(3,169,244,...)`，反之亦然
-12. **Marketing 頁卡片底色要用實色（如 `#ffffff`）**，不要用 `rgba(...)` 透明色 — 在淺底上會跟頁面 bg 幾乎同色
-13. **Mockup 視覺要對 palette**：3 個 mockup 已翻 light（cockpit / employee-chat / dashboard-builder-flow），
-    `unified-chat-mockup.html` 仍是深色 — 改 marketing 不會影響 mockup（self-contained），但 hardcoded
-    `rgba(0,217,197,...)` 之類的 cyan 值在 light mockup 是 `rgba(3,169,244,...)`，別搞錯
-14. **JPEG 截圖 tool 對淺色卡片在淺底上會壓縮到看不見**（rgba alpha 卡片尤其明顯）— 不是 bug，是 preview 限制；
-    要用 `preview_eval` + `getComputedStyle` / `elementFromPoint` 驗證，別只信 screenshot
-15. **`dashboard-builder-prep.html` 用 CSS counter 自動編號 section** — `<span class="num"></span>` 是空殼，數字由 `::before counter()` 產
-    新增/刪除 section 不用改數字，但 TOC 那邊的 `<li>` 順序要對
+### Site / Visual
+1. **macOS sed 需 `-i ''`**
+2. **架構檔有兩份（ZH + EN）** — 改要兩份都改
+3. **每個 HTML 檔 self-contained** — sed across files 要全域
+4. **`AI-Assistant` 才是 highlighted span**（不是 Network）
+5. **Dashboard Builder 視覺色用 warn 黃**（wedge），不是 accent 橘
+6. **Marketing 頁 `--cyan` 是 sky blue `#03A9F4`，engineering 頁是 teal `#00d9c5`** — hardcoded rgba 不能搞混
+7. **Marketing 頁卡片底色要實色（#fff），不要 rgba 透明** — 淺底會糊
+8. **3 個 mockup 已 light，unified-chat-mockup 仍 dark** — 是 deliberate
+9. **JPEG screenshot tool 對淺色卡片在淺底壓縮會看不見** — 用 preview_eval + getComputedStyle 驗證
+10. **dashboard-builder-prep.html 用 CSS counter 自動編號** — 不要手動改數字
+
+### Line 2 / API SKILL
+11. **api-skills/ 是 RD 給的 separate repo**（gitignored，不要 commit 它的內容）
+12. **API key 千萬別 commit 到 git** — 永遠 export 到 env var
+13. **Python http.server 對 `?_=timestamp` cache-buster 會 404**（query string 被當檔名一部份）— 用 `fetch(url, { cache: 'no-store' })`
+14. **skill 的 stdout 會有 `AAAURL ...` debug print 汙染 JSON** — 要 pipe 過濾 `head -n+1 from { line` 之類的 clean function
+15. **network-{ap,gateway,switch}-troubleshoot 3 個 skill 沒有 scripts/**，只有 SKILL.md。subscribe_* 都不能執行（要 RD 補）
+16. **viewer 角色受 RBAC 限制**：能讀 network-level（SSID / policy / ACL），不能讀 org-level（inventory / licenses）。Gordon org 因此 inventory 拿不到，要拿其他 org（Vertical Demo）的 inventory demo
+17. **`get_inventory` / `get_licenses` 是 PRO plan only** — terrel org 因 BASIC 會回 402
+18. **canvas-<TS>.html 生成後要 append manifest entry**，否則 generated-log 不會顯示
 
 ## 詳細文件
 
-- [README.md](README.md) — 給人看的功能介紹、檔案清單、使用情境
+### Line 2 對齊文件（給 RD / Prompt Eng / Design）
+- [docs/widget-catalog.md](docs/widget-catalog.md) — 12 widget 規格
+- [docs/skill-to-widget-mapping.md](docs/skill-to-widget-mapping.md) ★ — widget ↔ op 對齊
+- [docs/dashboard-builder-implementation-guide.md](docs/dashboard-builder-implementation-guide.md) — kickoff 對齊
+- [docs/prompt-templates.md](docs/prompt-templates.md) — LLM prompt + tool defs
+- [docs/design-tokens.md](docs/design-tokens.md) — EnGenius 視覺 tokens
+- [docs/booth-presenter-cheatsheet.md](docs/booth-presenter-cheatsheet.md) ★ — 展會操作手冊
+- [docs/refine-demo-plan.md](docs/refine-demo-plan.md) — demo 互動擴充
+
+### Line 1 視覺 mockup（暫停推進）
+- `employee-chat-mockup.html` / `cockpit-mockup.html` / `unified-chat-mockup.html` — chat-style 對話
+
+### 給人看的 overview
+- [README.md](README.md)
