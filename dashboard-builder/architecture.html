@@ -33,9 +33,10 @@
     background-image: radial-gradient(at 0% 0%, var(--bg-2) 0%, var(--bg-1) 50%);
     color: var(--text);
     font-family: 'Inter', 'Noto Sans TC', system-ui, sans-serif;
-    font-size: 15px;
-    line-height: 1.6;
+    font-size: 16px;
+    line-height: 1.7;
     -webkit-font-smoothing: antialiased;
+    letter-spacing: 0.005em;
   }
   .num { font-variant-numeric: tabular-nums; }
   .mono { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
@@ -49,9 +50,9 @@
     padding: 14px 32px;
     display: flex; align-items: center; justify-content: space-between;
   }
-  nav .brand { font-weight: 700; font-size: 15px; letter-spacing: -0.01em; }
+  nav .brand { font-weight: 700; font-size: 16px; letter-spacing: 0; }
   nav .brand .accent { color: var(--accent); }
-  nav .links { display: flex; gap: 18px; font-size: 13px; }
+  nav .links { display: flex; gap: 20px; font-size: 14px; }
   nav .links a { color: var(--text-2); text-decoration: none; font-weight: 500; }
   nav .links a:hover { color: var(--accent); }
 
@@ -78,31 +79,33 @@
   .hero .lede .hl { color: var(--text); font-weight: 600; }
 
   /* Section */
-  section { margin-bottom: 56px; }
+  section { margin-bottom: 64px; }
   h2 {
-    margin: 0 0 8px; font-size: 26px; font-weight: 700;
-    letter-spacing: -0.015em;
+    margin: 0 0 12px; font-size: 30px; font-weight: 700;
+    letter-spacing: -0.01em; line-height: 1.25;
   }
   h2 .num-tag {
-    font-size: 13px; font-weight: 600; color: var(--text-3);
-    letter-spacing: 0.04em; margin-right: 12px;
+    font-size: 14px; font-weight: 600; color: var(--text-3);
+    letter-spacing: 0.04em; margin-right: 14px;
     font-family: 'JetBrains Mono', monospace;
   }
-  h3 { margin: 24px 0 8px; font-size: 17px; font-weight: 700; letter-spacing: -0.01em; }
-  h4 { margin: 16px 0 6px; font-size: 14px; font-weight: 700; color: var(--text-2); }
-  p { margin: 0 0 12px; color: var(--text-2); }
-  .section-lede { font-size: 16px; color: var(--text-2); margin-bottom: 24px; max-width: 720px; }
+  h3 { margin: 28px 0 10px; font-size: 19px; font-weight: 700; letter-spacing: 0; line-height: 1.4; }
+  h4 { margin: 18px 0 8px; font-size: 15px; font-weight: 700; color: var(--text-2); }
+  p { margin: 0 0 14px; color: var(--text-2); }
+  ol, ul { color: var(--text-2); padding-left: 24px; }
+  ol li, ul li { margin-bottom: 6px; }
+  .section-lede { font-size: 17px; color: var(--text-2); margin-bottom: 28px; max-width: 760px; line-height: 1.7; }
 
   /* Big quote box */
   .pull {
     background: var(--surface);
     border: 1px solid var(--border);
     border-left: 4px solid var(--accent);
-    padding: 22px 28px; border-radius: var(--radius);
+    padding: 24px 30px; border-radius: var(--radius);
     box-shadow: var(--shadow-sm); margin: 24px 0;
-    font-size: 17px; font-weight: 500; color: var(--text); line-height: 1.5;
+    font-size: 18px; font-weight: 500; color: var(--text); line-height: 1.65;
   }
-  .pull .badge { font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 6px; }
+  .pull .badge { font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 8px; }
 
   /* 5-layer diagram */
   .arch-diagram {
@@ -120,18 +123,18 @@
     display: grid; grid-template-columns: 60px 1fr 220px; gap: 16px; align-items: center;
   }
   .layer .lvl {
-    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
     color: var(--text-3); font-weight: 700; letter-spacing: 0.06em;
   }
-  .layer .lvl b { display: block; font-size: 18px; color: var(--text); margin-top: 2px; }
+  .layer .lvl b { display: block; font-size: 20px; color: var(--text); margin-top: 2px; }
   .layer .what { }
-  .layer .what .title { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
-  .layer .what .desc { font-size: 13px; color: var(--text-2); line-height: 1.45; }
-  .layer .owner { font-size: 11px; color: var(--text-3); text-align: right; }
+  .layer .what .title { font-weight: 700; font-size: 16px; margin-bottom: 5px; }
+  .layer .what .desc { font-size: 14px; color: var(--text-2); line-height: 1.6; }
+  .layer .owner { font-size: 12px; color: var(--text-3); text-align: right; }
   .layer .owner .pill {
-    display: inline-block; padding: 3px 8px; border-radius: 999px;
+    display: inline-block; padding: 4px 9px; border-radius: 999px;
     background: rgba(15,23,42,0.06); color: var(--text-2);
-    font-weight: 600; font-size: 10px; letter-spacing: 0.04em;
+    font-weight: 600; font-size: 11px; letter-spacing: 0.04em;
     text-transform: uppercase; margin-left: 4px;
   }
   .layer.l5 { background: linear-gradient(135deg, #fff4ee 0%, var(--surface-2) 100%); border-color: rgba(255,107,53,0.3); }
@@ -146,8 +149,8 @@
 
   /* Widget anatomy section */
   .anatomy {
-    display: grid; grid-template-columns: 1.1fr 1fr; gap: 24px;
-    margin-top: 16px;
+    display: grid; grid-template-columns: 1.1fr 1fr; gap: 28px;
+    margin-top: 18px;
   }
   .anatomy .visual {
     background: var(--surface); border: 1px solid var(--border);
@@ -205,15 +208,15 @@
   .mock-block .tree-row.indent-2 { padding-left: 24px; }
 
   /* Legend */
-  .legend h3 { margin: 0 0 12px; font-size: 15px; }
-  .legend .entry { display: grid; grid-template-columns: 140px 1fr; gap: 10px; margin-bottom: 14px; }
+  .legend h3 { margin: 0 0 14px; font-size: 17px; }
+  .legend .entry { display: grid; grid-template-columns: 150px 1fr; gap: 12px; margin-bottom: 16px; }
   .legend .entry .name {
-    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    font-family: 'JetBrains Mono', monospace; font-size: 13px;
     background: rgba(255,107,53,0.1); color: var(--accent);
-    padding: 4px 8px; border-radius: 6px; font-weight: 700;
+    padding: 5px 10px; border-radius: 6px; font-weight: 700;
     align-self: start; text-align: center;
   }
-  .legend .entry .desc { font-size: 13px; line-height: 1.45; color: var(--text-2); }
+  .legend .entry .desc { font-size: 14px; line-height: 1.65; color: var(--text-2); }
   .legend .entry .desc strong { color: var(--text); }
 
   /* Code block */
@@ -224,8 +227,8 @@
     border-radius: 10px;
     overflow-x: auto;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 12.5px; line-height: 1.55;
-    margin: 12px 0;
+    font-size: 13.5px; line-height: 1.65;
+    margin: 14px 0;
   }
   pre .comment { color: #94a3b8; font-style: italic; }
   pre .key { color: #93c5fd; }
@@ -233,37 +236,37 @@
   pre .kw { color: #f0abfc; }
   code:not(pre code) {
     background: rgba(60,50,35,0.08);
-    padding: 1px 6px; border-radius: 4px;
+    padding: 2px 7px; border-radius: 4px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.9em;
+    font-size: 0.92em;
   }
 
   /* Step list */
   .steps { counter-reset: step; padding-left: 0; list-style: none; }
   .steps > li {
     counter-increment: step;
-    padding: 18px 22px 18px 64px;
+    padding: 20px 24px 20px 70px;
     background: var(--surface);
     border: 1px solid var(--border); border-radius: var(--radius);
     box-shadow: var(--shadow-sm);
-    margin-bottom: 12px; position: relative;
+    margin-bottom: 14px; position: relative;
   }
   .steps > li::before {
     content: counter(step);
-    position: absolute; left: 18px; top: 18px;
-    width: 32px; height: 32px; border-radius: 50%;
+    position: absolute; left: 20px; top: 20px;
+    width: 34px; height: 34px; border-radius: 50%;
     background: var(--accent); color: white;
     display: flex; align-items: center; justify-content: center;
-    font-weight: 700; font-size: 14px;
+    font-weight: 700; font-size: 15px;
   }
-  .steps > li .step-title { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
-  .steps > li .step-body { font-size: 14px; color: var(--text-2); }
-  .steps > li pre { margin-top: 10px; font-size: 12px; }
+  .steps > li .step-title { font-weight: 700; font-size: 16px; margin-bottom: 5px; }
+  .steps > li .step-body { font-size: 15px; color: var(--text-2); line-height: 1.65; }
+  .steps > li pre { margin-top: 12px; font-size: 13px; }
 
   /* Table */
-  .tbl { width: 100%; border-collapse: collapse; font-size: 13px; margin: 12px 0; }
-  .tbl th { text-align: left; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-3); padding: 10px; border-bottom: 1px solid var(--border-strong); }
-  .tbl td { padding: 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .tbl { width: 100%; border-collapse: collapse; font-size: 14px; margin: 14px 0; }
+  .tbl th { text-align: left; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-3); padding: 11px 12px; border-bottom: 1px solid var(--border-strong); }
+  .tbl td { padding: 12px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.55; }
   .tbl .ok { color: var(--success); font-weight: 600; }
   .tbl .warn { color: var(--warn); font-weight: 600; }
   .tbl .crit { color: var(--critical); font-weight: 600; }
@@ -282,14 +285,14 @@
   .flow-step:last-child { border-bottom: 0; }
   .flow-step .timer {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px; font-weight: 700;
-    text-align: center; padding: 6px 8px;
+    font-size: 12px; font-weight: 700;
+    text-align: center; padding: 7px 10px;
     border-radius: 8px;
     background: rgba(3,169,244,0.1); color: var(--cyan);
   }
   .flow-step .timer.eye { background: rgba(255,107,53,0.12); color: var(--accent); }
-  .flow-step .who { font-size: 11px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; }
-  .flow-step .what { font-size: 14px; color: var(--text); margin-top: 2px; }
+  .flow-step .who { font-size: 12px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; }
+  .flow-step .what { font-size: 15px; color: var(--text); margin-top: 4px; line-height: 1.6; }
   .flow-step .what em { color: var(--accent); font-style: normal; font-weight: 600; }
 
   /* Inline highlights */
@@ -297,11 +300,42 @@
   .hl-cyan { color: var(--cyan); font-weight: 600; }
   .hl-warn { color: var(--warn); font-weight: 600; }
 
+  /* Term with annotation */
+  .term {
+    color: var(--accent); font-weight: 700;
+    border-bottom: 1.5px dotted var(--accent);
+    cursor: help; position: relative;
+  }
+  .term::after {
+    content: attr(data-def);
+    position: absolute; top: calc(100% + 8px); left: 50%;
+    transform: translateX(-50%);
+    background: var(--text); color: white;
+    padding: 8px 12px; border-radius: 8px;
+    font-size: 13px; font-weight: 500; line-height: 1.5;
+    white-space: nowrap; max-width: 360px;
+    box-shadow: var(--shadow-md);
+    opacity: 0; pointer-events: none;
+    transition: opacity .15s ease;
+    z-index: 100;
+  }
+  .term::before {
+    content: '';
+    position: absolute; top: 100%; left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    border: 6px solid transparent;
+    border-bottom-color: var(--text);
+    opacity: 0; pointer-events: none;
+    transition: opacity .15s ease;
+    z-index: 100;
+  }
+  .term:hover::after, .term:hover::before { opacity: 1; }
+
   /* Footer */
   footer {
     border-top: 1px solid var(--border);
     padding: 32px; text-align: center;
-    color: var(--text-3); font-size: 12px;
+    color: var(--text-3); font-size: 13px;
   }
 
   /* Gallery */
@@ -313,27 +347,27 @@
   }
   .gallery-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
   .gallery-card .meta {
-    padding: 14px 16px;
+    padding: 18px 20px;
     border-bottom: 1px solid var(--border);
     background: var(--surface-2);
   }
   .gallery-card .meta h3 {
-    margin: 0 0 4px; font-size: 15px; font-weight: 700;
+    margin: 0 0 6px; font-size: 17px; font-weight: 700; line-height: 1.35;
   }
   .gallery-card .meta .sub {
-    font-size: 12px; color: var(--text-2);
+    font-size: 13px; color: var(--text-2); line-height: 1.55;
   }
   .gallery-card .meta .ops {
-    font-family: 'JetBrains Mono', monospace; font-size: 10px;
-    color: var(--text-3); margin-top: 6px; line-height: 1.4;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--text-3); margin-top: 8px; line-height: 1.5;
   }
   .gallery-card .meta .widgets {
-    display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px;
+    display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px;
   }
   .gallery-card .meta .widgets .tag {
-    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
     background: rgba(255,107,53,0.12); color: var(--accent);
-    padding: 2px 7px; border-radius: 999px; font-weight: 600;
+    padding: 3px 8px; border-radius: 999px; font-weight: 600;
   }
   .gallery-card .shot {
     position: relative;
@@ -364,14 +398,14 @@
     box-shadow: var(--shadow-sm);
   }
   .growth-card .when {
-    font-size: 10px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.06em; color: var(--text-3); margin-bottom: 8px;
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-3); margin-bottom: 10px;
   }
   .growth-card .what {
-    font-size: 15px; font-weight: 700; margin-bottom: 6px;
+    font-size: 17px; font-weight: 700; margin-bottom: 8px;
   }
   .growth-card .detail {
-    font-size: 13px; color: var(--text-2); line-height: 1.5;
+    font-size: 14px; color: var(--text-2); line-height: 1.65;
   }
   .growth-card.active { border-color: rgba(255,107,53,0.4); }
   .growth-card.active .when { color: var(--accent); }
@@ -385,17 +419,17 @@
   .limit-card.blocked { border-left: 4px solid var(--critical); }
   .limit-card.partial { border-left: 4px solid var(--warn); }
   .limit-card .label {
-    font-size: 11px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.06em; margin-bottom: 4px;
+    font-size: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; margin-bottom: 6px;
   }
   .limit-card.blocked .label { color: var(--critical); }
   .limit-card.partial .label { color: var(--warn); }
-  .limit-card h3 { margin: 0 0 8px; font-size: 16px; }
-  .limit-card .detail { font-size: 14px; color: var(--text-2); line-height: 1.55; margin-bottom: 8px; }
+  .limit-card h3 { margin: 0 0 10px; font-size: 19px; }
+  .limit-card .detail { font-size: 15px; color: var(--text-2); line-height: 1.7; margin-bottom: 10px; }
   .limit-card .blocker {
-    font-size: 12px; font-family: 'JetBrains Mono', monospace;
-    background: var(--surface-2); padding: 8px 12px; border-radius: 6px;
-    color: var(--text-2); margin-top: 8px;
+    font-size: 13px; font-family: 'JetBrains Mono', monospace;
+    background: var(--surface-2); padding: 10px 14px; border-radius: 6px;
+    color: var(--text-2); margin-top: 10px; line-height: 1.55;
   }
 
   /* Widget catalog section */
@@ -406,14 +440,14 @@
     display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center;
   }
   .catalog-hero h3 {
-    margin: 0 0 6px; font-size: 18px; font-weight: 700;
+    margin: 0 0 8px; font-size: 20px; font-weight: 700;
   }
-  .catalog-hero p { margin: 0; font-size: 14px; color: var(--text-2); }
+  .catalog-hero p { margin: 0; font-size: 15px; color: var(--text-2); line-height: 1.65; }
   .catalog-hero .cta {
     display: inline-flex; align-items: center; gap: 8px;
     background: var(--accent); color: white;
-    padding: 12px 22px; border-radius: 10px;
-    text-decoration: none; font-weight: 700; font-size: 14px;
+    padding: 14px 24px; border-radius: 10px;
+    text-decoration: none; font-weight: 700; font-size: 15px;
     transition: transform .15s ease, box-shadow .15s ease;
     white-space: nowrap;
   }
@@ -438,22 +472,22 @@
     transform: translateX(2px);
   }
   .widget-card .icon {
-    width: 36px; height: 36px;
+    width: 40px; height: 40px;
     background: rgba(255,107,53,0.1); color: var(--accent);
     border-radius: 8px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 16px;
+    font-size: 18px;
   }
   .widget-card .info .name {
     font-family: 'JetBrains Mono', monospace;
-    font-weight: 700; font-size: 13px; color: var(--text);
-    margin-bottom: 2px;
+    font-weight: 700; font-size: 14px; color: var(--text);
+    margin-bottom: 3px;
   }
   .widget-card .info .desc {
-    font-size: 12px; color: var(--text-2); line-height: 1.4;
+    font-size: 13px; color: var(--text-2); line-height: 1.55;
   }
   .widget-card .arrow {
-    color: var(--text-3); font-size: 16px; font-weight: 700;
+    color: var(--text-3); font-size: 18px; font-weight: 700;
   }
   .widget-card:hover .arrow { color: var(--accent); }
 
@@ -467,45 +501,45 @@
     background: var(--surface);
     border: 1.5px solid var(--border-strong);
     border-radius: var(--radius);
-    padding: 22px 26px;
+    padding: 26px 30px;
     box-shadow: var(--shadow-sm);
     z-index: 2;
   }
   .tl-box .tl-hdr {
     display: flex; align-items: baseline; justify-content: space-between;
-    margin-bottom: 12px; flex-wrap: wrap; gap: 12px;
+    margin-bottom: 14px; flex-wrap: wrap; gap: 14px;
   }
   .tl-box .tl-title {
-    font-size: 20px; font-weight: 800;
-    letter-spacing: -0.015em;
+    font-size: 24px; font-weight: 800;
+    letter-spacing: -0.005em;
   }
   .tl-box .tl-role {
-    font-size: 11px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.08em; padding: 4px 10px; border-radius: 999px;
+    font-size: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; padding: 5px 12px; border-radius: 999px;
   }
   .tl-box .tl-tagline {
-    font-size: 14px; color: var(--text-2);
-    margin-bottom: 16px; line-height: 1.55;
+    font-size: 16px; color: var(--text-2);
+    margin-bottom: 20px; line-height: 1.7;
   }
   .tl-box .tl-tagline strong { color: var(--text); font-weight: 700; }
   .tl-box .tl-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 10px;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 12px;
   }
   .tl-item {
     background: var(--surface-2);
     border: 1px solid var(--border);
     border-radius: 8px;
-    padding: 10px 12px;
-    font-size: 13px;
+    padding: 12px 14px;
+    font-size: 14px;
   }
   .tl-item .key {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 12px; font-weight: 700;
-    color: var(--text); margin-bottom: 2px;
+    font-size: 13px; font-weight: 700;
+    color: var(--text); margin-bottom: 4px;
   }
   .tl-item .val {
-    font-size: 12px; color: var(--text-2); line-height: 1.45;
+    font-size: 13px; color: var(--text-2); line-height: 1.55;
   }
 
   .tl-box.playbook {
@@ -535,45 +569,152 @@
 
   .tl-arrow {
     align-self: center;
-    margin: 8px 0;
+    margin: 10px 0;
     background: var(--surface);
     border: 1px solid var(--border-strong);
-    padding: 4px 12px;
+    padding: 6px 14px;
     border-radius: 999px;
-    font-size: 11px; font-weight: 700;
+    font-size: 12px; font-weight: 700;
     color: var(--text-2);
     letter-spacing: 0.06em; text-transform: uppercase;
     position: relative; z-index: 3;
     display: inline-flex; align-items: center; gap: 6px;
   }
   .tl-arrow::before {
-    content: '↓'; color: var(--accent); font-size: 14px; font-weight: 800;
+    content: '↓'; color: var(--accent); font-size: 16px; font-weight: 800;
   }
 
   .tl-relationships {
-    margin-top: 28px;
+    margin-top: 32px;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 22px 26px;
+    padding: 26px 30px;
     box-shadow: var(--shadow-sm);
   }
   .tl-relationships h4 {
-    margin: 0 0 12px; font-size: 13px;
+    margin: 0 0 14px; font-size: 14px;
     text-transform: uppercase; letter-spacing: 0.08em;
     color: var(--text-3);
   }
   .tl-rel-grid {
-    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px;
   }
   .tl-rel-card {
-    padding: 12px 14px;
+    padding: 14px 16px; font-size: 14px; line-height: 1.65;
     border-left: 3px solid var(--accent);
     background: var(--surface-2);
     border-radius: 0 8px 8px 0;
+    color: var(--text-2);
+  }
+  .tl-rel-card strong { color: var(--text); font-weight: 700; display: block; margin-bottom: 6px; font-size: 15px; }
+
+  /* Primitives layer detail */
+  .primitives-split {
+    display: grid; grid-template-columns: 1.3fr 1fr; gap: 18px;
+    margin-top: 12px;
+  }
+  .prim-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 22px;
+  }
+  .prim-card-title {
+    font-size: 16px; font-weight: 700; margin-bottom: 8px;
+    color: var(--text);
+  }
+  .prim-card-desc {
+    font-size: 14px; color: var(--text-2); line-height: 1.65;
+    margin-bottom: 14px;
+  }
+  .prim-card-desc strong { color: var(--text); font-weight: 700; }
+
+  .prim-hierarchy {
+    display: flex; flex-direction: column; gap: 0;
+    margin: 14px 0 18px;
+  }
+  .prim-h-row {
+    display: grid;
+    grid-template-columns: 28px 130px auto 1fr;
+    gap: 12px; align-items: center;
+    padding: 10px 14px; border-radius: 8px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .prim-h-row.prim-h-skill { border-color: rgba(16,185,129,0.4); background: rgba(16,185,129,0.06); }
+  .prim-h-row.prim-h-op    { border-color: rgba(3,169,244,0.4);  background: rgba(3,169,244,0.06); }
+  .prim-h-row.prim-h-api   { border-color: rgba(255,107,53,0.4); background: rgba(255,107,53,0.06); }
+  .prim-h-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px; font-weight: 800;
+    color: var(--text-3); text-align: center;
+  }
+  .prim-h-label {
+    font-weight: 700; font-size: 14px; color: var(--text);
+  }
+  .prim-h-count {
+    font-size: 12px; color: var(--text-2); font-weight: 600;
+    background: var(--surface);
+    padding: 3px 10px; border-radius: 999px;
+    border: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .prim-h-desc {
     font-size: 13px; color: var(--text-2);
   }
-  .tl-rel-card strong { color: var(--text); font-weight: 700; display: block; margin-bottom: 4px; }
+  .prim-h-desc code, .prim-card-desc code {
+    background: rgba(15,23,42,0.06); padding: 2px 6px;
+    border-radius: 4px; font-size: 0.9em;
+  }
+  .prim-h-arrow {
+    align-self: center; padding: 4px 0;
+    font-size: 11px; font-weight: 700;
+    color: var(--text-3); letter-spacing: 0.08em; text-transform: uppercase;
+    margin-left: 60px; position: relative;
+  }
+  .prim-h-arrow::before {
+    content: '↓'; color: var(--accent); margin-right: 6px; font-size: 14px;
+  }
+
+  .prim-example {
+    background: var(--surface-2);
+    border-left: 3px solid var(--accent);
+    padding: 12px 16px; border-radius: 0 8px 8px 0;
+    font-size: 13px; line-height: 1.65;
+    color: var(--text-2); margin-bottom: 16px;
+  }
+  .prim-example strong { color: var(--text); font-weight: 700; }
+  .prim-example code {
+    background: var(--surface); padding: 2px 6px; border-radius: 4px;
+    font-size: 0.92em; color: var(--text);
+  }
+
+  .prim-skills-list-label {
+    font-size: 12px; color: var(--text-3); text-transform: uppercase;
+    letter-spacing: 0.06em; font-weight: 700; margin-bottom: 10px;
+  }
+  .prim-skills-grid {
+    display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px;
+  }
+  .prim-skill-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; padding: 4px 9px; border-radius: 6px;
+    background: var(--surface); border: 1px solid var(--border-strong);
+    color: var(--text);
+  }
+  .prim-skill-tag.prim-skill-tag-blocked {
+    background: var(--critical-bg); border-color: rgba(185,28,28,0.3);
+    color: var(--critical);
+  }
+  .prim-skills-list-note {
+    font-size: 12px; color: var(--text-3); line-height: 1.5;
+  }
+  .prim-skills-list-note code {
+    background: rgba(15,23,42,0.05); padding: 1px 5px; border-radius: 3px;
+  }
+  .prim-skills-list-note a { color: var(--accent); }
 
   @media (max-width: 720px) {
     .gallery { grid-template-columns: 1fr; }
@@ -581,6 +722,10 @@
     .widget-grid { grid-template-columns: 1fr; }
     .catalog-hero { grid-template-columns: 1fr; }
     .tl-rel-grid { grid-template-columns: 1fr; }
+    .primitives-split { grid-template-columns: 1fr; }
+    .prim-h-row { grid-template-columns: 24px 1fr; }
+    .prim-h-row > :nth-child(3), .prim-h-row > :nth-child(4) { grid-column: 2; padding-left: 0; }
+    .prim-h-arrow { margin-left: 0; text-align: center; }
   }
 </style>
 </head>
@@ -609,7 +754,7 @@
   <span class="eyebrow">AI Demo Architecture · v3</span>
   <h1>Dashboard <span class="accent">Builder</span> · 對話即時組裝、真實雲端資料、widget 一致視覺</h1>
   <p class="lede">
-    Claude Code 在對話中編排 RD 的 <span class="hl">13 個 data skill</span> + <span class="hl">1 個 dashboard-builder skill</span>，把真實 EnGenius Cloud 資料即時組成客製 dashboard。「<span class="hl">即時組成</span>」是 wedge——不是預先做好的模板，而是訪客問問題的當下，AI 才決定 dashboard 長什麼樣。
+    Claude Code 在對話中編排 RD 的 <span class="hl">13 個 data skill</span> + <span class="hl">1 個 dashboard-builder skill</span>，把真實 EnGenius Cloud 資料即時組成客製 dashboard。「<span class="hl">即時組成</span>」是我們的 <span class="term" data-def="wedge product = 切入市場的楔子；產品定位用詞，指最小可贏的競爭差異點">wedge</span>——不是預先做好的模板，而是訪客問問題的當下，AI 才決定 dashboard 長什麼樣。
   </p>
 </header>
 
@@ -768,22 +913,88 @@
       <div class="tl-tagline">
         <strong>原料層</strong>——可執行的零件。每個 primitive 自己不知道「會被組成什麼 dashboard」，只負責「做好自己這一件事」。改 primitive 不需要管 Orchestration / Playbook。
       </div>
-      <div class="tl-grid">
-        <div class="tl-item">
-          <div class="key">13 data skills</div>
-          <div class="val">init-orgs / hvs / networks / org-devices / org-licenses / team-members / org-backups / network-groups / network-templates / engenius-env + 3 troubleshoot (規劃中)</div>
+
+      <h4 style="margin: 4px 0 12px; font-size: 13px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em;">兩種 Primitive</h4>
+
+      <div class="primitives-split">
+        <div class="prim-card">
+          <div class="prim-card-title">A · 資料來源（撈雲端）</div>
+          <div class="prim-card-desc">把 EnGenius Cloud 的 HTTP API 包裝成 Claude 能呼叫的形式。<strong>三層階層</strong>：</div>
+          <div class="prim-hierarchy">
+            <div class="prim-h-row prim-h-skill">
+              <span class="prim-h-num">①</span>
+              <span class="prim-h-label">Skill</span>
+              <span class="prim-h-count">13 個</span>
+              <span class="prim-h-desc">業務邊界 · e.g. <code>org-devices</code></span>
+            </div>
+            <div class="prim-h-arrow">contains</div>
+            <div class="prim-h-row prim-h-op">
+              <span class="prim-h-num">②</span>
+              <span class="prim-h-label">Operation</span>
+              <span class="prim-h-count">~46 可執行 + 47 規劃中</span>
+              <span class="prim-h-desc">單一動作 · e.g. <code>get_inventory</code></span>
+            </div>
+            <div class="prim-h-arrow">wraps</div>
+            <div class="prim-h-row prim-h-api">
+              <span class="prim-h-num">③</span>
+              <span class="prim-h-label">Cloud API endpoint</span>
+              <span class="prim-h-count">真實 HTTP</span>
+              <span class="prim-h-desc"><code>GET /v2/orgs/{orgId}/inventory</code></span>
+            </div>
+          </div>
+          <div class="prim-example">
+            <strong>具體例</strong>：Claude 想撈設備清單 → 呼叫 skill <code>org-devices</code> 的 op <code>get_inventory</code> → skill 內部打 <code>GET /v2/orgs/.../inventory</code> 到 falcon.staging.engenius.ai → 回傳 JSON。Claude 不需要直接認識 HTTP endpoint，只需要知道有 op 可以叫。
+          </div>
+          <div class="prim-skills-list">
+            <div class="prim-skills-list-label">13 個 skill 各自包多少 op（粗估）：</div>
+            <div class="prim-skills-grid">
+              <span class="prim-skill-tag">init-orgs · 2</span>
+              <span class="prim-skill-tag">hvs · 1</span>
+              <span class="prim-skill-tag">networks · 8</span>
+              <span class="prim-skill-tag">org-devices · 9</span>
+              <span class="prim-skill-tag">org-licenses · 6</span>
+              <span class="prim-skill-tag">team-members · 5</span>
+              <span class="prim-skill-tag">org-backups · 5</span>
+              <span class="prim-skill-tag">org-network-groups · 4</span>
+              <span class="prim-skill-tag">org-network-templates · 6</span>
+              <span class="prim-skill-tag">engenius-env · 1</span>
+              <span class="prim-skill-tag prim-skill-tag-blocked">network-ap-troubleshoot · 25 🔴</span>
+              <span class="prim-skill-tag prim-skill-tag-blocked">network-gateway-troubleshoot · 15 🔴</span>
+              <span class="prim-skill-tag prim-skill-tag-blocked">network-switch-troubleshoot · 7 🔴</span>
+            </div>
+            <div class="prim-skills-list-note">🔴 = SKILL.md 規格已寫好但缺 <code>scripts/</code> 實作，目前不可呼叫。詳見 <a href="docs/rd-priorities.md">rd-priorities.md</a>。</div>
+          </div>
         </div>
-        <div class="tl-item">
-          <div class="key">compose.py</div>
-          <div class="val">spec JSON → HTML</div>
-        </div>
-        <div class="tl-item">
-          <div class="key">10 widgets</div>
-          <div class="val">alert / kpi_grid / table / bar_list / donut / gauge / chip_strip / topology_tree / timeline / heatmap</div>
-        </div>
-        <div class="tl-item">
-          <div class="key">theme tokens + base.css</div>
-          <div class="val">設計變數 · 一改全 dashboard 升級</div>
+
+        <div class="prim-card">
+          <div class="prim-card-title">B · 渲染引擎（出 dashboard）</div>
+          <div class="prim-card-desc">把 Claude 寫的 spec JSON + 撈到的 data，合成成可互動的 HTML。</div>
+          <div class="tl-grid" style="margin-top: 12px;">
+            <div class="tl-item">
+              <div class="key">dashboard-builder skill</div>
+              <div class="val">1 個（本 session 新增的）。負責整套 HTML 合成。</div>
+            </div>
+            <div class="tl-item">
+              <div class="key">compose.py</div>
+              <div class="val">入口 script · spec JSON → 自包含 HTML</div>
+            </div>
+            <div class="tl-item">
+              <div class="key">10 個 widget</div>
+              <div class="val">alert / kpi_grid / table / bar_list / donut / gauge / chip_strip / topology_tree / timeline / heatmap</div>
+            </div>
+            <div class="tl-item">
+              <div class="key">theme tokens + base.css</div>
+              <div class="val">設計變數 · 一改全 dashboard 升級</div>
+            </div>
+            <div class="tl-item">
+              <div class="key">runtime.js</div>
+              <div class="val">5 秒 polling + 跨 widget event bus</div>
+            </div>
+            <div class="tl-item">
+              <div class="key">references/*.md</div>
+              <div class="val">widget 規格文件（給 Claude 看）</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
