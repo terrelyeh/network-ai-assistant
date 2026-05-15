@@ -457,11 +457,130 @@
   }
   .widget-card:hover .arrow { color: var(--accent); }
 
+  /* 3-layer diagram */
+  .three-layers {
+    display: flex; flex-direction: column; gap: 0;
+    position: relative;
+  }
+  .tl-box {
+    position: relative;
+    background: var(--surface);
+    border: 1.5px solid var(--border-strong);
+    border-radius: var(--radius);
+    padding: 22px 26px;
+    box-shadow: var(--shadow-sm);
+    z-index: 2;
+  }
+  .tl-box .tl-hdr {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 12px; flex-wrap: wrap; gap: 12px;
+  }
+  .tl-box .tl-title {
+    font-size: 20px; font-weight: 800;
+    letter-spacing: -0.015em;
+  }
+  .tl-box .tl-role {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; padding: 4px 10px; border-radius: 999px;
+  }
+  .tl-box .tl-tagline {
+    font-size: 14px; color: var(--text-2);
+    margin-bottom: 16px; line-height: 1.55;
+  }
+  .tl-box .tl-tagline strong { color: var(--text); font-weight: 700; }
+  .tl-box .tl-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 10px;
+  }
+  .tl-item {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+  .tl-item .key {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; font-weight: 700;
+    color: var(--text); margin-bottom: 2px;
+  }
+  .tl-item .val {
+    font-size: 12px; color: var(--text-2); line-height: 1.45;
+  }
+
+  .tl-box.playbook {
+    background: linear-gradient(135deg, #fff4ee 0%, var(--surface) 60%);
+    border-color: rgba(255,107,53,0.35);
+  }
+  .tl-box.playbook .tl-role {
+    background: rgba(255,107,53,0.15);
+    color: var(--accent);
+  }
+  .tl-box.orchestration {
+    background: linear-gradient(135deg, #eaf6fe 0%, var(--surface) 60%);
+    border-color: rgba(3,169,244,0.35);
+  }
+  .tl-box.orchestration .tl-role {
+    background: rgba(3,169,244,0.15);
+    color: var(--cyan);
+  }
+  .tl-box.primitives {
+    background: linear-gradient(135deg, #f0f9f1 0%, var(--surface) 60%);
+    border-color: rgba(16,185,129,0.35);
+  }
+  .tl-box.primitives .tl-role {
+    background: rgba(16,185,129,0.15);
+    color: var(--success);
+  }
+
+  .tl-arrow {
+    align-self: center;
+    margin: 8px 0;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 11px; font-weight: 700;
+    color: var(--text-2);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    position: relative; z-index: 3;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .tl-arrow::before {
+    content: '↓'; color: var(--accent); font-size: 14px; font-weight: 800;
+  }
+
+  .tl-relationships {
+    margin-top: 28px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 26px;
+    box-shadow: var(--shadow-sm);
+  }
+  .tl-relationships h4 {
+    margin: 0 0 12px; font-size: 13px;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--text-3);
+  }
+  .tl-rel-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;
+  }
+  .tl-rel-card {
+    padding: 12px 14px;
+    border-left: 3px solid var(--accent);
+    background: var(--surface-2);
+    border-radius: 0 8px 8px 0;
+    font-size: 13px; color: var(--text-2);
+  }
+  .tl-rel-card strong { color: var(--text); font-weight: 700; display: block; margin-bottom: 4px; }
+
   @media (max-width: 720px) {
     .gallery { grid-template-columns: 1fr; }
     .growth-grid { grid-template-columns: 1fr; }
     .widget-grid { grid-template-columns: 1fr; }
     .catalog-hero { grid-template-columns: 1fr; }
+    .tl-rel-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -472,6 +591,7 @@
   <div class="links">
     <a href="#wedge">Wedge</a>
     <a href="#layers">5 Layers</a>
+    <a href="#three-layers">3 層分工</a>
     <a href="#widget">What is a widget</a>
     <a href="#catalog">Widget Catalog</a>
     <a href="#library-growth">Library 哲學</a>
@@ -570,6 +690,132 @@
       <div class="owner">artifacts<span class="pill">filesystem</span></div>
     </div>
   </div>
+</section>
+
+<section id="three-layers">
+  <h2><span class="num-tag">02b</span>3 層分工 · Playbook · Orchestration · Primitives</h2>
+  <p class="section-lede">
+    把 5 層 stack 換一個角度看：依「<strong>誰擁有 / 誰決定 / 誰被組合</strong>」分成 3 層職責。<span class="hl-accent">Claude Code 是中間的 Orchestration 層，本身就是 agent</span>——我們不需要在它之上再蓋「scenario skill」層，那會凍結用法、殺掉 wedge。
+  </p>
+
+  <div class="three-layers">
+
+    <div class="tl-box playbook">
+      <div class="tl-hdr">
+        <div class="tl-title">📚 Playbook</div>
+        <div class="tl-role">read-only · 給 Claude 看</div>
+      </div>
+      <div class="tl-tagline">
+        <strong>知識層</strong>——非執行體，純粹是 markdown 文件。Claude 在對話中讀這些文件，學會「該怎麼想」「該選哪個 widget」「常見情境長怎樣」。改 playbook = 改 Claude 行為，不用改程式碼。
+      </div>
+      <div class="tl-grid">
+        <div class="tl-item">
+          <div class="key">widget reference docs</div>
+          <div class="val">10 份 · 每個 widget 的 schema / 何時用 / 範例</div>
+        </div>
+        <div class="tl-item">
+          <div class="key">spec examples</div>
+          <div class="val">5 份 · 已驗證的 dashboard spec JSON 模板</div>
+        </div>
+        <div class="tl-item">
+          <div class="key">scenario candidates</div>
+          <div class="val">10 個故事候選 + 可行性分級</div>
+        </div>
+        <div class="tl-item">
+          <div class="key">booth cheat sheet</div>
+          <div class="val">展會主秀腳本 + fallback 戲</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-arrow">informs (Claude 讀文件)</div>
+
+    <div class="tl-box orchestration">
+      <div class="tl-hdr">
+        <div class="tl-title">🧠 Orchestration</div>
+        <div class="tl-role">decides · 即時組裝</div>
+      </div>
+      <div class="tl-tagline">
+        <strong>決策層</strong>——Claude Code 本身。每次訪客問問題，Claude 在對話中即時：理解意圖 → 選哪些 skill 要呼叫 → 拼 spec JSON → 呼叫 compose。<strong>不存在「scenario skill」這種東西</strong>，因為 Claude 就是那一層。
+      </div>
+      <div class="tl-grid">
+        <div class="tl-item">
+          <div class="key">read intent</div>
+          <div class="val">從對話讀出訪客真正關心什麼</div>
+        </div>
+        <div class="tl-item">
+          <div class="key">pick data skills</div>
+          <div class="val">從 13 個 RD skill 挑要呼叫的 op</div>
+        </div>
+        <div class="tl-item">
+          <div class="key">compose spec</div>
+          <div class="val">寫 ~150 行 JSON 描述 dashboard 形狀</div>
+        </div>
+        <div class="tl-item">
+          <div class="key">invoke + log</div>
+          <div class="val">呼叫 compose.py + append manifest</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tl-arrow">calls (執行 skill / compose)</div>
+
+    <div class="tl-box primitives">
+      <div class="tl-hdr">
+        <div class="tl-title">🔧 Primitives</div>
+        <div class="tl-role">RD-owned · executable</div>
+      </div>
+      <div class="tl-tagline">
+        <strong>原料層</strong>——可執行的零件。每個 primitive 自己不知道「會被組成什麼 dashboard」，只負責「做好自己這一件事」。改 primitive 不需要管 Orchestration / Playbook。
+      </div>
+      <div class="tl-grid">
+        <div class="tl-item">
+          <div class="key">13 data skills</div>
+          <div class="val">init-orgs / hvs / networks / org-devices / org-licenses / team-members / org-backups / network-groups / network-templates / engenius-env + 3 troubleshoot (規劃中)</div>
+        </div>
+        <div class="tl-item">
+          <div class="key">compose.py</div>
+          <div class="val">spec JSON → HTML</div>
+        </div>
+        <div class="tl-item">
+          <div class="key">10 widgets</div>
+          <div class="val">alert / kpi_grid / table / bar_list / donut / gauge / chip_strip / topology_tree / timeline / heatmap</div>
+        </div>
+        <div class="tl-item">
+          <div class="key">theme tokens + base.css</div>
+          <div class="val">設計變數 · 一改全 dashboard 升級</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="tl-relationships">
+    <h4>3 層之間的關係</h4>
+    <div class="tl-rel-grid">
+      <div class="tl-rel-card">
+        <strong>Playbook ➡ Orchestration</strong>
+        Claude 啟動對話時讀 playbook（widget docs / spec examples / scenario candidates），知道「能用什麼 / 過去怎麼用」。改 markdown 就能微調 Claude 行為。
+      </div>
+      <div class="tl-rel-card">
+        <strong>Orchestration ➡ Primitives</strong>
+        Claude 用 shell 呼叫 RD data skill 拿 JSON、寫 spec、呼叫 compose 出 HTML。Primitives 不知道是誰呼叫它的。
+      </div>
+      <div class="tl-rel-card">
+        <strong>Primitives ⇆ Primitives</strong>
+        各 primitive <em>互不相識</em>——data skill 不知道 widget 存在、widget 不知道 cloud API 存在。Theme token 是唯一跨 widget 的耦合（且是 read-only）。
+      </div>
+    </div>
+  </div>
+
+  <h3 style="margin-top: 28px;">為什麼分這 3 層 vs 不分</h3>
+  <p>有些 SaaS 會把所有業務情境包成「scenario skill」（例如 <code>org-health-overview</code> = 撈 5 個 API + 預設 view）。我們<strong>故意不做這層</strong>，因為：</p>
+  <ol>
+    <li><strong>觀眾識破</strong>——「預設好的 view」跟現有 cloud GUI 沒兩樣，wedge 故事死。</li>
+    <li><strong>加新情境成本高</strong>——每加一個情境就要寫一個 scenario skill + 部署。</li>
+    <li><strong>Claude 已經很會了</strong>——對話 + playbook docs 足以讓它即時組合，不需要寫死。</li>
+  </ol>
+  <p>反過來說，如果情境需要「<strong>確定性</strong>」（同樣的問題每次出來完全相同的 dashboard），就退化為「直接 compose 既有 spec」——但這應該是<em>例外</em>，不是<em>常態</em>。</p>
 </section>
 
 <section id="widget">
@@ -861,6 +1107,18 @@
         </div>
       </div>
       <div class="shot"><img src="assets/canvas-shots/cross-org-reallocation.png" alt="Cross-Org Reallocation"><span class="open-hint">開啟 →</span></div>
+    </a>
+
+    <a class="gallery-card" href="prototype/canvas-org-health-dark-20260516-012500.html">
+      <div class="meta">
+        <h3>S3 · Org 健康總覽 <span style="background:#1a2d4d;color:#00d9c5;padding:2px 8px;border-radius:6px;font-size:10px;font-family:'JetBrains Mono',monospace;margin-left:6px;">--theme dark</span></h3>
+        <div class="sub">同樣 spec、同樣資料、同樣 widget——只是 <code>compose.py --theme dark</code>。證明 theme variant 完全可切換。</div>
+        <div class="ops">spec: org-health.spec.json · theme: tokens-dark.css</div>
+        <div class="widgets">
+          <span class="tag" style="background:rgba(0,217,197,0.15);color:#00d9c5">theme variant demo</span>
+        </div>
+      </div>
+      <div class="shot"><img src="assets/canvas-shots/org-health-dark.png" alt="Org Health Dark Mode"><span class="open-hint">開啟 →</span></div>
     </a>
   </div>
 

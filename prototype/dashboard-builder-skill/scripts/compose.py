@@ -22,10 +22,17 @@ def read(p: Path) -> str:
     return p.read_text(encoding="utf-8")
 
 
-def assemble_theme() -> str:
-    parts = []
-    for f in ["tokens.css", "base.css"]:
-        parts.append(f"/* === theme/{f} === */\n" + read(THEME_DIR / f))
+def assemble_theme(variant: str = "light") -> str:
+    """Assemble theme CSS. `variant` picks tokens-<variant>.css; falls back to
+    tokens.css for 'light' / default."""
+    tokens_file = "tokens.css" if variant == "light" else f"tokens-{variant}.css"
+    tokens_path = THEME_DIR / tokens_file
+    if not tokens_path.exists():
+        raise FileNotFoundError(f"Theme variant '{variant}' not found: {tokens_path}")
+    parts = [
+        f"/* === theme/{tokens_file} === */\n" + read(tokens_path),
+        f"/* === theme/base.css === */\n" + read(THEME_DIR / "base.css"),
+    ]
     return "\n".join(parts)
 
 
@@ -85,7 +92,7 @@ def validate_spec(spec: dict) -> None:
             raise ValueError(f"sections[{i}].widget '{w}' not found at {path}")
 
 
-def compose(spec: dict) -> str:
+def compose(spec: dict, theme: str = "light") -> str:
     validate_spec(spec)
     title = spec.get("title", "Dashboard")
     subtitle = spec.get("subtitle", "")
@@ -94,7 +101,7 @@ def compose(spec: dict) -> str:
     footer = spec.get("footer", {})
 
     # Theme + runtime
-    theme_css = assemble_theme()
+    theme_css = assemble_theme(theme)
     runtime_js = read(RUNTIME_DIR / "runtime.js")
 
     # Collect widget assets, deduped by widget name
@@ -196,11 +203,12 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--spec", required=True, help="Path to spec JSON file")
     ap.add_argument("--out", required=True, help="Output HTML path")
+    ap.add_argument("--theme", default="light", help="Theme variant: 'light' (default) or 'dark' (uses tokens-dark.css)")
     args = ap.parse_args()
 
     spec = json.loads(Path(args.spec).read_text(encoding="utf-8"))
     try:
-        html = compose(spec)
+        html = compose(spec, theme=args.theme)
     except (ValueError, FileNotFoundError) as e:
         print(f"ERROR: {e}", file=sys.stderr)
         sys.exit(1)
