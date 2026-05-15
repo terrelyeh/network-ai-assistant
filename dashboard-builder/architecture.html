@@ -56,8 +56,61 @@
   nav .links a { color: var(--text-2); text-decoration: none; font-weight: 500; }
   nav .links a:hover { color: var(--accent); }
 
-  /* Wrap */
-  .wrap { max-width: 1100px; margin: 0 auto; padding: 48px 32px 96px; }
+  /* Layout: sticky TOC left + main content */
+  .layout-grid {
+    max-width: 1380px; margin: 0 auto;
+    padding: 32px 32px 96px;
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 56px;
+    align-items: start;
+  }
+  main.content { min-width: 0; max-width: 880px; }
+
+  /* TOC sidebar */
+  aside.toc {
+    position: sticky; top: 72px;
+    align-self: start;
+    max-height: calc(100vh - 96px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 8px 0;
+    /* Subtle scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+  }
+  aside.toc::-webkit-scrollbar { width: 4px; }
+  aside.toc::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 2px; }
+
+  .toc-inner { padding: 4px 0; }
+  .toc-section {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--text-3);
+    margin: 8px 0 10px; padding: 0 14px;
+  }
+  .toc-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 14px; margin: 1px 0;
+    border-left: 2px solid transparent;
+    font-size: 13.5px; font-weight: 500;
+    color: var(--text-2); text-decoration: none;
+    transition: all .14s ease;
+    line-height: 1.4;
+  }
+  .toc-item:hover {
+    color: var(--accent); background: rgba(255,107,53,0.05);
+  }
+  .toc-item.active {
+    color: var(--accent); background: rgba(255,107,53,0.08);
+    border-left-color: var(--accent); font-weight: 700;
+  }
+  .toc-item .toc-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--text-3);
+    flex-shrink: 0; min-width: 28px;
+    font-weight: 600;
+  }
+  .toc-item.active .toc-num { color: var(--accent); }
 
   /* Hero */
   .hero { margin-bottom: 56px; }
@@ -716,6 +769,13 @@
   }
   .prim-skills-list-note a { color: var(--accent); }
 
+  /* Collapse sidebar on narrow viewports */
+  @media (max-width: 960px) {
+    .layout-grid { grid-template-columns: 1fr; gap: 0; padding: 32px 24px 96px; }
+    aside.toc { display: none; }
+    main.content { max-width: 100%; }
+  }
+
   @media (max-width: 720px) {
     .gallery { grid-template-columns: 1fr; }
     .growth-grid { grid-template-columns: 1fr; }
@@ -748,9 +808,29 @@
   </div>
 </nav>
 
-<div class="wrap">
+<div class="layout-grid">
 
-<header class="hero">
+<aside class="toc" id="toc">
+  <div class="toc-inner">
+    <div class="toc-section">On this page</div>
+    <a class="toc-item" href="#overview" data-target="overview">概觀 Overview</a>
+    <a class="toc-item" href="#wedge" data-target="wedge"><span class="toc-num">01</span> 兩個無法妥協的原則</a>
+    <a class="toc-item" href="#layers" data-target="layers"><span class="toc-num">02</span> 5 層架構</a>
+    <a class="toc-item" href="#three-layers" data-target="three-layers"><span class="toc-num">02b</span> 3 層分工</a>
+    <a class="toc-item" href="#widget" data-target="widget"><span class="toc-num">03</span> 什麼是 Widget</a>
+    <a class="toc-item" href="#catalog" data-target="catalog"><span class="toc-num">03b</span> Widget Catalog</a>
+    <a class="toc-item" href="#library-growth" data-target="library-growth"><span class="toc-num">03c</span> Library 哲學</a>
+    <a class="toc-item" href="#gallery" data-target="gallery"><span class="toc-num">03d</span> 範例 Gallery</a>
+    <a class="toc-item" href="#howto" data-target="howto"><span class="toc-num">04</span> 怎麼用</a>
+    <a class="toc-item" href="#flow" data-target="flow"><span class="toc-num">05</span> Demo Flow</a>
+    <a class="toc-item" href="#limits" data-target="limits"><span class="toc-num">06</span> 資料層限制</a>
+    <a class="toc-item" href="#status" data-target="status"><span class="toc-num">07</span> Status</a>
+  </div>
+</aside>
+
+<main class="content">
+
+<header class="hero" id="overview">
   <span class="eyebrow">AI Demo Architecture · v3</span>
   <h1>Dashboard <span class="accent">Builder</span> · 對話即時組裝、真實雲端資料、widget 一致視覺</h1>
   <p class="lede">
@@ -1567,11 +1647,86 @@ open http://localhost:58778/dashboard-builder/org-health.html</pre>
   </table>
 </section>
 
+</main>
+
 </div>
 
 <footer>
   AI Demo Architecture v3 · Last updated 2026-05-16 · Network AI-Assistant Proposal Site
 </footer>
+
+<script>
+(() => {
+  // Smooth scroll for both TOC and top-nav anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const target = document.getElementById(a.getAttribute('href').slice(1));
+      if (!target) return;
+      e.preventDefault();
+      const top = target.getBoundingClientRect().top + window.scrollY - 70;
+      window.scrollTo({ top, behavior: 'smooth' });
+      history.replaceState(null, '', a.getAttribute('href'));
+    });
+  });
+
+  // TOC active highlight: IntersectionObserver (fires reliably on any scroll method)
+  const tocItems = document.querySelectorAll('.toc-item');
+  const targets = Array.from(tocItems)
+    .map(i => ({ id: i.dataset.target, el: document.getElementById(i.dataset.target) }))
+    .filter(t => t.el);
+
+  const setActive = (id) => {
+    tocItems.forEach(i => i.classList.toggle('active', i.dataset.target === id));
+  };
+
+  const OFFSET = 120;
+
+  // Strategy: observe each section; when intersecting, store current top.
+  // On every callback, scan all targets fresh and pick the LATEST one
+  // whose top is <= OFFSET (i.e. most recently scrolled past).
+  const intersecting = new Set();
+
+  function pickActive() {
+    let active = targets[0]?.id || 'overview';
+    let bestTop = -Infinity;
+    for (const t of targets) {
+      const top = t.el.getBoundingClientRect().top;
+      if (top <= OFFSET && top > bestTop) {
+        active = t.id;
+        bestTop = top;
+      }
+    }
+    setActive(active);
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) intersecting.add(e.target.id);
+      else intersecting.delete(e.target.id);
+    });
+    pickActive();
+  }, {
+    // Track whenever any part of the section enters/leaves the viewport
+    rootMargin: '0px',
+    threshold: [0, 0.25, 0.5, 0.75, 1]
+  });
+
+  targets.forEach(t => observer.observe(t.el));
+
+  // Fallback: also recompute on scroll + resize (in case IO doesn't fire for some reason)
+  let raf = null;
+  const schedulePick = () => {
+    if (raf) return;
+    raf = requestAnimationFrame(() => { raf = null; pickActive(); });
+  };
+  window.addEventListener('scroll', schedulePick, { passive: true });
+  window.addEventListener('resize', schedulePick, { passive: true });
+  document.addEventListener('scroll', schedulePick, { passive: true, capture: true });
+
+  // Initial pick
+  pickActive();
+})();
+</script>
 
 </body>
 </html>
