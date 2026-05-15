@@ -682,7 +682,7 @@
         <div class="title">Browser + Filesystem（觀眾看到的東西）</div>
         <div class="desc">
           <code>prototype/live-data/*.json</code> ← Claude 寫、dashboard 讀<br>
-          <code>prototype/canvas-*.html</code> ← Claude compose 出來<br>
+          <code>dashboard-builder/canvas-name.html</code> ← Claude compose 出來<br>
           <code>prototype/generated-log.html</code> ← 每生一張，這裡跳一條 log<br>
           static HTTP server + 瀏覽器 + 內建 setInterval 5s poll
         </div>
@@ -1049,7 +1049,7 @@
   </p>
 
   <div class="gallery">
-    <a class="gallery-card" href="prototype/canvas-org-health-v2-20260516-000512.html">
+    <a class="gallery-card" href="org-health.html">
       <div class="meta">
         <h3>S3 · Org 健康總覽</h3>
         <div class="sub">設備、license、人員 + 跨 org 樹狀結構，給 IT manager 看「整體健康」</div>
@@ -1058,10 +1058,10 @@
           <span class="tag">alert</span><span class="tag">kpi_grid</span><span class="tag">table×2</span><span class="tag">bar_list</span><span class="tag">chip_strip</span><span class="tag">topology_tree</span>
         </div>
       </div>
-      <div class="shot"><img src="assets/canvas-shots/org-health.png" alt="Org Health"><span class="open-hint">開啟 →</span></div>
+      <div class="shot"><img src="assets/shots/org-health.png" alt="Org Health"><span class="open-hint">開啟 →</span></div>
     </a>
 
-    <a class="gallery-card" href="prototype/canvas-offboarding-audit-20260516-003016.html">
+    <a class="gallery-card" href="offboarding-audit.html">
       <div class="meta">
         <h3>S4 · Off-boarding Compliance Audit</h3>
         <div class="sub">SOC2/ISO27001 視角 · 找出 1+ 年沒登入仍持有 network 權限的帳號</div>
@@ -1070,10 +1070,10 @@
           <span class="tag">alert</span><span class="tag">kpi_grid</span><span class="tag">table×2</span><span class="tag">chip_strip</span>
         </div>
       </div>
-      <div class="shot"><img src="assets/canvas-shots/offboarding-audit.png" alt="Off-boarding Audit"><span class="open-hint">開啟 →</span></div>
+      <div class="shot"><img src="assets/shots/offboarding-audit.png" alt="Off-boarding Audit"><span class="open-hint">開啟 →</span></div>
     </a>
 
-    <a class="gallery-card" href="prototype/canvas-license-renewal-20260516-003624.html">
+    <a class="gallery-card" href="license-renewal.html">
       <div class="meta">
         <h3>S5 · License Renewal Planning</h3>
         <div class="sub">跨 org timeline · 規劃 license 續約優先序 + 視覺化過期分布</div>
@@ -1082,10 +1082,10 @@
           <span class="tag">alert</span><span class="tag">kpi_grid</span><span class="tag" style="background:rgba(76,153,82,0.15);color:var(--success)">timeline (new)</span><span class="tag">bar_list</span><span class="tag">table</span>
         </div>
       </div>
-      <div class="shot"><img src="assets/canvas-shots/license-renewal.png" alt="License Renewal"><span class="open-hint">開啟 →</span></div>
+      <div class="shot"><img src="assets/shots/license-renewal.png" alt="License Renewal"><span class="open-hint">開啟 →</span></div>
     </a>
 
-    <a class="gallery-card" href="prototype/canvas-multi-org-governance-20260516-004918.html">
+    <a class="gallery-card" href="multi-org-governance.html">
       <div class="meta">
         <h3>S2 · Multi-Org Governance Audit</h3>
         <div class="sub">MSP/Partner 視角 · 跨 5 個 org 的存取健康 + 合規檢視（含 RBAC blocked org 處理）</div>
@@ -1094,10 +1094,10 @@
           <span class="tag">alert</span><span class="tag">kpi_grid</span><span class="tag" style="background:rgba(76,153,82,0.15);color:var(--success)">donut×2 (new)</span><span class="tag">topology_tree</span><span class="tag">chip_strip</span><span class="tag">table</span>
         </div>
       </div>
-      <div class="shot"><img src="assets/canvas-shots/multi-org-governance.png" alt="Multi-Org Governance"><span class="open-hint">開啟 →</span></div>
+      <div class="shot"><img src="assets/shots/multi-org-governance.png" alt="Multi-Org Governance"><span class="open-hint">開啟 →</span></div>
     </a>
 
-    <a class="gallery-card" href="prototype/canvas-cross-org-reallocation-20260516-011409.html">
+    <a class="gallery-card" href="cross-org-reallocation.html">
       <div class="meta">
         <h3>S7 · Cross-Org Reallocation Planner</h3>
         <div class="sub">Partner/MSP 視角 · 識別跨 org 設備重新配置機會、license 健康度 gauge、orgs × types heatmap</div>
@@ -1106,10 +1106,10 @@
           <span class="tag">alert</span><span class="tag">kpi_grid</span><span class="tag" style="background:rgba(76,153,82,0.15);color:var(--success)">gauge (new)</span><span class="tag" style="background:rgba(76,153,82,0.15);color:var(--success)">heatmap×2 (new)</span><span class="tag">chip_strip</span><span class="tag">table</span>
         </div>
       </div>
-      <div class="shot"><img src="assets/canvas-shots/cross-org-reallocation.png" alt="Cross-Org Reallocation"><span class="open-hint">開啟 →</span></div>
+      <div class="shot"><img src="assets/shots/cross-org-reallocation.png" alt="Cross-Org Reallocation"><span class="open-hint">開啟 →</span></div>
     </a>
 
-    <a class="gallery-card" href="prototype/canvas-org-health-dark-20260516-012500.html">
+    <a class="gallery-card" href="org-health-dark.html">
       <div class="meta">
         <h3>S3 · Org 健康總覽 <span style="background:#1a2d4d;color:#00d9c5;padding:2px 8px;border-radius:6px;font-size:10px;font-family:'JetBrains Mono',monospace;margin-left:6px;">--theme dark</span></h3>
         <div class="sub">同樣 spec、同樣資料、同樣 widget——只是 <code>compose.py --theme dark</code>。證明 theme variant 完全可切換。</div>
@@ -1118,7 +1118,7 @@
           <span class="tag" style="background:rgba(0,217,197,0.15);color:#00d9c5">theme variant demo</span>
         </div>
       </div>
-      <div class="shot"><img src="assets/canvas-shots/org-health-dark.png" alt="Org Health Dark Mode"><span class="open-hint">開啟 →</span></div>
+      <div class="shot"><img src="assets/shots/org-health-dark.png" alt="Org Health Dark Mode"><span class="open-hint">開啟 →</span></div>
     </a>
   </div>
 
@@ -1154,7 +1154,7 @@
       <div class="step-body">
 <pre>python prototype/dashboard-builder-skill/scripts/compose.py \
   --spec my-spec.json \
-  --out prototype/canvas-&lt;topic&gt;-&lt;TS&gt;.html</pre>
+  --out dashboard-builder/canvas-name.html</pre>
         產出單一 HTML 檔（46KB），自包含所有 widget CSS + JS + runtime。
       </div>
     </li>
@@ -1172,10 +1172,10 @@
   <pre><span class="comment"># 重新跑 examples/org-health.spec.json 產生新 timestamp 的 canvas</span>
 python prototype/dashboard-builder-skill/scripts/compose.py \
   --spec prototype/dashboard-builder-skill/examples/org-health.spec.json \
-  --out prototype/canvas-org-health-$(date +%Y%m%d-%H%M%S).html
+  --out dashboard-builder/org-health-test.html
 
 <span class="comment"># 跑完打開 preview server</span>
-open http://localhost:58778/prototype/canvas-org-health-&lt;TS&gt;.html</pre>
+open http://localhost:58778/dashboard-builder/org-health.html</pre>
 
   <h3>用法三：刷新 live-data 但保留 canvas（最常用）</h3>
   <p>展會中要 demo「live 數字會跳」效果：</p>

@@ -5,9 +5,9 @@
 
 set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-PROTO_DIR="$(dirname "$SCRIPT_DIR")"
+BASE_DIR="$(dirname "$SCRIPT_DIR")"
 SKILLS_DIR="/Users/terrelyeh/Downloads/Temp/network-ai-assistant/api-skills"
-OUT="$PROTO_DIR/live-data/topology.json"
+OUT="$BASE_DIR/live-data/topology.json"
 
 cd "$SKILLS_DIR"
 source .venv/bin/activate
@@ -18,7 +18,7 @@ python3 <<'PY'
 import json, subprocess, os, datetime, sys
 from pathlib import Path
 
-PROTO = Path(os.environ.get("PROTO_DIR", "/Users/terrelyeh/Downloads/Temp/network-ai-assistant/.claude/worktrees/exciting-solomon-eb3388/prototype"))
+PROTO = Path(os.environ.get("BASE_DIR", "/Users/terrelyeh/Downloads/Temp/network-ai-assistant/.claude/worktrees/exciting-solomon-eb3388/dashboard-builder"))
 SKILLS = Path("/Users/terrelyeh/Downloads/Temp/network-ai-assistant/api-skills")
 
 orgs_data = json.loads((PROTO / "live-data/orgs.json").read_text())

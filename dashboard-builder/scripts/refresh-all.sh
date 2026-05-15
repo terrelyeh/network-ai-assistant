@@ -5,9 +5,9 @@
 
 set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-PROTO_DIR="$(dirname "$SCRIPT_DIR")"
+BASE_DIR="$(dirname "$SCRIPT_DIR")"
 SKILLS_DIR="/Users/terrelyeh/Downloads/Temp/network-ai-assistant/api-skills"
-LIVE="$PROTO_DIR/live-data"
+LIVE="$BASE_DIR/live-data"
 
 mkdir -p "$LIVE"
 
@@ -90,7 +90,7 @@ fi
 title "topology (cross-org)"
 # Delegate to existing build script which handles 5 orgs
 if [ -x "$SCRIPT_DIR/build_topology.sh" ]; then
-  PROTO_DIR="$PROTO_DIR" bash "$SCRIPT_DIR/build_topology.sh" >/dev/null 2>&1
+  BASE_DIR="$PROTO_DIR" bash "$SCRIPT_DIR/build_topology.sh" >/dev/null 2>&1
   if [ -f "$LIVE/topology.json" ]; then
     SUMMARY=$(python3 -c "
 import json
@@ -120,6 +120,6 @@ ls -lh "$LIVE"/*.json 2>/dev/null | awk '{print "    " $9 "  " $5 "  " $6 " " $7
 
 # Tip
 echo ""
-echo -e "${DIM}Next:${NC}  open http://localhost:8765/architecture-demo.html"
+echo -e "${DIM}Next:${NC}  open http://localhost:8765/dashboard-builder/architecture.html"
 echo -e "${DIM}      ${NC}  or compose any spec:"
-echo -e "${DIM}      ${NC}  python prototype/dashboard-builder-skill/scripts/compose.py --spec <spec.json> --out <out.html>"
+echo -e "${DIM}      ${NC}  python dashboard-builder/skill/scripts/compose.py --spec <spec.json> --out <out.html>"

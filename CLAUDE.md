@@ -53,7 +53,7 @@ network-ai-assistant/
 │   ├── skill-to-widget-mapping.md          ★ widget ↔ op 對齊文件（含 RD action items）
 │   ├── booth-presenter-cheatsheet.md       ★ 展會操作員 cheat sheet
 │   └── refine-demo-plan.md                 demo refine 互動規劃
-├── prototype/                              ★ Line 2 PoC + 展會用 dashboard
+├── prototype/                              舊版 PoC + 展會用 dashboard（2026-05-13 之前）
 │   ├── canvas.html                         Multi-Org Audit dashboard（真實 staging API）
 │   ├── canvas-network-audit.html           Network Config Audit
 │   ├── canvas-team-access.html             Team Access Audit
@@ -64,9 +64,21 @@ network-ai-assistant/
 │   ├── booth-hospitality.html              預錄 5-phase 飯店場景 demo（純戲劇 backup）
 │   ├── booth-data/hospitality.json         ↑ 合成假資料
 │   ├── api-responses/*.json                早期保留的真實 API 回應
-│   ├── live-data/*.json                    ★ 最新真實 staging API 回應
+│   ├── live-data/*.json                    早期 PoC 用的 staging snapshot
 │   ├── data.json                           dashboard-live.html 用的聚合 JSON
 │   └── dashboard-live.html                 3-tab 整合版 PoC（含 LLM agent trace）
+├── dashboard-builder/                      ★ 2026-05-15 ~ 16 session 的 widget 化架構（獨立區）
+│   ├── README.md                           入口導讀
+│   ├── architecture.html                   主說明頁（5 層 + 3 層分工 + Gallery）
+│   ├── widget-catalog.html                 10 widget spec viewer（markdown render）
+│   ├── *.html                              7 張 dashboard canvas（org-health / offboarding / license / multi-org / cross-org-realloc / dark mode）
+│   ├── live-data/*.json                    最新 staging snapshot（refresh-all.sh 寫入）
+│   ├── skill/                              dashboard-builder skill（待 RD 接手 → api-skills/）
+│   │   ├── SKILL.md / scripts/compose.py / theme/ / widgets/ / runtime/ / references/ / examples/
+│   ├── scripts/refresh-all.sh              一鍵刷新 6 個 live-data JSON（~14s）
+│   ├── scripts/build_topology.sh           跨 5 org topology 聚合
+│   ├── assets/shots/                       gallery 用的 canvas 截圖
+│   └── docs/                               session-specific docs（architecture/ rd-handoff/ rd-priorities/ rd-meeting/）
 └── api-skills/                             RD 給的 senao-api-skills v0.1.0（gitignored，本機用）
 ```
 
