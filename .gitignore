@@ -19,3 +19,6 @@ dist/
 
 # RD-provided skills package (separate repo, do not vendor)
 api-skills/
+
+# Playwright CLI session artifacts
+.playwright-cli/

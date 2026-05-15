@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>Widget Catalog · Dashboard Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+  :root {
+    --bg-1: #f5f2ea;
+    --bg-2: #ebe6da;
+    --surface: #ffffff;
+    --surface-2: #fbfaf7;
+    --border: rgba(60,50,35,0.12);
+    --border-strong: rgba(60,50,35,0.22);
+    --text: #1a2332;
+    --text-2: #475569;
+    --text-3: #94a3b8;
+    --accent: #ff6b35;
+    --cyan: #03a9f4;
+    --warn: #f59e0b;
+    --success: #10b981;
+    --critical: #b91c1c;
+    --radius: 12px;
+    --shadow-sm: 0 1px 2px rgba(15,23,42,.04), 0 0 0 1px rgba(15,23,42,.04);
+    --shadow-md: 0 6px 18px rgba(15,23,42,.08);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg-1);
+    background-image: radial-gradient(at 0% 0%, var(--bg-2) 0%, var(--bg-1) 50%);
+    color: var(--text);
+    font-family: 'Inter', 'Noto Sans TC', system-ui, sans-serif;
+    font-size: 14.5px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  nav.topbar {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(245,242,234,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 28px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  nav.topbar .brand { font-weight: 700; font-size: 15px; letter-spacing: -0.01em; }
+  nav.topbar .brand .accent { color: var(--accent); }
+  nav.topbar a {
+    color: var(--text-2); text-decoration: none; font-size: 13px; font-weight: 500;
+  }
+  nav.topbar a:hover { color: var(--accent); }
+
+  .layout {
+    display: grid; grid-template-columns: 260px 1fr; gap: 32px;
+    max-width: 1280px; margin: 0 auto; padding: 32px 28px 80px;
+  }
+
+  /* Sidebar */
+  aside.sidebar {
+    position: sticky; top: 76px; align-self: start;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px 14px;
+    box-shadow: var(--shadow-sm);
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+  }
+  .sidebar h3 {
+    margin: 0 0 4px;
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--text-3); padding: 0 8px;
+  }
+  .sidebar .group { margin-bottom: 18px; }
+  .sidebar .nav-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 10px; border-radius: 8px;
+    font-size: 13px; color: var(--text);
+    cursor: pointer; transition: all .12s ease;
+    margin: 2px 0; font-weight: 500;
+  }
+  .sidebar .nav-item:hover { background: var(--surface-2); color: var(--accent); }
+  .sidebar .nav-item.active {
+    background: rgba(255,107,53,0.1);
+    color: var(--accent); font-weight: 700;
+  }
+  .sidebar .nav-item .badge {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: var(--text-3); font-weight: 500;
+  }
+  .sidebar .nav-item.active .badge { color: var(--accent); }
+
+  /* Main */
+  main.content {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 40px 48px;
+    box-shadow: var(--shadow-sm);
+    min-height: 600px;
+  }
+
+  main.content .loading {
+    text-align: center; color: var(--text-3);
+    padding: 80px 20px; font-size: 13px;
+  }
+
+  /* Markdown content styling */
+  .md h1 {
+    margin: 0 0 16px; font-size: 32px; font-weight: 800;
+    letter-spacing: -0.02em; line-height: 1.2;
+    border-bottom: 2px solid var(--border-strong); padding-bottom: 12px;
+  }
+  .md h1 code {
+    background: rgba(255,107,53,0.12); color: var(--accent);
+    padding: 2px 12px; border-radius: 8px; font-size: 22px;
+    font-family: 'JetBrains Mono', monospace; font-weight: 700;
+  }
+  .md h2 {
+    margin: 32px 0 12px; font-size: 22px; font-weight: 700;
+    letter-spacing: -0.015em; color: var(--text);
+  }
+  .md h3 {
+    margin: 24px 0 8px; font-size: 17px; font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .md h4 {
+    margin: 16px 0 6px; font-size: 14px; font-weight: 700;
+    color: var(--text-2);
+  }
+  .md p { margin: 0 0 14px; color: var(--text-2); line-height: 1.7; }
+  .md p strong { color: var(--text); font-weight: 700; }
+  .md p code, .md li code, .md td code {
+    background: rgba(60,50,35,0.08);
+    padding: 1px 6px; border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9em; color: var(--text);
+  }
+  .md ul, .md ol { padding-left: 24px; margin: 0 0 14px; }
+  .md li { margin-bottom: 6px; color: var(--text-2); }
+  .md blockquote {
+    border-left: 4px solid var(--accent);
+    background: var(--surface-2);
+    padding: 12px 18px; margin: 14px 0;
+    border-radius: 8px; color: var(--text-2);
+  }
+  .md pre {
+    background: #1a2332;
+    color: #e2e8f0;
+    padding: 18px 20px; border-radius: 10px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px; line-height: 1.55;
+    margin: 14px 0;
+  }
+  .md pre code { background: transparent; padding: 0; color: inherit; font-size: inherit; }
+  .md table {
+    width: 100%; border-collapse: collapse;
+    margin: 14px 0; font-size: 13px;
+  }
+  .md table th {
+    text-align: left; font-weight: 700;
+    background: var(--surface-2);
+    padding: 10px 12px;
+    border-bottom: 2px solid var(--border-strong);
+    color: var(--text);
+  }
+  .md table td {
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-2); vertical-align: top;
+  }
+  .md table td code { font-size: 0.85em; }
+  .md table tr:hover td { background: var(--surface-2); }
+  .md hr {
+    border: 0; border-top: 1px solid var(--border);
+    margin: 28px 0;
+  }
+  .md a { color: var(--accent); text-decoration: none; }
+  .md a:hover { text-decoration: underline; }
+
+  /* Doc header chip */
+  .doc-meta {
+    display: flex; gap: 8px; align-items: center;
+    margin-bottom: 24px;
+    padding: 10px 14px;
+    background: var(--surface-2);
+    border-radius: 8px;
+    font-size: 12px; color: var(--text-3);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .doc-meta .file {
+    font-weight: 600; color: var(--text-2);
+  }
+  .doc-meta .copy {
+    margin-left: auto;
+    background: var(--text); color: white;
+    padding: 4px 10px; border-radius: 6px;
+    font-size: 11px; cursor: pointer;
+    transition: opacity .15s ease;
+  }
+  .doc-meta .copy:hover { opacity: 0.85; }
+  .doc-meta .copy.copied { background: var(--success); }
+
+  @media (max-width: 880px) {
+    .layout { grid-template-columns: 1fr; }
+    aside.sidebar { position: relative; top: 0; max-height: none; }
+    main.content { padding: 24px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <div class="brand">Widget Catalog · <span class="accent">Dashboard Builder</span></div>
+  <a href="architecture-demo.html">← 回 Architecture</a>
+</nav>
+
+<div class="layout">
+
+  <aside class="sidebar">
+    <div class="group">
+      <h3>Overview</h3>
+      <div class="nav-item" data-doc="index">
+        <span>Catalog Overview</span>
+        <span class="badge">index</span>
+      </div>
+    </div>
+
+    <div class="group">
+      <h3>Widgets · 10</h3>
+      <div class="nav-item" data-doc="widget_alert">
+        <span>alert</span><span class="badge">banner</span>
+      </div>
+      <div class="nav-item" data-doc="widget_kpi_grid">
+        <span>kpi_grid</span><span class="badge">cards</span>
+      </div>
+      <div class="nav-item" data-doc="widget_table">
+        <span>table</span><span class="badge">rows</span>
+      </div>
+      <div class="nav-item" data-doc="widget_bar_list">
+        <span>bar_list</span><span class="badge">bars</span>
+      </div>
+      <div class="nav-item" data-doc="widget_donut">
+        <span>donut</span><span class="badge">ring</span>
+      </div>
+      <div class="nav-item" data-doc="widget_gauge">
+        <span>gauge</span><span class="badge">meter</span>
+      </div>
+      <div class="nav-item" data-doc="widget_chip_strip">
+        <span>chip_strip</span><span class="badge">tags</span>
+      </div>
+      <div class="nav-item" data-doc="widget_topology_tree">
+        <span>topology_tree</span><span class="badge">tree</span>
+      </div>
+      <div class="nav-item" data-doc="widget_timeline">
+        <span>timeline</span><span class="badge">time</span>
+      </div>
+      <div class="nav-item" data-doc="widget_heatmap">
+        <span>heatmap</span><span class="badge">matrix</span>
+      </div>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="doc-meta">
+      <span>📄 <span class="file" id="meta-path">—</span></span>
+      <span class="copy" id="copy-btn">Copy raw path</span>
+    </div>
+    <div class="md" id="md-content">
+      <div class="loading">Loading…</div>
+    </div>
+  </main>
+
+</div>
+
+<script>
+const DOC_BASE = 'skill/references/';
+const items = document.querySelectorAll('.nav-item');
+const content = document.getElementById('md-content');
+const metaPath = document.getElementById('meta-path');
+const copyBtn = document.getElementById('copy-btn');
+
+let currentPath = '';
+
+async function loadDoc(name) {
+  const path = `${DOC_BASE}${name}.md`;
+  currentPath = path;
+  metaPath.textContent = path;
+  content.innerHTML = '<div class="loading">Loading…</div>';
+  try {
+    const r = await fetch(path, { cache: 'no-store' });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const md = await r.text();
+    content.innerHTML = marked.parse(md);
+    items.forEach(it => it.classList.toggle('active', it.dataset.doc === name));
+    // update hash
+    if (location.hash !== `#${name}`) location.hash = name;
+    // scroll content to top
+    window.scrollTo(0, 0);
+  } catch (e) {
+    content.innerHTML = `<div class="loading">Failed to load: ${e.message}<br><br>確認 file 在 <code>${path}</code></div>`;
+  }
+}
+
+items.forEach(it => {
+  it.addEventListener('click', () => loadDoc(it.dataset.doc));
+});
+
+copyBtn.addEventListener('click', async () => {
+  if (!currentPath) return;
+  try {
+    await navigator.clipboard.writeText(currentPath);
+    copyBtn.textContent = '✓ Copied';
+    copyBtn.classList.add('copied');
+    setTimeout(() => {
+      copyBtn.textContent = 'Copy raw path';
+      copyBtn.classList.remove('copied');
+    }, 1500);
+  } catch (e) {
+    console.warn('clipboard fail', e);
+  }
+});
+
+// Initial load: read hash or default
+const initial = location.hash.slice(1) || 'index';
+loadDoc(initial);
+
+// Listen to hash changes (e.g. user clicks link inside markdown)
+window.addEventListener('hashchange', () => {
+  const target = location.hash.slice(1);
+  if (target && document.querySelector(`.nav-item[data-doc="${target}"]`)) {
+    loadDoc(target);
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,211 @@
+<style>
+.w-tl-wrap { padding: 6px 0 0; }
+.w-tl {
+  position: relative;
+  height: 130px;
+  margin: 18px 0 8px;
+}
+.w-tl-track {
+  position: absolute; top: 56px; left: 4px; right: 4px;
+  height: 2px; background: var(--border-strong); border-radius: 2px;
+}
+.w-tl-today {
+  position: absolute; top: 12px; bottom: 12px;
+  width: 2px; background: var(--brand);
+  border-radius: 2px;
+}
+.w-tl-today::before {
+  content: 'TODAY'; position: absolute; top: -6px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 9px; font-weight: 700; letter-spacing: 0.08em;
+  color: var(--brand); background: var(--surface);
+  padding: 0 4px;
+}
+.w-tl-tick {
+  position: absolute; top: 64px; bottom: 12px;
+  width: 1px; background: var(--border);
+}
+.w-tl-tick-label {
+  position: absolute; top: 78px; transform: translateX(-50%);
+  font-size: 10px; color: var(--text-3); font-family: var(--font-mono);
+  font-weight: 500; white-space: nowrap;
+}
+.w-tl-dot {
+  position: absolute; top: 50px;
+  width: 14px; height: 14px; border-radius: 50%;
+  transform: translateX(-50%);
+  cursor: pointer; transition: transform .15s ease, box-shadow .15s ease;
+  border: 2px solid var(--surface);
+  box-shadow: 0 1px 3px rgba(15,23,42,0.2);
+}
+.w-tl-dot:hover {
+  transform: translateX(-50%) scale(1.4);
+  z-index: 3;
+}
+.w-tl-dot.sev-critical { background: var(--critical); }
+.w-tl-dot.sev-warning { background: var(--warning); }
+.w-tl-dot.sev-success { background: var(--success); }
+.w-tl-dot.sev-info { background: var(--info); }
+.w-tl-dot-label {
+  position: absolute; top: 28px;
+  transform: translateX(-50%);
+  font-size: 10px; color: var(--text-2); font-weight: 600;
+  white-space: nowrap; pointer-events: none;
+}
+.w-tl-tooltip {
+  position: absolute; bottom: 100%; left: 50%;
+  transform: translateX(-50%) translateY(-6px);
+  background: var(--text); color: white;
+  padding: 6px 10px; border-radius: 6px;
+  font-size: 11px; white-space: nowrap;
+  pointer-events: none; opacity: 0;
+  transition: opacity .15s ease;
+  z-index: 10;
+}
+.w-tl-dot:hover .w-tl-tooltip { opacity: 1; }
+.w-tl-tooltip .sub {
+  display: block; font-family: var(--font-mono); font-size: 10px;
+  opacity: 0.7; margin-top: 1px;
+}
+.w-tl-legend {
+  display: flex; gap: 16px; padding-top: 12px;
+  border-top: 1px solid var(--border); margin-top: 6px;
+  font-size: 12px;
+}
+.w-tl-legend .item { display: flex; align-items: center; gap: 6px; color: var(--text-2); }
+.w-tl-legend .item .swatch {
+  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+}
+.w-tl-legend .item .swatch.sev-critical { background: var(--critical); }
+.w-tl-legend .item .swatch.sev-warning { background: var(--warning); }
+.w-tl-legend .item .swatch.sev-success { background: var(--success); }
+.w-tl-legend .item .swatch.sev-info { background: var(--info); }
+.w-tl-legend .item .num { font-weight: 700; color: var(--text); }
+</style>
+
+<script>
+Dashboard.register('timeline', ({ el, config, ctx }) => {
+  el.classList.add('card');
+  el.innerHTML = `
+    <div class="card-hdr">
+      <h2>${config.title || 'Timeline'}</h2>
+      <span class="meta" data-bind="meta">—</span>
+    </div>
+    <div class="w-tl-wrap">
+      <div class="w-tl" data-role="canvas"></div>
+      <div class="w-tl-legend" data-role="legend"></div>
+    </div>
+  `;
+  const canvas = el.querySelector('[data-role="canvas"]');
+  const legendEl = el.querySelector('[data-role="legend"]');
+  const meta = el.querySelector('[data-bind="meta"]');
+
+  function classifySeverity(item, now) {
+    if (item.severity) return item.severity;  // explicit override
+    if (!item.date_ms) return 'info';
+    if (item.date_ms < now) return 'critical';
+    const days = (item.date_ms - now) / 86400000;
+    if (days < (config.warning_threshold_days || 90)) return 'warning';
+    return 'success';
+  }
+
+  function fmtDay(ms) {
+    return new Date(ms).toISOString().slice(0,10);
+  }
+  function fmtYM(ms) {
+    return new Date(ms).toISOString().slice(0,7);
+  }
+
+  return {
+    render(data) {
+      const items = (config.compute && window.computeFns[config.compute])
+        ? window.computeFns[config.compute](data, config)
+        : (config.items || []);
+
+      const now = Date.now();
+      const valid = items.filter(i => i.date_ms);
+
+      if (valid.length === 0) {
+        canvas.innerHTML = `<div style="text-align:center;padding:40px;color:var(--text-3);font-size:13px;">No dated items</div>`;
+        legendEl.innerHTML = '';
+        meta.textContent = '0 items';
+        return;
+      }
+
+      const dates = valid.map(i => i.date_ms);
+      const allDates = [...dates, now];
+      const minD = Math.min(...allDates);
+      const maxD = Math.max(...allDates);
+      // 10% padding each side
+      const span = (maxD - minD) || 86400000 * 365;
+      const padded_min = minD - span * 0.08;
+      const padded_max = maxD + span * 0.08;
+      const range = padded_max - padded_min;
+
+      const posPct = (ms) => ((ms - padded_min) / range) * 100;
+
+      // Group items at same date to stack labels (cluster offset)
+      const grouped = {};
+      valid.forEach(i => {
+        const key = fmtDay(i.date_ms);
+        (grouped[key] = grouped[key] || []).push(i);
+      });
+
+      // Build dots
+      let html = `<div class="w-tl-track"></div>`;
+      html += `<div class="w-tl-today" style="left:${posPct(now).toFixed(2)}%"></div>`;
+
+      // Year ticks
+      const startY = new Date(padded_min).getUTCFullYear();
+      const endY = new Date(padded_max).getUTCFullYear();
+      for (let y = startY; y <= endY; y++) {
+        const t = Date.UTC(y, 0, 1);
+        if (t < padded_min || t > padded_max) continue;
+        const x = posPct(t);
+        html += `<div class="w-tl-tick" style="left:${x.toFixed(2)}%"></div>`;
+        html += `<div class="w-tl-tick-label" style="left:${x.toFixed(2)}%">${y}</div>`;
+      }
+
+      // Dots (grouped)
+      Object.entries(grouped).forEach(([dayKey, group]) => {
+        const t = group[0].date_ms;
+        const x = posPct(t);
+        const sev = classifySeverity(group[0], now);
+        // single representative dot per cluster, with count
+        const isCluster = group.length > 1;
+        const label = isCluster
+          ? `${group.length}× ${group[0].label || 'items'}`
+          : (group[0].label || '');
+        const sub = isCluster
+          ? `${dayKey} · ${group.length} items`
+          : dayKey;
+        const tipDetail = group.map(g => g.label || '').slice(0, 5).join(', ') + (group.length > 5 ? ` (+${group.length-5})` : '');
+        html += `
+          <div class="w-tl-dot sev-${sev}" style="left:${x.toFixed(2)}%; ${isCluster?'width:18px;height:18px;':''}">
+            <div class="w-tl-tooltip">${tipDetail}<span class="sub">${sub}</span></div>
+          </div>
+          <div class="w-tl-dot-label" style="left:${x.toFixed(2)}%">${label}</div>
+        `;
+      });
+
+      canvas.innerHTML = html;
+
+      // Legend with counts
+      const counts = { critical: 0, warning: 0, success: 0, info: 0 };
+      valid.forEach(i => { counts[classifySeverity(i, now)] = (counts[classifySeverity(i, now)] || 0) + 1; });
+      const labels = {
+        critical: config.critical_label || 'Overdue',
+        warning: config.warning_label || `Expiring < ${config.warning_threshold_days || 90}d`,
+        success: config.success_label || 'Active',
+        info: 'Other'
+      };
+      legendEl.innerHTML = ['critical','warning','success','info']
+        .filter(k => counts[k] > 0)
+        .map(k => `<div class="item"><span class="swatch sev-${k}"></span><span>${labels[k]}</span><span class="num">${counts[k]}</span></div>`)
+        .join('');
+
+      meta.textContent = `${valid.length} items · ${fmtYM(minD)} → ${fmtYM(maxD)}`;
+    }
+  };
+});
+</script>

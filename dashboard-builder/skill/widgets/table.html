@@ -1,0 +1,246 @@
+<style>
+.w-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.w-table th {
+  text-align: left; font-weight: 600; color: var(--text-3);
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 8px 10px 10px; border-bottom: 1px solid var(--border);
+}
+.w-table td {
+  padding: 11px 10px; border-bottom: 1px solid var(--border); vertical-align: middle;
+}
+.w-table tr:last-child td { border-bottom: 0; }
+.w-table tbody tr:hover td { background: var(--surface-2); }
+.w-table td.num, .w-table th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.w-table tr.expandable { cursor: pointer; }
+.w-table tr.expandable td:first-child::before {
+  content: '▸'; display: inline-block; margin-right: 6px;
+  color: var(--text-3); font-size: 9px; transition: transform .15s ease;
+}
+.w-table tr.expandable.open td:first-child::before { transform: rotate(90deg); }
+.w-table tr.detail { display: none; background: var(--surface-2); }
+.w-table tr.detail.open { display: table-row; }
+.w-table tr.detail td { padding: 14px 18px; border-bottom: 1px solid var(--border); }
+.w-table .detail-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px 24px;
+}
+.w-table .detail-item .k {
+  font-size: 10px; color: var(--text-3); text-transform: uppercase;
+  letter-spacing: 0.05em; margin-bottom: 2px; font-weight: 600;
+}
+.w-table .detail-item .v {
+  font-size: 13px; color: var(--text-1); font-family: var(--font-mono); word-break: break-all;
+}
+.w-table .detail-item .v.large { font-family: var(--font-sans); font-weight: 500; }
+.w-table .ell { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 220px; }
+.w-table .type-chip {
+  display: inline-flex; gap: 6px; align-items: center;
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  color: var(--text-2); letter-spacing: 0.04em;
+}
+.w-table .type-chip .dot { width: 8px; height: 8px; border-radius: 2px; }
+.w-table .type-ap .dot { background: var(--info); }
+.w-table .type-switch .dot { background: var(--warning); }
+.w-table .type-gateway .dot { background: var(--success); }
+</style>
+
+<script>
+Dashboard.register('table', ({ el, config, bus, ctx }) => {
+  const state = { filter: (config.filters?.[0]?.filter) || 'all', expanded: new Set() };
+  // build skeleton
+  el.classList.add('card');
+  el.innerHTML = `
+    <div class="card-hdr">
+      <h2>${config.title || ''}</h2>
+      <span class="meta" data-bind="meta">—</span>
+    </div>
+    ${config.filters ? `<div class="chips" data-role="filters">${
+      config.filters.map((f,i) => `<span class="chip ${i===0?'active':''}" data-filter="${f.filter}">${f.label} <span class="count" data-count="${f.filter}">0</span></span>`).join('')
+    }</div>` : ''}
+    <table class="w-table">
+      <thead><tr>${(config.columns||[]).map(c => `<th class="${c.align==='right'?'num':''}">${c.label}</th>`).join('')}</tr></thead>
+      <tbody data-role="body"></tbody>
+    </table>
+  `;
+
+  const meta = el.querySelector('[data-bind="meta"]');
+  const tbody = el.querySelector('[data-role="body"]');
+
+  // Filter chip events
+  el.querySelector('[data-role="filters"]')?.addEventListener('click', (e) => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+    state.filter = chip.dataset.filter;
+    el.querySelectorAll('[data-role="filters"] .chip').forEach(c =>
+      c.classList.toggle('active', c === chip));
+    rerender();
+  });
+
+  // Row expand
+  tbody.addEventListener('click', (e) => {
+    const row = e.target.closest('tr.expandable');
+    if (!row) return;
+    const id = row.dataset.rowId;
+    if (state.expanded.has(id)) state.expanded.delete(id);
+    else state.expanded.add(id);
+    rerender();
+  });
+
+  // Cross-widget event: expand a specific row + scroll/flash
+  bus.on('table-expand-row', (e) => {
+    if (e.detail.tableId !== config.id) return;
+    state.expanded.add(e.detail.rowId);
+    // reset filter to 'all' so the row is visible
+    state.filter = (config.filters?.[0]?.filter) || 'all';
+    el.querySelectorAll('[data-role="filters"] .chip').forEach(c =>
+      c.classList.toggle('active', c.dataset.filter === state.filter));
+    rerender();
+    setTimeout(() => {
+      const targetRow = tbody.querySelector(`tr.expandable[data-row-id="${e.detail.rowId}"]`);
+      if (targetRow) {
+        targetRow.scrollIntoView({behavior:'smooth', block:'center'});
+        ctx.flash(targetRow);
+      }
+    }, 50);
+  });
+
+  let lastData = null;
+
+  function passesFilter(row, filter) {
+    if (filter === 'all') return true;
+    if (filter.includes(':')) {
+      const [k, v] = filter.split(':');
+      return row[k] === v;
+    }
+    if (filter === 'stale') return ctx.daysSince(row.last_login_time) > 365;
+    return false;
+  }
+
+  function rowId(row) {
+    return row[config.row_id_field || 'device_id'] || row.mac || row.user_id || row.email || JSON.stringify(row).slice(0,40);
+  }
+
+  function rerender() {
+    if (!lastData) return;
+    render(lastData);
+  }
+
+  function cellHtml(row, col) {
+    const v = ctx.getByPath(row, col.field);
+    if (col.render === 'license_pill') {
+      if (v === 'expired') return `<span class="pill pill-crit">expired</span>`;
+      if (v === 'active') return `<span class="pill pill-ok">${row.license_type||'active'}</span>`;
+      return `<span class="pill pill-muted">${v||'—'}</span>`;
+    }
+    if (col.render === 'type_chip') {
+      return `<span class="type-chip type-${v}"><span class="dot"></span>${v}</span>`;
+    }
+    if (col.render === 'role_pill') {
+      const role = v || (row.networks?.[0]?.role) || '—';
+      const cls = role === 'admin' ? 'pill-info' : role === 'viewer' ? 'pill-muted' : 'pill-warn';
+      return `<span class="pill ${cls}">${role}</span>`;
+    }
+    if (col.render === 'risk_pill') {
+      const d = ctx.daysSince(row.last_login_time);
+      let label, cls;
+      if (d === Infinity) { label = '從未登入'; cls = 'pill-crit'; }
+      else if (d > 730) { label = `${(d/365).toFixed(1)}y stale`; cls = 'pill-crit'; }
+      else if (d > 365) { label = `${(d/365).toFixed(1)}y stale`; cls = 'pill-warn'; }
+      else if (d > 90) { label = `${d}d quiet`; cls = 'pill-info'; }
+      else { label = 'active'; cls = 'pill-ok'; }
+      return `<span class="pill ${cls}">${label}</span>`;
+    }
+    if (col.render === 'date') return `<span class="mono" style="font-size:12px">${ctx.fmtDate(v)}</span>`;
+    if (col.render === 'name_with_sub') {
+      const sub = ctx.getByPath(row, col.sub_field);
+      return `<strong>${v||'—'}</strong><div style="font-size:11px;color:var(--text-3)" class="mono">${sub||''}</div>`;
+    }
+    if (col.render === 'network_or_unassigned') {
+      return v ? v : '<span class="pill pill-muted">unassigned</span>';
+    }
+    if (col.render === 'mono_ellipsis') {
+      return `<span class="ell mono" style="font-size:12px;color:var(--text-2)">${v||'—'}</span>`;
+    }
+    if (col.render === 'count') return `<span class="num">${(v||[]).length||v||0}</span>`;
+    if (col.cls === 'mono') return `<span class="mono">${v||'—'}</span>`;
+    return v == null ? '—' : String(v);
+  }
+
+  function detailHtml(row) {
+    if (!config.detail_fields) return '';
+    return `<div class="detail-grid">${config.detail_fields.map(f => {
+      const v = ctx.getByPath(row, f.field);
+      let display = v;
+      if (f.render === 'datetime') display = ctx.fmtDateTime(v);
+      if (f.render === 'date') display = ctx.fmtDate(v);
+      if (f.render === 'network_list') {
+        const nets = v || [];
+        if (nets.length === 0) display = '<span style="color:var(--text-3); font-size:12px;">無 network-level 權限</span>';
+        else display = nets.map(n => `<span class="pill pill-muted" style="margin-right:6px; margin-bottom:4px;">${n.name} · ${n.role}</span>`).join('');
+      }
+      return `<div class="detail-item" ${f.full_width?'style="grid-column: 1/-1"':''}>
+        <div class="k">${f.label}</div>
+        <div class="v ${f.large?'large':''}">${display==null?'—':display}</div>
+      </div>`;
+    }).join('')}</div>`;
+  }
+
+  function render(data) {
+    lastData = data;
+    let rows = ctx.getByPath(data, config.data_source) || [];
+    if (config.sort_by) {
+      const sb = config.sort_by;
+      const dir = (sb.dir === 'asc') ? 1 : -1;
+      rows = [...rows].sort((a,b) => {
+        const av = ctx.getByPath(a, sb.field) || 0;
+        const bv = ctx.getByPath(b, sb.field) || 0;
+        return (av < bv ? -1 : av > bv ? 1 : 0) * dir;
+      });
+    }
+    if (sb_asc(config)) rows = [...rows].reverse();
+
+    // chip counts
+    config.filters?.forEach(f => {
+      const cnt = f.filter === 'all'
+        ? rows.length
+        : rows.filter(r => passesFilter(r, f.filter)).length;
+      const ce = el.querySelector(`[data-count="${f.filter}"]`);
+      if (ce) ce.textContent = cnt;
+    });
+
+    // apply filter
+    const filtered = rows.filter(r => passesFilter(r, state.filter));
+
+    // meta
+    if (state.filter === 'all' || !config.filters) {
+      meta.textContent = config.meta_template
+        ? config.meta_template.replace('${count}', rows.length)
+        : `${rows.length} items`;
+    } else {
+      meta.textContent = `${filtered.length} of ${rows.length} (filter: ${state.filter})`;
+    }
+
+    // body
+    if (filtered.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="${(config.columns||[]).length}"><div class="empty-state">No rows match this filter</div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = filtered.map(row => {
+      const id = rowId(row);
+      const isOpen = state.expanded.has(id);
+      const expandable = !!config.expandable_rows;
+      const cls = expandable ? `expandable ${isOpen?'open':''}` : '';
+      const mainTr = `<tr class="${cls}" data-row-id="${id}">${
+        (config.columns||[]).map(c => `<td class="${c.align==='right'?'num':''}">${cellHtml(row, c)}</td>`).join('')
+      }</tr>`;
+      const detailTr = expandable
+        ? `<tr class="detail ${isOpen?'open':''}" data-detail-row-id="${id}"><td colspan="${(config.columns||[]).length}">${detailHtml(row)}</td></tr>`
+        : '';
+      return mainTr + detailTr;
+    }).join('');
+  }
+
+  function sb_asc(c) { return c.sort_by?.dir === 'asc' && false; }  // noop kept for symmetry
+
+  return { render };
+});
+</script>

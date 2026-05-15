@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>Main_Org 健康總覽 · Live Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f7f5;
+    --bg-gradient: radial-gradient(at 0% 0%, #f0eee8 0%, #f7f7f5 40%);
+    --surface: #ffffff;
+    --surface-2: #fbfaf7;
+    --border: rgba(15, 23, 42, 0.08);
+    --border-strong: rgba(15, 23, 42, 0.16);
+    --text-1: #0f172a;
+    --text-2: #475569;
+    --text-3: #94a3b8;
+    --brand: #1e3a8a;
+    --brand-2: #0c4a6e;
+    --critical: #b91c1c;
+    --critical-bg: #fef2f2;
+    --warning: #b45309;
+    --warning-bg: #fffbeb;
+    --success: #047857;
+    --success-bg: #ecfdf5;
+    --info: #1d4ed8;
+    --info-bg: #eff6ff;
+    --shadow-sm: 0 1px 2px rgba(15,23,42,.04), 0 0 0 1px rgba(15,23,42,.04);
+    --shadow-md: 0 4px 12px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04);
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    background-image: var(--bg-gradient);
+    color: var(--text-1);
+    font-family: 'Inter', 'Noto Sans TC', system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .num { font-variant-numeric: tabular-nums; }
+  .mono { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+
+  /* Header */
+  .hdr {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(247,247,245,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .hdr-left h1 {
+    margin: 0; font-size: 18px; font-weight: 700; letter-spacing: -0.01em;
+  }
+  .hdr-left .crumb {
+    font-size: 12px; color: var(--text-3); margin-top: 2px;
+    font-weight: 500;
+  }
+  .hdr-right {
+    display: flex; align-items: center; gap: 16px;
+  }
+  .live-dot {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12px; color: var(--text-2); font-weight: 500;
+  }
+  .live-dot::before {
+    content: ''; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--success); box-shadow: 0 0 0 4px var(--success-bg);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .updated {
+    font-size: 12px; color: var(--text-3);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Main grid */
+  .wrap {
+    max-width: 1320px; margin: 0 auto; padding: 28px 32px 80px;
+  }
+
+  /* KPI strip */
+  .kpis {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+    margin-bottom: 24px;
+  }
+  .kpi {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 18px 20px; box-shadow: var(--shadow-sm);
+    position: relative; overflow: hidden;
+  }
+  .kpi .lbl {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    color: var(--text-3); letter-spacing: 0.05em;
+  }
+  .kpi .val {
+    font-size: 36px; font-weight: 700; margin: 4px 0 0;
+    letter-spacing: -0.02em; line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+  .kpi .sub {
+    font-size: 12px; color: var(--text-2); margin-top: 2px;
+  }
+  .kpi-critical { border-color: rgba(185,28,28,0.2); background: linear-gradient(180deg, var(--critical-bg) 0%, var(--surface) 30%); }
+  .kpi-critical .val { color: var(--critical); }
+  .kpi-warning { border-color: rgba(180,83,9,0.2); }
+  .kpi-warning .val { color: var(--warning); }
+
+  /* Two-col layout */
+  .grid-2 {
+    display: grid; grid-template-columns: 1.4fr 1fr; gap: 20px;
+    margin-bottom: 20px;
+  }
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 20px 22px; box-shadow: var(--shadow-sm);
+  }
+  .card-hdr {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 12px; margin-bottom: 14px;
+  }
+  .card-hdr h2 { white-space: nowrap; }
+  .card-hdr .meta { text-align: right; }
+  .card-hdr h2 {
+    margin: 0; font-size: 14px; font-weight: 700;
+    letter-spacing: -0.005em;
+  }
+  .card-hdr .meta {
+    font-size: 11px; color: var(--text-3); font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+
+  /* Severity pills */
+  .pill {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; font-weight: 600;
+    padding: 3px 8px; border-radius: 999px;
+    line-height: 1; letter-spacing: 0.02em;
+  }
+  .pill-crit { background: var(--critical-bg); color: var(--critical); }
+  .pill-warn { background: var(--warning-bg); color: var(--warning); }
+  .pill-ok { background: var(--success-bg); color: var(--success); }
+  .pill-info { background: var(--info-bg); color: var(--info); }
+  .pill-muted { background: rgba(15,23,42,0.05); color: var(--text-2); }
+
+  /* Tables */
+  table {
+    width: 100%; border-collapse: collapse; font-size: 13px;
+  }
+  th {
+    text-align: left; font-weight: 600; color: var(--text-3);
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 8px 10px 10px; border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 11px 10px; border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  tr:last-child td { border-bottom: 0; }
+  tr:hover td { background: var(--surface-2); }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+  /* Bars */
+  .bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; font-size: 13px; }
+  .bar-label { width: 110px; color: var(--text-2); font-weight: 500; }
+  .bar-track { flex: 1; height: 8px; background: rgba(15,23,42,0.05); border-radius: 4px; overflow: hidden; position: relative; }
+  .bar-fill { height: 100%; border-radius: 4px; background: var(--brand); transition: width 0.6s ease; }
+  .bar-fill.crit { background: var(--critical); }
+  .bar-fill.warn { background: var(--warning); }
+  .bar-fill.ok { background: var(--success); }
+  .bar-val { width: 32px; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; font-size: 13px; }
+
+  /* Alert box */
+  .alert {
+    border-radius: 12px; padding: 14px 16px; margin-bottom: 20px;
+    border: 1px solid; display: flex; align-items: flex-start; gap: 12px;
+  }
+  .alert-critical { background: var(--critical-bg); border-color: rgba(185,28,28,0.25); color: var(--critical); }
+  .alert-icon {
+    width: 22px; height: 22px; flex-shrink: 0; border-radius: 50%;
+    background: var(--critical); color: white; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; font-size: 13px;
+    margin-top: 1px;
+  }
+  .alert-body { flex: 1; }
+  .alert-body strong { font-weight: 700; }
+  .alert-body p { margin: 4px 0 0; font-size: 13px; color: var(--text-2); }
+
+  /* Empty network strip */
+  .empty-nets {
+    display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;
+  }
+  .empty-tag {
+    font-size: 11px; padding: 4px 9px; border-radius: 6px;
+    background: var(--surface-2); border: 1px dashed var(--border-strong);
+    color: var(--text-2); font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Device type chip */
+  .type-chip {
+    display: inline-flex; gap: 6px; align-items: center;
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    color: var(--text-2); letter-spacing: 0.04em;
+  }
+  .type-chip .dot {
+    width: 8px; height: 8px; border-radius: 2px;
+  }
+  .type-ap .dot { background: var(--info); }
+  .type-switch .dot { background: var(--warning); }
+  .type-gateway .dot { background: var(--success); }
+
+  /* Footer */
+  .footnote {
+    margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border);
+    font-size: 11px; color: var(--text-3);
+    display: flex; justify-content: space-between;
+  }
+  .footnote .skills {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* Truncate */
+  .ell {
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    max-width: 220px;
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--surface); border: 1px solid var(--border-strong);
+    color: var(--text-1); padding: 6px 12px; border-radius: 8px;
+    font-size: 12px; font-weight: 600; cursor: pointer;
+    transition: all .15s ease; font-family: inherit;
+  }
+  .btn:hover { background: var(--surface-2); border-color: var(--brand); color: var(--brand); }
+  .btn:active { transform: scale(0.97); }
+  .btn.spinning .ic { animation: spin 0.7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .ic { display: inline-block; line-height: 1; }
+
+  /* Chip filters */
+  .chips {
+    display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap;
+  }
+  .chip {
+    font-size: 11px; font-weight: 600; padding: 5px 11px;
+    border-radius: 999px; cursor: pointer;
+    background: var(--surface-2); border: 1px solid var(--border);
+    color: var(--text-2); transition: all .15s ease;
+    font-family: inherit; letter-spacing: 0.02em;
+  }
+  .chip:hover { border-color: var(--brand); color: var(--brand); }
+  .chip.active {
+    background: var(--text-1); color: white; border-color: var(--text-1);
+  }
+  .chip .count {
+    font-variant-numeric: tabular-nums;
+    margin-left: 4px; opacity: 0.7; font-size: 10px;
+  }
+
+  /* Clickable KPI */
+  .kpi.clickable { cursor: pointer; transition: transform .15s ease, box-shadow .15s ease; }
+  .kpi.clickable:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .kpi.clickable::after {
+    content: '↗'; position: absolute; top: 12px; right: 14px;
+    color: var(--text-3); font-size: 14px; opacity: 0;
+    transition: opacity .15s ease;
+  }
+  .kpi.clickable:hover::after { opacity: 1; }
+
+  /* Flash highlight */
+  @keyframes flash-glow {
+    0% { box-shadow: 0 0 0 0 rgba(30,58,138,0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(30,58,138,0.1); }
+    100% { box-shadow: 0 0 0 0 rgba(30,58,138,0); }
+  }
+  .flash { animation: flash-glow 1.2s ease-out 2; }
+
+  /* Expandable row */
+  tr.expandable { cursor: pointer; }
+  tr.expandable td:first-child::before {
+    content: '▸'; display: inline-block; margin-right: 6px;
+    color: var(--text-3); font-size: 9px;
+    transition: transform .15s ease;
+  }
+  tr.expandable.open td:first-child::before { transform: rotate(90deg); }
+  tr.detail { display: none; background: var(--surface-2); }
+  tr.detail.open { display: table-row; }
+  tr.detail td {
+    padding: 14px 18px; border-bottom: 1px solid var(--border);
+  }
+  .detail-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 14px 24px;
+  }
+  .detail-item .k {
+    font-size: 10px; color: var(--text-3); text-transform: uppercase;
+    letter-spacing: 0.05em; margin-bottom: 2px; font-weight: 600;
+  }
+  .detail-item .v {
+    font-size: 13px; color: var(--text-1); font-family: 'JetBrains Mono', monospace;
+    word-break: break-all;
+  }
+  .detail-item .v.large { font-family: 'Inter', sans-serif; font-weight: 500; }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center; padding: 36px 16px;
+    color: var(--text-3); font-size: 13px;
+  }
+
+  /* Topology tree */
+  .topo-tree {
+    font-size: 13px;
+    margin-top: 4px;
+  }
+  .topo-node {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 10px; border-radius: 6px;
+    cursor: pointer; transition: background .12s ease;
+    margin: 1px 0;
+  }
+  .topo-node:hover { background: var(--surface-2); }
+  .topo-node .caret {
+    font-size: 9px; color: var(--text-3); width: 10px;
+    text-align: center;
+    transition: transform .15s ease; line-height: 1;
+  }
+  .topo-node.open > .caret { transform: rotate(90deg); }
+  .topo-node.leaf > .caret { visibility: hidden; }
+  .topo-node .icon {
+    font-size: 13px; width: 18px; text-align: center;
+  }
+  .topo-node .label {
+    flex: 1; font-weight: 500; color: var(--text-1);
+  }
+  .topo-node .sub-label {
+    color: var(--text-3); font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .topo-node .badge {
+    font-size: 10px; padding: 2px 7px; border-radius: 999px;
+    font-weight: 600; letter-spacing: 0.02em;
+  }
+  .topo-children {
+    margin-left: 14px; padding-left: 10px;
+    border-left: 1px dashed var(--border);
+    display: none;
+  }
+  .topo-children.open { display: block; }
+  .topo-node[data-type="org"] .label { font-weight: 700; font-size: 14px; }
+  .topo-node[data-type="network"] .label { font-weight: 500; }
+  .topo-node[data-type="network"][data-empty="true"] {
+    opacity: 0.55;
+  }
+  .topo-node[data-type="network"][data-empty="true"] .label::after {
+    content: ' (empty)'; color: var(--text-3); font-style: italic; font-size: 11px;
+  }
+  .topo-node[data-type="device"] {
+    padding: 5px 10px;
+  }
+  .topo-node[data-type="device"] .label {
+    font-weight: 500; font-size: 12px;
+  }
+  .topo-node[data-type="device"][data-license="expired"] {
+    color: var(--critical);
+  }
+  .topo-meta {
+    display: flex; gap: 14px; font-size: 11px;
+    color: var(--text-3); margin-bottom: 12px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .topo-blocked {
+    margin-left: 14px; padding: 8px 12px;
+    border-left: 1px dashed var(--border);
+    color: var(--text-3); font-size: 11px;
+    background: linear-gradient(90deg, rgba(239,68,68,0.04), transparent);
+  }
+  .topo-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+    margin: 12px 0 16px;
+    padding: 12px 14px; background: var(--surface-2);
+    border-radius: 10px; border: 1px solid var(--border);
+  }
+  .topo-stat .lbl {
+    font-size: 10px; color: var(--text-3); text-transform: uppercase;
+    font-weight: 600; letter-spacing: 0.04em;
+  }
+  .topo-stat .val {
+    font-size: 22px; font-weight: 700; letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums; margin-top: 2px;
+  }
+  .topo-stat .sub {
+    font-size: 11px; color: var(--text-2); margin-top: 1px;
+  }
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-left">
+    <h1>Main_Org · 健康總覽</h1>
+    <div class="crumb">EnGenius Cloud Staging · org_id: <span class="mono">5e410f44...</span></div>
+  </div>
+  <div class="hdr-right">
+    <button class="btn" id="btn-refresh" title="重新抓取所有資料"><span class="ic">↻</span> Refresh</button>
+    <div class="live-dot">Live</div>
+    <div class="updated" id="updated">—</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- Critical alert -->
+  <div class="alert alert-critical" id="crit-alert">
+    <div class="alert-icon">!</div>
+    <div class="alert-body">
+      <strong>License 全面過期警示</strong>
+      <p id="crit-text">資料載入中…</p>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpis">
+    <div class="kpi clickable" data-target="all"><!-- KPI: all devices -->
+      <div class="lbl">Devices</div>
+      <div class="val num" id="kpi-devices">—</div>
+      <div class="sub" id="kpi-devices-sub">—</div>
+    </div>
+    <div class="kpi kpi-critical clickable" data-target="expired"><!-- KPI: expired -->
+      <div class="lbl">License Expired</div>
+      <div class="val num" id="kpi-licenses">—</div>
+      <div class="sub" id="kpi-licenses-sub">—</div>
+    </div>
+    <div class="kpi kpi-warning clickable" data-target="networks"><!-- KPI: networks -->
+      <div class="lbl">Active Networks</div>
+      <div class="val num" id="kpi-networks">—</div>
+      <div class="sub" id="kpi-networks-sub">—</div>
+    </div>
+    <div class="kpi clickable" data-target="members"><!-- KPI: members -->
+      <div class="lbl">Team Members</div>
+      <div class="val num" id="kpi-members">—</div>
+      <div class="sub" id="kpi-members-sub">—</div>
+    </div>
+  </div>
+
+  <!-- Row 1: Device table + composition -->
+  <div class="grid-2">
+    <div class="card" id="card-devices">
+      <div class="card-hdr">
+        <h2>Device Fleet</h2>
+        <span class="meta" id="devtbl-meta">—</span>
+      </div>
+      <div class="chips" id="dev-filter">
+        <span class="chip active" data-filter="all">All <span class="count" id="cnt-all">0</span></span>
+        <span class="chip" data-filter="ap">AP <span class="count" id="cnt-ap">0</span></span>
+        <span class="chip" data-filter="switch">Switch <span class="count" id="cnt-switch">0</span></span>
+        <span class="chip" data-filter="gateway">Gateway <span class="count" id="cnt-gateway">0</span></span>
+        <span class="chip" data-filter="expired">Expired only <span class="count" id="cnt-expired">0</span></span>
+      </div>
+      <table>
+        <thead><tr>
+          <th>Name</th>
+          <th>Network</th>
+          <th>Model</th>
+          <th>Type</th>
+          <th>License</th>
+        </tr></thead>
+        <tbody id="devtbl-body"></tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="card-hdr">
+        <h2>Composition</h2>
+        <span class="meta">type · license</span>
+      </div>
+      <div id="composition"></div>
+      <div style="margin-top:18px; padding-top:14px; border-top:1px solid var(--border);">
+        <div style="font-size:11px; color:var(--text-3); text-transform:uppercase; letter-spacing:.05em; margin-bottom:8px; font-weight:600;">Empty Networks</div>
+        <div class="empty-nets" id="empty-nets"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 2: Members -->
+  <div class="card" id="card-members">
+    <div class="card-hdr">
+      <h2>Team Access · Sorted by Last Login</h2>
+      <span class="meta" id="memtbl-meta">—</span>
+    </div>
+    <div class="chips" id="mem-filter">
+      <span class="chip active" data-filter="all">All <span class="count" id="mcnt-all">0</span></span>
+      <span class="chip" data-filter="admin">Admins <span class="count" id="mcnt-admin">0</span></span>
+      <span class="chip" data-filter="viewer">Viewers <span class="count" id="mcnt-viewer">0</span></span>
+      <span class="chip" data-filter="stale">Stale (1y+) <span class="count" id="mcnt-stale">0</span></span>
+    </div>
+    <table>
+      <thead><tr>
+        <th>User</th>
+        <th>Email</th>
+        <th>Org Role</th>
+        <th class="num">Networks</th>
+        <th>Last Login</th>
+        <th>Risk</th>
+      </tr></thead>
+      <tbody id="memtbl-body"></tbody>
+    </table>
+  </div>
+
+  <!-- Row 3: Topology Tree -->
+  <div class="card" id="card-topology" style="margin-top: 20px;">
+    <div class="card-hdr">
+      <h2>Network Topology · All Orgs</h2>
+      <span class="meta" id="topo-meta">—</span>
+    </div>
+    <div class="topo-stats" id="topo-stats"></div>
+    <div class="topo-tree" id="topo-tree"></div>
+  </div>
+
+  <div class="footnote">
+    <div>
+      Generated by Claude Code via senao-api-skills · auto-refresh every 5s
+    </div>
+    <div class="skills">
+      ops: get_user_orgs + get_hierarchy_views + get_inventory + get_licenses + get_org_memberships_overall
+    </div>
+  </div>
+
+</div>
+
+<script>
+const LIVE_DATA = 'live-data';
+const FILES = {
+  orgs: `${LIVE_DATA}/orgs.json`,
+  hierarchy: `${LIVE_DATA}/hierarchy.json`,
+  inventory: `${LIVE_DATA}/inventory.json`,
+  licenses: `${LIVE_DATA}/licenses.json`,
+  memberships: `${LIVE_DATA}/memberships.json`,
+  topology: `${LIVE_DATA}/topology.json`,
+};
+
+const STATE = {
+  data: null,
+  deviceFilter: 'all',
+  memberFilter: 'all',
+  expandedDevices: new Set(),
+  expandedMembers: new Set(),
+  expandedTopoNodes: new Set(),
+  topoInitialized: false,
+};
+
+function fmtDate(ms) {
+  if (!ms) return 'never';
+  const d = new Date(ms);
+  return d.toISOString().split('T')[0];
+}
+
+function fmtDateTime(ms) {
+  if (!ms) return 'never';
+  const d = new Date(ms);
+  return d.toISOString().replace('T',' ').slice(0,16);
+}
+
+function daysSince(ms) {
+  if (!ms) return Infinity;
+  return Math.floor((Date.now() - ms) / 86400000);
+}
+
+function userRisk(days) {
+  if (days === Infinity) return { label: '從未登入', cls: 'pill-crit' };
+  if (days > 730) return { label: `${(days/365).toFixed(1)}y stale`, cls: 'pill-crit' };
+  if (days > 365) return { label: `${(days/365).toFixed(1)}y stale`, cls: 'pill-warn' };
+  if (days > 90) return { label: `${days}d quiet`, cls: 'pill-info' };
+  return { label: 'active', cls: 'pill-ok' };
+}
+
+async function loadAll() {
+  const out = {};
+  for (const [k, p] of Object.entries(FILES)) {
+    try {
+      const r = await fetch(p, { cache: 'no-store' });
+      out[k] = await r.json();
+    } catch (e) {
+      console.warn('fetch fail', p, e);
+      out[k] = null;
+    }
+  }
+  return out;
+}
+
+function flash(el) {
+  if (!el) return;
+  el.classList.remove('flash');
+  void el.offsetWidth;
+  el.classList.add('flash');
+}
+
+function applyDeviceFilter(devices, filter) {
+  if (filter === 'all') return devices;
+  if (filter === 'expired') return devices.filter(d => d.license_status === 'expired');
+  return devices.filter(d => d.type === filter);
+}
+
+function applyMemberFilter(members, filter) {
+  if (filter === 'all') return members;
+  if (filter === 'stale') return members.filter(m => daysSince(m.last_login_time) > 365);
+  return members.filter(m => {
+    const role = m.org_role || (m.networks?.[0]?.role) || '';
+    return role === filter;
+  });
+}
+
+function deviceRowHTML(d, isOpen) {
+  const idTag = d.device_id || d.mac;
+  const main = `
+    <tr class="expandable ${isOpen?'open':''}" data-device="${idTag}">
+      <td><strong>${d.name||'—'}</strong><div style="font-size:11px;color:var(--text-3)" class="mono">${d.mac||''}</div></td>
+      <td>${d.network_name||'<span class="pill pill-muted">unassigned</span>'}</td>
+      <td class="mono">${d.model||'—'}</td>
+      <td><span class="type-chip type-${d.type}"><span class="dot"></span>${d.type}</span></td>
+      <td>${d.license_status === 'expired'
+        ? `<span class="pill pill-crit">expired</span>`
+        : d.license_status === 'active'
+          ? `<span class="pill pill-ok">${d.license_type||'active'}</span>`
+          : `<span class="pill pill-muted">${d.license_status||'—'}</span>`}</td>
+    </tr>`;
+  const detail = `
+    <tr class="detail ${isOpen?'open':''}" data-detail-device="${idTag}">
+      <td colspan="5">
+        <div class="detail-grid">
+          <div class="detail-item"><div class="k">Device ID</div><div class="v">${d.device_id||'—'}</div></div>
+          <div class="detail-item"><div class="k">MAC</div><div class="v">${d.mac||'—'}</div></div>
+          <div class="detail-item"><div class="k">Serial</div><div class="v">${d.serial_number||'—'}</div></div>
+          <div class="detail-item"><div class="k">License Type</div><div class="v large">${d.license_type||'—'}</div></div>
+          <div class="detail-item"><div class="k">Series</div><div class="v large">${d.series||'—'}</div></div>
+          <div class="detail-item"><div class="k">Registered By</div><div class="v large">${d.registered_by||'—'}</div></div>
+          <div class="detail-item"><div class="k">Registered</div><div class="v">${fmtDateTime(d.registered_time)}</div></div>
+          <div class="detail-item"><div class="k">License Expires</div><div class="v">${fmtDateTime(d.expired_date)}</div></div>
+          <div class="detail-item" style="grid-column: 1/-1"><div class="k">Network ID</div><div class="v">${d.network_id||'—'}</div></div>
+        </div>
+      </td>
+    </tr>`;
+  return main + detail;
+}
+
+function memberRowHTML(m, isOpen) {
+  const idTag = m.user_id || m.email;
+  const d = daysSince(m.last_login_time);
+  const risk = userRisk(d);
+  const nets = m.networks || [];
+  const role = m.org_role || (nets[0]?.role) || '—';
+  const main = `
+    <tr class="expandable ${isOpen?'open':''}" data-member="${idTag}">
+      <td><strong>${m.user_name||'—'}</strong></td>
+      <td class="ell mono" style="font-size:12px;color:var(--text-2)">${m.email||'—'}</td>
+      <td><span class="pill ${role==='admin'?'pill-info':role==='viewer'?'pill-muted':'pill-warn'}">${role}</span></td>
+      <td class="num">${nets.length}</td>
+      <td class="mono" style="font-size:12px">${fmtDate(m.last_login_time)}</td>
+      <td><span class="pill ${risk.cls}">${risk.label}</span></td>
+    </tr>`;
+  const netList = nets.length === 0
+    ? '<span style="color:var(--text-3); font-size:12px;">無 network-level 權限</span>'
+    : nets.map(n => `<span class="pill pill-muted" style="margin-right:6px; margin-bottom:4px;">${n.name} · ${n.role}</span>`).join('');
+  const detail = `
+    <tr class="detail ${isOpen?'open':''}" data-detail-member="${idTag}">
+      <td colspan="6">
+        <div class="detail-grid">
+          <div class="detail-item"><div class="k">User ID</div><div class="v">${m.user_id||'—'}</div></div>
+          <div class="detail-item"><div class="k">Email</div><div class="v">${m.email||'—'}</div></div>
+          <div class="detail-item"><div class="k">Status</div><div class="v large">${m.user_status||m.org_status||'—'}</div></div>
+          <div class="detail-item"><div class="k">Last Login</div><div class="v">${fmtDateTime(m.last_login_time)}</div></div>
+          <div class="detail-item" style="grid-column: 1/-1"><div class="k">Network Access (${nets.length})</div><div class="v large" style="margin-top:6px;">${netList}</div></div>
+        </div>
+      </td>
+    </tr>`;
+  return main + detail;
+}
+
+function statusBadge(status, errorText) {
+  if (status === 'ok') return '';
+  if (status === 'forbidden') return `<span class="badge pill-crit" title="${errorText||''}">403 RBAC</span>`;
+  if (status === 'payment_required') return `<span class="badge pill-warn" title="${errorText||''}">402 BASIC</span>`;
+  if (status === 'not_found') return `<span class="badge pill-muted">404</span>`;
+  return `<span class="badge pill-muted">${status}</span>`;
+}
+
+function renderTopologyTree(topo) {
+  if (!topo) return;
+  const orgs = topo.orgs || [];
+
+  // Stats
+  const stats = {
+    orgs: orgs.length,
+    accessibleOrgs: orgs.filter(o => o.hv_status === 'ok').length,
+    totalNetworks: orgs.reduce((s,o) => s + (o.networks?.length || 0), 0),
+    totalDevices: orgs.reduce((s,o) => s + (o.devices?.length || 0), 0),
+    emptyNetworks: orgs.reduce((s,o) => {
+      const used = new Set((o.devices||[]).map(d => d.network_id));
+      return s + (o.networks||[]).filter(n => !used.has(n.network_id)).length;
+    }, 0),
+  };
+
+  document.getElementById('topo-meta').textContent =
+    `${stats.accessibleOrgs}/${stats.orgs} orgs accessible · fetched ${topo.fetched_at?.slice(11,16) || ''}`;
+
+  document.getElementById('topo-stats').innerHTML = `
+    <div class="topo-stat"><div class="lbl">Orgs</div><div class="val">${stats.accessibleOrgs}<span style="font-size:14px;color:var(--text-3)">/${stats.orgs}</span></div><div class="sub">${stats.orgs - stats.accessibleOrgs} blocked</div></div>
+    <div class="topo-stat"><div class="lbl">Networks</div><div class="val">${stats.totalNetworks}</div><div class="sub">${stats.emptyNetworks} empty</div></div>
+    <div class="topo-stat"><div class="lbl">Devices</div><div class="val">${stats.totalDevices}</div><div class="sub">across visible orgs</div></div>
+  `;
+
+  // Tree
+  const tree = document.getElementById('topo-tree');
+
+  // First time: auto-expand the org that has most devices
+  if (!STATE.topoInitialized) {
+    const richest = orgs.reduce((best, o) =>
+      (o.devices?.length || 0) > (best.devices?.length || 0) ? o : best, orgs[0] || {});
+    if (richest?.org_id) {
+      STATE.expandedTopoNodes.add(`org:${richest.org_id}`);
+      // Auto-expand its networks that have devices
+      (richest.networks || []).forEach(n => {
+        const hasDev = (richest.devices||[]).some(d => d.network_id === n.network_id);
+        if (hasDev) STATE.expandedTopoNodes.add(`net:${n.network_id}`);
+      });
+    }
+    STATE.topoInitialized = true;
+  }
+
+  tree.innerHTML = orgs.map(o => {
+    const orgKey = `org:${o.org_id}`;
+    const orgOpen = STATE.expandedTopoNodes.has(orgKey);
+    const blocked = o.hv_status !== 'ok';
+    const devicesByNet = (o.devices||[]).reduce((m,d)=>{
+      const k = d.network_id || '__unassigned';
+      (m[k] = m[k] || []).push(d);
+      return m;
+    }, {});
+    const badge = statusBadge(o.hv_status, o.hv_error);
+    const subInfo = blocked
+      ? `<span class="sub-label">${o.hv_error}</span>`
+      : `<span class="sub-label">${(o.networks||[]).length} net · ${(o.devices||[]).length} dev</span>`;
+
+    let childrenHtml = '';
+    if (blocked) {
+      childrenHtml = `<div class="topo-blocked">無法讀取此 org 的階層資料（${o.hv_error}）</div>`;
+    } else {
+      const nets = (o.networks||[]);
+      childrenHtml = nets.length === 0
+        ? '<div class="topo-blocked">此 org 沒有 network</div>'
+        : nets.map(n => {
+            const netKey = `net:${n.network_id}`;
+            const netOpen = STATE.expandedTopoNodes.has(netKey);
+            const devs = devicesByNet[n.network_id] || [];
+            const isEmpty = devs.length === 0;
+            const invBlocked = o.inv_status !== 'ok';
+            const netSub = invBlocked
+              ? `<span class="sub-label">device list 受限 (${o.inv_error})</span>`
+              : `<span class="sub-label">${devs.length} device${devs.length===1?'':'s'}</span>`;
+            let devsHtml = '';
+            if (invBlocked) {
+              devsHtml = `<div class="topo-blocked">${o.inv_error}</div>`;
+            } else if (isEmpty) {
+              devsHtml = `<div class="topo-blocked">無 device</div>`;
+            } else {
+              devsHtml = devs.map(d => `
+                <div class="topo-node leaf" data-type="device" data-license="${d.license_status||''}"
+                     data-device-id="${d.device_id||d.mac}" data-network-name="${n.name||n.network_name||''}"
+                     title="點擊跳到上方 Device Fleet 並展開">
+                  <span class="caret">▸</span>
+                  <span class="icon">${d.type==='switch'?'🔘':d.type==='gateway'?'🛡️':'📶'}</span>
+                  <span class="label">${d.name||'—'}</span>
+                  <span class="sub-label">${d.model||''} · ${d.mac||''}</span>
+                  <span class="badge ${d.license_status==='expired'?'pill-crit':d.license_status==='active'?'pill-ok':'pill-muted'}">${d.license_status||'?'}</span>
+                </div>
+              `).join('');
+            }
+            return `
+              <div>
+                <div class="topo-node ${netOpen?'open':''}" data-type="network"
+                     data-empty="${isEmpty}" data-network-key="${netKey}"
+                     data-network-name="${n.name||n.network_name||''}"
+                     title="點擊展開 / 收合；標題列可雙擊 filter device table">
+                  <span class="caret">▸</span>
+                  <span class="icon">📡</span>
+                  <span class="label">${n.name||n.network_name||'—'}</span>
+                  ${netSub}
+                </div>
+                <div class="topo-children ${netOpen?'open':''}">${devsHtml}</div>
+              </div>
+            `;
+          }).join('');
+    }
+
+    return `
+      <div>
+        <div class="topo-node ${orgOpen?'open':''}" data-type="org" data-org-key="${orgKey}">
+          <span class="caret">▸</span>
+          <span class="icon">🏢</span>
+          <span class="label">${o.org_name||'—'}</span>
+          ${subInfo}
+          ${badge}
+        </div>
+        <div class="topo-children ${orgOpen?'open':''}">${childrenHtml}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function render() {
+  const data = STATE.data;
+  if (!data) return;
+  // Render topology with its own data source
+  if (data.topology) renderTopologyTree(data.topology);
+
+  const inv = data.inventory?.device_candidates || [];
+  const hv = data.hierarchy?.network_candidates || [];
+  const lic = data.licenses?.license_candidates || [];
+  const mem = data.memberships?.org_member_candidates || [];
+
+  // --- Alert ---
+  const expCount = inv.filter(d => d.license_status === 'expired').length;
+  document.getElementById('crit-text').textContent =
+    `${inv.length} 台設備中有 ${expCount} 台 license 已過期；org 內 license pool 還有 ${lic.length} 張可分配。建議:採購 ${expCount - lic.length > 0 ? expCount - lic.length : 0} 張新 license。`;
+
+  // --- KPIs ---
+  document.getElementById('kpi-devices').textContent = inv.length;
+  const byType = inv.reduce((m,d)=>{m[d.type]=(m[d.type]||0)+1;return m;},{});
+  document.getElementById('kpi-devices-sub').innerHTML =
+    Object.entries(byType).map(([t,c]) => `${c} ${t}`).join(' · ');
+
+  document.getElementById('kpi-licenses').textContent = expCount;
+  document.getElementById('kpi-licenses-sub').textContent = inv.length === expCount && expCount > 0 ? '全部過期' : `${expCount}/${inv.length} 過期`;
+
+  const activeNetIds = new Set(inv.map(d => d.network_id));
+  const totalNets = hv.length;
+  document.getElementById('kpi-networks').textContent = `${activeNetIds.size}/${totalNets}`;
+  document.getElementById('kpi-networks-sub').textContent = `${totalNets - activeNetIds.size} 個空的 network`;
+
+  document.getElementById('kpi-members').textContent = mem.length;
+  const stale = mem.filter(m => daysSince(m.last_login_time) > 365).length;
+  document.getElementById('kpi-members-sub').textContent = `${stale} 人 1+ 年未登入`;
+
+  // --- Chip counts ---
+  document.getElementById('cnt-all').textContent = inv.length;
+  document.getElementById('cnt-ap').textContent = byType.ap || 0;
+  document.getElementById('cnt-switch').textContent = byType.switch || 0;
+  document.getElementById('cnt-gateway').textContent = byType.gateway || 0;
+  document.getElementById('cnt-expired').textContent = expCount;
+
+  const adminCount = mem.filter(m => (m.org_role||(m.networks?.[0]?.role))==='admin').length;
+  const viewerCount = mem.filter(m => (m.org_role||(m.networks?.[0]?.role))==='viewer').length;
+  document.getElementById('mcnt-all').textContent = mem.length;
+  document.getElementById('mcnt-admin').textContent = adminCount;
+  document.getElementById('mcnt-viewer').textContent = viewerCount;
+  document.getElementById('mcnt-stale').textContent = stale;
+
+  // --- Device table (filtered) ---
+  const filteredDev = applyDeviceFilter(inv, STATE.deviceFilter);
+  document.getElementById('devtbl-meta').textContent =
+    STATE.deviceFilter === 'all'
+      ? `${inv.length} devices · ${Object.keys(byType).length} types`
+      : `${filteredDev.length} of ${inv.length} (filter: ${STATE.deviceFilter})`;
+  const dtb = document.getElementById('devtbl-body');
+  dtb.innerHTML = filteredDev.length === 0
+    ? `<tr><td colspan="5"><div class="empty-state">No devices match this filter</div></td></tr>`
+    : filteredDev.map(d => deviceRowHTML(d, STATE.expandedDevices.has(d.device_id||d.mac))).join('');
+
+  // --- Composition bars ---
+  const comp = document.getElementById('composition');
+  const total = inv.length || 1;
+  const typeColors = { ap: 'bar-fill', switch: 'bar-fill warn', gateway: 'bar-fill ok' };
+  comp.innerHTML = Object.entries(byType).map(([t,c]) => `
+    <div class="bar-row">
+      <div class="bar-label">${t.toUpperCase()}</div>
+      <div class="bar-track"><div class="${typeColors[t]||'bar-fill'}" style="width:${(c/total*100).toFixed(0)}%"></div></div>
+      <div class="bar-val">${c}</div>
+    </div>
+  `).join('') + `
+    <div style="margin-top:14px; padding-top:12px; border-top:1px solid var(--border);">
+      <div class="bar-row">
+        <div class="bar-label">Expired</div>
+        <div class="bar-track"><div class="bar-fill crit" style="width:${(expCount/total*100).toFixed(0)}%"></div></div>
+        <div class="bar-val">${expCount}</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">Active</div>
+        <div class="bar-track"><div class="bar-fill ok" style="width:${((total-expCount)/total*100).toFixed(0)}%"></div></div>
+        <div class="bar-val">${total-expCount}</div>
+      </div>
+    </div>
+  `;
+
+  // --- Empty networks ---
+  const usedNames = new Set(inv.map(d => d.network_name));
+  const emptyNets = hv.filter(n => !usedNames.has(n.network_name));
+  document.getElementById('empty-nets').innerHTML =
+    emptyNets.length === 0
+      ? `<span style="color:var(--text-3); font-size:12px;">全部 network 都有設備</span>`
+      : emptyNets.map(n => `<span class="empty-tag" title="${n.network_id}">${n.network_name}</span>`).join('');
+
+  // --- Members (filtered) ---
+  const sorted = [...mem].sort((a,b) => (a.last_login_time||0) - (b.last_login_time||0));
+  const filteredMem = applyMemberFilter(sorted, STATE.memberFilter);
+  document.getElementById('memtbl-meta').textContent =
+    STATE.memberFilter === 'all'
+      ? `${mem.length} members · ${stale} stale`
+      : `${filteredMem.length} of ${mem.length} (filter: ${STATE.memberFilter})`;
+  document.getElementById('memtbl-body').innerHTML = filteredMem.length === 0
+    ? `<tr><td colspan="6"><div class="empty-state">No members match this filter</div></td></tr>`
+    : filteredMem.map(m => memberRowHTML(m, STATE.expandedMembers.has(m.user_id||m.email))).join('');
+
+  // --- Updated timestamp ---
+  const now = new Date();
+  document.getElementById('updated').textContent =
+    `updated ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
+}
+
+// --- Interaction wiring ---
+function wireInteractions() {
+  // Refresh button
+  document.getElementById('btn-refresh').addEventListener('click', async (e) => {
+    const btn = e.currentTarget;
+    btn.classList.add('spinning');
+    await tick();
+    setTimeout(() => btn.classList.remove('spinning'), 400);
+  });
+
+  // KPI card clicks → filter + scroll + flash
+  document.querySelectorAll('.kpi.clickable').forEach(card => {
+    card.addEventListener('click', () => {
+      const target = card.dataset.target;
+      if (target === 'expired') {
+        STATE.deviceFilter = 'expired';
+        document.querySelectorAll('#dev-filter .chip').forEach(c =>
+          c.classList.toggle('active', c.dataset.filter === 'expired'));
+        render();
+        document.getElementById('card-devices').scrollIntoView({behavior:'smooth', block:'start'});
+        setTimeout(() => flash(document.getElementById('card-devices')), 300);
+      } else if (target === 'members') {
+        document.getElementById('card-members').scrollIntoView({behavior:'smooth', block:'start'});
+        setTimeout(() => flash(document.getElementById('card-members')), 300);
+      } else if (target === 'networks') {
+        document.getElementById('empty-nets').parentElement.scrollIntoView({behavior:'smooth', block:'center'});
+        setTimeout(() => flash(document.getElementById('empty-nets').parentElement), 300);
+      } else {
+        // 'all' devices
+        STATE.deviceFilter = 'all';
+        document.querySelectorAll('#dev-filter .chip').forEach(c =>
+          c.classList.toggle('active', c.dataset.filter === 'all'));
+        render();
+        document.getElementById('card-devices').scrollIntoView({behavior:'smooth', block:'start'});
+        setTimeout(() => flash(document.getElementById('card-devices')), 300);
+      }
+    });
+  });
+
+  // Device filter chips
+  document.getElementById('dev-filter').addEventListener('click', e => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+    STATE.deviceFilter = chip.dataset.filter;
+    document.querySelectorAll('#dev-filter .chip').forEach(c =>
+      c.classList.toggle('active', c === chip));
+    render();
+  });
+
+  // Member filter chips
+  document.getElementById('mem-filter').addEventListener('click', e => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+    STATE.memberFilter = chip.dataset.filter;
+    document.querySelectorAll('#mem-filter .chip').forEach(c =>
+      c.classList.toggle('active', c === chip));
+    render();
+  });
+
+  // Device row expand
+  document.getElementById('devtbl-body').addEventListener('click', e => {
+    const row = e.target.closest('tr.expandable');
+    if (!row) return;
+    const id = row.dataset.device;
+    if (STATE.expandedDevices.has(id)) STATE.expandedDevices.delete(id);
+    else STATE.expandedDevices.add(id);
+    render();
+  });
+
+  // Member row expand
+  document.getElementById('memtbl-body').addEventListener('click', e => {
+    const row = e.target.closest('tr.expandable');
+    if (!row) return;
+    const id = row.dataset.member;
+    if (STATE.expandedMembers.has(id)) STATE.expandedMembers.delete(id);
+    else STATE.expandedMembers.add(id);
+    render();
+  });
+
+  // Topology tree interactions
+  document.getElementById('topo-tree').addEventListener('click', e => {
+    const node = e.target.closest('.topo-node');
+    if (!node) return;
+
+    // Org or network node → toggle expand
+    if (node.dataset.type === 'org') {
+      const key = node.dataset.orgKey;
+      if (STATE.expandedTopoNodes.has(key)) STATE.expandedTopoNodes.delete(key);
+      else STATE.expandedTopoNodes.add(key);
+      render();
+      return;
+    }
+    if (node.dataset.type === 'network') {
+      const key = node.dataset.networkKey;
+      if (STATE.expandedTopoNodes.has(key)) STATE.expandedTopoNodes.delete(key);
+      else STATE.expandedTopoNodes.add(key);
+      render();
+      return;
+    }
+    // Device leaf → scroll up to Device Fleet, expand row, flash
+    if (node.dataset.type === 'device') {
+      const id = node.dataset.deviceId;
+      STATE.expandedDevices.add(id);
+      // Reset device filter to all so target row is visible
+      STATE.deviceFilter = 'all';
+      document.querySelectorAll('#dev-filter .chip').forEach(c =>
+        c.classList.toggle('active', c.dataset.filter === 'all'));
+      render();
+      setTimeout(() => {
+        const target = document.querySelector(`tr.expandable[data-device="${id}"]`);
+        if (target) {
+          target.scrollIntoView({behavior:'smooth', block:'center'});
+          flash(target);
+        }
+      }, 50);
+    }
+  });
+}
+
+async function tick() {
+  STATE.data = await loadAll();
+  render();
+}
+
+wireInteractions();
+tick();
+setInterval(tick, 5000);
+</script>
+</body>
+</html>

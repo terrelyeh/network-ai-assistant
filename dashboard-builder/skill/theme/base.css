@@ -1,0 +1,127 @@
+/* Base reset + shell layout */
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  background-image: var(--bg-gradient);
+  color: var(--text-1);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+.num { font-variant-numeric: tabular-nums; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+/* Sticky header */
+.db-hdr {
+  position: sticky; top: 0; z-index: 10;
+  background: rgba(247,247,245,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 18px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.db-hdr-left h1 {
+  margin: 0; font-size: 18px; font-weight: 700; letter-spacing: -0.01em;
+}
+.db-hdr-left .crumb {
+  font-size: 12px; color: var(--text-3); margin-top: 2px; font-weight: 500;
+}
+.db-hdr-right { display: flex; align-items: center; gap: 16px; }
+.live-dot {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 12px; color: var(--text-2); font-weight: 500;
+}
+.live-dot::before {
+  content: ''; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--success); box-shadow: 0 0 0 4px var(--success-bg);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.updated { font-size: 12px; color: var(--text-3); font-family: var(--font-mono); }
+
+/* Main wrap */
+.db-wrap { max-width: 1320px; margin: 0 auto; padding: 28px 32px 80px; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--surface); border: 1px solid var(--border-strong);
+  color: var(--text-1); padding: 6px 12px; border-radius: var(--radius-sm);
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  transition: all .15s ease; font-family: inherit;
+}
+.btn:hover { background: var(--surface-2); border-color: var(--brand); color: var(--brand); }
+.btn:active { transform: scale(0.97); }
+.btn.spinning .ic { animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.ic { display: inline-block; line-height: 1; }
+
+/* Card surface (shared) */
+.card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 20px 22px; box-shadow: var(--shadow-sm);
+}
+.card-hdr {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 12px; margin-bottom: 14px;
+}
+.card-hdr h2 {
+  margin: 0; font-size: 14px; font-weight: 700;
+  letter-spacing: -0.005em; white-space: nowrap;
+}
+.card-hdr .meta {
+  font-size: 11px; color: var(--text-3); font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.04em; text-align: right;
+}
+
+/* Pills (severity) */
+.pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 600;
+  padding: 3px 8px; border-radius: 999px;
+  line-height: 1; letter-spacing: 0.02em;
+}
+.pill-crit { background: var(--critical-bg); color: var(--critical); }
+.pill-warn { background: var(--warning-bg); color: var(--warning); }
+.pill-ok { background: var(--success-bg); color: var(--success); }
+.pill-info { background: var(--info-bg); color: var(--info); }
+.pill-muted { background: rgba(15,23,42,0.05); color: var(--text-2); }
+
+/* Chip filters */
+.chips {
+  display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap;
+}
+.chip {
+  font-size: 11px; font-weight: 600; padding: 5px 11px;
+  border-radius: 999px; cursor: pointer;
+  background: var(--surface-2); border: 1px solid var(--border);
+  color: var(--text-2); transition: all .15s ease;
+  font-family: inherit; letter-spacing: 0.02em;
+}
+.chip:hover { border-color: var(--brand); color: var(--brand); }
+.chip.active { background: var(--brand); color: white; border-color: var(--brand); }
+.chip .count { font-variant-numeric: tabular-nums; margin-left: 4px; opacity: 0.7; font-size: 10px; }
+
+/* Flash highlight (for cross-widget navigation) */
+.flash {
+  animation: flash-glow 1.2s ease-out 2;
+  --flash-color: var(--brand);
+}
+@keyframes flash-glow {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--brand) 40%, transparent); }
+  50% { box-shadow: 0 0 0 8px color-mix(in srgb, var(--brand) 10%, transparent); }
+  100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--brand) 0%, transparent); }
+}
+
+/* Empty state */
+.empty-state { text-align: center; padding: 36px 16px; color: var(--text-3); font-size: 13px; }
+
+/* Footer */
+.db-footnote {
+  margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border);
+  font-size: 11px; color: var(--text-3);
+  display: flex; justify-content: space-between; gap: 16px;
+}
+.db-footnote .skills { font-family: var(--font-mono); }

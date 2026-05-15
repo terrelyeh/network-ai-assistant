@@ -1,0 +1,52 @@
+<style>
+.w-chipstrip-wrap {
+  margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border);
+}
+.w-chipstrip-label {
+  font-size: 11px; color: var(--text-3); text-transform: uppercase;
+  letter-spacing: 0.05em; margin-bottom: 8px; font-weight: 600;
+}
+.w-chipstrip { display: flex; flex-wrap: wrap; gap: 6px; }
+.w-chipstrip .tag {
+  font-size: 11px; padding: 4px 9px; border-radius: 6px;
+  background: var(--surface-2); border: 1px dashed var(--border-strong);
+  color: var(--text-2); font-family: var(--font-mono);
+}
+.w-chipstrip-empty { color: var(--text-3); font-size: 12px; }
+</style>
+
+<script>
+Dashboard.register('chip_strip', ({ el, config, ctx }) => {
+  el.classList.add('w-chipstrip-wrap');
+  el.innerHTML = `
+    <div class="w-chipstrip-label">${config.title || 'Tags'}</div>
+    <div class="w-chipstrip" data-role="body"></div>
+  `;
+  const body = el.querySelector('[data-role="body"]');
+
+  return {
+    render(data) {
+      const items = (config.compute && computeFns[config.compute])
+        ? computeFns[config.compute](data, config)
+        : (config.items || []);
+      if (items.length === 0) {
+        body.innerHTML = `<span class="w-chipstrip-empty">${config.empty_text || 'No items'}</span>`;
+      } else {
+        body.innerHTML = items.map(i => {
+          const tooltip = i.tooltip ? ` title="${i.tooltip}"` : '';
+          return `<span class="tag"${tooltip}>${i.label}</span>`;
+        }).join('');
+      }
+    }
+  };
+});
+
+const computeFns4 = window.computeFns || (window.computeFns = {});
+computeFns4.empty_networks = (data) => {
+  const inv = data.inventory?.device_candidates || [];
+  const hv = data.hierarchy?.network_candidates || [];
+  const usedNames = new Set(inv.map(d => d.network_name));
+  return hv.filter(n => !usedNames.has(n.network_name))
+    .map(n => ({ label: n.network_name, tooltip: n.network_id }));
+};
+</script>

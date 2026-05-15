@@ -1,0 +1,117 @@
+{
+  "title": "Multi-Org Governance Audit",
+  "subtitle": "MSP/Partner 視角 · 跨 5 個 org 的存取健康 + 合規檢視",
+  "live_data": {
+    "topology": "live-data/topology.json",
+    "memberships": "live-data/memberships.json",
+    "inventory": "live-data/inventory.json"
+  },
+  "compute_fns": "(() => { const cf = window.computeFns; const flat = data => (data.topology?.orgs || []).flatMap(o => (o.devices || []).map(d => ({...d, org_name: o.org_name}))); const isExpired = d => d.license_status === 'expired'; cf.gov_summary = (data) => { const orgs = data.topology?.orgs || []; const accessible = orgs.filter(o => o.hv_status === 'ok' && o.inv_status === 'ok').length; const blocked = orgs.filter(o => o.hv_status !== 'ok' || o.inv_status !== 'ok').length; const all = flat(data); const exp = all.filter(isExpired).length; return `管理 ${orgs.length} 個 org：${accessible} 個完全可見、${blocked} 個被 RBAC/Plan 擋住；可見的 ${all.length} 個設備中有 ${exp} 個 license 已過期。`; }; cf.org_total = (data) => (data.topology?.orgs || []).length; cf.org_accessible = (data) => (data.topology?.orgs || []).filter(o => o.hv_status === 'ok' && o.inv_status === 'ok').length; cf.org_accessible_sub = (data) => { const partial = (data.topology?.orgs || []).filter(o => o.hv_status === 'ok' && o.inv_status !== 'ok').length; return partial > 0 ? `+${partial} 部分受限` : 'fully visible'; }; cf.fleet_total = (data) => flat(data).length; cf.fleet_total_sub = (data) => `${flat(data).filter(isExpired).length} 過期`; cf.member_total = (data) => (data.memberships?.org_member_candidates || []).length; cf.member_admin_count = (data) => (data.memberships?.org_member_candidates || []).filter(m => m.org_role === 'admin').length; cf.member_admin_sub = (data) => `${cf.member_admin_count(data)} admins`; cf.org_access_segments = (data) => { const orgs = data.topology?.orgs || []; const fully = orgs.filter(o => o.hv_status === 'ok' && o.inv_status === 'ok'); const partial = orgs.filter(o => o.hv_status === 'ok' && o.inv_status !== 'ok'); const rbac = orgs.filter(o => o.hv_status === 'forbidden' || o.inv_status === 'forbidden').filter(o => o.hv_status !== 'ok'); const plan = orgs.filter(o => o.hv_status === 'payment_required'); return [ { label: 'Fully Accessible', value: fully.length, severity: 'success' }, { label: 'Partially Visible', value: partial.length, severity: 'warning' }, { label: 'RBAC Blocked (403)', value: rbac.length, severity: 'critical' }, { label: 'Plan Blocked (402)', value: plan.length, severity: 'muted' } ].filter(s => s.value > 0); }; cf.license_status_segments = (data) => { const all = flat(data); const exp = all.filter(isExpired).length; const act = all.length - exp; return [ { label: 'Expired', value: exp, severity: 'critical' }, { label: 'Active', value: act, severity: 'success' } ].filter(s => s.value > 0); }; cf.cross_org_findings = (data) => { const orgs = data.topology?.orgs || []; const findings = []; const blocked = orgs.filter(o => o.hv_status !== 'ok'); if (blocked.length) findings.push({ label: `${blocked.length} org 無法稽核：${blocked.map(o => o.org_name).join(', ')}` }); const all = flat(data); const exp = all.filter(isExpired); if (exp.length) findings.push({ label: `${exp.length} 設備 license 過期（${[...new Set(exp.map(d => d.org_name))].join(', ')}）` }); const members = data.memberships?.org_member_candidates || []; const stale = members.filter(m => m.last_login_time && (Date.now() - m.last_login_time) > 365 * 86400000); if (stale.length) findings.push({ label: `${stale.length} 個 stale account 持有權限（>1 年沒登入）` }); const orgsNoDev = orgs.filter(o => o.hv_status === 'ok' && (o.networks || []).length > 0 && (o.devices || []).length === 0); if (orgsNoDev.length) findings.push({ label: `${orgsNoDev.length} org 有 network 但無設備：${orgsNoDev.map(o => o.org_name).join(', ')}` }); return findings; }; })();",
+  "sections": [
+    {
+      "widget": "alert",
+      "id": "gov-alert",
+      "severity": "warning",
+      "title": "Cross-Org Governance Summary",
+      "body_compute": "gov_summary"
+    },
+    {
+      "widget": "kpi_grid",
+      "id": "kpis",
+      "items": [
+        {
+          "label": "Total Orgs",
+          "value_compute": "org_total",
+          "sub": "managed"
+        },
+        {
+          "label": "Fully Accessible",
+          "severity": "success",
+          "value_compute": "org_accessible",
+          "sub_compute": "org_accessible_sub",
+          "clickable": { "target": "access-mix" }
+        },
+        {
+          "label": "Total Devices",
+          "value_compute": "fleet_total",
+          "sub_compute": "fleet_total_sub",
+          "clickable": { "target": "topology" }
+        },
+        {
+          "label": "Team Members",
+          "value_compute": "member_total",
+          "sub_compute": "member_admin_sub",
+          "clickable": { "target": "team-roster" }
+        }
+      ]
+    },
+    {
+      "widget": "donut",
+      "id": "access-mix",
+      "title": "Orgs by Access Level",
+      "compute": "org_access_segments",
+      "center_value_compute": "org_total",
+      "center_label": "Orgs"
+    },
+    {
+      "widget": "topology_tree",
+      "id": "topology",
+      "title": "Network Topology · All Orgs (RBAC-aware)",
+      "data_source": "topology",
+      "device_table_target": "team-roster"
+    },
+    {
+      "widget": "chip_strip",
+      "id": "findings",
+      "title": "Cross-Org Findings · 待處理事項",
+      "compute": "cross_org_findings",
+      "empty_text": "沒有 cross-org governance 風險"
+    },
+    {
+      "widget": "donut",
+      "id": "license-mix",
+      "title": "Fleet License Status",
+      "compute": "license_status_segments",
+      "center_value_compute": "fleet_total",
+      "center_label": "Devices"
+    },
+    {
+      "widget": "table",
+      "id": "team-roster",
+      "title": "Team Members · Main_Org (其他 org 待 RD 開放跨 org 成員 API)",
+      "data_source": "memberships.org_member_candidates",
+      "row_id_field": "user_id",
+      "sort_by": { "field": "last_login_time", "dir": "asc" },
+      "meta_template": "${count} members",
+      "filters": [
+        { "label": "All", "filter": "all" },
+        { "label": "Admins", "filter": "org_role:admin" },
+        { "label": "Stale", "filter": "stale" }
+      ],
+      "columns": [
+        { "label": "User", "field": "user_name" },
+        { "label": "Email", "field": "email", "render": "mono_ellipsis" },
+        { "label": "Org Role", "field": "org_role", "render": "role_pill" },
+        { "label": "Networks", "field": "networks", "render": "count", "align": "right" },
+        { "label": "Last Login", "field": "last_login_time", "render": "date" },
+        { "label": "Risk", "field": "last_login_time", "render": "risk_pill" }
+      ],
+      "expandable_rows": true,
+      "detail_fields": [
+        { "label": "User ID", "field": "user_id" },
+        { "label": "Email", "field": "email" },
+        { "label": "Status", "field": "user_status", "large": true },
+        { "label": "Last Login", "field": "last_login_time", "render": "datetime" },
+        { "label": "Network Access", "field": "networks", "render": "network_list", "full_width": true, "large": true }
+      ]
+    }
+  ],
+  "footer": {
+    "ops_used": [
+      "get_user_orgs",
+      "get_hierarchy_views (× 5 orgs)",
+      "get_inventory (× 5 orgs)",
+      "get_org_memberships_overall"
+    ]
+  }
+}

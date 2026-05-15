@@ -1,0 +1,108 @@
+{
+  "title": "License Renewal Planning · 跨 Org",
+  "subtitle": "規劃 license 續約優先序 · 偵測 overdue / 即將到期 / 仍 active",
+  "live_data": {
+    "topology": "live-data/topology.json",
+    "inventory": "live-data/inventory.json"
+  },
+  "compute_fns": "(() => { const cf = window.computeFns; const flatten = data => (data.topology?.orgs || []).flatMap(o => (o.devices || []).map(d => ({...d, org_name: o.org_name}))); const isExpired = d => d.license_status === 'expired' || (d.expired_date && d.expired_date < Date.now()); const daysFromNow = ms => ms ? Math.round((ms - Date.now()) / 86400000) : null; cf.renewal_summary = (data) => { const all = flatten(data); const expired = all.filter(isExpired); const oldest = expired.sort((a,b) => (a.expired_date||0) - (b.expired_date||0))[0]; if (!oldest) return '所有 license 都還在有效期。'; const days = Math.abs(daysFromNow(oldest.expired_date)); return `${expired.length} / ${all.length} 個設備 license 已過期；最久 overdue：${oldest.name} (${days} 天前到期)。建議優先採購 ${expired.length} 張續約 license。`; }; cf.lic_total = (data) => flatten(data).length; cf.lic_overdue = (data) => flatten(data).filter(isExpired).length; cf.lic_overdue_subtext = (data) => { const all = flatten(data); const exp = all.filter(isExpired).length; return `${(exp/Math.max(1,all.length)*100).toFixed(0)}% of fleet`; }; cf.lic_expiring_soon = (data) => flatten(data).filter(d => { const dd = daysFromNow(d.expired_date); return dd !== null && dd >= 0 && dd <= 90; }).length; cf.lic_active = (data) => flatten(data).filter(d => !isExpired(d) && d.license_status === 'active').length; cf.lic_active_subtext = (data) => { const acts = flatten(data).filter(d => !isExpired(d)); if (acts.length === 0) return 'none'; const next = acts.sort((a,b) => (a.expired_date||0) - (b.expired_date||0))[0]; const dd = daysFromNow(next.expired_date); return `next expires in ${dd}d`; }; cf.licenses_for_timeline = (data) => flatten(data).map(d => ({label: d.name, date_ms: d.expired_date, severity: null /* auto by date */, sub: d.org_name})); cf.overdue_by_org_bars = (data) => { const all = flatten(data); const by = {}; all.filter(isExpired).forEach(d => { by[d.org_name] = (by[d.org_name] || 0) + 1; }); return Object.entries(by).map(([org, count]) => ({label: org, value: count, color: 'crit'})); }; cf.all_licenses_table = (data) => flatten(data).map(d => ({ ...d, days_from_now: daysFromNow(d.expired_date), urgency: isExpired(d) ? 'overdue' : ((daysFromNow(d.expired_date) || 9999) <= 90 ? 'expiring_soon' : 'active') })); cf.fleet_total = (data) => flatten(data).length; cf.never_expired_devices = (data) => flatten(data).filter(d => !d.expired_date).map(d => ({label: d.name})); })();",
+  "sections": [
+    {
+      "widget": "alert",
+      "id": "renewal-alert",
+      "severity": "critical",
+      "title": "License Renewal Urgency",
+      "body_compute": "renewal_summary"
+    },
+    {
+      "widget": "kpi_grid",
+      "id": "kpis",
+      "items": [
+        {
+          "label": "Total Licenses",
+          "value_compute": "lic_total",
+          "sub": "across visible orgs"
+        },
+        {
+          "label": "Overdue",
+          "severity": "critical",
+          "value_compute": "lic_overdue",
+          "sub_compute": "lic_overdue_subtext",
+          "clickable": { "target": "license-table" }
+        },
+        {
+          "label": "Expiring < 90d",
+          "severity": "warning",
+          "value_compute": "lic_expiring_soon",
+          "sub": "renewal window",
+          "clickable": { "target": "license-table" }
+        },
+        {
+          "label": "Active",
+          "severity": "success",
+          "value_compute": "lic_active",
+          "sub_compute": "lic_active_subtext"
+        }
+      ]
+    },
+    {
+      "widget": "timeline",
+      "id": "expiry-timeline",
+      "title": "License Expiry Timeline",
+      "compute": "licenses_for_timeline",
+      "warning_threshold_days": 90,
+      "critical_label": "Overdue (action required)",
+      "warning_label": "Expiring < 90d (plan renewal)",
+      "success_label": "Active (safe)"
+    },
+    {
+      "widget": "bar_list",
+      "id": "overdue-by-org",
+      "title": "Overdue by Org",
+      "meta": "license expired by org",
+      "groups": [
+        { "compute": "overdue_by_org_bars", "total_compute": "fleet_total" }
+      ]
+    },
+    {
+      "widget": "table",
+      "id": "license-table",
+      "title": "License Renewal Plan · 完整設備清單",
+      "data_source": "topology.orgs[0].devices",
+      "_note": "fallback path — actual rows are flattened by data_compute below if widget supported. Currently use Main_Org devices for table view.",
+      "row_id_field": "device_id",
+      "sort_by": { "field": "expired_date", "dir": "asc" },
+      "meta_template": "${count} devices in Main_Org",
+      "filters": [
+        { "label": "All", "filter": "all" },
+        { "label": "Expired", "filter": "license_status:expired" },
+        { "label": "AP", "filter": "type:ap" }
+      ],
+      "columns": [
+        { "label": "Device", "field": "name" },
+        { "label": "Network", "field": "network_name", "render": "network_or_unassigned" },
+        { "label": "Model", "field": "model", "cls": "mono" },
+        { "label": "License Type", "field": "license_type" },
+        { "label": "Status", "field": "license_status", "render": "license_pill" }
+      ],
+      "expandable_rows": true,
+      "detail_fields": [
+        { "label": "Device ID", "field": "device_id" },
+        { "label": "MAC", "field": "mac" },
+        { "label": "Serial", "field": "serial_number" },
+        { "label": "Registered", "field": "registered_time", "render": "datetime" },
+        { "label": "License Expires", "field": "expired_date", "render": "datetime", "large": true },
+        { "label": "Registered By", "field": "registered_by", "large": true },
+        { "label": "Network ID", "field": "network_id", "full_width": true }
+      ]
+    }
+  ],
+  "footer": {
+    "ops_used": [
+      "get_user_orgs",
+      "get_hierarchy_views",
+      "get_inventory",
+      "get_licenses"
+    ]
+  }
+}

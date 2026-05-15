@@ -1,0 +1,150 @@
+{
+  "title": "Main_Org · 健康總覽",
+  "subtitle": "EnGenius Cloud Staging · org_id: 5e410f44...",
+  "live_data": {
+    "inventory": "live-data/inventory.json",
+    "hierarchy": "live-data/hierarchy.json",
+    "licenses": "live-data/licenses.json",
+    "memberships": "live-data/memberships.json",
+    "topology": "live-data/topology.json"
+  },
+  "sections": [
+    {
+      "widget": "alert",
+      "id": "license-crit",
+      "severity": "critical",
+      "title": "License 全面過期警示",
+      "body_compute": "license_summary"
+    },
+    {
+      "widget": "kpi_grid",
+      "id": "kpis",
+      "items": [
+        {
+          "label": "Devices",
+          "value_path": "inventory.device_candidates.length",
+          "sub_compute": "device_type_breakdown",
+          "clickable": { "target": "device-fleet" }
+        },
+        {
+          "label": "License Expired",
+          "severity": "critical",
+          "value_compute": "expired_count",
+          "sub_compute": "expired_subtext",
+          "clickable": { "target": "device-fleet" }
+        },
+        {
+          "label": "Active Networks",
+          "severity": "warning",
+          "value_compute": "active_networks_ratio",
+          "sub_compute": "empty_networks_subtext",
+          "clickable": { "target": "device-fleet" }
+        },
+        {
+          "label": "Team Members",
+          "value_path": "memberships.org_member_candidates.length",
+          "sub_compute": "stale_members_subtext",
+          "clickable": { "target": "team-access" }
+        }
+      ]
+    },
+    {
+      "widget": "table",
+      "id": "device-fleet",
+      "title": "Device Fleet",
+      "data_source": "inventory.device_candidates",
+      "row_id_field": "device_id",
+      "meta_template": "${count} devices",
+      "filters": [
+        { "label": "All", "filter": "all" },
+        { "label": "AP", "filter": "type:ap" },
+        { "label": "Switch", "filter": "type:switch" },
+        { "label": "Gateway", "filter": "type:gateway" },
+        { "label": "Expired only", "filter": "license_status:expired" }
+      ],
+      "columns": [
+        { "label": "Name", "field": "name", "render": "name_with_sub", "sub_field": "mac" },
+        { "label": "Network", "field": "network_name", "render": "network_or_unassigned" },
+        { "label": "Model", "field": "model", "cls": "mono" },
+        { "label": "Type", "field": "type", "render": "type_chip" },
+        { "label": "License", "field": "license_status", "render": "license_pill" }
+      ],
+      "expandable_rows": true,
+      "detail_fields": [
+        { "label": "Device ID", "field": "device_id" },
+        { "label": "MAC", "field": "mac" },
+        { "label": "Serial", "field": "serial_number" },
+        { "label": "License Type", "field": "license_type", "large": true },
+        { "label": "Series", "field": "series", "large": true },
+        { "label": "Registered By", "field": "registered_by", "large": true },
+        { "label": "Registered", "field": "registered_time", "render": "datetime" },
+        { "label": "License Expires", "field": "expired_date", "render": "datetime" },
+        { "label": "Network ID", "field": "network_id", "full_width": true }
+      ]
+    },
+    {
+      "widget": "bar_list",
+      "id": "composition",
+      "title": "Composition",
+      "meta": "type · license",
+      "groups": [
+        { "compute": "device_type_bars", "total_compute": "device_total" },
+        { "compute": "license_status_bars", "total_compute": "device_total" }
+      ]
+    },
+    {
+      "widget": "chip_strip",
+      "id": "empty-nets",
+      "title": "Empty Networks",
+      "compute": "empty_networks",
+      "empty_text": "全部 network 都有設備"
+    },
+    {
+      "widget": "table",
+      "id": "team-access",
+      "title": "Team Access · Sorted by Last Login (oldest first)",
+      "data_source": "memberships.org_member_candidates",
+      "row_id_field": "user_id",
+      "sort_by": { "field": "last_login_time", "dir": "asc" },
+      "meta_template": "${count} members",
+      "filters": [
+        { "label": "All", "filter": "all" },
+        { "label": "Admins", "filter": "org_role:admin" },
+        { "label": "Viewers", "filter": "org_role:viewer" },
+        { "label": "Stale (1y+)", "filter": "stale" }
+      ],
+      "columns": [
+        { "label": "User", "field": "user_name" },
+        { "label": "Email", "field": "email", "render": "mono_ellipsis" },
+        { "label": "Org Role", "field": "org_role", "render": "role_pill" },
+        { "label": "Networks", "field": "networks", "render": "count", "align": "right" },
+        { "label": "Last Login", "field": "last_login_time", "render": "date" },
+        { "label": "Risk", "field": "last_login_time", "render": "risk_pill" }
+      ],
+      "expandable_rows": true,
+      "detail_fields": [
+        { "label": "User ID", "field": "user_id" },
+        { "label": "Email", "field": "email" },
+        { "label": "Status", "field": "user_status", "large": true },
+        { "label": "Last Login", "field": "last_login_time", "render": "datetime" },
+        { "label": "Network Access", "field": "networks", "render": "network_list", "full_width": true, "large": true }
+      ]
+    },
+    {
+      "widget": "topology_tree",
+      "id": "topology",
+      "title": "Network Topology · All Orgs",
+      "data_source": "topology",
+      "device_table_target": "device-fleet"
+    }
+  ],
+  "footer": {
+    "ops_used": [
+      "get_user_orgs",
+      "get_hierarchy_views",
+      "get_inventory",
+      "get_licenses",
+      "get_org_memberships_overall"
+    ]
+  }
+}

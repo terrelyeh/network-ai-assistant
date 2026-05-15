@@ -1,0 +1,171 @@
+<style>
+.w-gauge-wrap {
+  display: grid; grid-template-columns: 220px 1fr; gap: 24px;
+  align-items: center;
+}
+.w-gauge-svg {
+  width: 200px; height: 130px;
+  display: block; margin: 0 auto;
+}
+.w-gauge-track { fill: none; stroke: var(--surface-2); stroke-width: 14; stroke-linecap: round; }
+.w-gauge-fill {
+  fill: none; stroke-width: 14; stroke-linecap: round;
+  transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.w-gauge-fill.sev-critical { stroke: var(--critical); }
+.w-gauge-fill.sev-warning { stroke: var(--warning); }
+.w-gauge-fill.sev-success { stroke: var(--success); }
+.w-gauge-fill.sev-info { stroke: var(--info); }
+.w-gauge-fill.sev-brand { stroke: var(--brand); }
+.w-gauge-center {
+  text-anchor: middle; dominant-baseline: central;
+}
+.w-gauge-center .val {
+  font-size: 28px; font-weight: 800; fill: var(--text-1);
+  font-variant-numeric: tabular-nums;
+}
+.w-gauge-center .lbl {
+  font-size: 10px; font-weight: 600; fill: var(--text-3);
+  text-transform: uppercase; letter-spacing: 0.08em;
+}
+.w-gauge-ticks {
+  display: flex; justify-content: space-between;
+  font-size: 10px; color: var(--text-3); font-family: var(--font-mono);
+  padding: 0 10px; margin-top: -10px;
+}
+.w-gauge-info {
+  font-size: 13px; color: var(--text-2); line-height: 1.55;
+}
+.w-gauge-info .title {
+  font-weight: 700; color: var(--text-1); margin-bottom: 6px; font-size: 14px;
+}
+.w-gauge-info .delta {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: var(--font-mono); font-size: 12px;
+  margin-top: 8px; padding: 4px 10px; border-radius: 6px;
+}
+.w-gauge-info .delta.below { background: var(--success-bg); color: var(--success); }
+.w-gauge-info .delta.above { background: var(--critical-bg); color: var(--critical); }
+.w-gauge-info .delta.at { background: rgba(15,23,42,0.05); color: var(--text-2); }
+.w-gauge-info .target {
+  font-size: 11px; color: var(--text-3); margin-top: 4px;
+  font-family: var(--font-mono);
+}
+</style>
+
+<script>
+Dashboard.register('gauge', ({ el, config, ctx }) => {
+  el.classList.add('card');
+  el.innerHTML = `
+    <div class="card-hdr">
+      <h2>${config.title || 'Metric'}</h2>
+      <span class="meta" data-bind="meta">—</span>
+    </div>
+    <div class="w-gauge-wrap">
+      <div>
+        <svg class="w-gauge-svg" viewBox="0 0 200 130" data-role="svg" aria-hidden="true">
+          <path class="w-gauge-track" d="M 20 110 A 80 80 0 0 1 180 110" />
+          <path class="w-gauge-fill" data-role="fill" d="M 20 110 A 80 80 0 0 1 180 110"
+                stroke-dasharray="251.3" stroke-dashoffset="251.3" />
+          <text class="w-gauge-center" x="100" y="80">
+            <tspan class="val" data-role="val">—</tspan>
+          </text>
+          <text class="w-gauge-center" x="100" y="100">
+            <tspan class="lbl" data-role="lbl">—</tspan>
+          </text>
+        </svg>
+        <div class="w-gauge-ticks">
+          <span data-role="min">0</span>
+          <span data-role="max">100</span>
+        </div>
+      </div>
+      <div class="w-gauge-info">
+        <div class="title" data-role="info-title">—</div>
+        <div data-role="info-body">—</div>
+        <div class="delta" data-role="delta" style="display:none;"></div>
+        <div class="target" data-role="target"></div>
+      </div>
+    </div>
+  `;
+  const fillEl = el.querySelector('[data-role="fill"]');
+  const valEl = el.querySelector('[data-role="val"]');
+  const lblEl = el.querySelector('[data-role="lbl"]');
+  const minEl = el.querySelector('[data-role="min"]');
+  const maxEl = el.querySelector('[data-role="max"]');
+  const titleEl = el.querySelector('[data-role="info-title"]');
+  const bodyEl = el.querySelector('[data-role="info-body"]');
+  const deltaEl = el.querySelector('[data-role="delta"]');
+  const targetEl = el.querySelector('[data-role="target"]');
+  const metaEl = el.querySelector('[data-bind="meta"]');
+
+  function severityFor(val, thresholds) {
+    if (!thresholds) return 'brand';
+    if (thresholds.critical_above != null && val >= thresholds.critical_above) return 'critical';
+    if (thresholds.warning_above != null && val >= thresholds.warning_above) return 'warning';
+    if (thresholds.critical_below != null && val <= thresholds.critical_below) return 'critical';
+    if (thresholds.warning_below != null && val <= thresholds.warning_below) return 'warning';
+    return thresholds.ok_severity || 'success';
+  }
+
+  return {
+    render(data) {
+      // Resolve value
+      let val = 0;
+      if (config.value_compute && window.computeFns[config.value_compute]) {
+        val = window.computeFns[config.value_compute](data, config);
+      } else if (config.value_path) {
+        val = ctx.getByPath(data, config.value_path) || 0;
+      }
+      val = parseFloat(val) || 0;
+
+      const min = config.min ?? 0;
+      const max = config.max ?? 100;
+      const target = config.target;
+      const unit = config.unit || '';
+      const ratio = Math.max(0, Math.min(1, (val - min) / (max - min)));
+
+      // Arc length: half-circle = π × 80 ≈ 251.3
+      const ARC = 251.3;
+      fillEl.style.strokeDashoffset = ARC * (1 - ratio);
+
+      // Severity color
+      const sev = config.severity || severityFor(val, config.thresholds);
+      fillEl.className.baseVal = `w-gauge-fill sev-${sev}`;
+
+      // Center text
+      valEl.textContent = config.value_format === 'percent'
+        ? `${Math.round(val)}%`
+        : `${val}${unit ? ` ${unit}` : ''}`;
+      lblEl.textContent = config.center_label || '';
+
+      // Ticks
+      minEl.textContent = config.min_label ?? min;
+      maxEl.textContent = config.max_label ?? max;
+
+      // Side info
+      titleEl.textContent = config.info_title || config.title || '';
+      bodyEl.textContent = (config.info_body_compute && window.computeFns[config.info_body_compute])
+        ? window.computeFns[config.info_body_compute](data, config)
+        : (config.info_body || '');
+
+      // Delta vs target — color follows gauge severity (not raw direction)
+      if (target != null) {
+        const diff = val - target;
+        deltaEl.style.display = '';
+        // Severity-based class instead of direction-based
+        const deltaSev = sev === 'success' ? 'below' : (sev === 'critical' ? 'above' : (sev === 'warning' ? 'above' : 'at'));
+        deltaEl.className = `delta ${Math.abs(diff) < 0.5 ? 'at' : deltaSev}`;
+        const sign = diff > 0 ? '+' : '';
+        deltaEl.textContent = Math.abs(diff) < 0.5 ? 'on target' : `${sign}${diff.toFixed(1)} vs target`;
+        targetEl.textContent = `Target: ${target}${unit ? ` ${unit}` : ''}`;
+      } else {
+        deltaEl.style.display = 'none';
+        targetEl.textContent = '';
+      }
+
+      // Meta
+      metaEl.textContent = `${val} / ${max}${unit ? ` ${unit}` : ''}`;
+    }
+  };
+});
+</script>

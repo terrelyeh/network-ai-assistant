@@ -1,0 +1,425 @@
+{
+  "fetched_at": "2026-05-16T01:51:44",
+  "orgs": [
+    {
+      "org_id": "5e410f44e91984972fd50a22",
+      "org_name": "Main_Org",
+      "country": "Taiwan",
+      "time_zone": "Asia/Taipei",
+      "hv_status": "ok",
+      "inv_status": "ok",
+      "hvs": [
+        {
+          "hv_id": "5e410f44e91984972fd50a23",
+          "hv_name": "root",
+          "org_id": "5e410f44e91984972fd50a22"
+        },
+        {
+          "hv_id": "5f61d37726045338ff7c1728",
+          "hv_name": "test hv",
+          "parent_hierarchy_view_id": "5e410f44e91984972fd50a23",
+          "org_id": "5e410f44e91984972fd50a22"
+        }
+      ],
+      "networks": [
+        {
+          "network_id": "5e410f45e91984972fd50a25",
+          "name": "Main_Network",
+          "network_name": "Main_Network",
+          "hierarchy_view_id": "5e410f44e91984972fd50a23",
+          "org_id": "5e410f44e91984972fd50a22"
+        },
+        {
+          "network_id": "5e4cf3f545a1004fed20bf9c",
+          "name": "Sec_Network",
+          "network_name": "Sec_Network",
+          "hierarchy_view_id": "5e410f44e91984972fd50a23",
+          "org_id": "5e410f44e91984972fd50a22"
+        },
+        {
+          "network_id": "5ea283a1d5f6b23a755a7d57",
+          "name": "New_1.3.10",
+          "network_name": "New_1.3.10",
+          "hierarchy_view_id": "5e410f44e91984972fd50a23",
+          "org_id": "5e410f44e91984972fd50a22"
+        },
+        {
+          "network_id": "5eb65b74168e1dc524517a36",
+          "name": "Third_Network",
+          "network_name": "Third_Network",
+          "hierarchy_view_id": "5e410f44e91984972fd50a23",
+          "org_id": "5e410f44e91984972fd50a22"
+        },
+        {
+          "network_id": "5ed61bf39c5be310fc8ca74a",
+          "name": "Block message",
+          "network_name": "Block message",
+          "hierarchy_view_id": "5e410f44e91984972fd50a23",
+          "org_id": "5e410f44e91984972fd50a22"
+        },
+        {
+          "network_id": "5ee9b48bdf7b3341de7acb06",
+          "name": "NEW",
+          "network_name": "NEW",
+          "hierarchy_view_id": "5e410f44e91984972fd50a23",
+          "org_id": "5e410f44e91984972fd50a22"
+        },
+        {
+          "network_id": "5f06e3d55817bc2c44a39638",
+          "name": "Test",
+          "network_name": "Test",
+          "hierarchy_view_id": "5e410f44e91984972fd50a23",
+          "org_id": "5e410f44e91984972fd50a22"
+        },
+        {
+          "network_id": "5f2a4d1efbd197b393614b59",
+          "name": "Test_again",
+          "network_name": "Test_again",
+          "hierarchy_view_id": "5e410f44e91984972fd50a23",
+          "org_id": "5e410f44e91984972fd50a22"
+        },
+        {
+          "network_id": "5f44e3bf8d76694cd10a17a2",
+          "name": "fff",
+          "network_name": "fff",
+          "hierarchy_view_id": "5e410f44e91984972fd50a23",
+          "org_id": "5e410f44e91984972fd50a22"
+        },
+        {
+          "network_id": "60596f9b91fa1b5543471b93",
+          "name": "FGFGFGF",
+          "network_name": "FGFGFGF",
+          "hierarchy_view_id": "5f61d37726045338ff7c1728",
+          "org_id": "5e410f44e91984972fd50a22"
+        }
+      ],
+      "devices": [
+        {
+          "device_id": "5e5635a2358d1936a301b0f0",
+          "hierarchy_view_id": "5e410f44e91984972fd50a23",
+          "network_id": "5ea283a1d5f6b23a755a7d57",
+          "network_name": "New_1.3.10",
+          "name": "ECW115",
+          "type": "ap",
+          "model": "ECW115",
+          "series": "Cloud",
+          "mac": "4c:13:65:00:34:a0",
+          "license_status": "expired",
+          "serial_number": "3029C2W3H3FF",
+          "description": "",
+          "registered_by": "nicecloud@senao.com",
+          "created_time": 1582708130000,
+          "modified_time": 1631674104000,
+          "registered_time": 1582708130000,
+          "expired_date": 1669852800000
+        },
+        {
+          "device_id": "5e5f8a17d0ef6d515ee3e1b0",
+          "hierarchy_view_id": "5e410f44e91984972fd50a23",
+          "network_id": "5eb65b74168e1dc524517a36",
+          "network_name": "Third_Network",
+          "name": "Home_ECW120",
+          "type": "ap",
+          "model": "ECW120",
+          "series": "Cloud",
+          "mac": "88:dc:96:76:5a:76",
+          "license_status": "expired",
+          "serial_number": "3029C21D8W5X",
+          "description": "",
+          "registered_by": "jonse.chang@senao.com",
+          "created_time": 1583319575000,
+          "modified_time": 1624375030000,
+          "registered_time": 1583319575000,
+          "expired_date": 1669852800000
+        },
+        {
+          "device_id": "5e661146e1972a7c1c8029a0",
+          "hierarchy_view_id": "5e410f44e91984972fd50a23",
+          "network_id": "5e4cf3f545a1004fed20bf9c",
+          "network_name": "Sec_Network",
+          "name": "ECW230",
+          "type": "ap",
+          "model": "ECW230",
+          "series": "Cloud",
+          "mac": "88:dc:96:83:b9:d3",
+          "license_status": "expired",
+          "serial_number": "3029X4113EP9",
+          "description": "",
+          "registered_by": "nicecloud@senao.com",
+          "created_time": 1583747398000,
+          "modified_time": 1626088649000,
+          "registered_time": 1583747398000,
+          "expired_date": 1669852800000
+        },
+        {
+          "device_id": "5e730c3d07b358b888e69417",
+          "hierarchy_view_id": "5e410f44e91984972fd50a23",
+          "network_id": "5ea283a1d5f6b23a755a7d57",
+          "network_name": "New_1.3.10",
+          "name": "ECW220",
+          "type": "ap",
+          "model": "ECW220",
+          "series": "Cloud",
+          "mac": "88:dc:96:81:52:87",
+          "license_status": "expired",
+          "serial_number": "2037X2113P4K",
+          "description": "",
+          "registered_by": "nicecloud@senao.com",
+          "created_time": 1584598077000,
+          "modified_time": 1631674104000,
+          "registered_time": 1584598077000,
+          "expired_date": 1669852800000
+        },
+        {
+          "device_id": "5e81a2733c1283be33948ab6",
+          "hierarchy_view_id": "5e410f44e91984972fd50a23",
+          "network_id": "5eb65b74168e1dc524517a36",
+          "network_name": "Third_Network",
+          "name": "Home_ECW115",
+          "type": "ap",
+          "model": "ECW115",
+          "series": "Cloud",
+          "mac": "4c:13:65:00:34:a4",
+          "license_status": "expired",
+          "serial_number": "1010C2W1F95F",
+          "description": "",
+          "registered_by": "nicecloud@senao.com",
+          "created_time": 1585554035000,
+          "modified_time": 1624375030000,
+          "registered_time": 1585554035000,
+          "expired_date": 1669852800000
+        },
+        {
+          "device_id": "5e8453e6467c2a74a55db4c5",
+          "hierarchy_view_id": "5e410f44e91984972fd50a23",
+          "network_id": "5e4cf3f545a1004fed20bf9c",
+          "network_name": "Sec_Network",
+          "name": "Tim_ECW120",
+          "type": "ap",
+          "model": "ECW120",
+          "series": "Cloud",
+          "mac": "88:dc:96:85:c9:cb",
+          "license_status": "expired",
+          "serial_number": "2020C2111TP3",
+          "description": "",
+          "registered_by": "nicecloud@senao.com",
+          "created_time": 1585730534000,
+          "modified_time": 1626088649000,
+          "registered_time": 1585730534000,
+          "expired_date": 1669852800000
+        },
+        {
+          "device_id": "5ea63c283cd6ae32f52b9dbc",
+          "hierarchy_view_id": "5e410f44e91984972fd50a23",
+          "network_id": "5ea283a1d5f6b23a755a7d57",
+          "network_name": "New_1.3.10",
+          "name": "ECW120",
+          "type": "ap",
+          "model": "ECW120",
+          "series": "Cloud",
+          "mac": "88:dc:96:7c:a0:55",
+          "license_status": "expired",
+          "serial_number": "3029C211ENCT",
+          "description": "",
+          "registered_by": "nicecloud@senao.com",
+          "created_time": 1587952680000,
+          "modified_time": 1631674104000,
+          "registered_time": 1587952680000,
+          "expired_date": 1669852800000
+        },
+        {
+          "device_id": "5eaa86b7a37aeebc4ca18607",
+          "hierarchy_view_id": "5e410f44e91984972fd50a23",
+          "network_id": "5ea283a1d5f6b23a755a7d57",
+          "network_name": "New_1.3.10",
+          "name": "NCU中央160",
+          "type": "ap",
+          "model": "ECW160",
+          "series": "Cloud",
+          "mac": "88:dc:96:7e:fc:cf",
+          "license_status": "expired",
+          "serial_number": "1970CCE1K1XQ",
+          "description": "",
+          "registered_by": "nicecloud@senao.com",
+          "created_time": 1588233911000,
+          "modified_time": 1631674104000,
+          "registered_time": 1588233911000,
+          "expired_date": 1669852800000
+        },
+        {
+          "device_id": "5eaa8dbfee8df348cb3a6cb0",
+          "hierarchy_view_id": "5e410f44e91984972fd50a23",
+          "network_id": "5ea283a1d5f6b23a755a7d57",
+          "network_name": "New_1.3.10",
+          "name": "ECW220v2",
+          "type": "ap",
+          "model": "ECW220v2",
+          "series": "Cloud",
+          "mac": "88:dc:96:84:e1:61",
+          "license_status": "expired",
+          "serial_number": "2010X22111DR",
+          "description": "",
+          "registered_by": "nicecloud@senao.com",
+          "created_time": 1588235711000,
+          "modified_time": 1631674104000,
+          "registered_time": 1588235711000,
+          "expired_date": 1669852800000
+        },
+        {
+          "device_id": "5e412557fe03a7cd8aa28cce",
+          "hierarchy_view_id": "5e410f44e91984972fd50a23",
+          "network_id": "5e4cf3f545a1004fed20bf9c",
+          "network_name": "Sec_Network",
+          "name": "借Hom",
+          "type": "switch",
+          "model": "ECS1528FP",
+          "series": "Cloud",
+          "mac": "88:dc:96:7d:e2:ef",
+          "license_status": "expired",
+          "serial_number": "3029H2FR61ER",
+          "description": "",
+          "registered_by": "nicecloud@senao.com",
+          "created_time": 1581327703000,
+          "modified_time": 1624375031000,
+          "registered_time": 1581327703000,
+          "expired_date": 1669852800000
+        }
+      ]
+    },
+    {
+      "org_id": "605d957f88ec783796d18b8a",
+      "org_name": "terrel",
+      "country": "Taiwan",
+      "time_zone": "Asia/Taipei",
+      "hv_status": "payment_required",
+      "inv_status": "payment_required",
+      "hv_error": "PRO plan required",
+      "hvs": [],
+      "networks": [],
+      "inv_error": "PRO plan required",
+      "devices": []
+    },
+    {
+      "org_id": "671a1fa12103d1fdf8485781",
+      "org_name": "Vertical Solution Wizard Demo",
+      "country": "Taiwan",
+      "time_zone": "Asia/Taipei",
+      "hv_status": "ok",
+      "inv_status": "ok",
+      "hvs": [
+        {
+          "hv_id": "671a1fa12103d1fdf8485782",
+          "hv_name": "root",
+          "org_id": "671a1fa12103d1fdf8485781"
+        },
+        {
+          "hv_id": "671a200f61d4560193555107",
+          "hv_name": "Taipei",
+          "parent_hierarchy_view_id": "671a1fa12103d1fdf8485782",
+          "org_id": "671a1fa12103d1fdf8485781"
+        },
+        {
+          "hv_id": "671a20252103d1fdf848578d",
+          "hv_name": "US",
+          "parent_hierarchy_view_id": "671a1fa12103d1fdf8485782",
+          "org_id": "671a1fa12103d1fdf8485781"
+        }
+      ],
+      "networks": [
+        {
+          "network_id": "671a1fcd2103d1fdf8485786",
+          "name": "Intel",
+          "network_name": "Intel",
+          "hierarchy_view_id": "671a200f61d4560193555107",
+          "org_id": "671a1fa12103d1fdf8485781"
+        },
+        {
+          "network_id": "672c7881582ad89824fc8748",
+          "name": "LA",
+          "network_name": "LA",
+          "hierarchy_view_id": "671a20252103d1fdf848578d",
+          "org_id": "671a1fa12103d1fdf8485781"
+        }
+      ],
+      "devices": [
+        {
+          "device_id": "661502922cb988f5f6d16b1b",
+          "hierarchy_view_id": "671a200f61d4560193555107",
+          "network_id": "671a1fcd2103d1fdf8485786",
+          "network_name": "Intel",
+          "name": "ESG610-6971",
+          "type": "gateway",
+          "model": "ESG610",
+          "series": "Cloud",
+          "mac": "00:03:7f:66:69:71",
+          "license_status": "active",
+          "license_type": "pro",
+          "serial_number": "2445L4QPJ6PK",
+          "registered_by": "franny.huang@senao.com",
+          "created_time": 1729826624000,
+          "modified_time": 1729826624000,
+          "registered_time": 1729826624000,
+          "expired_date": 1933404946000
+        }
+      ]
+    },
+    {
+      "org_id": "5edef0cdc06b40405bf43ee3",
+      "org_name": "ann-AP",
+      "country": "Taiwan",
+      "time_zone": "Asia/Taipei",
+      "hv_status": "ok",
+      "inv_status": "forbidden",
+      "hvs": [
+        {
+          "hv_id": "5edef0cdc06b40405bf43ee4",
+          "hv_name": "root",
+          "org_id": "5edef0cdc06b40405bf43ee3"
+        }
+      ],
+      "networks": [
+        {
+          "network_id": "5ee18e5ecae7ad77e2c1d11a",
+          "name": "Air Guard",
+          "network_name": "Air Guard",
+          "hierarchy_view_id": "5edef0cdc06b40405bf43ee4",
+          "org_id": "5edef0cdc06b40405bf43ee3"
+        }
+      ],
+      "inv_error": "Permission Denied (RBAC)",
+      "devices": []
+    },
+    {
+      "org_id": "642e46559e9da83590cb9a07",
+      "org_name": "Gordon",
+      "country": "Taiwan",
+      "time_zone": "Asia/Taipei",
+      "hv_status": "ok",
+      "inv_status": "forbidden",
+      "hvs": [
+        {
+          "hv_id": "642e46559e9da83590cb9a08",
+          "hv_name": "root",
+          "org_id": "642e46559e9da83590cb9a07"
+        },
+        {
+          "hv_id": "659e94d5c9254decf73d5a94",
+          "hv_name": "9F_Cubicle",
+          "parent_hierarchy_view_id": "642e46559e9da83590cb9a08",
+          "org_id": "642e46559e9da83590cb9a07"
+        }
+      ],
+      "networks": [
+        {
+          "network_id": "672c2fe8582ad89824fc86cf",
+          "name": "7F_shieldingRoom",
+          "network_name": "7F_shieldingRoom",
+          "hierarchy_view_id": "659e94d5c9254decf73d5a94",
+          "org_id": "642e46559e9da83590cb9a07"
+        }
+      ],
+      "inv_error": "Permission Denied (RBAC)",
+      "devices": []
+    }
+  ]
+}

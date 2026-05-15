@@ -1,0 +1,265 @@
+{
+  "ids": {
+    "org_id": "5e410f44e91984972fd50a22"
+  },
+  "org_member_candidates": [
+    {
+      "user_id": "5e3d03a63b10d97e44240675",
+      "user_name": "Jonse Chang",
+      "email": "jonse.chang@senao.com",
+      "user_status": "active",
+      "last_login_time": 1776978285000,
+      "org_id": "5e410f44e91984972fd50a22",
+      "org_name": "Main_Org",
+      "org_role": "admin",
+      "org_status": "active",
+      "networks": []
+    },
+    {
+      "user_id": "5e410edd4be315e56c2ebad8",
+      "user_name": "Nice Cloud",
+      "email": "nicecloud@senao.com",
+      "user_status": "active",
+      "last_login_time": 1683870387000,
+      "org_id": "5e410f44e91984972fd50a22",
+      "org_name": "Main_Org",
+      "org_role": "viewer",
+      "org_status": "active",
+      "networks": []
+    },
+    {
+      "user_id": "5f647b7b61ee7828752702f5",
+      "user_name": "RÓn HÓu",
+      "email": "ron.hou@senao.com",
+      "user_status": "active",
+      "last_login_time": 1778815894000,
+      "org_id": "5e410f44e91984972fd50a22",
+      "org_name": "Main_Org",
+      "org_role": "admin",
+      "org_status": "active",
+      "networks": []
+    },
+    {
+      "user_id": "5e438f621757608e7c12b4a6",
+      "user_name": "Antony Lai",
+      "email": "antony.lai@senao.com",
+      "user_status": "active",
+      "last_login_time": 1767336895000,
+      "org_id": "5e410f44e91984972fd50a22",
+      "org_name": "Main_Org",
+      "org_role": "admin",
+      "org_status": "active",
+      "networks": []
+    },
+    {
+      "user_id": "5e451a7a2085f51bd62ab911",
+      "user_name": "Front Desk",
+      "email": "senaotestrd1@gmail.com",
+      "user_status": "active",
+      "last_login_time": 1596103099000,
+      "org_id": "5e410f44e91984972fd50a22",
+      "networks": [
+        {
+          "id": "5e4cf3f545a1004fed20bf9c",
+          "hierarchy_view_id": "5e410f44e91984972fd50a23",
+          "name": "Sec_Network",
+          "role": "frontdesk",
+          "status": "active",
+          "created_time": 1594695113000,
+          "modified_time": 1594695113000
+        },
+        {
+          "id": "5e410f45e91984972fd50a25",
+          "hierarchy_view_id": "5e410f44e91984972fd50a23",
+          "name": "Main_Network",
+          "role": "frontdesk",
+          "status": "active",
+          "created_time": 1594695113000,
+          "modified_time": 1594695113000
+        },
+        {
+          "id": "5ea283a1d5f6b23a755a7d57",
+          "hierarchy_view_id": "5e410f44e91984972fd50a23",
+          "name": "New_1.3.10",
+          "role": "frontdesk",
+          "status": "active",
+          "created_time": 1594695113000,
+          "modified_time": 1594695113000
+        },
+        {
+          "id": "5eb65b74168e1dc524517a36",
+          "hierarchy_view_id": "5e410f44e91984972fd50a23",
+          "name": "Third_Network",
+          "role": "frontdesk",
+          "status": "active",
+          "created_time": 1594695113000,
+          "modified_time": 1594695113000
+        },
+        {
+          "id": "5f06e3d55817bc2c44a39638",
+          "hierarchy_view_id": "5e410f44e91984972fd50a23",
+          "name": "Test",
+          "role": "frontdesk",
+          "status": "active",
+          "created_time": 1594695113000,
+          "modified_time": 1594695113000
+        },
+        {
+          "id": "5ee9b48bdf7b3341de7acb06",
+          "hierarchy_view_id": "5e410f44e91984972fd50a23",
+          "name": "NEW",
+          "role": "frontdesk",
+          "status": "active",
+          "created_time": 1594695113000,
+          "modified_time": 1594695113000
+        },
+        {
+          "id": "5ed61bf39c5be310fc8ca74a",
+          "hierarchy_view_id": "5e410f44e91984972fd50a23",
+          "name": "Block message",
+          "role": "frontdesk",
+          "status": "active",
+          "created_time": 1594695113000,
+          "modified_time": 1594695113000
+        }
+      ]
+    },
+    {
+      "user_id": "5e708adf9fc96a672e8d7f02",
+      "user_name": "Meihui Lin",
+      "email": "mei-hui.lin@senao.com",
+      "user_status": "active",
+      "last_login_time": 1778052202000,
+      "org_id": "5e410f44e91984972fd50a22",
+      "networks": [
+        {
+          "id": "5e4cf3f545a1004fed20bf9c",
+          "hierarchy_view_id": "5e410f44e91984972fd50a23",
+          "name": "Sec_Network",
+          "role": "viewer",
+          "status": "active",
+          "created_time": 1584440596000,
+          "modified_time": 1584440596000
+        }
+      ]
+    },
+    {
+      "user_id": "5e845220d6f36c63a4196e08",
+      "user_name": "Ting chih-hao",
+      "email": "sn101318@gmail.com",
+      "user_status": "active",
+      "last_login_time": 1586146038000,
+      "org_id": "5e410f44e91984972fd50a22",
+      "org_name": "Main_Org",
+      "org_role": "viewer",
+      "org_status": "active",
+      "networks": []
+    },
+    {
+      "user_id": "5ec227550dfc0e37bfa406f0",
+      "user_name": "Chris Lai",
+      "email": "chris.lai@senao.com",
+      "user_status": "active",
+      "last_login_time": 1778838931000,
+      "org_id": "5e410f44e91984972fd50a22",
+      "org_name": "Main_Org",
+      "org_role": "admin",
+      "org_status": "active",
+      "networks": []
+    },
+    {
+      "user_id": "5ec4cc6400bdb9c88ecd8b5e",
+      "user_name": "Stella Lin",
+      "email": "stella.lin@senao.com",
+      "user_status": "active",
+      "last_login_time": 1616395757000,
+      "org_id": "5e410f44e91984972fd50a22",
+      "org_name": "Main_Org",
+      "org_role": "admin",
+      "org_status": "active",
+      "networks": []
+    },
+    {
+      "user_id": "5ff57be8fec9ef4ca70de444",
+      "user_name": "Terrel Yeh",
+      "email": "terrel.yeh@senao.com",
+      "user_status": "active",
+      "last_login_time": 1778867503000,
+      "org_id": "5e410f44e91984972fd50a22",
+      "org_name": "Main_Org",
+      "org_role": "viewer",
+      "org_status": "active",
+      "networks": []
+    },
+    {
+      "user_id": "6327dfb09e843643b7baf302",
+      "user_name": "Kevin Shao",
+      "email": "kevin.shao@senao.com",
+      "user_status": "active",
+      "last_login_time": 1672275596000,
+      "org_id": "5e410f44e91984972fd50a22",
+      "org_name": "Main_Org",
+      "org_role": "admin",
+      "org_status": "active",
+      "networks": []
+    }
+  ],
+  "network_membership_candidates": [
+    {
+      "network_id": "5e4cf3f545a1004fed20bf9c",
+      "network_name": "Sec_Network",
+      "hierarchy_view_id": "5e410f44e91984972fd50a23",
+      "network_role": "frontdesk",
+      "network_status": "active"
+    },
+    {
+      "network_id": "5e410f45e91984972fd50a25",
+      "network_name": "Main_Network",
+      "hierarchy_view_id": "5e410f44e91984972fd50a23",
+      "network_role": "frontdesk",
+      "network_status": "active"
+    },
+    {
+      "network_id": "5ea283a1d5f6b23a755a7d57",
+      "network_name": "New_1.3.10",
+      "hierarchy_view_id": "5e410f44e91984972fd50a23",
+      "network_role": "frontdesk",
+      "network_status": "active"
+    },
+    {
+      "network_id": "5eb65b74168e1dc524517a36",
+      "network_name": "Third_Network",
+      "hierarchy_view_id": "5e410f44e91984972fd50a23",
+      "network_role": "frontdesk",
+      "network_status": "active"
+    },
+    {
+      "network_id": "5f06e3d55817bc2c44a39638",
+      "network_name": "Test",
+      "hierarchy_view_id": "5e410f44e91984972fd50a23",
+      "network_role": "frontdesk",
+      "network_status": "active"
+    },
+    {
+      "network_id": "5ee9b48bdf7b3341de7acb06",
+      "network_name": "NEW",
+      "hierarchy_view_id": "5e410f44e91984972fd50a23",
+      "network_role": "frontdesk",
+      "network_status": "active"
+    },
+    {
+      "network_id": "5ed61bf39c5be310fc8ca74a",
+      "network_name": "Block message",
+      "hierarchy_view_id": "5e410f44e91984972fd50a23",
+      "network_role": "frontdesk",
+      "network_status": "active"
+    },
+    {
+      "network_id": "5e4cf3f545a1004fed20bf9c",
+      "network_name": "Sec_Network",
+      "hierarchy_view_id": "5e410f44e91984972fd50a23",
+      "network_role": "viewer",
+      "network_status": "active"
+    }
+  ]
+}

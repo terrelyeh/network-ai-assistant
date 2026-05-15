@@ -1,0 +1,122 @@
+<style>
+.w-kpi-grid {
+  display: grid; grid-template-columns: repeat(var(--cols, 4), 1fr); gap: 16px;
+  margin-bottom: 24px;
+}
+.w-kpi {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 18px 20px; box-shadow: var(--shadow-sm);
+  position: relative; overflow: hidden;
+}
+.w-kpi .lbl {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  color: var(--text-3); letter-spacing: 0.05em;
+}
+.w-kpi .val {
+  font-size: 36px; font-weight: 700; margin: 4px 0 0;
+  letter-spacing: -0.02em; line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.w-kpi .sub { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+.w-kpi.severity-critical { border-color: rgba(185,28,28,0.2); background: linear-gradient(180deg, var(--critical-bg) 0%, var(--surface) 30%); }
+.w-kpi.severity-critical .val { color: var(--critical); }
+.w-kpi.severity-warning { border-color: rgba(180,83,9,0.2); }
+.w-kpi.severity-warning .val { color: var(--warning); }
+.w-kpi.clickable { cursor: pointer; transition: transform .15s ease, box-shadow .15s ease; }
+.w-kpi.clickable:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.w-kpi.clickable::after {
+  content: '↗'; position: absolute; top: 12px; right: 14px;
+  color: var(--text-3); font-size: 14px; opacity: 0;
+  transition: opacity .15s ease;
+}
+.w-kpi.clickable:hover::after { opacity: 1; }
+</style>
+
+<script>
+Dashboard.register('kpi_grid', ({ el, config, bus, ctx }) => {
+  const items = config.items || [];
+  el.classList.add('w-kpi-grid');
+  el.style.setProperty('--cols', items.length);
+
+  // build cards
+  const cards = items.map((item, idx) => {
+    const card = document.createElement('div');
+    card.className = 'w-kpi';
+    if (item.severity) card.classList.add(`severity-${item.severity}`);
+    if (item.clickable) card.classList.add('clickable');
+    card.innerHTML = `
+      <div class="lbl">${item.label}</div>
+      <div class="val num" data-bind="val">—</div>
+      <div class="sub" data-bind="sub">—</div>
+    `;
+    if (item.clickable) {
+      card.addEventListener('click', () => {
+        bus.dispatch('kpi-click', { item, target: item.clickable.target, action: item.clickable.action });
+        if (item.clickable.target) ctx.scrollToWidget(item.clickable.target);
+      });
+    }
+    el.appendChild(card);
+    return card;
+  });
+
+  return {
+    render(data) {
+      items.forEach((item, idx) => {
+        const card = cards[idx];
+        const valEl = card.querySelector('[data-bind="val"]');
+        const subEl = card.querySelector('[data-bind="sub"]');
+        let val = '—';
+        if (item.value_path) {
+          const v = ctx.getByPath(data, item.value_path);
+          val = v == null ? '—' : v;
+        } else if (item.value_compute && computeFns[item.value_compute]) {
+          val = computeFns[item.value_compute](data, item);
+        }
+        valEl.textContent = val;
+        let sub = '';
+        if (item.sub_compute && computeFns[item.sub_compute]) {
+          sub = computeFns[item.sub_compute](data, item);
+        } else if (item.sub) {
+          sub = item.sub;
+        }
+        subEl.textContent = sub;
+      });
+    }
+  };
+});
+
+// Compute functions for KPIs
+const computeFns2 = window.computeFns || (window.computeFns = {});
+computeFns2.expired_count = (data) => {
+  const inv = data.inventory?.device_candidates || [];
+  return inv.filter(d => d.license_status === 'expired').length;
+};
+computeFns2.active_networks_ratio = (data) => {
+  const inv = data.inventory?.device_candidates || [];
+  const hv = data.hierarchy?.network_candidates || [];
+  const activeIds = new Set(inv.map(d => d.network_id));
+  return `${activeIds.size}/${hv.length}`;
+};
+computeFns2.device_type_breakdown = (data) => {
+  const inv = data.inventory?.device_candidates || [];
+  const types = inv.reduce((m,d)=>{m[d.type]=(m[d.type]||0)+1;return m;},{});
+  return Object.entries(types).map(([t,c]) => `${c} ${t}`).join(' · ');
+};
+computeFns2.expired_subtext = (data) => {
+  const inv = data.inventory?.device_candidates || [];
+  const exp = inv.filter(d => d.license_status === 'expired').length;
+  if (inv.length === exp && exp > 0) return '全部過期';
+  return `${exp}/${inv.length} 過期`;
+};
+computeFns2.empty_networks_subtext = (data) => {
+  const inv = data.inventory?.device_candidates || [];
+  const hv = data.hierarchy?.network_candidates || [];
+  const activeIds = new Set(inv.map(d => d.network_id));
+  return `${hv.length - activeIds.size} 個空的 network`;
+};
+computeFns2.stale_members_subtext = (data) => {
+  const mem = data.memberships?.org_member_candidates || [];
+  const stale = mem.filter(m => Dashboard.ctx.daysSince(m.last_login_time) > 365).length;
+  return `${stale} 人 1+ 年未登入`;
+};
+</script>
