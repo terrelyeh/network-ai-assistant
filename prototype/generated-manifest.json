@@ -83,6 +83,144 @@
       "data_source": "falcon.staging.engenius.ai",
       "gen_time_ms": 1950,
       "tag": "license"
+    },
+    {
+      "timestamp": "2026-05-15T23:25:09",
+      "filename": "canvas-org-health-20260515-232509.html",
+      "question": "幫我做一張 Main_Org 健康總覽，從設備、license、人員三個維度看",
+      "scenario": "Org Health Overview (Stateful, auto-poll 5s)",
+      "ops_called": [
+        "get_user_orgs",
+        "get_hierarchy_views",
+        "get_inventory",
+        "get_licenses",
+        "get_org_memberships_overall"
+      ],
+      "widgets": [
+        "Critical Alert",
+        "KPI×4",
+        "Device Fleet Table",
+        "Composition Bars",
+        "Empty Networks",
+        "Team Access Table with Stale Detection"
+      ],
+      "data_source": "falcon.staging.engenius.ai",
+      "gen_time_ms": 2800,
+      "tag": "stateful-dashboard"
+    },
+    {
+      "timestamp": "2026-05-16T00:05:12",
+      "filename": "canvas-org-health-v2-20260516-000512.html",
+      "question": "[reuse test] 用新的 dashboard-builder skill 重做 org health",
+      "scenario": "Org Health v2 (composed from spec via dashboard-builder skill)",
+      "ops_called": [
+        "get_user_orgs",
+        "get_hierarchy_views",
+        "get_inventory",
+        "get_licenses",
+        "get_org_memberships_overall"
+      ],
+      "widgets": [
+        "alert",
+        "kpi_grid",
+        "table",
+        "bar_list",
+        "chip_strip",
+        "topology_tree"
+      ],
+      "data_source": "falcon.staging.engenius.ai",
+      "spec_file": "dashboard-builder-skill/examples/org-health.spec.json",
+      "gen_time_ms": 180,
+      "tag": "skill-composed"
+    },
+    {
+      "timestamp": "2026-05-16T00:30:16",
+      "filename": "canvas-offboarding-audit-20260516-003016.html",
+      "question": "離職員工權限大掃除：5 人 1+ 年沒登入卻還有 network 權限",
+      "scenario": "Off-boarding Compliance Audit (SOC2/ISO27001 lens)",
+      "ops_called": [
+        "get_org_memberships_overall"
+      ],
+      "widgets": [
+        "alert",
+        "kpi_grid",
+        "table (stale-only)",
+        "table (all-members)",
+        "chip_strip"
+      ],
+      "data_source": "falcon.staging.engenius.ai",
+      "spec_file": "dashboard-builder-skill/examples/off-boarding-audit.spec.json",
+      "gen_time_ms": 160,
+      "tag": "reuse-validated"
+    },
+    {
+      "timestamp": "2026-05-16T00:36:24",
+      "filename": "canvas-license-renewal-20260516-003624.html",
+      "question": "License 續約規劃：哪些 license 過期、何時到期、跨 org 怎麼排優先",
+      "scenario": "License Renewal Planning (cross-org timeline)",
+      "ops_called": [
+        "get_user_orgs",
+        "get_hierarchy_views",
+        "get_inventory"
+      ],
+      "widgets": [
+        "alert",
+        "kpi_grid",
+        "timeline (new!)",
+        "bar_list",
+        "table"
+      ],
+      "data_source": "falcon.staging.engenius.ai",
+      "spec_file": "dashboard-builder-skill/examples/license-renewal.spec.json",
+      "gen_time_ms": 195,
+      "tag": "new-widget-validation"
+    },
+    {
+      "timestamp": "2026-05-16T00:49:18",
+      "filename": "canvas-multi-org-governance-20260516-004918.html",
+      "question": "MSP 視角：跨 5 個 org 的存取健康 + 合規檢視，含 RBAC blocked org",
+      "scenario": "Multi-Org Governance Audit",
+      "ops_called": [
+        "get_user_orgs",
+        "get_hierarchy_views × 5 orgs",
+        "get_inventory × 5 orgs",
+        "get_org_memberships_overall"
+      ],
+      "widgets": [
+        "alert",
+        "kpi_grid",
+        "donut × 2 (new!)",
+        "topology_tree",
+        "chip_strip",
+        "table"
+      ],
+      "data_source": "falcon.staging.engenius.ai",
+      "spec_file": "dashboard-builder-skill/examples/multi-org-governance.spec.json",
+      "gen_time_ms": 240,
+      "tag": "new-widget-validation"
+    },
+    {
+      "timestamp": "2026-05-16T01:14:09",
+      "filename": "canvas-cross-org-reallocation-20260516-011409.html",
+      "question": "跨 org 設備調撥規劃：找出可重新配置的設備、license 健康度、訂出處置優先序",
+      "scenario": "Cross-Org Reallocation Planner (planning-only, no mutations)",
+      "ops_called": [
+        "get_user_orgs",
+        "get_hierarchy_views × 5 orgs",
+        "get_inventory × 5 orgs"
+      ],
+      "widgets": [
+        "alert",
+        "kpi_grid",
+        "gauge (new!)",
+        "heatmap × 2 (new!)",
+        "chip_strip",
+        "table"
+      ],
+      "data_source": "falcon.staging.engenius.ai",
+      "spec_file": "dashboard-builder-skill/examples/cross-org-reallocation.spec.json",
+      "gen_time_ms": 220,
+      "tag": "new-widget-validation"
     }
   ]
 }

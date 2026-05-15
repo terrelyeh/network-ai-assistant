@@ -1,0 +1,167 @@
+<style>
+.w-heatmap-wrap { overflow-x: auto; padding-bottom: 8px; }
+.w-heatmap {
+  display: grid; gap: 3px;
+  font-size: 12px;
+}
+.w-heatmap .corner { background: transparent; }
+.w-heatmap .col-hdr,
+.w-heatmap .row-hdr {
+  font-weight: 600; color: var(--text-2);
+  display: flex; align-items: center;
+  padding: 0 8px;
+  white-space: nowrap;
+}
+.w-heatmap .col-hdr {
+  justify-content: center;
+  font-size: 11px; padding: 8px 6px;
+  border-bottom: 1px solid var(--border);
+}
+.w-heatmap .row-hdr {
+  justify-content: flex-end;
+  font-size: 11px; padding-right: 12px;
+}
+.w-heatmap .cell {
+  height: 34px;
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  font-variant-numeric: tabular-nums; font-weight: 600; font-size: 11px;
+  color: var(--text-1);
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease;
+  position: relative;
+}
+.w-heatmap .cell:hover {
+  transform: scale(1.08);
+  box-shadow: 0 2px 6px rgba(15,23,42,0.15);
+  z-index: 2;
+}
+.w-heatmap .cell.empty {
+  background: var(--surface-2);
+  color: var(--text-3); opacity: 0.5;
+}
+.w-heatmap .cell .tooltip {
+  position: absolute; bottom: 100%; left: 50%;
+  transform: translateX(-50%) translateY(-6px);
+  background: var(--text-1); color: white;
+  padding: 6px 10px; border-radius: 6px;
+  font-size: 11px; font-weight: 500; white-space: nowrap;
+  pointer-events: none; opacity: 0;
+  transition: opacity .15s ease;
+  z-index: 10;
+}
+.w-heatmap .cell:hover .tooltip { opacity: 1; }
+.w-heatmap-legend {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 16px; padding-top: 12px;
+  border-top: 1px solid var(--border);
+  font-size: 11px; color: var(--text-2);
+}
+.w-heatmap-legend .scale {
+  display: flex; gap: 1px; flex: 1; max-width: 240px;
+}
+.w-heatmap-legend .scale .swatch {
+  flex: 1; height: 12px;
+}
+.w-heatmap-legend .scale .swatch:first-child { border-radius: 3px 0 0 3px; }
+.w-heatmap-legend .scale .swatch:last-child { border-radius: 0 3px 3px 0; }
+</style>
+
+<script>
+Dashboard.register('heatmap', ({ el, config, ctx }) => {
+  el.classList.add('card');
+  el.innerHTML = `
+    <div class="card-hdr">
+      <h2>${config.title || 'Heatmap'}</h2>
+      <span class="meta" data-bind="meta">—</span>
+    </div>
+    <div class="w-heatmap-wrap">
+      <div class="w-heatmap" data-role="grid"></div>
+    </div>
+    <div class="w-heatmap-legend" data-role="legend"></div>
+  `;
+  const grid = el.querySelector('[data-role="grid"]');
+  const legendEl = el.querySelector('[data-role="legend"]');
+  const metaEl = el.querySelector('[data-bind="meta"]');
+
+  // Default palette: light → dark in one of the severity hues
+  const PALETTES = {
+    brand: ['#fff4ee', '#ffd9c2', '#ffb38e', '#ff8c5c', '#ff6b35'],
+    critical: ['#fef2f2', '#fecaca', '#fca5a5', '#ef4444', '#b91c1c'],
+    warning: ['#fffbeb', '#fde68a', '#fbbf24', '#d97706', '#b45309'],
+    success: ['#ecfdf5', '#a7f3d0', '#34d399', '#059669', '#047857'],
+    info: ['#eff6ff', '#bfdbfe', '#60a5fa', '#1d4ed8', '#1e3a8a'],
+  };
+
+  function colorFor(value, max, palette) {
+    if (value == null || max <= 0) return null;
+    const colors = PALETTES[palette] || PALETTES.brand;
+    if (value === 0) return colors[0];
+    const idx = Math.min(colors.length - 1, Math.ceil(value / max * (colors.length - 1)));
+    return colors[idx];
+  }
+
+  return {
+    render(data) {
+      // Get matrix data: { rows: [string], cols: [string], cells: [[number]] }
+      // OR: compute fn returns this shape
+      let m;
+      if (config.compute && window.computeFns[config.compute]) {
+        m = window.computeFns[config.compute](data, config);
+      } else {
+        m = config.matrix;
+      }
+
+      if (!m || !m.rows || !m.cols || !m.cells) {
+        grid.innerHTML = `<div style="padding:40px;text-align:center;color:var(--text-3);font-size:13px;">No data</div>`;
+        metaEl.textContent = '—';
+        return;
+      }
+
+      const palette = config.palette || 'brand';
+      const colors = PALETTES[palette] || PALETTES.brand;
+
+      // Find max value for color scaling
+      let max = 0;
+      m.cells.forEach(row => row.forEach(v => { if (v != null && v > max) max = v; }));
+
+      // Grid template: row-hdr column + N col-hdrs
+      grid.style.gridTemplateColumns = `minmax(120px, max-content) repeat(${m.cols.length}, minmax(60px, 1fr))`;
+
+      let html = '';
+      // Corner cell
+      html += '<div class="corner"></div>';
+      // Col headers
+      m.cols.forEach(c => {
+        html += `<div class="col-hdr">${c}</div>`;
+      });
+      // Each row
+      m.rows.forEach((rowLabel, ri) => {
+        html += `<div class="row-hdr">${rowLabel}</div>`;
+        m.cells[ri].forEach((val, ci) => {
+          if (val == null || val === 0) {
+            html += `<div class="cell empty">·<span class="tooltip">${rowLabel} × ${m.cols[ci]}: none</span></div>`;
+          } else {
+            const bg = colorFor(val, max, palette);
+            const fg = val > max * 0.6 ? '#ffffff' : 'var(--text-1)';
+            const display = config.cell_format === 'percent' ? `${val}%` : val;
+            html += `<div class="cell" style="background:${bg};color:${fg};">${display}<span class="tooltip">${rowLabel} × ${m.cols[ci]}: ${val}${config.cell_unit ? ' ' + config.cell_unit : ''}</span></div>`;
+          }
+        });
+      });
+      grid.innerHTML = html;
+
+      // Legend
+      legendEl.innerHTML = `
+        <span>${config.legend_min || 'less'}</span>
+        <div class="scale">
+          ${colors.map(c => `<div class="swatch" style="background:${c}"></div>`).join('')}
+        </div>
+        <span>${config.legend_max || `more (max ${max})`}</span>
+      `;
+
+      metaEl.textContent = `${m.rows.length} × ${m.cols.length}`;
+    }
+  };
+});
+</script>

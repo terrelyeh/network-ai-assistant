@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>AI Demo Architecture · Dashboard Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-1: #f5f2ea;
+    --bg-2: #ebe6da;
+    --surface: #ffffff;
+    --surface-2: #fbfaf7;
+    --border: rgba(60,50,35,0.12);
+    --border-strong: rgba(60,50,35,0.22);
+    --text: #1a2332;
+    --text-2: #475569;
+    --text-3: #94a3b8;
+    --accent: #ff6b35;
+    --cyan: #03a9f4;
+    --warn: #f59e0b;
+    --success: #10b981;
+    --critical: #b91c1c;
+    --radius: 14px;
+    --shadow-sm: 0 1px 2px rgba(15,23,42,.04), 0 0 0 1px rgba(15,23,42,.04);
+    --shadow-md: 0 6px 18px rgba(15,23,42,.08), 0 1px 2px rgba(15,23,42,.04);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg-1);
+    background-image: radial-gradient(at 0% 0%, var(--bg-2) 0%, var(--bg-1) 50%);
+    color: var(--text);
+    font-family: 'Inter', 'Noto Sans TC', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .num { font-variant-numeric: tabular-nums; }
+  .mono { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+
+  /* Nav */
+  nav {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(245, 242, 234, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  nav .brand { font-weight: 700; font-size: 15px; letter-spacing: -0.01em; }
+  nav .brand .accent { color: var(--accent); }
+  nav .links { display: flex; gap: 18px; font-size: 13px; }
+  nav .links a { color: var(--text-2); text-decoration: none; font-weight: 500; }
+  nav .links a:hover { color: var(--accent); }
+
+  /* Wrap */
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 48px 32px 96px; }
+
+  /* Hero */
+  .hero { margin-bottom: 56px; }
+  .hero .eyebrow {
+    display: inline-block; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--accent); padding: 4px 10px; border-radius: 999px;
+    background: rgba(255,107,53,0.1); margin-bottom: 16px;
+  }
+  .hero h1 {
+    margin: 0 0 16px; font-size: 44px; font-weight: 800;
+    letter-spacing: -0.025em; line-height: 1.1;
+  }
+  .hero h1 .accent { color: var(--accent); }
+  .hero .lede {
+    font-size: 19px; color: var(--text-2); max-width: 720px;
+    line-height: 1.55;
+  }
+  .hero .lede .hl { color: var(--text); font-weight: 600; }
+
+  /* Section */
+  section { margin-bottom: 56px; }
+  h2 {
+    margin: 0 0 8px; font-size: 26px; font-weight: 700;
+    letter-spacing: -0.015em;
+  }
+  h2 .num-tag {
+    font-size: 13px; font-weight: 600; color: var(--text-3);
+    letter-spacing: 0.04em; margin-right: 12px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  h3 { margin: 24px 0 8px; font-size: 17px; font-weight: 700; letter-spacing: -0.01em; }
+  h4 { margin: 16px 0 6px; font-size: 14px; font-weight: 700; color: var(--text-2); }
+  p { margin: 0 0 12px; color: var(--text-2); }
+  .section-lede { font-size: 16px; color: var(--text-2); margin-bottom: 24px; max-width: 720px; }
+
+  /* Big quote box */
+  .pull {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    padding: 22px 28px; border-radius: var(--radius);
+    box-shadow: var(--shadow-sm); margin: 24px 0;
+    font-size: 17px; font-weight: 500; color: var(--text); line-height: 1.5;
+  }
+  .pull .badge { font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 6px; }
+
+  /* 5-layer diagram */
+  .arch-diagram {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px; box-shadow: var(--shadow-sm);
+  }
+  .layer {
+    border: 1.5px solid var(--border-strong);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    background: var(--surface-2);
+    display: grid; grid-template-columns: 60px 1fr 220px; gap: 16px; align-items: center;
+  }
+  .layer .lvl {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--text-3); font-weight: 700; letter-spacing: 0.06em;
+  }
+  .layer .lvl b { display: block; font-size: 18px; color: var(--text); margin-top: 2px; }
+  .layer .what { }
+  .layer .what .title { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+  .layer .what .desc { font-size: 13px; color: var(--text-2); line-height: 1.45; }
+  .layer .owner { font-size: 11px; color: var(--text-3); text-align: right; }
+  .layer .owner .pill {
+    display: inline-block; padding: 3px 8px; border-radius: 999px;
+    background: rgba(15,23,42,0.06); color: var(--text-2);
+    font-weight: 600; font-size: 10px; letter-spacing: 0.04em;
+    text-transform: uppercase; margin-left: 4px;
+  }
+  .layer.l5 { background: linear-gradient(135deg, #fff4ee 0%, var(--surface-2) 100%); border-color: rgba(255,107,53,0.3); }
+  .layer.l4 { background: linear-gradient(135deg, #eaf6fe 0%, var(--surface-2) 100%); border-color: rgba(3,169,244,0.3); }
+  .layer.l3 { background: linear-gradient(135deg, #fef7e6 0%, var(--surface-2) 100%); border-color: rgba(245,158,11,0.3); }
+  .layer.l2 { }
+  .layer.l1 { background: linear-gradient(135deg, #f0f9f1 0%, var(--surface-2) 100%); border-color: rgba(16,185,129,0.3); }
+  .arrow {
+    text-align: center; color: var(--text-3); font-size: 18px; line-height: 1;
+    margin: -2px 0; user-select: none;
+  }
+
+  /* Widget anatomy section */
+  .anatomy {
+    display: grid; grid-template-columns: 1.1fr 1fr; gap: 24px;
+    margin-top: 16px;
+  }
+  .anatomy .visual {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow-sm);
+  }
+  .anatomy .legend {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow-sm);
+  }
+  .canvas-mock {
+    border: 1px solid var(--border); border-radius: 8px;
+    overflow: hidden; background: #fafaf7;
+  }
+  .mock-block {
+    border-bottom: 2px dashed var(--accent);
+    padding: 14px 16px; position: relative;
+    background: #fff;
+  }
+  .mock-block:last-child { border-bottom: 0; }
+  .mock-block .tag {
+    position: absolute; top: 8px; right: 10px;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: var(--accent); font-weight: 700; letter-spacing: 0.02em;
+    background: rgba(255,107,53,0.1); padding: 2px 7px; border-radius: 999px;
+  }
+  .mock-block .title { font-weight: 700; font-size: 13px; margin-bottom: 8px; }
+  .mock-block .placeholder {
+    height: 8px; background: var(--bg-2); border-radius: 4px;
+    margin-bottom: 4px;
+  }
+  .mock-block .placeholder.short { width: 60%; }
+  .mock-block .placeholder.shorter { width: 30%; }
+  .mock-block .row {
+    display: flex; gap: 6px; align-items: center;
+    padding: 4px 0; border-bottom: 1px solid var(--border);
+    font-size: 11px;
+  }
+  .mock-block .row:last-child { border-bottom: 0; }
+  .mock-block .row .pill {
+    font-size: 9px; padding: 2px 6px; border-radius: 999px;
+    background: rgba(185,28,28,0.1); color: var(--critical); font-weight: 600;
+  }
+  .mock-block .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+  .mock-block .mini-kpi {
+    border: 1px solid var(--border); border-radius: 6px; padding: 6px 8px;
+    background: var(--surface-2);
+  }
+  .mock-block .mini-kpi .lbl { font-size: 8px; text-transform: uppercase; color: var(--text-3); }
+  .mock-block .mini-kpi .val { font-size: 18px; font-weight: 700; }
+  .mock-block .tree-row {
+    display: flex; gap: 6px; align-items: center; font-size: 11px;
+    padding: 3px 0;
+  }
+  .mock-block .tree-row.indent-1 { padding-left: 12px; }
+  .mock-block .tree-row.indent-2 { padding-left: 24px; }
+
+  /* Legend */
+  .legend h3 { margin: 0 0 12px; font-size: 15px; }
+  .legend .entry { display: grid; grid-template-columns: 140px 1fr; gap: 10px; margin-bottom: 14px; }
+  .legend .entry .name {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    background: rgba(255,107,53,0.1); color: var(--accent);
+    padding: 4px 8px; border-radius: 6px; font-weight: 700;
+    align-self: start; text-align: center;
+  }
+  .legend .entry .desc { font-size: 13px; line-height: 1.45; color: var(--text-2); }
+  .legend .entry .desc strong { color: var(--text); }
+
+  /* Code block */
+  pre {
+    background: #1a2332;
+    color: #e2e8f0;
+    padding: 18px 20px;
+    border-radius: 10px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px; line-height: 1.55;
+    margin: 12px 0;
+  }
+  pre .comment { color: #94a3b8; font-style: italic; }
+  pre .key { color: #93c5fd; }
+  pre .str { color: #fcd34d; }
+  pre .kw { color: #f0abfc; }
+  code:not(pre code) {
+    background: rgba(60,50,35,0.08);
+    padding: 1px 6px; border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9em;
+  }
+
+  /* Step list */
+  .steps { counter-reset: step; padding-left: 0; list-style: none; }
+  .steps > li {
+    counter-increment: step;
+    padding: 18px 22px 18px 64px;
+    background: var(--surface);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 12px; position: relative;
+  }
+  .steps > li::before {
+    content: counter(step);
+    position: absolute; left: 18px; top: 18px;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--accent); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px;
+  }
+  .steps > li .step-title { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+  .steps > li .step-body { font-size: 14px; color: var(--text-2); }
+  .steps > li pre { margin-top: 10px; font-size: 12px; }
+
+  /* Table */
+  .tbl { width: 100%; border-collapse: collapse; font-size: 13px; margin: 12px 0; }
+  .tbl th { text-align: left; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-3); padding: 10px; border-bottom: 1px solid var(--border-strong); }
+  .tbl td { padding: 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .tbl .ok { color: var(--success); font-weight: 600; }
+  .tbl .warn { color: var(--warn); font-weight: 600; }
+  .tbl .crit { color: var(--critical); font-weight: 600; }
+
+  /* Demo flow */
+  .flow {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 24px;
+    box-shadow: var(--shadow-sm);
+  }
+  .flow-step {
+    display: grid; grid-template-columns: 70px 1fr; gap: 16px;
+    padding: 16px 0; border-bottom: 1px solid var(--border);
+    align-items: start;
+  }
+  .flow-step:last-child { border-bottom: 0; }
+  .flow-step .timer {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 700;
+    text-align: center; padding: 6px 8px;
+    border-radius: 8px;
+    background: rgba(3,169,244,0.1); color: var(--cyan);
+  }
+  .flow-step .timer.eye { background: rgba(255,107,53,0.12); color: var(--accent); }
+  .flow-step .who { font-size: 11px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; }
+  .flow-step .what { font-size: 14px; color: var(--text); margin-top: 2px; }
+  .flow-step .what em { color: var(--accent); font-style: normal; font-weight: 600; }
+
+  /* Inline highlights */
+  .hl-accent { color: var(--accent); font-weight: 600; }
+  .hl-cyan { color: var(--cyan); font-weight: 600; }
+  .hl-warn { color: var(--warn); font-weight: 600; }
+
+  /* Footer */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px; text-align: center;
+    color: var(--text-3); font-size: 12px;
+  }
+
+  /* Gallery */
+  .gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .gallery-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    box-shadow: var(--shadow-sm); transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .gallery-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .gallery-card .meta {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+  }
+  .gallery-card .meta h3 {
+    margin: 0 0 4px; font-size: 15px; font-weight: 700;
+  }
+  .gallery-card .meta .sub {
+    font-size: 12px; color: var(--text-2);
+  }
+  .gallery-card .meta .ops {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: var(--text-3); margin-top: 6px; line-height: 1.4;
+  }
+  .gallery-card .meta .widgets {
+    display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px;
+  }
+  .gallery-card .meta .widgets .tag {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    background: rgba(255,107,53,0.12); color: var(--accent);
+    padding: 2px 7px; border-radius: 999px; font-weight: 600;
+  }
+  .gallery-card .shot {
+    position: relative;
+    overflow: hidden;
+    max-height: 320px;
+  }
+  .gallery-card .shot img {
+    width: 100%; display: block; height: auto;
+  }
+  a.gallery-card { text-decoration: none; color: inherit; display: block; }
+  .gallery-card .shot .open-hint {
+    position: absolute; bottom: 12px; right: 12px;
+    background: var(--text); color: white;
+    padding: 6px 12px; border-radius: 8px;
+    font-size: 11px; font-weight: 600;
+    opacity: 0; transition: opacity .15s ease;
+  }
+  .gallery-card:hover .shot .open-hint { opacity: 1; }
+
+  /* Library growth section */
+  .growth-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    margin: 20px 0;
+  }
+  .growth-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 18px 20px;
+    box-shadow: var(--shadow-sm);
+  }
+  .growth-card .when {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-3); margin-bottom: 8px;
+  }
+  .growth-card .what {
+    font-size: 15px; font-weight: 700; margin-bottom: 6px;
+  }
+  .growth-card .detail {
+    font-size: 13px; color: var(--text-2); line-height: 1.5;
+  }
+  .growth-card.active { border-color: rgba(255,107,53,0.4); }
+  .growth-card.active .when { color: var(--accent); }
+
+  /* Limits section */
+  .limit-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px 24px;
+    box-shadow: var(--shadow-sm); margin-bottom: 14px;
+  }
+  .limit-card.blocked { border-left: 4px solid var(--critical); }
+  .limit-card.partial { border-left: 4px solid var(--warn); }
+  .limit-card .label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; margin-bottom: 4px;
+  }
+  .limit-card.blocked .label { color: var(--critical); }
+  .limit-card.partial .label { color: var(--warn); }
+  .limit-card h3 { margin: 0 0 8px; font-size: 16px; }
+  .limit-card .detail { font-size: 14px; color: var(--text-2); line-height: 1.55; margin-bottom: 8px; }
+  .limit-card .blocker {
+    font-size: 12px; font-family: 'JetBrains Mono', monospace;
+    background: var(--surface-2); padding: 8px 12px; border-radius: 6px;
+    color: var(--text-2); margin-top: 8px;
+  }
+
+  /* Widget catalog section */
+  .catalog-hero {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 28px 32px;
+    box-shadow: var(--shadow-sm); margin-bottom: 20px;
+    display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center;
+  }
+  .catalog-hero h3 {
+    margin: 0 0 6px; font-size: 18px; font-weight: 700;
+  }
+  .catalog-hero p { margin: 0; font-size: 14px; color: var(--text-2); }
+  .catalog-hero .cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent); color: white;
+    padding: 12px 22px; border-radius: 10px;
+    text-decoration: none; font-weight: 700; font-size: 14px;
+    transition: transform .15s ease, box-shadow .15s ease;
+    white-space: nowrap;
+  }
+  .catalog-hero .cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(255,107,53,0.3);
+  }
+
+  .widget-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+  }
+  .widget-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 18px;
+    box-shadow: var(--shadow-sm);
+    display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center;
+    text-decoration: none; color: inherit;
+    transition: transform .12s ease, border-color .12s ease;
+  }
+  .widget-card:hover {
+    border-color: var(--accent);
+    transform: translateX(2px);
+  }
+  .widget-card .icon {
+    width: 36px; height: 36px;
+    background: rgba(255,107,53,0.1); color: var(--accent);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+  .widget-card .info .name {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700; font-size: 13px; color: var(--text);
+    margin-bottom: 2px;
+  }
+  .widget-card .info .desc {
+    font-size: 12px; color: var(--text-2); line-height: 1.4;
+  }
+  .widget-card .arrow {
+    color: var(--text-3); font-size: 16px; font-weight: 700;
+  }
+  .widget-card:hover .arrow { color: var(--accent); }
+
+  @media (max-width: 720px) {
+    .gallery { grid-template-columns: 1fr; }
+    .growth-grid { grid-template-columns: 1fr; }
+    .widget-grid { grid-template-columns: 1fr; }
+    .catalog-hero { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">Network <span class="accent">AI-Assistant</span></div>
+  <div class="links">
+    <a href="#wedge">Wedge</a>
+    <a href="#layers">5 Layers</a>
+    <a href="#widget">What is a widget</a>
+    <a href="#catalog">Widget Catalog</a>
+    <a href="#library-growth">Library 哲學</a>
+    <a href="#gallery">範例 Gallery</a>
+    <a href="#howto">How to use</a>
+    <a href="#flow">Demo flow</a>
+    <a href="#limits">資料層限制</a>
+    <a href="#status">Status</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<header class="hero">
+  <span class="eyebrow">AI Demo Architecture · v3</span>
+  <h1>Dashboard <span class="accent">Builder</span> · 對話即時組裝、真實雲端資料、widget 一致視覺</h1>
+  <p class="lede">
+    Claude Code 在對話中編排 RD 的 <span class="hl">13 個 data skill</span> + <span class="hl">1 個 dashboard-builder skill</span>，把真實 EnGenius Cloud 資料即時組成客製 dashboard。「<span class="hl">即時組成</span>」是 wedge——不是預先做好的模板，而是訪客問問題的當下，AI 才決定 dashboard 長什麼樣。
+  </p>
+</header>
+
+<section id="wedge">
+  <h2><span class="num-tag">01</span>兩個無法妥協的原則</h2>
+  <div class="pull">
+    <span class="badge">原則 1</span>
+    資料一定真實——所有 dashboard 數字必須來自 staging API，不可硬編。<br>
+    違反 → 觀眾識破是 mockup。
+  </div>
+  <div class="pull">
+    <span class="badge">原則 2</span>
+    組裝一定即時——dashboard 結構在對話中才決定，不可全套打包成 skill 預設出來。<br>
+    違反 → 變成普通 SaaS 預設 view，wedge 故事死。
+  </div>
+</section>
+
+<section id="layers">
+  <h2><span class="num-tag">02</span>5 層架構</h2>
+  <p class="section-lede">由上而下：人 → AI → Skills → Cloud → 觀眾看到的東西。Claude Code 在對話中編排所有層。</p>
+
+  <div class="arch-diagram">
+    <div class="layer l5">
+      <div class="lvl">LAYER<b>L5</b></div>
+      <div class="what">
+        <div class="title">操作員 + 訪客</div>
+        <div class="desc">展會 booth presenter 在現場用自然語言跟 Claude Code 對話，訪客在旁邊看 dashboard 慢慢長出來。</div>
+      </div>
+      <div class="owner">你 booth team<span class="pill">人</span></div>
+    </div>
+    <div class="arrow">↓</div>
+
+    <div class="layer l4">
+      <div class="lvl">LAYER<b>L4</b></div>
+      <div class="what">
+        <div class="title">Claude Code（orchestrator）</div>
+        <div class="desc">從對話讀意圖 → 選哪些 data skill 要呼叫 → 寫 dashboard spec JSON → 呼叫 dashboard-builder.compose → append manifest log entry。</div>
+      </div>
+      <div class="owner">Anthropic runtime<span class="pill">AI</span></div>
+    </div>
+    <div class="arrow">↓</div>
+
+    <div class="layer l3">
+      <div class="lvl">LAYER<b>L3</b></div>
+      <div class="what">
+        <div class="title">Skills 層</div>
+        <div class="desc">
+          <strong>13 個 data skill</strong>（init-orgs / hvs / networks / org-devices / org-licenses / team-members / org-backups / network-groups / network-templates / engenius-env + 3 個 troubleshoot 🔴）<br>
+          <span class="hl-accent">+ 1 個 dashboard-builder skill</span>（theme/ + widgets/ + compose.py + runtime.js）
+        </div>
+      </div>
+      <div class="owner">RD<span class="pill">code</span></div>
+    </div>
+    <div class="arrow">↓</div>
+
+    <div class="layer l2">
+      <div class="lvl">LAYER<b>L2</b></div>
+      <div class="what">
+        <div class="title">EnGenius Cloud</div>
+        <div class="desc">falcon.staging.engenius.ai · Dolphin 平台 · Cloud GUI · 真實資料源</div>
+      </div>
+      <div class="owner">RD<span class="pill">backend</span></div>
+    </div>
+
+    <div class="arrow" style="margin-top: 12px;">────</div>
+
+    <div class="layer l1">
+      <div class="lvl">LAYER<b>L1</b></div>
+      <div class="what">
+        <div class="title">Browser + Filesystem（觀眾看到的東西）</div>
+        <div class="desc">
+          <code>prototype/live-data/*.json</code> ← Claude 寫、dashboard 讀<br>
+          <code>prototype/canvas-*.html</code> ← Claude compose 出來<br>
+          <code>prototype/generated-log.html</code> ← 每生一張，這裡跳一條 log<br>
+          static HTTP server + 瀏覽器 + 內建 setInterval 5s poll
+        </div>
+      </div>
+      <div class="owner">artifacts<span class="pill">filesystem</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="widget">
+  <h2><span class="num-tag">03</span>什麼是「Widget」？</h2>
+  <p class="section-lede">
+    Widget = <span class="hl-accent">可重複使用的 UI 零件</span>。把一張 dashboard 拆成幾個可組合的小積木，每個積木負責一種視覺呈現，知道怎麼讀 JSON、怎麼畫自己。換情境時不用重寫 dashboard，只要換不同零件組合。
+  </p>
+
+  <div class="anatomy">
+    <div class="visual">
+      <h4 style="margin-top: 0;">一張 dashboard 拆解</h4>
+      <div class="canvas-mock">
+        <div class="mock-block">
+          <span class="tag">alert</span>
+          <div class="title" style="color: var(--critical);">⚠ License 全面過期警示</div>
+          <div class="placeholder"></div>
+          <div class="placeholder short"></div>
+        </div>
+        <div class="mock-block">
+          <span class="tag">kpi_grid</span>
+          <div class="grid-3">
+            <div class="mini-kpi"><div class="lbl">Devices</div><div class="val">10</div></div>
+            <div class="mini-kpi"><div class="lbl">Expired</div><div class="val" style="color: var(--critical);">10</div></div>
+            <div class="mini-kpi"><div class="lbl">Networks</div><div class="val">3/10</div></div>
+          </div>
+        </div>
+        <div class="mock-block">
+          <span class="tag">table</span>
+          <div class="title">Device Fleet</div>
+          <div class="row"><span>ECW115</span><span style="margin-left:auto;color:var(--text-3);font-size:10px">New_1.3.10</span><span class="pill">expired</span></div>
+          <div class="row"><span>ECW230</span><span style="margin-left:auto;color:var(--text-3);font-size:10px">Sec_Network</span><span class="pill">expired</span></div>
+          <div class="row"><span>借Hom</span><span style="margin-left:auto;color:var(--text-3);font-size:10px">Sec_Network</span><span class="pill">expired</span></div>
+        </div>
+        <div class="mock-block">
+          <span class="tag">bar_list</span>
+          <div class="title">Composition</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:11px;margin-bottom:6px"><span style="width:50px">AP</span><div style="flex:1;height:5px;background:var(--cyan);border-radius:3px;width:90%"></div><span>9</span></div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:11px"><span style="width:50px">SWITCH</span><div style="flex:1;height:5px;background:var(--warn);border-radius:3px;max-width:10%"></div><span>1</span></div>
+        </div>
+        <div class="mock-block">
+          <span class="tag">topology_tree</span>
+          <div class="title">Network Topology</div>
+          <div class="tree-row">🏢 Main_Org <span style="color:var(--text-3);font-size:10px">10 net · 10 dev</span></div>
+          <div class="tree-row indent-1">📡 Sec_Network</div>
+          <div class="tree-row indent-2">📶 ECW230</div>
+          <div class="tree-row indent-2">🔘 借Hom</div>
+        </div>
+      </div>
+      <div style="font-size: 12px; color: var(--text-3); margin-top: 12px; text-align: center;">
+        每塊橘色虛線分區 = 一個 widget。一張 dashboard 由多個 widget 疊出來。
+      </div>
+    </div>
+
+    <div class="legend">
+      <h3>6 個 widget（目前）</h3>
+      <div class="entry">
+        <span class="name">alert</span>
+        <span class="desc"><strong>警示橫條</strong>。severity 分 critical / warning / info / success。body 可寫死或用 compute function 從 JSON 算出來。</span>
+      </div>
+      <div class="entry">
+        <span class="name">kpi_grid</span>
+        <span class="desc"><strong>KPI 卡片列</strong>。支援 2-6 張卡，每張可點擊跳到另一個 widget，數字可從 JSON 路徑直接讀或用 compute function 算。</span>
+      </div>
+      <div class="entry">
+        <span class="name">table</span>
+        <span class="desc"><strong>表格</strong>。內建 filter chips、可展開 row 看 detail、可排序、可接收跨 widget 事件（topology 點 device → table 自動展開那一行）。</span>
+      </div>
+      <div class="entry">
+        <span class="name">bar_list</span>
+        <span class="desc"><strong>橫條圖</strong>。多組 bar，可以分群（type 一群、license 一群）。</span>
+      </div>
+      <div class="entry">
+        <span class="name">chip_strip</span>
+        <span class="desc"><strong>標籤條</strong>。用來秀「empty networks」「stale services」等不需要表格化的小量項目。</span>
+      </div>
+      <div class="entry">
+        <span class="name">topology_tree</span>
+        <span class="desc"><strong>樹狀圖</strong>。Org → Network → Device 階層、可展開、被 RBAC 擋的 org 會顯示 403/402 badge。</span>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="margin-top: 32px;">換情境 = 換 spec JSON，不用重寫 dashboard</h3>
+  <p>同樣這 6 個 widget，可以組出完全不同的 dashboard：</p>
+  <pre><span class="comment">// 情境 A：Org 健康總覽（現有版）</span>
+{
+  <span class="key">"title"</span>: <span class="str">"Main_Org · 健康總覽"</span>,
+  <span class="key">"sections"</span>: [
+    { <span class="key">"widget"</span>: <span class="str">"alert"</span>, <span class="key">"severity"</span>: <span class="str">"critical"</span>, <span class="key">"title"</span>: <span class="str">"License 全面過期警示"</span> },
+    { <span class="key">"widget"</span>: <span class="str">"kpi_grid"</span>, <span class="key">"items"</span>: [<span class="comment">/* 4 KPIs */</span>] },
+    { <span class="key">"widget"</span>: <span class="str">"table"</span>, <span class="key">"title"</span>: <span class="str">"Device Fleet"</span>, ... },
+    { <span class="key">"widget"</span>: <span class="str">"topology_tree"</span>, <span class="key">"title"</span>: <span class="str">"Network Topology"</span> }
+  ]
+}
+
+<span class="comment">// 情境 B：離職員工權限大掃除（新情境）</span>
+{
+  <span class="key">"title"</span>: <span class="str">"Off-boarding Compliance Audit"</span>,
+  <span class="key">"sections"</span>: [
+    { <span class="key">"widget"</span>: <span class="str">"alert"</span>, <span class="key">"severity"</span>: <span class="str">"warning"</span>, <span class="key">"title"</span>: <span class="str">"5 人超過 1 年沒登入仍持有 network 權限"</span> },
+    { <span class="key">"widget"</span>: <span class="str">"kpi_grid"</span>, <span class="key">"items"</span>: [<span class="comment">/* stale users / risk accesses */</span>] },
+    { <span class="key">"widget"</span>: <span class="str">"table"</span>, <span class="key">"title"</span>: <span class="str">"Stale Members（only）"</span>, ... }
+  ]
+}</pre>
+  <p>不用碰任何 widget 程式碼，只要寫新 spec JSON → <code>compose.py</code> → 出新 dashboard。</p>
+</section>
+
+<section id="catalog">
+  <h2><span class="num-tag">03b</span>Widget Catalog · 8 份規格文件</h2>
+  <p class="section-lede">
+    每個 widget 都有專屬規格文件——說明何時用 / 何時不用 / config schema / compute function 簽名 / 範例。Claude 在對話中組 dashboard 時會讀這些文件決定用哪個 widget；RD 美化 widget 時可參考它的 contract。
+  </p>
+
+  <div class="catalog-hero">
+    <div>
+      <h3>瀏覽完整規格</h3>
+      <p>單頁 catalog viewer 含 sidebar 導覽 + markdown 即時渲染。每份文件可直接複製 raw path 給 RD 或 Claude。</p>
+    </div>
+    <a class="cta" href="widget-catalog.html">📖 開啟 Widget Catalog →</a>
+  </div>
+
+  <h3 style="margin-top: 28px;">10 個 widget 速覽</h3>
+  <p class="section-lede" style="margin-bottom: 14px;">點任一進 catalog 對應頁。</p>
+  <div class="widget-grid">
+    <a class="widget-card" href="widget-catalog.html#widget_alert">
+      <div class="icon">⚠</div>
+      <div class="info"><div class="name">alert</div><div class="desc">高優先警示橫條 · critical/warning/info/success</div></div>
+      <div class="arrow">→</div>
+    </a>
+    <a class="widget-card" href="widget-catalog.html#widget_kpi_grid">
+      <div class="icon">📊</div>
+      <div class="info"><div class="name">kpi_grid</div><div class="desc">2-6 KPI 卡片 · 可點擊跨 widget 跳轉</div></div>
+      <div class="arrow">→</div>
+    </a>
+    <a class="widget-card" href="widget-catalog.html#widget_table">
+      <div class="icon">📋</div>
+      <div class="info"><div class="name">table</div><div class="desc">表格 · filter + row 展開 + 跨 widget 事件</div></div>
+      <div class="arrow">→</div>
+    </a>
+    <a class="widget-card" href="widget-catalog.html#widget_bar_list">
+      <div class="icon">📈</div>
+      <div class="info"><div class="name">bar_list</div><div class="desc">橫條圖 · 多群分組 + severity 顏色</div></div>
+      <div class="arrow">→</div>
+    </a>
+    <a class="widget-card" href="widget-catalog.html#widget_donut">
+      <div class="icon">🎯</div>
+      <div class="info"><div class="name">donut</div><div class="desc">SVG 圓環圖 · % 構成 + hover 同步</div></div>
+      <div class="arrow">→</div>
+    </a>
+    <a class="widget-card" href="widget-catalog.html#widget_gauge">
+      <div class="icon">⏲</div>
+      <div class="info"><div class="name">gauge</div><div class="desc">半圓速度計 · 對比 target + 嚴重度</div></div>
+      <div class="arrow">→</div>
+    </a>
+    <a class="widget-card" href="widget-catalog.html#widget_chip_strip">
+      <div class="icon">🏷</div>
+      <div class="info"><div class="name">chip_strip</div><div class="desc">標籤條 · 適合「次要清單」</div></div>
+      <div class="arrow">→</div>
+    </a>
+    <a class="widget-card" href="widget-catalog.html#widget_topology_tree">
+      <div class="icon">🌐</div>
+      <div class="info"><div class="name">topology_tree</div><div class="desc">階層樹 · org→net→device · RBAC 感知</div></div>
+      <div class="arrow">→</div>
+    </a>
+    <a class="widget-card" href="widget-catalog.html#widget_timeline">
+      <div class="icon">⏱</div>
+      <div class="info"><div class="name">timeline</div><div class="desc">時間軸 · TODAY marker + 自動 severity</div></div>
+      <div class="arrow">→</div>
+    </a>
+    <a class="widget-card" href="widget-catalog.html#widget_heatmap">
+      <div class="icon">🔥</div>
+      <div class="info"><div class="name">heatmap</div><div class="desc">2D 矩陣 · 強度 colormap + tooltip</div></div>
+      <div class="arrow">→</div>
+    </a>
+  </div>
+</section>
+
+<section id="library-growth">
+  <h2><span class="num-tag">03b</span>Library 哲學：按需擴張，不一次蓋好</h2>
+  <p class="section-lede">
+    Widget library 不是一次盤點所有可能的視覺化、提前 build。<span class="hl-accent">每次有新情境，才從中萃取出真正用得到的 widget。</span>這樣保證每個 widget 都有 production-grade 的真實使用案例，避免「為了完整性建出沒人用的元件」。
+  </p>
+
+  <div class="growth-grid">
+    <div class="growth-card">
+      <div class="when">2026-05-15 凌晨</div>
+      <div class="what">6 widget</div>
+      <div class="detail">Org 健康總覽（S3）→ 萃取 alert / kpi_grid / table / bar_list / chip_strip / topology_tree</div>
+    </div>
+    <div class="growth-card">
+      <div class="when">2026-05-15 23:25</div>
+      <div class="what">6 widget</div>
+      <div class="detail">Off-boarding Audit（S4）→ 證明可以「不加 widget」就做新情境，純寫 spec</div>
+    </div>
+    <div class="growth-card active">
+      <div class="when">2026-05-16 00:30</div>
+      <div class="what">+ timeline = 7</div>
+      <div class="detail">License Renewal（S5）需要時間軸視覺 → 加 timeline widget（30 分鐘）</div>
+    </div>
+    <div class="growth-card active">
+      <div class="when">2026-05-16 00:50</div>
+      <div class="what">+ donut = 8</div>
+      <div class="detail">Multi-Org Governance（S2）需要「% of total」框架 → 加 donut widget（45 分鐘）</div>
+    </div>
+    <div class="growth-card active">
+      <div class="when">2026-05-16 01:14</div>
+      <div class="what">+ gauge + heatmap = 10</div>
+      <div class="detail">Cross-Org Reallocation（S7）需要「fleet 健康度」+「2D 構成」→ 加 gauge（速度計）+ heatmap（矩陣）兩個 widget</div>
+    </div>
+    <div class="growth-card">
+      <div class="when">未來</div>
+      <div class="what">candidates</div>
+      <div class="detail">sparkline / map — 等下個情境需要才做。<strong>line_chart</strong> 等資料層補 history API（見下方限制）。</div>
+    </div>
+  </div>
+
+  <h3>判斷「該不該加 widget」的 3 個問題</h3>
+  <ol>
+    <li><strong>現有 widget 真的做不到嗎？</strong>很多時候 bar_list / table + compute_fn 就能解，不用新 widget。</li>
+    <li><strong>會被重用嗎？</strong>如果只有這次 demo 用到，建議用一次性 HTML 嵌入而非變 widget。</li>
+    <li><strong>有沒有設計 token 還沒覆蓋的視覺？</strong>如果有，先補 token、再寫 widget，避免硬碼顏色。</li>
+  </ol>
+
+  <p style="margin-top: 16px;"><strong>Library 不是越大越好</strong>——8 個經過真實使用、彼此互不重疊的 widget，比 30 個「以防萬一」的 widget 對 Claude 更友善：選擇少 → 不會選錯 → 視覺更一致。</p>
+</section>
+
+<section id="gallery">
+  <h2><span class="num-tag">03c</span>4 張範例 Gallery · 同一套 widget、不同故事</h2>
+  <p class="section-lede">
+    4 張 dashboard 用同一套 widget 套組（最多 8 種）+ 不同 spec JSON 組出來，視覺一致、互動一致、但故事完全不同。<span class="hl-accent">這就是 widget reuse 的證據。</span>
+  </p>
+
+  <div class="gallery">
+    <a class="gallery-card" href="prototype/canvas-org-health-v2-20260516-000512.html">
+      <div class="meta">
+        <h3>S3 · Org 健康總覽</h3>
+        <div class="sub">設備、license、人員 + 跨 org 樹狀結構，給 IT manager 看「整體健康」</div>
+        <div class="ops">ops: get_user_orgs + get_hierarchy_views + get_inventory + get_licenses + get_org_memberships_overall</div>
+        <div class="widgets">
+          <span class="tag">alert</span><span class="tag">kpi_grid</span><span class="tag">table×2</span><span class="tag">bar_list</span><span class="tag">chip_strip</span><span class="tag">topology_tree</span>
+        </div>
+      </div>
+      <div class="shot"><img src="assets/canvas-shots/org-health.png" alt="Org Health"><span class="open-hint">開啟 →</span></div>
+    </a>
+
+    <a class="gallery-card" href="prototype/canvas-offboarding-audit-20260516-003016.html">
+      <div class="meta">
+        <h3>S4 · Off-boarding Compliance Audit</h3>
+        <div class="sub">SOC2/ISO27001 視角 · 找出 1+ 年沒登入仍持有 network 權限的帳號</div>
+        <div class="ops">ops: get_org_memberships_overall</div>
+        <div class="widgets">
+          <span class="tag">alert</span><span class="tag">kpi_grid</span><span class="tag">table×2</span><span class="tag">chip_strip</span>
+        </div>
+      </div>
+      <div class="shot"><img src="assets/canvas-shots/offboarding-audit.png" alt="Off-boarding Audit"><span class="open-hint">開啟 →</span></div>
+    </a>
+
+    <a class="gallery-card" href="prototype/canvas-license-renewal-20260516-003624.html">
+      <div class="meta">
+        <h3>S5 · License Renewal Planning</h3>
+        <div class="sub">跨 org timeline · 規劃 license 續約優先序 + 視覺化過期分布</div>
+        <div class="ops">ops: get_user_orgs + get_hierarchy_views + get_inventory</div>
+        <div class="widgets">
+          <span class="tag">alert</span><span class="tag">kpi_grid</span><span class="tag" style="background:rgba(76,153,82,0.15);color:var(--success)">timeline (new)</span><span class="tag">bar_list</span><span class="tag">table</span>
+        </div>
+      </div>
+      <div class="shot"><img src="assets/canvas-shots/license-renewal.png" alt="License Renewal"><span class="open-hint">開啟 →</span></div>
+    </a>
+
+    <a class="gallery-card" href="prototype/canvas-multi-org-governance-20260516-004918.html">
+      <div class="meta">
+        <h3>S2 · Multi-Org Governance Audit</h3>
+        <div class="sub">MSP/Partner 視角 · 跨 5 個 org 的存取健康 + 合規檢視（含 RBAC blocked org 處理）</div>
+        <div class="ops">ops: get_user_orgs + get_hierarchy_views×5 + get_inventory×5 + get_org_memberships_overall</div>
+        <div class="widgets">
+          <span class="tag">alert</span><span class="tag">kpi_grid</span><span class="tag" style="background:rgba(76,153,82,0.15);color:var(--success)">donut×2 (new)</span><span class="tag">topology_tree</span><span class="tag">chip_strip</span><span class="tag">table</span>
+        </div>
+      </div>
+      <div class="shot"><img src="assets/canvas-shots/multi-org-governance.png" alt="Multi-Org Governance"><span class="open-hint">開啟 →</span></div>
+    </a>
+
+    <a class="gallery-card" href="prototype/canvas-cross-org-reallocation-20260516-011409.html">
+      <div class="meta">
+        <h3>S7 · Cross-Org Reallocation Planner</h3>
+        <div class="sub">Partner/MSP 視角 · 識別跨 org 設備重新配置機會、license 健康度 gauge、orgs × types heatmap</div>
+        <div class="ops">ops: get_user_orgs + get_hierarchy_views×5 + get_inventory×5（無 mutation — 規劃模式）</div>
+        <div class="widgets">
+          <span class="tag">alert</span><span class="tag">kpi_grid</span><span class="tag" style="background:rgba(76,153,82,0.15);color:var(--success)">gauge (new)</span><span class="tag" style="background:rgba(76,153,82,0.15);color:var(--success)">heatmap×2 (new)</span><span class="tag">chip_strip</span><span class="tag">table</span>
+        </div>
+      </div>
+      <div class="shot"><img src="assets/canvas-shots/cross-org-reallocation.png" alt="Cross-Org Reallocation"><span class="open-hint">開啟 →</span></div>
+    </a>
+  </div>
+
+  <h3 style="margin-top: 32px;">重要觀察</h3>
+  <ul>
+    <li><strong>4 張視覺一致</strong>——同一套 theme tokens，改 1 處（如 `--brand`）4 張全部自動更新。</li>
+    <li><strong>跨 dashboard 不重複造輪</strong>——topology_tree 在 S3 跟 S2 都用到、table 在所有 4 張都用到。</li>
+    <li><strong>故事完全不同</strong>——S3 是「健康」、S4 是「合規」、S5 是「規劃」、S2 是「governance」。同樣資料、不同框架。</li>
+    <li><strong>新 widget 解鎖新類型故事</strong>——timeline 解鎖「時間規劃」、donut 解鎖「% 構成框架」。沒這兩個 widget 之前的 dashboard 就講不出這兩種故事。</li>
+  </ul>
+</section>
+
+<section id="howto">
+  <h2><span class="num-tag">04</span>怎麼用 Dashboard Builder Skill</h2>
+  <p class="section-lede">三個情境，每個情境都是 Claude Code 對話中觸發。Skill 本身就是一個 Python 入口加一堆 HTML 零件。</p>
+
+  <h3>用法一：Claude 在對話中自動跑（典型 demo 場景）</h3>
+  <ol class="steps">
+    <li>
+      <div class="step-title">訪客問問題</div>
+      <div class="step-body">「幫我看 Main_Org 健康狀況」</div>
+    </li>
+    <li>
+      <div class="step-title">Claude 跑 data skills、把結果寫進 live-data/</div>
+      <div class="step-body">並行呼叫 <code>get_user_orgs</code> / <code>get_hierarchy_views</code> / <code>get_inventory</code> / <code>get_licenses</code> / <code>get_org_memberships_overall</code>，輸出到 <code>prototype/live-data/*.json</code></div>
+    </li>
+    <li>
+      <div class="step-title">Claude 寫一份 spec JSON</div>
+      <div class="step-body">大概 100-150 行的 JSON，描述「想要幾個 widget、按什麼順序、用哪份 live-data」。範例：<code>dashboard-builder-skill/examples/org-health.spec.json</code></div>
+    </li>
+    <li>
+      <div class="step-title">Claude 呼叫 compose.py</div>
+      <div class="step-body">
+<pre>python prototype/dashboard-builder-skill/scripts/compose.py \
+  --spec my-spec.json \
+  --out prototype/canvas-&lt;topic&gt;-&lt;TS&gt;.html</pre>
+        產出單一 HTML 檔（46KB），自包含所有 widget CSS + JS + runtime。
+      </div>
+    </li>
+    <li>
+      <div class="step-title">瀏覽器自動打開 preview</div>
+      <div class="step-body">Dashboard 載入後立即 fetch live-data/、render 所有 widget，每 5 秒 poll 一次更新。</div>
+    </li>
+    <li>
+      <div class="step-title">Claude append manifest log entry</div>
+      <div class="step-body"><code>generated-log.html</code> 立即跳出新 entry，操作員可從那邊回追今天 demo 過什麼。</div>
+    </li>
+  </ol>
+
+  <h3>用法二：手動 compose 已有 spec（重現舊 demo）</h3>
+  <pre><span class="comment"># 重新跑 examples/org-health.spec.json 產生新 timestamp 的 canvas</span>
+python prototype/dashboard-builder-skill/scripts/compose.py \
+  --spec prototype/dashboard-builder-skill/examples/org-health.spec.json \
+  --out prototype/canvas-org-health-$(date +%Y%m%d-%H%M%S).html
+
+<span class="comment"># 跑完打開 preview server</span>
+open http://localhost:58778/prototype/canvas-org-health-&lt;TS&gt;.html</pre>
+
+  <h3>用法三：刷新 live-data 但保留 canvas（最常用）</h3>
+  <p>展會中要 demo「live 數字會跳」效果：</p>
+  <pre><span class="comment"># 1. 操作員執行 refresh 腳本（重撈 staging API）</span>
+./prototype/scripts/build_topology.sh
+
+<span class="comment"># 2. Dashboard 已開著的話，5 秒內自動 reflect 新數字</span>
+<span class="comment"># 不用重 compose、不用重 reload</span></pre>
+</section>
+
+<section id="flow">
+  <h2><span class="num-tag">05</span>90 秒 Booth Demo 節奏</h2>
+  <p class="section-lede">展前準備 + 主秀 + 彩蛋。整段不超過 2 分鐘。</p>
+
+  <div class="flow">
+    <div class="flow-step">
+      <div class="timer">展前</div>
+      <div>
+        <div class="who">操作員</div>
+        <div class="what">跑 <code>refresh-all.sh</code> → 確認所有 6 個 JSON 是 5 分鐘內的資料</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="timer">0:00</div>
+      <div>
+        <div class="who">訪客</div>
+        <div class="what">「我管 5 個客戶的網路，能幫我看一下總體狀況嗎？」</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="timer">0:15</div>
+      <div>
+        <div class="who">操作員 → Claude Code</div>
+        <div class="what">「幫我撈所有 org 的 device + license + member」</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="timer eye">0:18</div>
+      <div>
+        <div class="who">Claude</div>
+        <div class="what">並行跑 5 個 skill → 寫 live-data/*.json → 回覆「Main_Org 有 10 台設備、<em>全部 license expired</em>，要不要先看這個？」</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="timer">0:30</div>
+      <div>
+        <div class="who">操作員 → Claude</div>
+        <div class="what">「對，做一張 dashboard 從健康角度看」</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="timer eye">0:35</div>
+      <div>
+        <div class="who">Claude</div>
+        <div class="what">寫 spec JSON → 呼叫 compose.py → <em>產出 canvas-org-health-&lt;TS&gt;.html</em></div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="timer">0:40</div>
+      <div>
+        <div class="who">操作員</div>
+        <div class="what">開 browser preview → 訪客看到 dashboard <em>已經 live</em></div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="timer">0:50</div>
+      <div>
+        <div class="who">訪客</div>
+        <div class="what">瀏覽 dashboard，問：「我想看跨 5 個 org 的關係」</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="timer eye">1:00</div>
+      <div>
+        <div class="who">Claude</div>
+        <div class="what">跑 topology aggregate 腳本 → 改 spec、append topology_tree section → <em>重新 compose</em> → 觀眾看到 dashboard 在他眼前長出新區塊</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="timer eye">1:25</div>
+      <div>
+        <div class="who">訪客</div>
+        <div class="what">「Front Desk 已經 5 年沒登入了還有 7 個 network 權限？」（核心 wow）</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="timer">1:40</div>
+      <div>
+        <div class="who">操作員 → Claude</div>
+        <div class="what">「列出可疑成員」→ Claude highlight 那幾筆、建議下一步操作（不執行寫入）</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="limits">
+  <h2><span class="num-tag">06</span>資料層限制 · 哪些故事還不能講</h2>
+  <p class="section-lede">
+    現有 RD skill 的覆蓋範圍是「<strong>讀寫設定 + 當前快照</strong>」。<span class="hl-accent">所有需要歷史聚合 / 即時 streaming 的故事都還做不出來</span>，因為對應 API 還不存在。這個限制不是 dashboard-builder 的問題，是資料層尚未長出來。
+  </p>
+
+  <div class="limit-card blocked">
+    <div class="label">🔴 完全擋住</div>
+    <h3>趨勢 / 歷史聚合（"過去 7 天 throughput"、"本月流量 top 10"）</h3>
+    <p class="detail">
+      EnGenius Cloud 的 GET API 只回「現在」的快照，沒有「過去 N 天聚合」endpoint。所有「趨勢線」、「月度比較」、「年度報表」類 dashboard 都做不出來。
+    </p>
+    <div class="blocker">RD action: 補 history aggregation API（例如 /metrics/throughput?from=...&to=...&groupBy=day）</div>
+  </div>
+
+  <div class="limit-card blocked">
+    <div class="label">🔴 完全擋住</div>
+    <h3>即時 streaming（"AP CPU 即時跳動"、"在線 client 即時列表"）</h3>
+    <p class="detail">
+      規格上 RD 有 <code>subscribe_stat</code>、<code>subscribe_throughput</code>、<code>subscribe_client_list</code> 等 25+ 個 op，但 <strong>3 個 troubleshoot skill 都還沒 scripts/</strong>。SKILL.md 列出來、references/ 規格寫好了，但無法執行。
+    </p>
+    <div class="blocker">RD action: 補 network-ap/gw/sw-troubleshoot skill 的 scripts/call_api.py（含 WebSocket / SSE 協定支援）</div>
+  </div>
+
+  <div class="limit-card blocked">
+    <div class="label">🔴 完全擋住</div>
+    <h3>實體拓樸（"哪台 AP 接到 switch 哪個 port"、"線路斷在哪裡"）</h3>
+    <p class="detail">
+      需要 <code>subscribe_fdb_list</code>、<code>subscribe_arp_list</code>、<code>subscribe_cable_diag</code> — 也在 troubleshoot skill 內、也都還沒 scripts。所以我們的 topology_tree 只能畫<strong>邏輯</strong>階層（org → network → device），畫不出實體連線。
+    </p>
+    <div class="blocker">RD action: 同上</div>
+  </div>
+
+  <div class="limit-card partial">
+    <div class="label">🟡 部分擋住</div>
+    <h3>跨 org 成員聚合（"哪些人在多個 org 都有權限"）</h3>
+    <p class="detail">
+      <code>get_org_memberships_overall</code> 只能撈一個 org 的成員。要看「一個 user 在 5 個 org 各有什麼權限」需要拼接 5 次呼叫 + 用 email 比對。Dashboard 可以做（用 compute_fn 拼），但成本高。
+    </p>
+    <div class="blocker">RD action（nice-to-have）: 補 cross-org membership endpoint</div>
+  </div>
+
+  <div class="limit-card partial">
+    <div class="label">🟡 部分擋住</div>
+    <h3>裝置物理位置（"地圖上標出各分店設備"）</h3>
+    <p class="detail">
+      Network / device 沒有 GPS / address 欄位。hierarchy_view 名稱可能含地點線索（如 "Taipei"、"LA"），但需要 geocoding 推測。<strong>map widget 因此被延後</strong>，要等 RD 加 location 欄位。
+    </p>
+    <div class="blocker">RD action（nice-to-have）: device/network 加 location 欄位（address / lat / lon）</div>
+  </div>
+
+  <h3 style="margin-top: 28px;">現在能做的 widget 類型</h3>
+  <p>受限於上述限制，dashboard-builder library 目前聚焦 <strong>「當前狀態的多維呈現」</strong>：</p>
+  <ul>
+    <li>✅ <strong>單一指標</strong>（kpi_grid）— "現在有 10 台設備"</li>
+    <li>✅ <strong>分類 / 構成</strong>（bar_list, donut）— "AP 9 / Switch 1"、"40% accessible / 40% partial"</li>
+    <li>✅ <strong>清單明細</strong>（table）— "列出所有 stale members"</li>
+    <li>✅ <strong>結構關係</strong>（topology_tree）— "Org → Network → Device 階層"</li>
+    <li>✅ <strong>單點時間軸</strong>（timeline）— "license 何時到期"（不是「過去到現在的趨勢」，是「現在到未來的點」）</li>
+    <li>❌ <strong>連續趨勢線</strong>（line_chart / sparkline）— 需要歷史 API</li>
+    <li>❌ <strong>即時跳動</strong>（live_meter / activity_feed）— 需要 streaming API</li>
+    <li>❌ <strong>地理</strong>（map）— 需要 location 欄位</li>
+  </ul>
+</section>
+
+<section id="status">
+  <h2><span class="num-tag">07</span>現況 vs Roadmap</h2>
+  <table class="tbl">
+    <thead><tr><th>元件</th><th>狀態</th><th>備註</th></tr></thead>
+    <tbody>
+      <tr><td>L2 EnGenius Cloud</td><td class="ok">✅ 上線</td><td>falcon.staging 可用</td></tr>
+      <tr><td>L3 data skills × 10</td><td class="ok">✅ 可跑</td><td>共 ~46 個 op 可呼叫</td></tr>
+      <tr><td>L3 troubleshoot × 3</td><td class="crit">🔴 規劃中</td><td>47 個 op 沒 script，要 RD 補</td></tr>
+      <tr><td>L3 dashboard-builder skill</td><td class="warn">🟡 prototype</td><td><strong>10 widget</strong> + compose.py + 6 個 spec 範例已 work，待整合進 api-skills</td></tr>
+      <tr><td>Widget reference docs（10 份）</td><td class="ok">✅</td><td>每個 widget 一份 spec doc（alert/kpi_grid/table/bar_list/donut/gauge/chip_strip/topology_tree/timeline/heatmap）</td></tr>
+      <tr><td>L4 Claude Code orchestration</td><td class="ok">✅</td><td>對話 → skill → spec → compose 已驗證</td></tr>
+      <tr><td>L1 canvas + live-data</td><td class="ok">✅</td><td>5 個 canvas 已 work，auto-poll 已驗證</td></tr>
+      <tr><td>L1 manifest log</td><td class="ok">✅</td><td>generated-log.html 自動 refresh</td></tr>
+      <tr><td>L5 booth playbook</td><td class="ok">✅</td><td>docs/booth-presenter-cheatsheet.md</td></tr>
+      <tr><td>refresh-all.sh 統一刷新</td><td class="warn">🟡</td><td>已有 build_topology.sh，需擴成全部 6 個 JSON</td></tr>
+      <tr><td>Widget reference docs（每個 widget 一份 spec）</td><td class="warn">🟡</td><td>給 LLM 看的 widget API 文件</td></tr>
+    </tbody>
+  </table>
+</section>
+
+</div>
+
+<footer>
+  AI Demo Architecture v3 · Last updated 2026-05-16 · Network AI-Assistant Proposal Site
+</footer>
+
+</body>
+</html>

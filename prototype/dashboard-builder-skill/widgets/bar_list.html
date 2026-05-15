@@ -1,0 +1,60 @@
+<style>
+.w-barlist { font-size: 13px; }
+.w-barlist .bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.w-barlist .bar-label { width: 110px; color: var(--text-2); font-weight: 500; }
+.w-barlist .bar-track { flex: 1; height: 8px; background: rgba(15,23,42,0.05); border-radius: 4px; overflow: hidden; }
+.w-barlist .bar-fill { height: 100%; border-radius: 4px; background: var(--brand); transition: width 0.6s ease; }
+.w-barlist .bar-fill.crit { background: var(--critical); }
+.w-barlist .bar-fill.warn { background: var(--warning); }
+.w-barlist .bar-fill.ok { background: var(--success); }
+.w-barlist .bar-val { width: 32px; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; font-size: 13px; }
+.w-barlist .group { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+</style>
+
+<script>
+Dashboard.register('bar_list', ({ el, config, ctx }) => {
+  el.classList.add('card');
+  el.innerHTML = `
+    <div class="card-hdr"><h2>${config.title||''}</h2><span class="meta">${config.meta||''}</span></div>
+    <div class="w-barlist" data-role="body"></div>
+  `;
+  const body = el.querySelector('[data-role="body"]');
+
+  return {
+    render(data) {
+      const groups = config.groups || [];
+      body.innerHTML = groups.map((g, gi) => {
+        const items = (g.compute && computeFns[g.compute])
+          ? computeFns[g.compute](data, g)
+          : (g.items || []);
+        const total = g.total_compute && computeFns[g.total_compute]
+          ? computeFns[g.total_compute](data, g)
+          : items.reduce((s,i) => s + (i.value||0), 0);
+        return `<div class="${gi>0?'group':''}">${items.map(i => `
+          <div class="bar-row">
+            <div class="bar-label">${i.label}</div>
+            <div class="bar-track"><div class="bar-fill ${i.color||''}" style="width:${total?(i.value/total*100).toFixed(0):0}%"></div></div>
+            <div class="bar-val">${i.value}</div>
+          </div>`).join('')}</div>`;
+      }).join('');
+    }
+  };
+});
+
+const computeFns3 = window.computeFns || (window.computeFns = {});
+computeFns3.device_type_bars = (data) => {
+  const inv = data.inventory?.device_candidates || [];
+  const types = inv.reduce((m,d)=>{m[d.type]=(m[d.type]||0)+1;return m;},{});
+  const colorMap = { ap: '', switch: 'warn', gateway: 'ok' };
+  return Object.entries(types).map(([t,c]) => ({ label: t.toUpperCase(), value: c, color: colorMap[t] }));
+};
+computeFns3.license_status_bars = (data) => {
+  const inv = data.inventory?.device_candidates || [];
+  const exp = inv.filter(d => d.license_status === 'expired').length;
+  return [
+    { label: 'Expired', value: exp, color: 'crit' },
+    { label: 'Active', value: inv.length - exp, color: 'ok' },
+  ];
+};
+computeFns3.device_total = (data) => (data.inventory?.device_candidates || []).length;
+</script>

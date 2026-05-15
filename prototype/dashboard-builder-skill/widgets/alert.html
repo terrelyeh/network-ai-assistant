@@ -1,0 +1,68 @@
+<style>
+.w-alert {
+  border-radius: 12px; padding: 14px 16px; margin-bottom: 20px;
+  border: 1px solid; display: flex; align-items: flex-start; gap: 12px;
+}
+.w-alert.severity-critical { background: var(--critical-bg); border-color: rgba(185,28,28,0.25); color: var(--critical); }
+.w-alert.severity-warning { background: var(--warning-bg); border-color: rgba(180,83,9,0.25); color: var(--warning); }
+.w-alert.severity-info { background: var(--info-bg); border-color: rgba(29,78,216,0.25); color: var(--info); }
+.w-alert.severity-success { background: var(--success-bg); border-color: rgba(4,120,87,0.25); color: var(--success); }
+.w-alert-icon {
+  width: 22px; height: 22px; flex-shrink: 0; border-radius: 50%;
+  font-weight: 700; display: flex; align-items: center; justify-content: center;
+  font-size: 13px; margin-top: 1px; color: #fff;
+}
+.w-alert.severity-critical .w-alert-icon { background: var(--critical); }
+.w-alert.severity-warning .w-alert-icon { background: var(--warning); }
+.w-alert.severity-info .w-alert-icon { background: var(--info); }
+.w-alert.severity-success .w-alert-icon { background: var(--success); }
+.w-alert-body { flex: 1; }
+.w-alert-body strong { font-weight: 700; }
+.w-alert-body p { margin: 4px 0 0; font-size: 13px; color: var(--text-2); }
+</style>
+
+<template id="tpl-alert">
+  <div class="w-alert">
+    <div class="w-alert-icon"><span>!</span></div>
+    <div class="w-alert-body">
+      <strong data-bind="title"></strong>
+      <p data-bind="body"></p>
+    </div>
+  </div>
+</template>
+
+<script>
+Dashboard.register('alert', ({ el, config, ctx }) => {
+  const tpl = document.getElementById('tpl-alert').content.cloneNode(true);
+  const root = tpl.querySelector('.w-alert');
+  root.classList.add(`severity-${config.severity || 'info'}`);
+  if (config.icon) root.querySelector('.w-alert-icon span').textContent = config.icon;
+  root.querySelector('[data-bind="title"]').textContent = config.title || '';
+  el.appendChild(tpl);
+  const bodyEl = el.querySelector('[data-bind="body"]');
+
+  return {
+    render(data) {
+      // body text can be:
+      //  - static `body`
+      //  - dynamic via `body_compute` (named compute function in compute_fns map)
+      if (config.body_compute && computeFns[config.body_compute]) {
+        bodyEl.textContent = computeFns[config.body_compute](data, config);
+      } else if (config.body) {
+        bodyEl.textContent = config.body;
+      }
+    }
+  };
+});
+
+// Pluggable compute functions. Caller can extend by inlining additional entries
+// in the generated HTML BEFORE the runtime init call.
+const computeFns = window.computeFns || (window.computeFns = {});
+computeFns.license_summary = (data) => {
+  const inv = data.inventory?.device_candidates || [];
+  const lic = data.licenses?.license_candidates || [];
+  const exp = inv.filter(d => d.license_status === 'expired').length;
+  const need = Math.max(0, exp - lic.length);
+  return `${inv.length} 台設備中有 ${exp} 台 license 已過期；org 內 license pool 還有 ${lic.length} 張可分配。建議:採購 ${need} 張新 license。`;
+};
+</script>

@@ -1,0 +1,121 @@
+{
+  "title": "Off-boarding Compliance Audit · Main_Org",
+  "subtitle": "SOC2 / ISO27001 觀點 · 檢查 1+ 年未登入但仍持有 network 權限的帳號",
+  "live_data": {
+    "memberships": "live-data/memberships.json",
+    "inventory": "live-data/inventory.json",
+    "hierarchy": "live-data/hierarchy.json"
+  },
+  "compute_fns": "(() => { const cf = window.computeFns; const STALE_DAYS = 365; const daysSince = ms => ms ? Math.floor((Date.now()-ms)/86400000) : Infinity; const stale = data => (data.memberships?.org_member_candidates || []).filter(m => daysSince(m.last_login_time) > STALE_DAYS); const accessSum = users => users.reduce((s,u) => s + ((u.networks||[]).length), 0); cf.stale_summary = (data) => { const s = stale(data); const oldest = s.sort((a,b) => (a.last_login_time||0) - (b.last_login_time||0))[0]; if (!oldest) return '沒有發現 1+ 年未登入的帳號。'; const days = daysSince(oldest.last_login_time); const yr = (days/365).toFixed(1); return `${s.length} 個帳號 1+ 年未登入仍可存取系統；最久未登入：${oldest.user_name||oldest.email} (${yr} 年前，持有 ${(oldest.networks||[]).length} 個 network 權限)。`; }; cf.stale_count = (data) => stale(data).length; cf.stale_subtext = (data) => { const s = stale(data); const admins = s.filter(u => u.org_role === 'admin').length; return admins > 0 ? `含 ${admins} 個 admin` : '無 admin'; }; cf.highrisk_count = (data) => stale(data).filter(u => (u.networks||[]).length >= 5).length; cf.highrisk_subtext = (data) => { const hr = stale(data).filter(u => (u.networks||[]).length >= 5); const top = hr.sort((a,b) => (b.networks?.length||0) - (a.networks?.length||0))[0]; return top ? `${top.user_name||'?'} × ${top.networks.length} nets` : '—'; }; cf.risk_access_count = (data) => accessSum(stale(data)); cf.risk_access_subtext = (data) => { const total = (data.memberships?.org_member_candidates||[]).reduce((s,m) => s + (m.networks||[]).length, 0); return `占總授權 ${(accessSum(stale(data))/Math.max(1,total)*100).toFixed(0)}%`; }; cf.never_logged_in = (data) => (data.memberships?.org_member_candidates||[]).filter(m => !m.last_login_time).map(m => ({label: m.user_name || m.email, tooltip: m.email})); })();",
+  "sections": [
+    {
+      "widget": "alert",
+      "id": "stale-alert",
+      "severity": "warning",
+      "title": "離職風險警示 · Stale Account Audit",
+      "body_compute": "stale_summary"
+    },
+    {
+      "widget": "kpi_grid",
+      "id": "kpis",
+      "items": [
+        {
+          "label": "Total Members",
+          "value_path": "memberships.org_member_candidates.length",
+          "sub": "in Main_Org"
+        },
+        {
+          "label": "Stale (1y+ no login)",
+          "severity": "warning",
+          "value_compute": "stale_count",
+          "sub_compute": "stale_subtext",
+          "clickable": { "target": "stale-members" }
+        },
+        {
+          "label": "High-Risk Accounts",
+          "severity": "critical",
+          "value_compute": "highrisk_count",
+          "sub_compute": "highrisk_subtext",
+          "clickable": { "target": "stale-members" }
+        },
+        {
+          "label": "Network Grants at Risk",
+          "severity": "critical",
+          "value_compute": "risk_access_count",
+          "sub_compute": "risk_access_subtext"
+        }
+      ]
+    },
+    {
+      "widget": "table",
+      "id": "stale-members",
+      "title": "Stale Members · 應立即檢視",
+      "data_source": "memberships.org_member_candidates",
+      "row_id_field": "user_id",
+      "sort_by": { "field": "last_login_time", "dir": "asc" },
+      "meta_template": "${count} total members",
+      "filters": [
+        { "label": "Stale (1y+)", "filter": "stale" },
+        { "label": "Stale Admins", "filter": "org_role:admin" },
+        { "label": "All", "filter": "all" }
+      ],
+      "columns": [
+        { "label": "User", "field": "user_name" },
+        { "label": "Email", "field": "email", "render": "mono_ellipsis" },
+        { "label": "Org Role", "field": "org_role", "render": "role_pill" },
+        { "label": "Networks", "field": "networks", "render": "count", "align": "right" },
+        { "label": "Last Login", "field": "last_login_time", "render": "date" },
+        { "label": "Risk", "field": "last_login_time", "render": "risk_pill" }
+      ],
+      "expandable_rows": true,
+      "detail_fields": [
+        { "label": "User ID", "field": "user_id" },
+        { "label": "Email", "field": "email" },
+        { "label": "Status", "field": "user_status", "large": true },
+        { "label": "Last Login", "field": "last_login_time", "render": "datetime" },
+        { "label": "Network Access (應立即撤除？)", "field": "networks", "render": "network_list", "full_width": true, "large": true }
+      ]
+    },
+    {
+      "widget": "table",
+      "id": "all-members",
+      "title": "All Members · 完整成員列表",
+      "data_source": "memberships.org_member_candidates",
+      "row_id_field": "user_id",
+      "sort_by": { "field": "last_login_time", "dir": "asc" },
+      "meta_template": "${count} members",
+      "filters": [
+        { "label": "All", "filter": "all" },
+        { "label": "Admins", "filter": "org_role:admin" },
+        { "label": "Viewers", "filter": "org_role:viewer" }
+      ],
+      "columns": [
+        { "label": "User", "field": "user_name" },
+        { "label": "Email", "field": "email", "render": "mono_ellipsis" },
+        { "label": "Org Role", "field": "org_role", "render": "role_pill" },
+        { "label": "Networks", "field": "networks", "render": "count", "align": "right" },
+        { "label": "Last Login", "field": "last_login_time", "render": "date" }
+      ],
+      "expandable_rows": true,
+      "detail_fields": [
+        { "label": "User ID", "field": "user_id" },
+        { "label": "Email", "field": "email" },
+        { "label": "Status", "field": "user_status", "large": true },
+        { "label": "Last Login", "field": "last_login_time", "render": "datetime" },
+        { "label": "Network Access", "field": "networks", "render": "network_list", "full_width": true, "large": true }
+      ]
+    },
+    {
+      "widget": "chip_strip",
+      "id": "never-logged-in",
+      "title": "Never Logged In (0 次登入記錄)",
+      "compute": "never_logged_in",
+      "empty_text": "所有人都至少登入過一次"
+    }
+  ],
+  "footer": {
+    "ops_used": [
+      "get_org_memberships_overall"
+    ]
+  }
+}

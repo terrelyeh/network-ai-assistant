@@ -1,0 +1,202 @@
+<style>
+.w-topo-tree { font-size: 13px; margin-top: 4px; }
+.w-topo-node {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 10px; border-radius: 6px;
+  cursor: pointer; transition: background .12s ease; margin: 1px 0;
+}
+.w-topo-node:hover { background: var(--surface-2); }
+.w-topo-node .caret {
+  font-size: 9px; color: var(--text-3); width: 10px;
+  text-align: center; transition: transform .15s ease; line-height: 1;
+}
+.w-topo-node.open > .caret { transform: rotate(90deg); }
+.w-topo-node.leaf > .caret { visibility: hidden; }
+.w-topo-node .icon { font-size: 13px; width: 18px; text-align: center; }
+.w-topo-node .label { flex: 1; font-weight: 500; color: var(--text-1); }
+.w-topo-node .sub-label {
+  color: var(--text-3); font-size: 11px; font-family: var(--font-mono);
+}
+.w-topo-node .badge {
+  font-size: 10px; padding: 2px 7px; border-radius: 999px; font-weight: 600;
+}
+.w-topo-children {
+  margin-left: 14px; padding-left: 10px;
+  border-left: 1px dashed var(--border); display: none;
+}
+.w-topo-children.open { display: block; }
+.w-topo-node[data-type="org"] .label { font-weight: 700; font-size: 14px; }
+.w-topo-node[data-type="network"][data-empty="true"] { opacity: 0.55; }
+.w-topo-node[data-type="network"][data-empty="true"] .label::after {
+  content: ' (empty)'; color: var(--text-3); font-style: italic; font-size: 11px;
+}
+.w-topo-node[data-type="device"] { padding: 5px 10px; }
+.w-topo-node[data-type="device"] .label { font-weight: 500; font-size: 12px; }
+.w-topo-node[data-type="device"][data-license="expired"] { color: var(--critical); }
+.w-topo-blocked {
+  margin-left: 14px; padding: 8px 12px; border-left: 1px dashed var(--border);
+  color: var(--text-3); font-size: 11px;
+  background: linear-gradient(90deg, rgba(239,68,68,0.04), transparent);
+}
+.w-topo-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+  margin: 12px 0 16px;
+  padding: 12px 14px; background: var(--surface-2);
+  border-radius: 10px; border: 1px solid var(--border);
+}
+.w-topo-stat .lbl {
+  font-size: 10px; color: var(--text-3); text-transform: uppercase;
+  font-weight: 600; letter-spacing: 0.04em;
+}
+.w-topo-stat .val {
+  font-size: 22px; font-weight: 700; letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums; margin-top: 2px;
+}
+.w-topo-stat .sub { font-size: 11px; color: var(--text-2); margin-top: 1px; }
+</style>
+
+<script>
+Dashboard.register('topology_tree', ({ el, config, bus, ctx }) => {
+  const state = { expanded: new Set(), initialized: false };
+
+  el.classList.add('card');
+  el.innerHTML = `
+    <div class="card-hdr"><h2>${config.title||'Network Topology'}</h2><span class="meta" data-bind="meta">—</span></div>
+    <div class="w-topo-stats" data-role="stats"></div>
+    <div class="w-topo-tree" data-role="tree"></div>
+  `;
+  const meta = el.querySelector('[data-bind="meta"]');
+  const statsEl = el.querySelector('[data-role="stats"]');
+  const tree = el.querySelector('[data-role="tree"]');
+
+  function statusBadge(status, errorText) {
+    if (status === 'ok') return '';
+    if (status === 'forbidden') return `<span class="badge pill-crit" title="${errorText||''}">403 RBAC</span>`;
+    if (status === 'payment_required') return `<span class="badge pill-warn" title="${errorText||''}">402 BASIC</span>`;
+    if (status === 'not_found') return `<span class="badge pill-muted">404</span>`;
+    return `<span class="badge pill-muted">${status}</span>`;
+  }
+
+  tree.addEventListener('click', (e) => {
+    const node = e.target.closest('.w-topo-node');
+    if (!node) return;
+    if (node.dataset.type === 'org' || node.dataset.type === 'network') {
+      const key = node.dataset.key;
+      if (state.expanded.has(key)) state.expanded.delete(key);
+      else state.expanded.add(key);
+      rerender();
+    } else if (node.dataset.type === 'device') {
+      // Tell the device table to expand this row
+      bus.dispatch('table-expand-row', {
+        tableId: config.device_table_target || 'device-fleet',
+        rowId: node.dataset.deviceId
+      });
+    }
+  });
+
+  let lastData = null;
+  function rerender() { if (lastData) render(lastData); }
+
+  function render(data) {
+    lastData = data;
+    const topo = ctx.getByPath(data, config.data_source) || data.topology;
+    if (!topo) return;
+    const orgs = topo.orgs || [];
+
+    const accessibleOrgs = orgs.filter(o => o.hv_status === 'ok').length;
+    const totalNetworks = orgs.reduce((s,o) => s + (o.networks?.length || 0), 0);
+    const totalDevices = orgs.reduce((s,o) => s + (o.devices?.length || 0), 0);
+    const emptyNetworks = orgs.reduce((s,o) => {
+      const used = new Set((o.devices||[]).map(d => d.network_id));
+      return s + (o.networks||[]).filter(n => !used.has(n.network_id)).length;
+    }, 0);
+
+    meta.textContent = `${accessibleOrgs}/${orgs.length} orgs accessible · fetched ${(topo.fetched_at||'').slice(11,16)}`;
+    statsEl.innerHTML = `
+      <div class="w-topo-stat"><div class="lbl">Orgs</div><div class="val">${accessibleOrgs}<span style="font-size:14px;color:var(--text-3)">/${orgs.length}</span></div><div class="sub">${orgs.length-accessibleOrgs} blocked</div></div>
+      <div class="w-topo-stat"><div class="lbl">Networks</div><div class="val">${totalNetworks}</div><div class="sub">${emptyNetworks} empty</div></div>
+      <div class="w-topo-stat"><div class="lbl">Devices</div><div class="val">${totalDevices}</div><div class="sub">across visible orgs</div></div>
+    `;
+
+    // auto-expand richest org first time
+    if (!state.initialized) {
+      const richest = orgs.reduce((best, o) =>
+        (o.devices?.length || 0) > (best.devices?.length || 0) ? o : best, orgs[0] || {});
+      if (richest?.org_id) {
+        state.expanded.add(`org:${richest.org_id}`);
+        (richest.networks || []).forEach(n => {
+          const has = (richest.devices||[]).some(d => d.network_id === n.network_id);
+          if (has) state.expanded.add(`net:${n.network_id}`);
+        });
+      }
+      state.initialized = true;
+    }
+
+    tree.innerHTML = orgs.map(o => {
+      const orgKey = `org:${o.org_id}`;
+      const orgOpen = state.expanded.has(orgKey);
+      const blocked = o.hv_status !== 'ok';
+      const devsByNet = (o.devices||[]).reduce((m,d) => {
+        (m[d.network_id || '__'] = m[d.network_id || '__'] || []).push(d);
+        return m;
+      }, {});
+      const badge = statusBadge(o.hv_status, o.hv_error);
+      const subInfo = blocked
+        ? `<span class="sub-label">${o.hv_error}</span>`
+        : `<span class="sub-label">${(o.networks||[]).length} net · ${(o.devices||[]).length} dev</span>`;
+      let childrenHtml;
+      if (blocked) {
+        childrenHtml = `<div class="w-topo-blocked">無法讀取此 org 的階層資料（${o.hv_error}）</div>`;
+      } else {
+        const nets = o.networks || [];
+        childrenHtml = nets.length === 0
+          ? '<div class="w-topo-blocked">此 org 沒有 network</div>'
+          : nets.map(n => {
+              const netKey = `net:${n.network_id}`;
+              const netOpen = state.expanded.has(netKey);
+              const devs = devsByNet[n.network_id] || [];
+              const isEmpty = devs.length === 0;
+              const invBlocked = o.inv_status !== 'ok';
+              const netSub = invBlocked
+                ? `<span class="sub-label">device list 受限 (${o.inv_error})</span>`
+                : `<span class="sub-label">${devs.length} device${devs.length===1?'':'s'}</span>`;
+              let devsHtml;
+              if (invBlocked) devsHtml = `<div class="w-topo-blocked">${o.inv_error}</div>`;
+              else if (isEmpty) devsHtml = `<div class="w-topo-blocked">無 device</div>`;
+              else devsHtml = devs.map(d => `
+                <div class="w-topo-node leaf" data-type="device" data-license="${d.license_status||''}"
+                     data-device-id="${d.device_id||d.mac}"
+                     title="點擊跳到 Device Fleet 並展開">
+                  <span class="caret">▸</span>
+                  <span class="icon">${d.type==='switch'?'🔘':d.type==='gateway'?'🛡️':'📶'}</span>
+                  <span class="label">${d.name||'—'}</span>
+                  <span class="sub-label">${d.model||''} · ${d.mac||''}</span>
+                  <span class="badge ${d.license_status==='expired'?'pill-crit':d.license_status==='active'?'pill-ok':'pill-muted'}">${d.license_status||'?'}</span>
+                </div>`).join('');
+              return `
+                <div>
+                  <div class="w-topo-node ${netOpen?'open':''}" data-type="network"
+                       data-empty="${isEmpty}" data-key="${netKey}">
+                    <span class="caret">▸</span>
+                    <span class="icon">📡</span>
+                    <span class="label">${n.name||n.network_name||'—'}</span>
+                    ${netSub}
+                  </div>
+                  <div class="w-topo-children ${netOpen?'open':''}">${devsHtml}</div>
+                </div>`;
+            }).join('');
+      }
+      return `
+        <div>
+          <div class="w-topo-node ${orgOpen?'open':''}" data-type="org" data-key="${orgKey}">
+            <span class="caret">▸</span><span class="icon">🏢</span>
+            <span class="label">${o.org_name||'—'}</span>${subInfo}${badge}
+          </div>
+          <div class="w-topo-children ${orgOpen?'open':''}">${childrenHtml}</div>
+        </div>`;
+    }).join('');
+  }
+
+  return { render };
+});
+</script>
