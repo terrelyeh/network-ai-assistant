@@ -2,7 +2,7 @@
 
 > 推進 P0 troubleshoot scripts 補完，解鎖最戲劇的 booth demo 時刻
 
-## 4 份文件 · 使用順序
+## 5 份文件 · 使用順序
 
 | # | 文件 | 給誰 | 何時用 |
 |---|---|---|---|
@@ -10,6 +10,7 @@
 | 2 | [02-ask-sheet.md](02-ask-sheet.md) | RD 工程師 | 會議前 24h 寄出，作為 pre-read；會議中投影逐項過 |
 | 3 | [03-demo-storyboard.md](03-demo-storyboard.md) | RD 主管 | 會議前 24h 寄出；會議中只快速翻過給「為什麼」感 |
 | 4 | [04-history-api-proposal.md](04-history-api-proposal.md) | 下次會議 | **這次不要拿出來**，鋪梗就好 |
+| 5 | [05-persona-proposal.md](05-persona-proposal.md) | RD 工程師 + 主管 | < 1 小時 ask，可塞在 P0 sprint 結尾 5 分鐘，或併在任何 P0 PR |
 
 ## 會議前 checklist
 
