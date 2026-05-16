@@ -18,6 +18,8 @@
 
 **效果**：同一個問題、同一份 API 資料，回應從「3 台 AP offline」變成「廚房那台 AP 從 14:23 開始失聯，可能是斷電，要我查嗎？」— 直接拉開 wedge 跟其他 AI 工具的差距。
 
+> ✅ **2026-05-16 已實測通過** — 在 PMM 本機 fork 的 api-skills/ 上裝 plugin + 加 persona reference，Claude 真的會載入 persona、套用 voice、識別 dashboard 升級訊號、誠實承認 API 限制。**完整對話紀錄 + SKILL.md 措辭 3 版迭代教訓**見 [`persona-test-results.md`](../persona-test-results.md)。Deck 內所有 Before/After 範例現在都有實測背書，不只是假設。
+
 ---
 
 ## 1. 為什麼這個重要
@@ -200,6 +202,7 @@ Done. Device rebooted.
 
 | 質疑 | 你的回答 |
 |---|---|
+| **「真的會 work 嗎？聽起來太抽象」** | **「實測過了，看 [`persona-test-results.md`](../persona-test-results.md)。在你們 api-skills 本機 fork 跑了 3 個測試 prompt，包含『跨多 org + 時間維度』升級條件測試，Claude 真的會主動建議『要不要 RD 補 history API』。」** |
 | 「為什麼不直接寫進 system prompt？」 | 「Skill 是被 LLM 使用者載入的，我們控不到 system prompt。SKILL.md 是唯一可靠的注入點。」|
 | 「Persona 太硬會限制 Claude 判斷？」 | 「Persona 只規範**怎麼講** + **什麼時候用什麼工具**，不規範**內容**。Claude 該講什麼自己判斷。」|
 | 「356 行太長」 | 「Cached 之後成本可忽略。如果真要瘦身，§7 範例可以拿掉，剩 ~250 行。」|
