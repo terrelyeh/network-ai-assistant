@@ -769,6 +769,77 @@
   }
   .prim-skills-list-note a { color: var(--accent); }
 
+  /* Demo readiness — checklist + scripts */
+  .checklist {
+    display: flex; flex-direction: column; gap: 10px;
+    margin: 16px 0 24px;
+  }
+  .check-item {
+    display: flex; gap: 14px; align-items: flex-start;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    box-shadow: var(--shadow-sm);
+  }
+  .check-icon {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--success); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .check-icon.todo {
+    background: var(--surface-2); color: var(--text-3);
+    border: 1.5px solid var(--border-strong);
+    font-size: 16px;
+  }
+  .check-body {
+    font-size: 14.5px; color: var(--text-2); line-height: 1.65; flex: 1;
+  }
+  .check-body strong { color: var(--text); font-weight: 700; }
+  .check-body p { margin: 5px 0 0; }
+  .check-body code { background: rgba(15,23,42,0.06); padding: 2px 6px; border-radius: 4px; font-size: 0.92em; }
+
+  .script-split {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    margin: 18px 0 8px;
+  }
+  .script-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  .script-card-hdr {
+    background: var(--surface-2);
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .script-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700; font-size: 16px;
+    color: var(--accent);
+  }
+  .script-time {
+    font-size: 12px; color: var(--text-2);
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--surface);
+    padding: 3px 10px; border-radius: 999px;
+    border: 1px solid var(--border);
+    font-weight: 600;
+  }
+  .script-card-body {
+    padding: 16px 20px;
+  }
+  .script-card-body p {
+    margin: 0 0 10px; font-size: 14px; color: var(--text-2); line-height: 1.6;
+  }
+  .script-card-body p strong { color: var(--text); font-weight: 700; }
+  .script-card-body pre { margin: 10px 0 0; font-size: 12.5px; }
+
   /* Skill explorer (file tree) */
   .skill-explorer {
     background: var(--surface);
@@ -840,6 +911,7 @@
     .prim-h-row { grid-template-columns: 24px 1fr; }
     .prim-h-row > :nth-child(3), .prim-h-row > :nth-child(4) { grid-column: 2; padding-left: 0; }
     .prim-h-arrow { margin-left: 0; text-align: center; }
+    .script-split { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -857,6 +929,7 @@
     <a href="#gallery">範例 Gallery</a>
     <a href="#skill-internals">Skill 內部</a>
     <a href="#howto">How to use</a>
+    <a href="#demo-readiness">Demo Readiness</a>
     <a href="#flow">Demo flow</a>
     <a href="#limits">資料層限制</a>
     <a href="#status">Status</a>
@@ -878,6 +951,7 @@
     <a class="toc-item" href="#gallery" data-target="gallery"><span class="toc-num">03d</span> 範例 Gallery</a>
     <a class="toc-item" href="#skill-internals" data-target="skill-internals"><span class="toc-num">03e</span> Skill 內部</a>
     <a class="toc-item" href="#howto" data-target="howto"><span class="toc-num">04</span> 怎麼用</a>
+    <a class="toc-item" href="#demo-readiness" data-target="demo-readiness"><span class="toc-num">04b</span> Demo Readiness</a>
     <a class="toc-item" href="#flow" data-target="flow"><span class="toc-num">05</span> Demo Flow</a>
     <a class="toc-item" href="#limits" data-target="limits"><span class="toc-num">06</span> 資料層限制</a>
     <a class="toc-item" href="#status" data-target="status"><span class="toc-num">07</span> Status</a>
@@ -1661,6 +1735,139 @@ open http://localhost:58778/dashboard-builder/org-health.html</pre>
 
 <span class="comment"># 2. Dashboard 已開著的話，5 秒內自動 reflect 新數字</span>
 <span class="comment"># 不用重 compose、不用重 reload</span></pre>
+</section>
+
+<section id="demo-readiness">
+  <h2><span class="num-tag">04b</span>Demo Readiness · validated path 紀律</h2>
+  <p class="section-lede">
+    Live demo 沒有「我來試試看」這種選項——<strong>每個要在 booth 演出的情境都必須事先成為 validated path</strong>。沒驗證的不准上場。這是「wedge 故事即時組」的相反面：<span class="hl-accent">外觀即時、底層保底</span>。
+  </p>
+
+  <h3>Validated Path 的 3 個必要條件</h3>
+  <p>一個情境要被當作 validated path，必須三件事都完成：</p>
+  <div class="checklist">
+    <div class="check-item">
+      <div class="check-icon">✓</div>
+      <div class="check-body">
+        <strong>1. 有對應的 <code>spec.json</code> 存在於 <code>skill/examples/</code></strong>
+        <p>不能用 Claude「現場從零寫 spec」當主秀。Claude 可以微調既有 spec（改 title、改 KPI 標籤、加 1-2 個 widget），但骨幹必須是已存在的 JSON 檔。目前 5 個 validated：S2 / S3 / S4 / S5 / S7。</p>
+      </div>
+    </div>
+    <div class="check-item">
+      <div class="check-icon">✓</div>
+      <div class="check-body">
+        <strong>2. 已用 <code>compose.py</code> 成功跑過、產出可看的 HTML</strong>
+        <p>產出的 HTML 必須能在瀏覽器開、視覺正常、所有 widget 渲染正確、互動 work、auto-poll work。任何一項壞，這個情境不准上 booth。</p>
+      </div>
+    </div>
+    <div class="check-item">
+      <div class="check-icon">✓</div>
+      <div class="check-body">
+        <strong>3. 連到的每個 op 都在 RD 已 supported 範圍</strong>
+        <p>spec footer 的 <code>ops_used</code> 列出來的每個 op 必須能跑（在 <a href="docs/rd-priorities.md">rd-priorities.md</a> 的「已 supported」清單裡）。任何「規劃中」🔴 的 op 都不算。</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>兩個關鍵 script · 每個 validated path 都會跑</h3>
+  <p>整套 demo 流程靠這兩個 script 撐起來——一個撈雲端、一個產 HTML。</p>
+
+  <div class="script-split">
+    <div class="script-card">
+      <div class="script-card-hdr">
+        <span class="script-name">refresh-all.sh</span>
+        <span class="script-time">~14 秒</span>
+      </div>
+      <div class="script-card-body">
+        <p><strong>做什麼：</strong>呼叫 6 個 RD data skill，把雲端最新狀態存進 <code>live-data/*.json</code>。</p>
+        <p><strong>什麼時候跑：</strong>展會開始前 5 分鐘；或展中想 demo「資料剛剛變了」時。</p>
+<pre><span class="comment"># 展前準備</span>
+bash dashboard-builder/scripts/refresh-all.sh
+
+<span class="comment"># Output:</span>
+<span class="comment">#   live-data/orgs.json         (5 orgs)</span>
+<span class="comment">#   live-data/hierarchy.json    (10 networks)</span>
+<span class="comment">#   live-data/inventory.json    (10 devices)</span>
+<span class="comment">#   live-data/licenses.json</span>
+<span class="comment">#   live-data/memberships.json  (11 members, 5 stale)</span>
+<span class="comment">#   live-data/topology.json     (cross-org)</span></pre>
+      </div>
+    </div>
+
+    <div class="script-card">
+      <div class="script-card-hdr">
+        <span class="script-name">compose.py</span>
+        <span class="script-time">~200 ms</span>
+      </div>
+      <div class="script-card-body">
+        <p><strong>做什麼：</strong>吃一份 <code>spec.json</code> + 讀 widgets/theme/runtime，組成一份自包含 HTML。</p>
+        <p><strong>什麼時候跑：</strong>每次驗證情境時；展中如果要重 compose 用客製化 spec。</p>
+<pre><span class="comment"># 從既有 spec 生 dashboard</span>
+python dashboard-builder/skill/scripts/compose.py \
+  --spec dashboard-builder/skill/examples/org-health.spec.json \
+  --out /tmp/test.html
+
+<span class="comment"># 換 dark mode</span>
+... --theme dark</pre>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="margin-top: 28px;">新情境的 Validation Pipeline · 6 步</h3>
+  <p>有了新情境想法 → 走完這 6 步才能上 booth：</p>
+  <ol class="steps">
+    <li>
+      <div class="step-title">確認需要的 op 都能跑</div>
+      <div class="step-body">查 <a href="docs/rd-priorities.md">rd-priorities.md</a>，把這個情境會用到的 op 都列一遍。如果有任何一個在 P0 待完成或 troubleshoot skill 內 → 暫停，等 RD 補完才能繼續。</div>
+    </li>
+    <li>
+      <div class="step-title">寫 spec.json（複製近的範例改）</div>
+      <div class="step-body">不要從零寫——挑 <code>examples/</code> 裡最近的（角度、widget 組合接近的），複製、改 title / KPI compute_fns / data source / widget 選擇。</div>
+    </li>
+    <li>
+      <div class="step-title">跑 compose.py 產 HTML</div>
+      <div class="step-body">先用 <code>--out /tmp/test.html</code> 試水溫。視覺看起來對才搬到 <code>dashboard-builder/&lt;name&gt;.html</code>。</div>
+    </li>
+    <li>
+      <div class="step-title">驗證互動 + auto-poll + cross-widget event</div>
+      <div class="step-body">點 KPI 卡跳轉、展開 row、按 Refresh、5 秒 poll 自動更新、topology tree 點 device 跳 table——每一項都要 work。任何一個壞，回 step 2 修 spec。</div>
+    </li>
+    <li>
+      <div class="step-title">截圖加進 gallery</div>
+      <div class="step-body">用 playwright 或瀏覽器截全頁圖，存到 <code>assets/shots/</code>。在 <code>architecture.html</code> 的 <code>#gallery</code> 區段加新 card。</div>
+    </li>
+    <li>
+      <div class="step-title">Git commit + push</div>
+      <div class="step-body">這個情境正式成為 validated path，可以上 booth。同步更新 README + manifest（如果有用 booth log）。</div>
+    </li>
+  </ol>
+
+  <h3 style="margin-top: 28px;">展前 5 分鐘 Readiness Checklist</h3>
+  <p>展會當天每場 demo 之前跑：</p>
+  <div class="checklist">
+    <div class="check-item">
+      <div class="check-icon todo">☐</div>
+      <div class="check-body"><strong>refresh-all.sh 跑成功</strong>，6 個 JSON 都新鮮（mtime 在 5 分鐘以內）</div>
+    </div>
+    <div class="check-item">
+      <div class="check-icon todo">☐</div>
+      <div class="check-body"><strong>5 個 spec 各跑一次 compose.py</strong>，全部 exit 0 + 印出 file size</div>
+    </div>
+    <div class="check-item">
+      <div class="check-icon todo">☐</div>
+      <div class="check-body"><strong>每個產出的 HTML 在瀏覽器開一次</strong>，視覺 + 互動 + auto-poll 確認 work</div>
+    </div>
+    <div class="check-item">
+      <div class="check-icon todo">☐</div>
+      <div class="check-body"><strong>Vercel URL 開得開</strong>（demo 機當機時的 fallback）</div>
+    </div>
+    <div class="check-item">
+      <div class="check-icon todo">☐</div>
+      <div class="check-body"><strong>API_KEY 跟 MANAGE_SYSTEM_URL env 對</strong>（terminal 跑 <code>echo $API_KEY</code> 確認）</div>
+    </div>
+  </div>
+
+  <p style="margin-top: 24px;"><strong>任何一項沒過 → 那個情境不准上 booth，當天少帶</strong>。Demo 的鐵律：寧可少一個故事，不要在觀眾面前看著 error message。</p>
 </section>
 
 <section id="flow">
