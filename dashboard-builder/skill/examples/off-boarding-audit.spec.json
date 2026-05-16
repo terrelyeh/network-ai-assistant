@@ -117,5 +117,98 @@
     "ops_used": [
       "get_org_memberships_overall"
     ]
+  },
+
+  "locales": {
+    "en": {
+      "html_lang": "en",
+      "title": "Off-boarding Compliance Audit · Main_Org",
+      "subtitle": "SOC2 / ISO27001 lens · Find accounts that haven't logged in 1y+ but still hold network permissions",
+      "compute_fns": "(() => { const cf = window.computeFns; const SD = 365; const ds = ms => ms ? Math.floor((Date.now()-ms)/86400000) : Infinity; const stale = data => (data.memberships?.org_member_candidates || []).filter(m => ds(m.last_login_time) > SD); const acc = users => users.reduce((s,u) => s + ((u.networks||[]).length), 0); cf.stale_summary = (data) => { const s = stale(data); const oldest = s.sort((a,b) => (a.last_login_time||0) - (b.last_login_time||0))[0]; if (!oldest) return 'No accounts dormant for 1+ years found.'; const days = ds(oldest.last_login_time); const yr = (days/365).toFixed(1); return `${s.length} accounts dormant for 1+ years but still have system access. Oldest: ${oldest.user_name||oldest.email} (${yr}y ago, holds ${(oldest.networks||[]).length} network permissions).`; }; cf.stale_count = (data) => stale(data).length; cf.stale_subtext = (data) => { const s = stale(data); const admins = s.filter(u => u.org_role === 'admin').length; return admins > 0 ? `incl. ${admins} admins` : 'no admins'; }; cf.highrisk_count = (data) => stale(data).filter(u => (u.networks||[]).length >= 5).length; cf.highrisk_subtext = (data) => { const hr = stale(data).filter(u => (u.networks||[]).length >= 5); const top = hr.sort((a,b) => (b.networks?.length||0) - (a.networks?.length||0))[0]; return top ? `${top.user_name||'?'} × ${top.networks.length} nets` : '—'; }; cf.risk_access_count = (data) => acc(stale(data)); cf.risk_access_subtext = (data) => { const total = (data.memberships?.org_member_candidates||[]).reduce((s,m) => s + (m.networks||[]).length, 0); return `${(acc(stale(data))/Math.max(1,total)*100).toFixed(0)}% of total grants`; }; cf.never_logged_in = (data) => (data.memberships?.org_member_candidates||[]).filter(m => !m.last_login_time).map(m => ({label: m.user_name || m.email, tooltip: m.email})); })();",
+      "sections": [
+        { "id": "stale-alert", "title": "Off-boarding Risk Alert · Stale Account Audit" },
+        {
+          "id": "kpis",
+          "items": [
+            { "label": "Total Members" },
+            { "label": "Stale (1y+ no login)" },
+            { "label": "High-Risk Accounts" },
+            { "label": "Network Grants at Risk" }
+          ]
+        },
+        {
+          "id": "stale-members",
+          "title": "Stale Members · Review Immediately",
+          "meta_template": "${count} total members",
+          "filters": [
+            { "label": "Stale (1y+)" },
+            { "label": "Stale Admins" },
+            { "label": "All" }
+          ],
+          "detail_fields": [
+            { "label": "User ID" },
+            { "label": "Email" },
+            { "label": "Status" },
+            { "label": "Last Login" },
+            { "label": "Network Access (Revoke immediately?)" }
+          ]
+        },
+        {
+          "id": "all-members",
+          "title": "All Members · Complete Roster",
+          "meta_template": "${count} members"
+        },
+        {
+          "id": "never-logged-in",
+          "title": "Never Logged In (0 login records)",
+          "empty_text": "All members have logged in at least once"
+        }
+      ]
+    },
+    "ja": {
+      "html_lang": "ja",
+      "title": "退職権限監査 · Main_Org",
+      "subtitle": "SOC2 / ISO27001 観点 · 1 年以上ログインしていないがネットワーク権限を保持しているアカウントを抽出",
+      "compute_fns": "(() => { const cf = window.computeFns; const SD = 365; const ds = ms => ms ? Math.floor((Date.now()-ms)/86400000) : Infinity; const stale = data => (data.memberships?.org_member_candidates || []).filter(m => ds(m.last_login_time) > SD); const acc = users => users.reduce((s,u) => s + ((u.networks||[]).length), 0); cf.stale_summary = (data) => { const s = stale(data); const oldest = s.sort((a,b) => (a.last_login_time||0) - (b.last_login_time||0))[0]; if (!oldest) return '1 年以上未ログインのアカウントは見つかりませんでした。'; const days = ds(oldest.last_login_time); const yr = (days/365).toFixed(1); return `${s.length} 名が 1 年以上未ログインのままアクセス可能。最も古い：${oldest.user_name||oldest.email}（${yr} 年前、${(oldest.networks||[]).length} 個のネットワーク権限を保持）。`; }; cf.stale_count = (data) => stale(data).length; cf.stale_subtext = (data) => { const s = stale(data); const admins = s.filter(u => u.org_role === 'admin').length; return admins > 0 ? `admin ${admins} 名含む` : 'admin なし'; }; cf.highrisk_count = (data) => stale(data).filter(u => (u.networks||[]).length >= 5).length; cf.highrisk_subtext = (data) => { const hr = stale(data).filter(u => (u.networks||[]).length >= 5); const top = hr.sort((a,b) => (b.networks?.length||0) - (a.networks?.length||0))[0]; return top ? `${top.user_name||'?'} × ${top.networks.length} nets` : '—'; }; cf.risk_access_count = (data) => acc(stale(data)); cf.risk_access_subtext = (data) => { const total = (data.memberships?.org_member_candidates||[]).reduce((s,m) => s + (m.networks||[]).length, 0); return `全権限の ${(acc(stale(data))/Math.max(1,total)*100).toFixed(0)}%`; }; cf.never_logged_in = (data) => (data.memberships?.org_member_candidates||[]).filter(m => !m.last_login_time).map(m => ({label: m.user_name || m.email, tooltip: m.email})); })();",
+      "sections": [
+        { "id": "stale-alert", "title": "退職リスク警告 · 休眠アカウント監査" },
+        {
+          "id": "kpis",
+          "items": [
+            { "label": "総メンバー数" },
+            { "label": "休眠（1 年以上未ログイン）" },
+            { "label": "高リスクアカウント" },
+            { "label": "リスクのある権限" }
+          ]
+        },
+        {
+          "id": "stale-members",
+          "title": "休眠メンバー · 即座に確認すべき",
+          "meta_template": "${count} 名（総数）",
+          "filters": [
+            { "label": "休眠（1 年以上）" },
+            { "label": "休眠 Admin" },
+            { "label": "全て" }
+          ],
+          "detail_fields": [
+            { "label": "User ID" },
+            { "label": "Email" },
+            { "label": "ステータス" },
+            { "label": "最終ログイン" },
+            { "label": "ネットワーク権限（即座に削除すべき？）" }
+          ]
+        },
+        {
+          "id": "all-members",
+          "title": "全メンバー · 完全リスト",
+          "meta_template": "${count} 名"
+        },
+        {
+          "id": "never-logged-in",
+          "title": "未ログイン（ログイン履歴 0 件）",
+          "empty_text": "全員が少なくとも一度はログイン済み"
+        }
+      ]
+    }
   }
 }

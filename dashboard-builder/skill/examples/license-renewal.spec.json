@@ -104,5 +104,98 @@
       "get_inventory",
       "get_licenses"
     ]
+  },
+
+  "locales": {
+    "en": {
+      "html_lang": "en",
+      "title": "License Renewal Planning · Cross-Org",
+      "subtitle": "Plan renewal priority · detect overdue / expiring-soon / still-active",
+      "compute_fns": "(() => { const cf = window.computeFns; const flat = data => (data.topology?.orgs || []).flatMap(o => (o.devices || []).map(d => ({...d, org_name: o.org_name}))); const isExp = d => d.license_status === 'expired' || (d.expired_date && d.expired_date < Date.now()); const dfn = ms => ms ? Math.round((ms - Date.now()) / 86400000) : null; cf.renewal_summary = (data) => { const all = flat(data); const exp = all.filter(isExp); const oldest = exp.sort((a,b) => (a.expired_date||0) - (b.expired_date||0))[0]; if (!oldest) return 'All licenses are within validity period.'; const days = Math.abs(dfn(oldest.expired_date)); return `${exp.length} of ${all.length} device licenses are expired. Most overdue: ${oldest.name} (${days} days past expiry). Recommend purchasing ${exp.length} renewal licenses as priority.`; }; cf.lic_total = (data) => flat(data).length; cf.lic_overdue = (data) => flat(data).filter(isExp).length; cf.lic_overdue_subtext = (data) => { const all = flat(data); const exp = all.filter(isExp).length; return `${(exp/Math.max(1,all.length)*100).toFixed(0)}% of fleet`; }; cf.lic_expiring_soon = (data) => flat(data).filter(d => { const dd = dfn(d.expired_date); return dd !== null && dd >= 0 && dd <= 90; }).length; cf.lic_active = (data) => flat(data).filter(d => !isExp(d) && d.license_status === 'active').length; cf.lic_active_subtext = (data) => { const acts = flat(data).filter(d => !isExp(d)); if (acts.length === 0) return 'none'; const next = acts.sort((a,b) => (a.expired_date||0) - (b.expired_date||0))[0]; const dd = dfn(next.expired_date); return `next expires in ${dd}d`; }; cf.licenses_for_timeline = (data) => flat(data).map(d => ({label: d.name, date_ms: d.expired_date, severity: null, sub: d.org_name})); cf.overdue_by_org_bars = (data) => { const all = flat(data); const by = {}; all.filter(isExp).forEach(d => { by[d.org_name] = (by[d.org_name] || 0) + 1; }); return Object.entries(by).map(([org, count]) => ({label: org, value: count, color: 'crit'})); }; cf.fleet_total = (data) => flat(data).length; })();",
+      "sections": [
+        { "id": "renewal-alert", "title": "License Renewal Urgency" },
+        {
+          "id": "kpis",
+          "items": [
+            { "label": "Total Licenses", "sub": "across visible orgs" },
+            { "label": "Overdue" },
+            { "label": "Expiring < 90d", "sub": "renewal window" },
+            { "label": "Active" }
+          ]
+        },
+        {
+          "id": "expiry-timeline",
+          "title": "License Expiry Timeline",
+          "critical_label": "Overdue (action required)",
+          "warning_label": "Expiring < 90d (plan renewal)",
+          "success_label": "Active (safe)"
+        },
+        { "id": "overdue-by-org", "title": "Overdue by Org", "meta": "expired licenses by org" },
+        {
+          "id": "license-table",
+          "title": "License Renewal Plan · Complete Device List",
+          "meta_template": "${count} devices in Main_Org",
+          "filters": [
+            { "label": "All" },
+            { "label": "Expired" },
+            { "label": "AP" }
+          ],
+          "detail_fields": [
+            { "label": "Device ID" },
+            { "label": "MAC" },
+            { "label": "Serial" },
+            { "label": "Registered" },
+            { "label": "License Expires" },
+            { "label": "Registered By" },
+            { "label": "Current Network" }
+          ]
+        }
+      ]
+    },
+    "ja": {
+      "html_lang": "ja",
+      "title": "ライセンス更新計画 · 全 Org",
+      "subtitle": "更新優先順位の計画 · 期限切れ / 期限間近 / 有効を検出",
+      "compute_fns": "(() => { const cf = window.computeFns; const flat = data => (data.topology?.orgs || []).flatMap(o => (o.devices || []).map(d => ({...d, org_name: o.org_name}))); const isExp = d => d.license_status === 'expired' || (d.expired_date && d.expired_date < Date.now()); const dfn = ms => ms ? Math.round((ms - Date.now()) / 86400000) : null; cf.renewal_summary = (data) => { const all = flat(data); const exp = all.filter(isExp); const oldest = exp.sort((a,b) => (a.expired_date||0) - (b.expired_date||0))[0]; if (!oldest) return '全ライセンスが有効期限内です。'; const days = Math.abs(dfn(oldest.expired_date)); return `デバイス ${all.length} 台のうち ${exp.length} 台のライセンスが期限切れ。最も古い：${oldest.name}（${days} 日前に期限切れ）。優先的に ${exp.length} 件の更新ライセンスの購入を推奨。`; }; cf.lic_total = (data) => flat(data).length; cf.lic_overdue = (data) => flat(data).filter(isExp).length; cf.lic_overdue_subtext = (data) => { const all = flat(data); const exp = all.filter(isExp).length; return `フリート全体の ${(exp/Math.max(1,all.length)*100).toFixed(0)}%`; }; cf.lic_expiring_soon = (data) => flat(data).filter(d => { const dd = dfn(d.expired_date); return dd !== null && dd >= 0 && dd <= 90; }).length; cf.lic_active = (data) => flat(data).filter(d => !isExp(d) && d.license_status === 'active').length; cf.lic_active_subtext = (data) => { const acts = flat(data).filter(d => !isExp(d)); if (acts.length === 0) return 'なし'; const next = acts.sort((a,b) => (a.expired_date||0) - (b.expired_date||0))[0]; const dd = dfn(next.expired_date); return `次の期限まで ${dd} 日`; }; cf.licenses_for_timeline = (data) => flat(data).map(d => ({label: d.name, date_ms: d.expired_date, severity: null, sub: d.org_name})); cf.overdue_by_org_bars = (data) => { const all = flat(data); const by = {}; all.filter(isExp).forEach(d => { by[d.org_name] = (by[d.org_name] || 0) + 1; }); return Object.entries(by).map(([org, count]) => ({label: org, value: count, color: 'crit'})); }; cf.fleet_total = (data) => flat(data).length; })();",
+      "sections": [
+        { "id": "renewal-alert", "title": "ライセンス更新の緊急度" },
+        {
+          "id": "kpis",
+          "items": [
+            { "label": "総ライセンス数", "sub": "可視 Org 範囲" },
+            { "label": "期限切れ" },
+            { "label": "90 日以内に失効", "sub": "更新ウィンドウ" },
+            { "label": "有効" }
+          ]
+        },
+        {
+          "id": "expiry-timeline",
+          "title": "ライセンス期限タイムライン",
+          "critical_label": "期限切れ（要対応）",
+          "warning_label": "90 日以内に失効（更新検討）",
+          "success_label": "有効（安全）"
+        },
+        { "id": "overdue-by-org", "title": "Org 別の期限切れ", "meta": "Org 別の期限切れライセンス" },
+        {
+          "id": "license-table",
+          "title": "ライセンス更新プラン · デバイス全リスト",
+          "meta_template": "Main_Org の ${count} デバイス",
+          "filters": [
+            { "label": "全て" },
+            { "label": "期限切れ" },
+            { "label": "AP" }
+          ],
+          "detail_fields": [
+            { "label": "Device ID" },
+            { "label": "MAC" },
+            { "label": "シリアル" },
+            { "label": "登録日" },
+            { "label": "ライセンス期限" },
+            { "label": "登録者" },
+            { "label": "現在のネットワーク" }
+          ]
+        }
+      ]
+    }
   }
 }

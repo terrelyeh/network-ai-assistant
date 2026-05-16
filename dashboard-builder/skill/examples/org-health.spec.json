@@ -146,5 +146,36 @@
       "get_licenses",
       "get_org_memberships_overall"
     ]
+  },
+
+  "locales": {
+    "en": {
+      "html_lang": "en",
+      "title": "Main_Org · Health Overview",
+      "subtitle": "EnGenius Cloud Staging · org_id: 5e410f44...",
+      "compute_fns": "(() => { const cf = window.computeFns; const SD = 365; const ds = ms => ms ? Math.floor((Date.now()-ms)/86400000) : Infinity; cf.license_summary = (data) => { const inv = data.inventory?.device_candidates || []; const lic = data.licenses?.license_candidates || []; const exp = inv.filter(d => d.license_status === 'expired').length; const need = Math.max(0, exp - lic.length); return `${exp} of ${inv.length} devices have expired licenses; ${lic.length} licenses remain in the org pool. Recommend purchasing ${need} new licenses.`; }; cf.expired_subtext = (data) => { const inv = data.inventory?.device_candidates || []; const exp = inv.filter(d => d.license_status === 'expired').length; if (inv.length === exp && exp > 0) return 'All expired'; return `${exp}/${inv.length} expired`; }; cf.empty_networks_subtext = (data) => { const inv = data.inventory?.device_candidates || []; const hv = data.hierarchy?.network_candidates || []; const ids = new Set(inv.map(d => d.network_id)); return `${hv.length - ids.size} empty networks`; }; cf.stale_members_subtext = (data) => { const m = data.memberships?.org_member_candidates || []; return `${m.filter(x => ds(x.last_login_time) > SD).length} users dormant 1y+`; }; })();",
+      "sections": [
+        { "id": "license-crit", "title": "License Expiry Alert" },
+        { "id": "device-fleet", "title": "Device Fleet", "meta_template": "${count} devices" },
+        { "id": "composition", "title": "Composition", "meta": "type · license" },
+        { "id": "empty-nets", "title": "Empty Networks", "empty_text": "All networks have devices" },
+        { "id": "team-access", "title": "Team Access · Sorted by Last Login (oldest first)", "meta_template": "${count} members" },
+        { "id": "topology", "title": "Network Topology · All Orgs" }
+      ]
+    },
+    "ja": {
+      "html_lang": "ja",
+      "title": "Main_Org · ヘルス概要",
+      "subtitle": "EnGenius Cloud ステージング · org_id: 5e410f44...",
+      "compute_fns": "(() => { const cf = window.computeFns; const SD = 365; const ds = ms => ms ? Math.floor((Date.now()-ms)/86400000) : Infinity; cf.license_summary = (data) => { const inv = data.inventory?.device_candidates || []; const lic = data.licenses?.license_candidates || []; const exp = inv.filter(d => d.license_status === 'expired').length; const need = Math.max(0, exp - lic.length); return `デバイス ${inv.length} 台のうち ${exp} 台のライセンスが期限切れ。ライセンスプールには ${lic.length} 枚残っています。新規 ${need} ライセンスの購入を推奨。`; }; cf.expired_subtext = (data) => { const inv = data.inventory?.device_candidates || []; const exp = inv.filter(d => d.license_status === 'expired').length; if (inv.length === exp && exp > 0) return '全て期限切れ'; return `${exp}/${inv.length} 期限切れ`; }; cf.empty_networks_subtext = (data) => { const inv = data.inventory?.device_candidates || []; const hv = data.hierarchy?.network_candidates || []; const ids = new Set(inv.map(d => d.network_id)); return `${hv.length - ids.size} 個の空ネットワーク`; }; cf.stale_members_subtext = (data) => { const m = data.memberships?.org_member_candidates || []; return `${m.filter(x => ds(x.last_login_time) > SD).length} 名 1 年以上未ログイン`; }; })();",
+      "sections": [
+        { "id": "license-crit", "title": "ライセンス期限切れ警告" },
+        { "id": "device-fleet", "title": "デバイス一覧", "meta_template": "${count} デバイス" },
+        { "id": "composition", "title": "構成", "meta": "種類 · ライセンス" },
+        { "id": "empty-nets", "title": "空のネットワーク", "empty_text": "全ネットワークにデバイス配置あり" },
+        { "id": "team-access", "title": "チームアクセス · 最終ログイン順（古い順）", "meta_template": "${count} メンバー" },
+        { "id": "topology", "title": "ネットワークトポロジー · 全 Org" }
+      ]
+    }
   }
 }

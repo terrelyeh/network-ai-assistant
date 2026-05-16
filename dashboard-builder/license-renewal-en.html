@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>License Renewal Planning · Cross-Org</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* === theme/tokens.css === */
+:root {
+  /* Surfaces & background — warmer cream to align with marketing site */
+  --bg: #fbf8f1;
+  --bg-gradient: radial-gradient(at 0% 0%, #f3eee2 0%, #fbf8f1 50%);
+  --surface: #ffffff;
+  --surface-2: #fbf9f3;
+
+  /* Borders */
+  --border: rgba(60, 50, 35, 0.10);
+  --border-strong: rgba(60, 50, 35, 0.20);
+
+  /* Text */
+  --text-1: #1a2332;
+  --text-2: #4a5568;
+  --text-3: #8b95a4;
+
+  /* Brand — accent orange becomes primary interaction color (EG-aligned) */
+  --brand: #ff6b35;
+  --brand-2: #c2410c;
+
+  /* Severity */
+  --critical: #b91c1c;
+  --critical-bg: #fef2f2;
+  --warning: #b45309;
+  --warning-bg: #fffbeb;
+  --success: #047857;
+  --success-bg: #ecfdf5;
+  --info: #1d4ed8;
+  --info-bg: #eff6ff;
+
+  /* Effects — slightly more pronounced shadow + tighter radius */
+  --shadow-sm: 0 1px 2px rgba(60,50,35,.05), 0 0 0 1px rgba(60,50,35,.05);
+  --shadow-md: 0 6px 18px rgba(60,50,35,.08), 0 2px 4px rgba(60,50,35,.04);
+  --radius: 12px;
+  --radius-sm: 8px;
+
+  /* Typography */
+  --font-sans: 'Inter', 'Noto Sans TC', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+/* === theme/base.css === */
+/* Base reset + shell layout */
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  background-image: var(--bg-gradient);
+  color: var(--text-1);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+.num { font-variant-numeric: tabular-nums; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+/* Sticky header */
+.db-hdr {
+  position: sticky; top: 0; z-index: 10;
+  background: rgba(247,247,245,0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 18px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.db-hdr-left h1 {
+  margin: 0; font-size: 18px; font-weight: 700; letter-spacing: -0.01em;
+}
+.db-hdr-left .crumb {
+  font-size: 12px; color: var(--text-3); margin-top: 2px; font-weight: 500;
+}
+.db-hdr-right { display: flex; align-items: center; gap: 16px; }
+.live-dot {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 12px; color: var(--text-2); font-weight: 500;
+}
+.live-dot::before {
+  content: ''; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--success); box-shadow: 0 0 0 4px var(--success-bg);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.updated { font-size: 12px; color: var(--text-3); font-family: var(--font-mono); }
+
+/* Main wrap */
+.db-wrap { max-width: 1320px; margin: 0 auto; padding: 28px 32px 80px; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--surface); border: 1px solid var(--border-strong);
+  color: var(--text-1); padding: 6px 12px; border-radius: var(--radius-sm);
+  font-size: 12px; font-weight: 600; cursor: pointer;
+  transition: all .15s ease; font-family: inherit;
+}
+.btn:hover { background: var(--surface-2); border-color: var(--brand); color: var(--brand); }
+.btn:active { transform: scale(0.97); }
+.btn.spinning .ic { animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.ic { display: inline-block; line-height: 1; }
+
+/* Card surface (shared) */
+.card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 20px 22px; box-shadow: var(--shadow-sm);
+}
+.card-hdr {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 12px; margin-bottom: 14px;
+}
+.card-hdr h2 {
+  margin: 0; font-size: 14px; font-weight: 700;
+  letter-spacing: -0.005em; white-space: nowrap;
+}
+.card-hdr .meta {
+  font-size: 11px; color: var(--text-3); font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.04em; text-align: right;
+}
+
+/* Pills (severity) */
+.pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 600;
+  padding: 3px 8px; border-radius: 999px;
+  line-height: 1; letter-spacing: 0.02em;
+}
+.pill-crit { background: var(--critical-bg); color: var(--critical); }
+.pill-warn { background: var(--warning-bg); color: var(--warning); }
+.pill-ok { background: var(--success-bg); color: var(--success); }
+.pill-info { background: var(--info-bg); color: var(--info); }
+.pill-muted { background: rgba(15,23,42,0.05); color: var(--text-2); }
+
+/* Chip filters */
+.chips {
+  display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap;
+}
+.chip {
+  font-size: 11px; font-weight: 600; padding: 5px 11px;
+  border-radius: 999px; cursor: pointer;
+  background: var(--surface-2); border: 1px solid var(--border);
+  color: var(--text-2); transition: all .15s ease;
+  font-family: inherit; letter-spacing: 0.02em;
+}
+.chip:hover { border-color: var(--brand); color: var(--brand); }
+.chip.active { background: var(--brand); color: white; border-color: var(--brand); }
+.chip .count { font-variant-numeric: tabular-nums; margin-left: 4px; opacity: 0.7; font-size: 10px; }
+
+/* Flash highlight (for cross-widget navigation) */
+.flash {
+  animation: flash-glow 1.2s ease-out 2;
+  --flash-color: var(--brand);
+}
+@keyframes flash-glow {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--brand) 40%, transparent); }
+  50% { box-shadow: 0 0 0 8px color-mix(in srgb, var(--brand) 10%, transparent); }
+  100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--brand) 0%, transparent); }
+}
+
+/* Empty state */
+.empty-state { text-align: center; padding: 36px 16px; color: var(--text-3); font-size: 13px; }
+
+/* Footer */
+.db-footnote {
+  margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border);
+  font-size: 11px; color: var(--text-3);
+  display: flex; justify-content: space-between; gap: 16px;
+}
+.db-footnote .skills { font-family: var(--font-mono); }
+
+
+/* === widget alert === */
+
+.w-alert {
+  border-radius: 12px; padding: 14px 16px; margin-bottom: 20px;
+  border: 1px solid; display: flex; align-items: flex-start; gap: 12px;
+}
+.w-alert.severity-critical { background: var(--critical-bg); border-color: rgba(185,28,28,0.25); color: var(--critical); }
+.w-alert.severity-warning { background: var(--warning-bg); border-color: rgba(180,83,9,0.25); color: var(--warning); }
+.w-alert.severity-info { background: var(--info-bg); border-color: rgba(29,78,216,0.25); color: var(--info); }
+.w-alert.severity-success { background: var(--success-bg); border-color: rgba(4,120,87,0.25); color: var(--success); }
+.w-alert-icon {
+  width: 22px; height: 22px; flex-shrink: 0; border-radius: 50%;
+  font-weight: 700; display: flex; align-items: center; justify-content: center;
+  font-size: 13px; margin-top: 1px; color: #fff;
+}
+.w-alert.severity-critical .w-alert-icon { background: var(--critical); }
+.w-alert.severity-warning .w-alert-icon { background: var(--warning); }
+.w-alert.severity-info .w-alert-icon { background: var(--info); }
+.w-alert.severity-success .w-alert-icon { background: var(--success); }
+.w-alert-body { flex: 1; }
+.w-alert-body strong { font-weight: 700; }
+.w-alert-body p { margin: 4px 0 0; font-size: 13px; color: var(--text-2); }
+
+/* === widget kpi_grid === */
+
+.w-kpi-grid {
+  display: grid; grid-template-columns: repeat(var(--cols, 4), 1fr); gap: 16px;
+  margin-bottom: 24px;
+}
+.w-kpi {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 18px 20px; box-shadow: var(--shadow-sm);
+  position: relative; overflow: hidden;
+}
+.w-kpi .lbl {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  color: var(--text-3); letter-spacing: 0.05em;
+}
+.w-kpi .val {
+  font-size: 36px; font-weight: 700; margin: 4px 0 0;
+  letter-spacing: -0.02em; line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.w-kpi .sub { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+.w-kpi.severity-critical { border-color: rgba(185,28,28,0.2); background: linear-gradient(180deg, var(--critical-bg) 0%, var(--surface) 30%); }
+.w-kpi.severity-critical .val { color: var(--critical); }
+.w-kpi.severity-warning { border-color: rgba(180,83,9,0.2); }
+.w-kpi.severity-warning .val { color: var(--warning); }
+.w-kpi.clickable { cursor: pointer; transition: transform .15s ease, box-shadow .15s ease; }
+.w-kpi.clickable:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.w-kpi.clickable::after {
+  content: '↗'; position: absolute; top: 12px; right: 14px;
+  color: var(--text-3); font-size: 14px; opacity: 0;
+  transition: opacity .15s ease;
+}
+.w-kpi.clickable:hover::after { opacity: 1; }
+
+/* === widget timeline === */
+
+.w-tl-wrap { padding: 6px 0 0; }
+.w-tl {
+  position: relative;
+  height: 130px;
+  margin: 18px 0 8px;
+}
+.w-tl-track {
+  position: absolute; top: 56px; left: 4px; right: 4px;
+  height: 2px; background: var(--border-strong); border-radius: 2px;
+}
+.w-tl-today {
+  position: absolute; top: 12px; bottom: 12px;
+  width: 2px; background: var(--brand);
+  border-radius: 2px;
+}
+.w-tl-today::before {
+  content: 'TODAY'; position: absolute; top: -6px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 9px; font-weight: 700; letter-spacing: 0.08em;
+  color: var(--brand); background: var(--surface);
+  padding: 0 4px;
+}
+.w-tl-tick {
+  position: absolute; top: 64px; bottom: 12px;
+  width: 1px; background: var(--border);
+}
+.w-tl-tick-label {
+  position: absolute; top: 78px; transform: translateX(-50%);
+  font-size: 10px; color: var(--text-3); font-family: var(--font-mono);
+  font-weight: 500; white-space: nowrap;
+}
+.w-tl-dot {
+  position: absolute; top: 50px;
+  width: 14px; height: 14px; border-radius: 50%;
+  transform: translateX(-50%);
+  cursor: pointer; transition: transform .15s ease, box-shadow .15s ease;
+  border: 2px solid var(--surface);
+  box-shadow: 0 1px 3px rgba(15,23,42,0.2);
+}
+.w-tl-dot:hover {
+  transform: translateX(-50%) scale(1.4);
+  z-index: 3;
+}
+.w-tl-dot.sev-critical { background: var(--critical); }
+.w-tl-dot.sev-warning { background: var(--warning); }
+.w-tl-dot.sev-success { background: var(--success); }
+.w-tl-dot.sev-info { background: var(--info); }
+.w-tl-dot-label {
+  position: absolute; top: 28px;
+  transform: translateX(-50%);
+  font-size: 10px; color: var(--text-2); font-weight: 600;
+  white-space: nowrap; pointer-events: none;
+}
+.w-tl-tooltip {
+  position: absolute; bottom: 100%; left: 50%;
+  transform: translateX(-50%) translateY(-6px);
+  background: var(--text); color: white;
+  padding: 6px 10px; border-radius: 6px;
+  font-size: 11px; white-space: nowrap;
+  pointer-events: none; opacity: 0;
+  transition: opacity .15s ease;
+  z-index: 10;
+}
+.w-tl-dot:hover .w-tl-tooltip { opacity: 1; }
+.w-tl-tooltip .sub {
+  display: block; font-family: var(--font-mono); font-size: 10px;
+  opacity: 0.7; margin-top: 1px;
+}
+.w-tl-legend {
+  display: flex; gap: 16px; padding-top: 12px;
+  border-top: 1px solid var(--border); margin-top: 6px;
+  font-size: 12px;
+}
+.w-tl-legend .item { display: flex; align-items: center; gap: 6px; color: var(--text-2); }
+.w-tl-legend .item .swatch {
+  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+}
+.w-tl-legend .item .swatch.sev-critical { background: var(--critical); }
+.w-tl-legend .item .swatch.sev-warning { background: var(--warning); }
+.w-tl-legend .item .swatch.sev-success { background: var(--success); }
+.w-tl-legend .item .swatch.sev-info { background: var(--info); }
+.w-tl-legend .item .num { font-weight: 700; color: var(--text); }
+
+/* === widget bar_list === */
+
+.w-barlist { font-size: 13px; }
+.w-barlist .bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.w-barlist .bar-label { width: 110px; color: var(--text-2); font-weight: 500; }
+.w-barlist .bar-track { flex: 1; height: 8px; background: rgba(15,23,42,0.05); border-radius: 4px; overflow: hidden; }
+.w-barlist .bar-fill { height: 100%; border-radius: 4px; background: var(--brand); transition: width 0.6s ease; }
+.w-barlist .bar-fill.crit { background: var(--critical); }
+.w-barlist .bar-fill.warn { background: var(--warning); }
+.w-barlist .bar-fill.ok { background: var(--success); }
+.w-barlist .bar-val { width: 32px; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; font-size: 13px; }
+.w-barlist .group { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+
+/* === widget table === */
+
+.w-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.w-table th {
+  text-align: left; font-weight: 600; color: var(--text-3);
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 8px 10px 10px; border-bottom: 1px solid var(--border);
+}
+.w-table td {
+  padding: 11px 10px; border-bottom: 1px solid var(--border); vertical-align: middle;
+}
+.w-table tr:last-child td { border-bottom: 0; }
+.w-table tbody tr:hover td { background: var(--surface-2); }
+.w-table td.num, .w-table th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.w-table tr.expandable { cursor: pointer; }
+.w-table tr.expandable td:first-child::before {
+  content: '▸'; display: inline-block; margin-right: 6px;
+  color: var(--text-3); font-size: 9px; transition: transform .15s ease;
+}
+.w-table tr.expandable.open td:first-child::before { transform: rotate(90deg); }
+.w-table tr.detail { display: none; background: var(--surface-2); }
+.w-table tr.detail.open { display: table-row; }
+.w-table tr.detail td { padding: 14px 18px; border-bottom: 1px solid var(--border); }
+.w-table .detail-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px 24px;
+}
+.w-table .detail-item .k {
+  font-size: 10px; color: var(--text-3); text-transform: uppercase;
+  letter-spacing: 0.05em; margin-bottom: 2px; font-weight: 600;
+}
+.w-table .detail-item .v {
+  font-size: 13px; color: var(--text-1); font-family: var(--font-mono); word-break: break-all;
+}
+.w-table .detail-item .v.large { font-family: var(--font-sans); font-weight: 500; }
+.w-table .ell { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 220px; }
+.w-table .type-chip {
+  display: inline-flex; gap: 6px; align-items: center;
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  color: var(--text-2); letter-spacing: 0.04em;
+}
+.w-table .type-chip .dot { width: 8px; height: 8px; border-radius: 2px; }
+.w-table .type-ap .dot { background: var(--info); }
+.w-table .type-switch .dot { background: var(--warning); }
+.w-table .type-gateway .dot { background: var(--success); }
+
+</style>
+</head>
+<body>
+
+<header class="db-hdr">
+  <div class="db-hdr-left">
+    <h1>License Renewal Planning · Cross-Org</h1>
+    <div class="crumb">Plan renewal priority · detect overdue / expiring-soon / still-active</div>
+  </div>
+  <div class="db-hdr-right">
+    <button class="btn" id="db-refresh" title="重新抓取所有資料"><span class="ic">↻</span> Refresh</button>
+    <div class="live-dot">Live</div>
+    <div class="updated" id="db-updated">—</div>
+  </div>
+</header>
+
+<main class="db-wrap">
+<div data-widget-id="renewal-alert" data-widget="alert" style="margin-bottom: 20px;"></div>
+<div data-widget-id="kpis" data-widget="kpi_grid" style="margin-bottom: 20px;"></div>
+<div data-widget-id="expiry-timeline" data-widget="timeline" style="margin-bottom: 20px;"></div>
+<div data-widget-id="overdue-by-org" data-widget="bar_list" style="margin-bottom: 20px;"></div>
+<div data-widget-id="license-table" data-widget="table" style="margin-bottom: 20px;"></div>
+
+  <div class="db-footnote">
+    <div>Generated by dashboard-builder · auto-refresh every 5s</div>
+    <div class="skills">get_user_orgs + get_hierarchy_views + get_inventory + get_licenses</div>
+  </div>
+
+</main>
+
+<template id="tpl-alert">
+  <div class="w-alert">
+    <div class="w-alert-icon"><span>!</span></div>
+    <div class="w-alert-body">
+      <strong data-bind="title"></strong>
+      <p data-bind="body"></p>
+    </div>
+  </div>
+</template>
+
+
+<script>
+// Dashboard runtime: polls live-data, dispatches to widgets, exposes event bus.
+// Widgets self-register via Dashboard.register('<name>', {init, render}).
+//
+// Each widget receives in init({el, config, bus, state}) and render(data, ctx).
+// `data` is a map of alias → JSON. `ctx` exposes helpers (flash, scrollTo, etc).
+
+window.Dashboard = (() => {
+  const widgets = new Map(); // name → factory
+  const mounted = [];         // [{name, el, config, state, instance}]
+  const bus = new EventTarget();
+  let liveData = {};          // alias → relative path
+  let dataSnapshot = {};      // alias → parsed JSON
+  let pollHandle = null;
+
+  function register(name, factory) {
+    widgets.set(name, factory);
+  }
+
+  function dispatch(type, detail) {
+    bus.dispatchEvent(new CustomEvent(type, { detail }));
+  }
+
+  function on(type, handler) {
+    bus.addEventListener(type, handler);
+  }
+
+  // Helpers for widgets
+  const ctx = {
+    flash(el) {
+      if (!el) return;
+      el.classList.remove('flash');
+      void el.offsetWidth;
+      el.classList.add('flash');
+    },
+    scrollToWidget(id, opts = {}) {
+      const target = document.querySelector(`[data-widget-id="${id}"]`);
+      if (target) {
+        target.scrollIntoView({behavior:'smooth', block: opts.block || 'start'});
+        setTimeout(() => ctx.flash(target), 300);
+      }
+    },
+    fmtDate(ms) {
+      if (!ms) return 'never';
+      return new Date(ms).toISOString().split('T')[0];
+    },
+    fmtDateTime(ms) {
+      if (!ms) return 'never';
+      return new Date(ms).toISOString().replace('T',' ').slice(0,16);
+    },
+    daysSince(ms) {
+      if (!ms) return Infinity;
+      return Math.floor((Date.now() - ms) / 86400000);
+    },
+    getByPath(obj, path) {
+      if (!path) return obj;
+      // Support: foo.bar.baz, foo.bar.length, foo[0].bar, foo.bar[2]
+      // Tokenize by . and [n] (where n is integer)
+      const tokens = [];
+      path.split('.').forEach(seg => {
+        const m = seg.match(/^([^\[]*)((?:\[\d+\])*)$/);
+        if (!m) return;
+        if (m[1]) tokens.push(m[1]);
+        const idxRe = /\[(\d+)\]/g;
+        let im;
+        while ((im = idxRe.exec(m[2])) !== null) tokens.push(parseInt(im[1], 10));
+      });
+      return tokens.reduce((o, k) => {
+        if (o == null) return undefined;
+        if (k === 'length' && Array.isArray(o)) return o.length;
+        return o[k];
+      }, obj);
+    },
+  };
+
+  async function fetchAll() {
+    const out = {};
+    for (const [alias, path] of Object.entries(liveData)) {
+      try {
+        const r = await fetch(path, { cache: 'no-store' });
+        out[alias] = await r.json();
+      } catch (e) {
+        console.warn('fetch fail', path, e);
+        out[alias] = null;
+      }
+    }
+    dataSnapshot = out;
+    return out;
+  }
+
+  async function tick() {
+    await fetchAll();
+    for (const m of mounted) {
+      try {
+        m.instance.render(dataSnapshot, ctx);
+      } catch (e) {
+        console.error(`[widget ${m.name}] render error`, e);
+      }
+    }
+    // Update header timestamp
+    const t = new Date();
+    const stamp = document.getElementById('db-updated');
+    if (stamp) {
+      stamp.textContent = `updated ${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}:${String(t.getSeconds()).padStart(2,'0')}`;
+    }
+  }
+
+  async function init(spec) {
+    liveData = spec.live_data || {};
+    // Wire each section
+    for (const section of spec.sections) {
+      const factory = widgets.get(section.widget);
+      if (!factory) {
+        console.error('Unknown widget:', section.widget);
+        continue;
+      }
+      const el = document.querySelector(`[data-widget-id="${section.id || section.widget}"]`);
+      if (!el) {
+        console.error('Mount point missing for', section.widget, section.id);
+        continue;
+      }
+      const state = {};
+      const instance = factory({ el, config: section, bus: { dispatch, on }, state, ctx });
+      mounted.push({ name: section.widget, el, config: section, state, instance });
+    }
+    // Refresh button
+    const btn = document.getElementById('db-refresh');
+    if (btn) btn.addEventListener('click', async () => {
+      btn.classList.add('spinning');
+      await tick();
+      setTimeout(() => btn.classList.remove('spinning'), 400);
+    });
+    // First tick + poll loop
+    await tick();
+    pollHandle = setInterval(tick, 5000);
+  }
+
+  return { register, init, dispatch, on, ctx };
+})();
+
+</script>
+
+<script>
+/* === widget alert === */
+
+Dashboard.register('alert', ({ el, config, ctx }) => {
+  const tpl = document.getElementById('tpl-alert').content.cloneNode(true);
+  const root = tpl.querySelector('.w-alert');
+  root.classList.add(`severity-${config.severity || 'info'}`);
+  if (config.icon) root.querySelector('.w-alert-icon span').textContent = config.icon;
+  root.querySelector('[data-bind="title"]').textContent = config.title || '';
+  el.appendChild(tpl);
+  const bodyEl = el.querySelector('[data-bind="body"]');
+
+  return {
+    render(data) {
+      // body text can be:
+      //  - static `body`
+      //  - dynamic via `body_compute` (named compute function in compute_fns map)
+      if (config.body_compute && computeFns[config.body_compute]) {
+        bodyEl.textContent = computeFns[config.body_compute](data, config);
+      } else if (config.body) {
+        bodyEl.textContent = config.body;
+      }
+    }
+  };
+});
+
+// Pluggable compute functions. Caller can extend by inlining additional entries
+// in the generated HTML BEFORE the runtime init call.
+const computeFns = window.computeFns || (window.computeFns = {});
+computeFns.license_summary = (data) => {
+  const inv = data.inventory?.device_candidates || [];
+  const lic = data.licenses?.license_candidates || [];
+  const exp = inv.filter(d => d.license_status === 'expired').length;
+  const need = Math.max(0, exp - lic.length);
+  return `${inv.length} 台設備中有 ${exp} 台 license 已過期；org 內 license pool 還有 ${lic.length} 張可分配。建議:採購 ${need} 張新 license。`;
+};
+
+/* === widget kpi_grid === */
+
+Dashboard.register('kpi_grid', ({ el, config, bus, ctx }) => {
+  const items = config.items || [];
+  el.classList.add('w-kpi-grid');
+  el.style.setProperty('--cols', items.length);
+
+  // build cards
+  const cards = items.map((item, idx) => {
+    const card = document.createElement('div');
+    card.className = 'w-kpi';
+    if (item.severity) card.classList.add(`severity-${item.severity}`);
+    if (item.clickable) card.classList.add('clickable');
+    card.innerHTML = `
+      <div class="lbl">${item.label}</div>
+      <div class="val num" data-bind="val">—</div>
+      <div class="sub" data-bind="sub">—</div>
+    `;
+    if (item.clickable) {
+      card.addEventListener('click', () => {
+        bus.dispatch('kpi-click', { item, target: item.clickable.target, action: item.clickable.action });
+        if (item.clickable.target) ctx.scrollToWidget(item.clickable.target);
+      });
+    }
+    el.appendChild(card);
+    return card;
+  });
+
+  return {
+    render(data) {
+      items.forEach((item, idx) => {
+        const card = cards[idx];
+        const valEl = card.querySelector('[data-bind="val"]');
+        const subEl = card.querySelector('[data-bind="sub"]');
+        let val = '—';
+        if (item.value_path) {
+          const v = ctx.getByPath(data, item.value_path);
+          val = v == null ? '—' : v;
+        } else if (item.value_compute && computeFns[item.value_compute]) {
+          val = computeFns[item.value_compute](data, item);
+        }
+        valEl.textContent = val;
+        let sub = '';
+        if (item.sub_compute && computeFns[item.sub_compute]) {
+          sub = computeFns[item.sub_compute](data, item);
+        } else if (item.sub) {
+          sub = item.sub;
+        }
+        subEl.textContent = sub;
+      });
+    }
+  };
+});
+
+// Compute functions for KPIs
+const computeFns2 = window.computeFns || (window.computeFns = {});
+computeFns2.expired_count = (data) => {
+  const inv = data.inventory?.device_candidates || [];
+  return inv.filter(d => d.license_status === 'expired').length;
+};
+computeFns2.active_networks_ratio = (data) => {
+  const inv = data.inventory?.device_candidates || [];
+  const hv = data.hierarchy?.network_candidates || [];
+  const activeIds = new Set(inv.map(d => d.network_id));
+  return `${activeIds.size}/${hv.length}`;
+};
+computeFns2.device_type_breakdown = (data) => {
+  const inv = data.inventory?.device_candidates || [];
+  const types = inv.reduce((m,d)=>{m[d.type]=(m[d.type]||0)+1;return m;},{});
+  return Object.entries(types).map(([t,c]) => `${c} ${t}`).join(' · ');
+};
+computeFns2.expired_subtext = (data) => {
+  const inv = data.inventory?.device_candidates || [];
+  const exp = inv.filter(d => d.license_status === 'expired').length;
+  if (inv.length === exp && exp > 0) return '全部過期';
+  return `${exp}/${inv.length} 過期`;
+};
+computeFns2.empty_networks_subtext = (data) => {
+  const inv = data.inventory?.device_candidates || [];
+  const hv = data.hierarchy?.network_candidates || [];
+  const activeIds = new Set(inv.map(d => d.network_id));
+  return `${hv.length - activeIds.size} 個空的 network`;
+};
+computeFns2.stale_members_subtext = (data) => {
+  const mem = data.memberships?.org_member_candidates || [];
+  const stale = mem.filter(m => Dashboard.ctx.daysSince(m.last_login_time) > 365).length;
+  return `${stale} 人 1+ 年未登入`;
+};
+
+/* === widget timeline === */
+
+Dashboard.register('timeline', ({ el, config, ctx }) => {
+  el.classList.add('card');
+  el.innerHTML = `
+    <div class="card-hdr">
+      <h2>${config.title || 'Timeline'}</h2>
+      <span class="meta" data-bind="meta">—</span>
+    </div>
+    <div class="w-tl-wrap">
+      <div class="w-tl" data-role="canvas"></div>
+      <div class="w-tl-legend" data-role="legend"></div>
+    </div>
+  `;
+  const canvas = el.querySelector('[data-role="canvas"]');
+  const legendEl = el.querySelector('[data-role="legend"]');
+  const meta = el.querySelector('[data-bind="meta"]');
+
+  function classifySeverity(item, now) {
+    if (item.severity) return item.severity;  // explicit override
+    if (!item.date_ms) return 'info';
+    if (item.date_ms < now) return 'critical';
+    const days = (item.date_ms - now) / 86400000;
+    if (days < (config.warning_threshold_days || 90)) return 'warning';
+    return 'success';
+  }
+
+  function fmtDay(ms) {
+    return new Date(ms).toISOString().slice(0,10);
+  }
+  function fmtYM(ms) {
+    return new Date(ms).toISOString().slice(0,7);
+  }
+
+  return {
+    render(data) {
+      const items = (config.compute && window.computeFns[config.compute])
+        ? window.computeFns[config.compute](data, config)
+        : (config.items || []);
+
+      const now = Date.now();
+      const valid = items.filter(i => i.date_ms);
+
+      if (valid.length === 0) {
+        canvas.innerHTML = `<div style="text-align:center;padding:40px;color:var(--text-3);font-size:13px;">No dated items</div>`;
+        legendEl.innerHTML = '';
+        meta.textContent = '0 items';
+        return;
+      }
+
+      const dates = valid.map(i => i.date_ms);
+      const allDates = [...dates, now];
+      const minD = Math.min(...allDates);
+      const maxD = Math.max(...allDates);
+      // 10% padding each side
+      const span = (maxD - minD) || 86400000 * 365;
+      const padded_min = minD - span * 0.08;
+      const padded_max = maxD + span * 0.08;
+      const range = padded_max - padded_min;
+
+      const posPct = (ms) => ((ms - padded_min) / range) * 100;
+
+      // Group items at same date to stack labels (cluster offset)
+      const grouped = {};
+      valid.forEach(i => {
+        const key = fmtDay(i.date_ms);
+        (grouped[key] = grouped[key] || []).push(i);
+      });
+
+      // Build dots
+      let html = `<div class="w-tl-track"></div>`;
+      html += `<div class="w-tl-today" style="left:${posPct(now).toFixed(2)}%"></div>`;
+
+      // Year ticks
+      const startY = new Date(padded_min).getUTCFullYear();
+      const endY = new Date(padded_max).getUTCFullYear();
+      for (let y = startY; y <= endY; y++) {
+        const t = Date.UTC(y, 0, 1);
+        if (t < padded_min || t > padded_max) continue;
+        const x = posPct(t);
+        html += `<div class="w-tl-tick" style="left:${x.toFixed(2)}%"></div>`;
+        html += `<div class="w-tl-tick-label" style="left:${x.toFixed(2)}%">${y}</div>`;
+      }
+
+      // Dots (grouped)
+      Object.entries(grouped).forEach(([dayKey, group]) => {
+        const t = group[0].date_ms;
+        const x = posPct(t);
+        const sev = classifySeverity(group[0], now);
+        // single representative dot per cluster, with count
+        const isCluster = group.length > 1;
+        const label = isCluster
+          ? `${group.length}× ${group[0].label || 'items'}`
+          : (group[0].label || '');
+        const sub = isCluster
+          ? `${dayKey} · ${group.length} items`
+          : dayKey;
+        const tipDetail = group.map(g => g.label || '').slice(0, 5).join(', ') + (group.length > 5 ? ` (+${group.length-5})` : '');
+        html += `
+          <div class="w-tl-dot sev-${sev}" style="left:${x.toFixed(2)}%; ${isCluster?'width:18px;height:18px;':''}">
+            <div class="w-tl-tooltip">${tipDetail}<span class="sub">${sub}</span></div>
+          </div>
+          <div class="w-tl-dot-label" style="left:${x.toFixed(2)}%">${label}</div>
+        `;
+      });
+
+      canvas.innerHTML = html;
+
+      // Legend with counts
+      const counts = { critical: 0, warning: 0, success: 0, info: 0 };
+      valid.forEach(i => { counts[classifySeverity(i, now)] = (counts[classifySeverity(i, now)] || 0) + 1; });
+      const labels = {
+        critical: config.critical_label || 'Overdue',
+        warning: config.warning_label || `Expiring < ${config.warning_threshold_days || 90}d`,
+        success: config.success_label || 'Active',
+        info: 'Other'
+      };
+      legendEl.innerHTML = ['critical','warning','success','info']
+        .filter(k => counts[k] > 0)
+        .map(k => `<div class="item"><span class="swatch sev-${k}"></span><span>${labels[k]}</span><span class="num">${counts[k]}</span></div>`)
+        .join('');
+
+      meta.textContent = `${valid.length} items · ${fmtYM(minD)} → ${fmtYM(maxD)}`;
+    }
+  };
+});
+
+/* === widget bar_list === */
+
+Dashboard.register('bar_list', ({ el, config, ctx }) => {
+  el.classList.add('card');
+  el.innerHTML = `
+    <div class="card-hdr"><h2>${config.title||''}</h2><span class="meta">${config.meta||''}</span></div>
+    <div class="w-barlist" data-role="body"></div>
+  `;
+  const body = el.querySelector('[data-role="body"]');
+
+  return {
+    render(data) {
+      const groups = config.groups || [];
+      body.innerHTML = groups.map((g, gi) => {
+        const items = (g.compute && computeFns[g.compute])
+          ? computeFns[g.compute](data, g)
+          : (g.items || []);
+        const total = g.total_compute && computeFns[g.total_compute]
+          ? computeFns[g.total_compute](data, g)
+          : items.reduce((s,i) => s + (i.value||0), 0);
+        return `<div class="${gi>0?'group':''}">${items.map(i => `
+          <div class="bar-row">
+            <div class="bar-label">${i.label}</div>
+            <div class="bar-track"><div class="bar-fill ${i.color||''}" style="width:${total?(i.value/total*100).toFixed(0):0}%"></div></div>
+            <div class="bar-val">${i.value}</div>
+          </div>`).join('')}</div>`;
+      }).join('');
+    }
+  };
+});
+
+const computeFns3 = window.computeFns || (window.computeFns = {});
+computeFns3.device_type_bars = (data) => {
+  const inv = data.inventory?.device_candidates || [];
+  const types = inv.reduce((m,d)=>{m[d.type]=(m[d.type]||0)+1;return m;},{});
+  const colorMap = { ap: '', switch: 'warn', gateway: 'ok' };
+  return Object.entries(types).map(([t,c]) => ({ label: t.toUpperCase(), value: c, color: colorMap[t] }));
+};
+computeFns3.license_status_bars = (data) => {
+  const inv = data.inventory?.device_candidates || [];
+  const exp = inv.filter(d => d.license_status === 'expired').length;
+  return [
+    { label: 'Expired', value: exp, color: 'crit' },
+    { label: 'Active', value: inv.length - exp, color: 'ok' },
+  ];
+};
+computeFns3.device_total = (data) => (data.inventory?.device_candidates || []).length;
+
+/* === widget table === */
+
+Dashboard.register('table', ({ el, config, bus, ctx }) => {
+  const state = { filter: (config.filters?.[0]?.filter) || 'all', expanded: new Set() };
+  // build skeleton
+  el.classList.add('card');
+  el.innerHTML = `
+    <div class="card-hdr">
+      <h2>${config.title || ''}</h2>
+      <span class="meta" data-bind="meta">—</span>
+    </div>
+    ${config.filters ? `<div class="chips" data-role="filters">${
+      config.filters.map((f,i) => `<span class="chip ${i===0?'active':''}" data-filter="${f.filter}">${f.label} <span class="count" data-count="${f.filter}">0</span></span>`).join('')
+    }</div>` : ''}
+    <table class="w-table">
+      <thead><tr>${(config.columns||[]).map(c => `<th class="${c.align==='right'?'num':''}">${c.label}</th>`).join('')}</tr></thead>
+      <tbody data-role="body"></tbody>
+    </table>
+  `;
+
+  const meta = el.querySelector('[data-bind="meta"]');
+  const tbody = el.querySelector('[data-role="body"]');
+
+  // Filter chip events
+  el.querySelector('[data-role="filters"]')?.addEventListener('click', (e) => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+    state.filter = chip.dataset.filter;
+    el.querySelectorAll('[data-role="filters"] .chip').forEach(c =>
+      c.classList.toggle('active', c === chip));
+    rerender();
+  });
+
+  // Row expand
+  tbody.addEventListener('click', (e) => {
+    const row = e.target.closest('tr.expandable');
+    if (!row) return;
+    const id = row.dataset.rowId;
+    if (state.expanded.has(id)) state.expanded.delete(id);
+    else state.expanded.add(id);
+    rerender();
+  });
+
+  // Cross-widget event: expand a specific row + scroll/flash
+  bus.on('table-expand-row', (e) => {
+    if (e.detail.tableId !== config.id) return;
+    state.expanded.add(e.detail.rowId);
+    // reset filter to 'all' so the row is visible
+    state.filter = (config.filters?.[0]?.filter) || 'all';
+    el.querySelectorAll('[data-role="filters"] .chip').forEach(c =>
+      c.classList.toggle('active', c.dataset.filter === state.filter));
+    rerender();
+    setTimeout(() => {
+      const targetRow = tbody.querySelector(`tr.expandable[data-row-id="${e.detail.rowId}"]`);
+      if (targetRow) {
+        targetRow.scrollIntoView({behavior:'smooth', block:'center'});
+        ctx.flash(targetRow);
+      }
+    }, 50);
+  });
+
+  let lastData = null;
+
+  function passesFilter(row, filter) {
+    if (filter === 'all') return true;
+    if (filter.includes(':')) {
+      const [k, v] = filter.split(':');
+      return row[k] === v;
+    }
+    if (filter === 'stale') return ctx.daysSince(row.last_login_time) > 365;
+    return false;
+  }
+
+  function rowId(row) {
+    return row[config.row_id_field || 'device_id'] || row.mac || row.user_id || row.email || JSON.stringify(row).slice(0,40);
+  }
+
+  function rerender() {
+    if (!lastData) return;
+    render(lastData);
+  }
+
+  function cellHtml(row, col) {
+    const v = ctx.getByPath(row, col.field);
+    if (col.render === 'license_pill') {
+      if (v === 'expired') return `<span class="pill pill-crit">expired</span>`;
+      if (v === 'active') return `<span class="pill pill-ok">${row.license_type||'active'}</span>`;
+      return `<span class="pill pill-muted">${v||'—'}</span>`;
+    }
+    if (col.render === 'type_chip') {
+      return `<span class="type-chip type-${v}"><span class="dot"></span>${v}</span>`;
+    }
+    if (col.render === 'role_pill') {
+      const role = v || (row.networks?.[0]?.role) || '—';
+      const cls = role === 'admin' ? 'pill-info' : role === 'viewer' ? 'pill-muted' : 'pill-warn';
+      return `<span class="pill ${cls}">${role}</span>`;
+    }
+    if (col.render === 'risk_pill') {
+      const d = ctx.daysSince(row.last_login_time);
+      let label, cls;
+      if (d === Infinity) { label = '從未登入'; cls = 'pill-crit'; }
+      else if (d > 730) { label = `${(d/365).toFixed(1)}y stale`; cls = 'pill-crit'; }
+      else if (d > 365) { label = `${(d/365).toFixed(1)}y stale`; cls = 'pill-warn'; }
+      else if (d > 90) { label = `${d}d quiet`; cls = 'pill-info'; }
+      else { label = 'active'; cls = 'pill-ok'; }
+      return `<span class="pill ${cls}">${label}</span>`;
+    }
+    if (col.render === 'date') return `<span class="mono" style="font-size:12px">${ctx.fmtDate(v)}</span>`;
+    if (col.render === 'name_with_sub') {
+      const sub = ctx.getByPath(row, col.sub_field);
+      return `<strong>${v||'—'}</strong><div style="font-size:11px;color:var(--text-3)" class="mono">${sub||''}</div>`;
+    }
+    if (col.render === 'network_or_unassigned') {
+      return v ? v : '<span class="pill pill-muted">unassigned</span>';
+    }
+    if (col.render === 'mono_ellipsis') {
+      return `<span class="ell mono" style="font-size:12px;color:var(--text-2)">${v||'—'}</span>`;
+    }
+    if (col.render === 'count') return `<span class="num">${(v||[]).length||v||0}</span>`;
+    if (col.cls === 'mono') return `<span class="mono">${v||'—'}</span>`;
+    return v == null ? '—' : String(v);
+  }
+
+  function detailHtml(row) {
+    if (!config.detail_fields) return '';
+    return `<div class="detail-grid">${config.detail_fields.map(f => {
+      const v = ctx.getByPath(row, f.field);
+      let display = v;
+      if (f.render === 'datetime') display = ctx.fmtDateTime(v);
+      if (f.render === 'date') display = ctx.fmtDate(v);
+      if (f.render === 'network_list') {
+        const nets = v || [];
+        if (nets.length === 0) display = '<span style="color:var(--text-3); font-size:12px;">無 network-level 權限</span>';
+        else display = nets.map(n => `<span class="pill pill-muted" style="margin-right:6px; margin-bottom:4px;">${n.name} · ${n.role}</span>`).join('');
+      }
+      return `<div class="detail-item" ${f.full_width?'style="grid-column: 1/-1"':''}>
+        <div class="k">${f.label}</div>
+        <div class="v ${f.large?'large':''}">${display==null?'—':display}</div>
+      </div>`;
+    }).join('')}</div>`;
+  }
+
+  function render(data) {
+    lastData = data;
+    let rows = ctx.getByPath(data, config.data_source) || [];
+    if (config.sort_by) {
+      const sb = config.sort_by;
+      const dir = (sb.dir === 'asc') ? 1 : -1;
+      rows = [...rows].sort((a,b) => {
+        const av = ctx.getByPath(a, sb.field) || 0;
+        const bv = ctx.getByPath(b, sb.field) || 0;
+        return (av < bv ? -1 : av > bv ? 1 : 0) * dir;
+      });
+    }
+    if (sb_asc(config)) rows = [...rows].reverse();
+
+    // chip counts
+    config.filters?.forEach(f => {
+      const cnt = f.filter === 'all'
+        ? rows.length
+        : rows.filter(r => passesFilter(r, f.filter)).length;
+      const ce = el.querySelector(`[data-count="${f.filter}"]`);
+      if (ce) ce.textContent = cnt;
+    });
+
+    // apply filter
+    const filtered = rows.filter(r => passesFilter(r, state.filter));
+
+    // meta
+    if (state.filter === 'all' || !config.filters) {
+      meta.textContent = config.meta_template
+        ? config.meta_template.replace('${count}', rows.length)
+        : `${rows.length} items`;
+    } else {
+      meta.textContent = `${filtered.length} of ${rows.length} (filter: ${state.filter})`;
+    }
+
+    // body
+    if (filtered.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="${(config.columns||[]).length}"><div class="empty-state">No rows match this filter</div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = filtered.map(row => {
+      const id = rowId(row);
+      const isOpen = state.expanded.has(id);
+      const expandable = !!config.expandable_rows;
+      const cls = expandable ? `expandable ${isOpen?'open':''}` : '';
+      const mainTr = `<tr class="${cls}" data-row-id="${id}">${
+        (config.columns||[]).map(c => `<td class="${c.align==='right'?'num':''}">${cellHtml(row, c)}</td>`).join('')
+      }</tr>`;
+      const detailTr = expandable
+        ? `<tr class="detail ${isOpen?'open':''}" data-detail-row-id="${id}"><td colspan="${(config.columns||[]).length}">${detailHtml(row)}</td></tr>`
+        : '';
+      return mainTr + detailTr;
+    }).join('');
+  }
+
+  function sb_asc(c) { return c.sort_by?.dir === 'asc' && false; }  // noop kept for symmetry
+
+  return { render };
+});
+
+</script>
+
+<script>
+/* === inline compute_fns from spec === */
+(() => { const cf = window.computeFns; const flat = data => (data.topology?.orgs || []).flatMap(o => (o.devices || []).map(d => ({...d, org_name: o.org_name}))); const isExp = d => d.license_status === 'expired' || (d.expired_date && d.expired_date < Date.now()); const dfn = ms => ms ? Math.round((ms - Date.now()) / 86400000) : null; cf.renewal_summary = (data) => { const all = flat(data); const exp = all.filter(isExp); const oldest = exp.sort((a,b) => (a.expired_date||0) - (b.expired_date||0))[0]; if (!oldest) return 'All licenses are within validity period.'; const days = Math.abs(dfn(oldest.expired_date)); return `${exp.length} of ${all.length} device licenses are expired. Most overdue: ${oldest.name} (${days} days past expiry). Recommend purchasing ${exp.length} renewal licenses as priority.`; }; cf.lic_total = (data) => flat(data).length; cf.lic_overdue = (data) => flat(data).filter(isExp).length; cf.lic_overdue_subtext = (data) => { const all = flat(data); const exp = all.filter(isExp).length; return `${(exp/Math.max(1,all.length)*100).toFixed(0)}% of fleet`; }; cf.lic_expiring_soon = (data) => flat(data).filter(d => { const dd = dfn(d.expired_date); return dd !== null && dd >= 0 && dd <= 90; }).length; cf.lic_active = (data) => flat(data).filter(d => !isExp(d) && d.license_status === 'active').length; cf.lic_active_subtext = (data) => { const acts = flat(data).filter(d => !isExp(d)); if (acts.length === 0) return 'none'; const next = acts.sort((a,b) => (a.expired_date||0) - (b.expired_date||0))[0]; const dd = dfn(next.expired_date); return `next expires in ${dd}d`; }; cf.licenses_for_timeline = (data) => flat(data).map(d => ({label: d.name, date_ms: d.expired_date, severity: null, sub: d.org_name})); cf.overdue_by_org_bars = (data) => { const all = flat(data); const by = {}; all.filter(isExp).forEach(d => { by[d.org_name] = (by[d.org_name] || 0) + 1; }); return Object.entries(by).map(([org, count]) => ({label: org, value: count, color: 'crit'})); }; cf.fleet_total = (data) => flat(data).length; })();
+</script>
+
+<script>
+Dashboard.init({"live_data": {"topology": "live-data/topology.json", "inventory": "live-data/inventory.json"}, "sections": [{"widget": "alert", "id": "renewal-alert", "severity": "critical", "title": "License Renewal Urgency", "body_compute": "renewal_summary"}, {"widget": "kpi_grid", "id": "kpis", "items": [{"label": "Total Licenses", "value_compute": "lic_total", "sub": "across visible orgs"}, {"label": "Overdue", "severity": "critical", "value_compute": "lic_overdue", "sub_compute": "lic_overdue_subtext", "clickable": {"target": "license-table"}}, {"label": "Expiring < 90d", "severity": "warning", "value_compute": "lic_expiring_soon", "sub": "renewal window", "clickable": {"target": "license-table"}}, {"label": "Active", "severity": "success", "value_compute": "lic_active", "sub_compute": "lic_active_subtext"}]}, {"widget": "timeline", "id": "expiry-timeline", "title": "License Expiry Timeline", "compute": "licenses_for_timeline", "warning_threshold_days": 90, "critical_label": "Overdue (action required)", "warning_label": "Expiring < 90d (plan renewal)", "success_label": "Active (safe)"}, {"widget": "bar_list", "id": "overdue-by-org", "title": "Overdue by Org", "meta": "expired licenses by org", "groups": [{"compute": "overdue_by_org_bars", "total_compute": "fleet_total"}]}, {"widget": "table", "id": "license-table", "title": "License Renewal Plan · Complete Device List", "data_source": "topology.orgs[0].devices", "_note": "fallback path — actual rows are flattened by data_compute below if widget supported. Currently use Main_Org devices for table view.", "row_id_field": "device_id", "sort_by": {"field": "expired_date", "dir": "asc"}, "meta_template": "${count} devices in Main_Org", "filters": [{"label": "All", "filter": "all"}, {"label": "Expired", "filter": "license_status:expired"}, {"label": "AP", "filter": "type:ap"}], "columns": [{"label": "Device", "field": "name"}, {"label": "Network", "field": "network_name", "render": "network_or_unassigned"}, {"label": "Model", "field": "model", "cls": "mono"}, {"label": "License Type", "field": "license_type"}, {"label": "Status", "field": "license_status", "render": "license_pill"}], "expandable_rows": true, "detail_fields": [{"label": "Device ID", "field": "device_id"}, {"label": "MAC", "field": "mac"}, {"label": "Serial", "field": "serial_number"}, {"label": "Registered", "field": "registered_time", "render": "datetime"}, {"label": "License Expires", "field": "expired_date", "render": "datetime", "large": true}, {"label": "Registered By", "field": "registered_by", "large": true}, {"label": "Current Network", "field": "network_id", "full_width": true}]}]});
+</script>
+
+</body>
+</html>

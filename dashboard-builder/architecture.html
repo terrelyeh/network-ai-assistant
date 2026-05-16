@@ -431,6 +431,32 @@
     width: 100%; display: block; height: auto;
   }
   a.gallery-card { text-decoration: none; color: inherit; display: block; }
+
+  /* Gallery item wrapper: card + locale row stacked */
+  .gallery-item { display: flex; flex-direction: column; gap: 6px; }
+  .locale-row {
+    display: flex; gap: 5px; align-items: center;
+    padding: 6px 18px;
+  }
+  .locale-row .locales-label {
+    color: var(--text-3); font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    margin-right: 6px;
+  }
+  .locale-row .locale-pill {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    padding: 4px 12px; border-radius: 999px;
+    background: var(--surface); border: 1px solid var(--border-strong);
+    color: var(--text-2); font-weight: 600;
+    text-decoration: none;
+    transition: all .12s ease;
+  }
+  .locale-row .locale-pill:hover {
+    border-color: var(--accent); color: var(--accent);
+    background: rgba(255,107,53,0.08);
+  }
+
   .gallery-card .shot .open-hint {
     position: absolute; bottom: 12px; right: 12px;
     background: var(--text); color: white;
@@ -1470,7 +1496,8 @@
   </p>
 
   <div class="gallery">
-    <a class="gallery-card" href="org-health.html">
+    <div class="gallery-item">
+      <a class="gallery-card" href="org-health.html">
       <div class="meta">
         <h3>S3 · Org 健康總覽</h3>
         <div class="sub">設備、license、人員 + 跨 org 樹狀結構，給 IT manager 看「整體健康」</div>
@@ -1481,8 +1508,16 @@
       </div>
       <div class="shot"><img src="assets/shots/org-health.png" alt="Org Health"><span class="open-hint">開啟 →</span></div>
     </a>
+      <div class="locale-row">
+        <span class="locales-label">view in</span>
+        <a class="locale-pill" href="org-health.html">中</a>
+        <a class="locale-pill" href="org-health-en.html">EN</a>
+        <a class="locale-pill" href="org-health-ja.html">日</a>
+      </div>
+    </div>
 
-    <a class="gallery-card" href="offboarding-audit.html">
+    <div class="gallery-item">
+      <a class="gallery-card" href="offboarding-audit.html">
       <div class="meta">
         <h3>S4 · Off-boarding Compliance Audit</h3>
         <div class="sub">SOC2/ISO27001 視角 · 找出 1+ 年沒登入仍持有 network 權限的帳號</div>
@@ -1493,8 +1528,16 @@
       </div>
       <div class="shot"><img src="assets/shots/offboarding-audit.png" alt="Off-boarding Audit"><span class="open-hint">開啟 →</span></div>
     </a>
+      <div class="locale-row">
+        <span class="locales-label">view in</span>
+        <a class="locale-pill" href="offboarding-audit.html">中</a>
+        <a class="locale-pill" href="offboarding-audit-en.html">EN</a>
+        <a class="locale-pill" href="offboarding-audit-ja.html">日</a>
+      </div>
+    </div>
 
-    <a class="gallery-card" href="license-renewal.html">
+    <div class="gallery-item">
+      <a class="gallery-card" href="license-renewal.html">
       <div class="meta">
         <h3>S5 · License Renewal Planning</h3>
         <div class="sub">跨 org timeline · 規劃 license 續約優先序 + 視覺化過期分布</div>
@@ -1505,8 +1548,16 @@
       </div>
       <div class="shot"><img src="assets/shots/license-renewal.png" alt="License Renewal"><span class="open-hint">開啟 →</span></div>
     </a>
+      <div class="locale-row">
+        <span class="locales-label">view in</span>
+        <a class="locale-pill" href="license-renewal.html">中</a>
+        <a class="locale-pill" href="license-renewal-en.html">EN</a>
+        <a class="locale-pill" href="license-renewal-ja.html">日</a>
+      </div>
+    </div>
 
-    <a class="gallery-card" href="multi-org-governance.html">
+    <div class="gallery-item">
+      <a class="gallery-card" href="multi-org-governance.html">
       <div class="meta">
         <h3>S2 · Multi-Org Governance Audit</h3>
         <div class="sub">MSP/Partner 視角 · 跨 5 個 org 的存取健康 + 合規檢視（含 RBAC blocked org 處理）</div>
@@ -1517,8 +1568,16 @@
       </div>
       <div class="shot"><img src="assets/shots/multi-org-governance.png" alt="Multi-Org Governance"><span class="open-hint">開啟 →</span></div>
     </a>
+      <div class="locale-row">
+        <span class="locales-label">view in</span>
+        <a class="locale-pill" href="multi-org-governance.html">中</a>
+        <a class="locale-pill" href="multi-org-governance-en.html">EN</a>
+        <a class="locale-pill" href="multi-org-governance-ja.html">日</a>
+      </div>
+    </div>
 
-    <a class="gallery-card" href="cross-org-reallocation.html">
+    <div class="gallery-item">
+      <a class="gallery-card" href="cross-org-reallocation.html">
       <div class="meta">
         <h3>S7 · Cross-Org Reallocation Planner</h3>
         <div class="sub">Partner/MSP 視角 · 識別跨 org 設備重新配置機會、license 健康度 gauge、orgs × types heatmap</div>
@@ -1529,6 +1588,13 @@
       </div>
       <div class="shot"><img src="assets/shots/cross-org-reallocation.png" alt="Cross-Org Reallocation"><span class="open-hint">開啟 →</span></div>
     </a>
+      <div class="locale-row">
+        <span class="locales-label">view in</span>
+        <a class="locale-pill" href="cross-org-reallocation.html">中</a>
+        <a class="locale-pill" href="cross-org-reallocation-en.html">EN</a>
+        <a class="locale-pill" href="cross-org-reallocation-ja.html">日</a>
+      </div>
+    </div>
 
     <a class="gallery-card" href="org-health-dark.html">
       <div class="meta">
@@ -1731,10 +1797,27 @@ open http://localhost:58778/dashboard-builder/org-health.html</pre>
   <h3>用法三：刷新 live-data 但保留 canvas（最常用）</h3>
   <p>展會中要 demo「live 數字會跳」效果：</p>
   <pre><span class="comment"># 1. 操作員執行 refresh 腳本（重撈 staging API）</span>
-./prototype/scripts/build_topology.sh
+bash dashboard-builder/scripts/refresh-all.sh
 
 <span class="comment"># 2. Dashboard 已開著的話，5 秒內自動 reflect 新數字</span>
 <span class="comment"># 不用重 compose、不用重 reload</span></pre>
+
+  <h3>用法四：切視覺主題 + 切語言（i18n）</h3>
+  <p>每個 spec 都有 <code>locales</code> 區塊（zh-TW / en / ja）。用 <code>--locale</code> flag 切換：</p>
+  <pre><span class="comment"># 預設（spec 的 zh-TW）</span>
+python dashboard-builder/skill/scripts/compose.py \
+  --spec dashboard-builder/skill/examples/org-health.spec.json \
+  --out dashboard-builder/test.html
+
+<span class="comment"># 英文版</span>
+... --locale en
+
+<span class="comment"># 日文版（日本展會用）</span>
+... --locale ja
+
+<span class="comment"># 日文 + dark mode 雙堆疊</span>
+... --locale ja --theme dark</pre>
+  <p style="margin-top: 10px;">→ Gallery 上每張 dashboard card 下方都有「view in 中 / EN / 日」切換鍵，點任一個直接看對應語言版本。日文版作為日本 booth 主秀，需要 native speaker review 過後正式上場。</p>
 </section>
 
 <section id="demo-readiness">

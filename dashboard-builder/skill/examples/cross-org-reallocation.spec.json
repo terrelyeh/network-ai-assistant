@@ -128,5 +128,100 @@
       "get_inventory × 5 orgs",
       "(planning only — no move_devices_between_orgs / move_licenses_between_orgs invoked)"
     ]
+  },
+
+  "locales": {
+    "en": {
+      "html_lang": "en",
+      "title": "Cross-Org Reallocation Planner",
+      "subtitle": "Partner/MSP lens · identify reallocation opportunities (planning-only, no mutations)",
+      "compute_fns": "(() => { const cf = window.computeFns; const flat = data => (data.topology?.orgs || []).flatMap(o => (o.devices || []).map(d => ({...d, org_name: o.org_name, _accessible: o.hv_status === 'ok' && o.inv_status === 'ok'}))); const isExp = d => d.license_status === 'expired'; const isAct = d => d.license_status === 'active'; cf.realloc_summary = (data) => { const all = flat(data); const exp = all.filter(isExp); const orgsWithExp = [...new Set(exp.map(d => d.org_name))]; const orgsWithAct = [...new Set(all.filter(isAct).map(d => d.org_name))]; return `${all.length} devices total, ${exp.length} licenses expired (concentrated in ${orgsWithExp.join(', ')}). ${orgsWithAct.length} org(s) still have active licenses as renewal reference. Recommend: (a) verify expired devices are still in use, (b) renew in place, (c) cross-org relocation, or (d) decommission.`; }; cf.fleet_total = (data) => flat(data).length; cf.active_license_count = (data) => flat(data).filter(isAct).length; cf.active_license_pct = (data) => { const all = flat(data); return all.length > 0 ? (all.filter(isAct).length / all.length * 100).toFixed(0) : 0; }; cf.coverage_narrative = (data) => { const all = flat(data); const a = all.filter(isAct).length; const exp = all.filter(isExp).length; return `${a} active devices vs ${exp} expired. Lower coverage means more urgent reallocation / license purchase.`; }; cf.org_with_expired = (data) => [...new Set(flat(data).filter(isExp).map(d => d.org_name))].length; cf.org_with_expired_sub = (data) => { const orgs = [...new Set(flat(data).filter(isExp).map(d => d.org_name))]; return orgs.length === 1 ? `${orgs[0]} only` : `${orgs.length} orgs affected`; }; cf.movable_count = (data) => flat(data).filter(d => d._accessible).length; cf.movable_sub = (data) => { const all = flat(data); const movable = all.filter(d => d._accessible).length; return `${all.length - movable} blocked by RBAC`; }; cf.blocked_org_count = (data) => (data.topology?.orgs || []).filter(o => o.hv_status !== 'ok' || o.inv_status !== 'ok').length; cf.blocked_org_sub = (data) => { const orgs = (data.topology?.orgs || []).filter(o => o.hv_status !== 'ok' || o.inv_status !== 'ok'); return `${orgs.map(o => o.org_name).join(', ')}`; }; cf.device_by_org_type_matrix = (data) => { const orgs = data.topology?.orgs || []; const types = ['ap', 'switch', 'gateway']; return { rows: orgs.map(o => o.org_name + (o.hv_status !== 'ok' ? ' 🔒' : '')), cols: types.map(t => t.toUpperCase()), cells: orgs.map(o => types.map(t => (o.devices || []).filter(d => d.type === t).length)) }; }; cf.license_by_org_status_matrix = (data) => { const orgs = data.topology?.orgs || []; return { rows: orgs.map(o => o.org_name + (o.hv_status !== 'ok' ? ' 🔒' : '')), cols: ['Active', 'Expired'], cells: orgs.map(o => { const devs = o.devices || []; return [devs.filter(isAct).length, devs.filter(isExp).length]; }) }; }; cf.recommendation_pills = (data) => { const all = flat(data); const exp = all.filter(isExp); const buckets = {}; exp.forEach(d => { const action = d.type === 'gateway' || d.type === 'switch' ? 'Renew priority (base infra)' : 'Evaluate: decommission or renew (AP)'; buckets[action] = (buckets[action] || 0) + 1; }); return Object.entries(buckets).map(([label, count]) => ({label: `${label}: ${count} devices`})); }; })();",
+      "sections": [
+        { "id": "realloc-alert", "title": "Cross-Org Reallocation Opportunity" },
+        {
+          "id": "kpis",
+          "items": [
+            { "label": "Total Fleet", "sub": "across visible orgs" },
+            { "label": "Active Licenses", "sub": "renewal reference" },
+            { "label": "Orgs with Expired" },
+            { "label": "Blocked Orgs (RBAC/Plan)" }
+          ]
+        },
+        {
+          "id": "coverage-gauge",
+          "title": "Fleet License Coverage",
+          "center_label": "Active",
+          "info_title": "Fleet Coverage Health"
+        },
+        { "id": "org-type-matrix", "title": "Fleet Composition · Org × Device Type", "legend_min": "0", "legend_max": "more" },
+        { "id": "license-matrix", "title": "License Status · Org × Status", "legend_min": "none", "legend_max": "many" },
+        { "id": "recommendations", "title": "AI-recommended Actions", "empty_text": "No fleet reallocation needed currently" },
+        {
+          "id": "candidate-list",
+          "title": "Reallocation Candidates · Main_Org devices",
+          "meta_template": "${count} candidates",
+          "filters": [
+            { "label": "All" },
+            { "label": "Expired" },
+            { "label": "AP" },
+            { "label": "Switch" }
+          ],
+          "detail_fields": [
+            { "label": "Device ID" },
+            { "label": "MAC" },
+            { "label": "Serial" },
+            { "label": "Registered" },
+            { "label": "License Expires" },
+            { "label": "Current Network" }
+          ]
+        }
+      ]
+    },
+    "ja": {
+      "html_lang": "ja",
+      "title": "クロス Org 設備再配置プランナー",
+      "subtitle": "Partner / MSP 視点 · クロス Org 再配置機会の特定（プランニングのみ、変更操作なし）",
+      "compute_fns": "(() => { const cf = window.computeFns; const flat = data => (data.topology?.orgs || []).flatMap(o => (o.devices || []).map(d => ({...d, org_name: o.org_name, _accessible: o.hv_status === 'ok' && o.inv_status === 'ok'}))); const isExp = d => d.license_status === 'expired'; const isAct = d => d.license_status === 'active'; cf.realloc_summary = (data) => { const all = flat(data); const exp = all.filter(isExp); const orgsWithExp = [...new Set(exp.map(d => d.org_name))]; const orgsWithAct = [...new Set(all.filter(isAct).map(d => d.org_name))]; return `総デバイス ${all.length} 台、${exp.length} 件のライセンスが期限切れ（${orgsWithExp.join(', ')} に集中）。${orgsWithAct.length} 個の Org が有効ライセンスを保持しており、更新の参考になります。推奨：(a) 期限切れデバイスの使用状況確認、(b) 現状で更新、(c) クロス Org 再配置、(d) 廃棄。`; }; cf.fleet_total = (data) => flat(data).length; cf.active_license_count = (data) => flat(data).filter(isAct).length; cf.active_license_pct = (data) => { const all = flat(data); return all.length > 0 ? (all.filter(isAct).length / all.length * 100).toFixed(0) : 0; }; cf.coverage_narrative = (data) => { const all = flat(data); const a = all.filter(isAct).length; const exp = all.filter(isExp).length; return `有効 ${a} 台 vs 期限切れ ${exp} 台。カバレッジが低いほど、再配置 / ライセンス購入の緊急度が高くなります。`; }; cf.org_with_expired = (data) => [...new Set(flat(data).filter(isExp).map(d => d.org_name))].length; cf.org_with_expired_sub = (data) => { const orgs = [...new Set(flat(data).filter(isExp).map(d => d.org_name))]; return orgs.length === 1 ? `${orgs[0]} のみ` : `${orgs.length} Org が該当`; }; cf.movable_count = (data) => flat(data).filter(d => d._accessible).length; cf.movable_sub = (data) => { const all = flat(data); const movable = all.filter(d => d._accessible).length; return `${all.length - movable} 個が RBAC により制限`; }; cf.blocked_org_count = (data) => (data.topology?.orgs || []).filter(o => o.hv_status !== 'ok' || o.inv_status !== 'ok').length; cf.blocked_org_sub = (data) => { const orgs = (data.topology?.orgs || []).filter(o => o.hv_status !== 'ok' || o.inv_status !== 'ok'); return `${orgs.map(o => o.org_name).join(', ')}`; }; cf.device_by_org_type_matrix = (data) => { const orgs = data.topology?.orgs || []; const types = ['ap', 'switch', 'gateway']; return { rows: orgs.map(o => o.org_name + (o.hv_status !== 'ok' ? ' 🔒' : '')), cols: types.map(t => t.toUpperCase()), cells: orgs.map(o => types.map(t => (o.devices || []).filter(d => d.type === t).length)) }; }; cf.license_by_org_status_matrix = (data) => { const orgs = data.topology?.orgs || []; return { rows: orgs.map(o => o.org_name + (o.hv_status !== 'ok' ? ' 🔒' : '')), cols: ['有効', '期限切れ'], cells: orgs.map(o => { const devs = o.devices || []; return [devs.filter(isAct).length, devs.filter(isExp).length]; }) }; }; cf.recommendation_pills = (data) => { const all = flat(data); const exp = all.filter(isExp); const buckets = {}; exp.forEach(d => { const action = d.type === 'gateway' || d.type === 'switch' ? '優先更新（基幹インフラ）' : '要評価：廃棄または更新 (AP)'; buckets[action] = (buckets[action] || 0) + 1; }); return Object.entries(buckets).map(([label, count]) => ({label: `${label}: ${count} 台`})); }; })();",
+      "sections": [
+        { "id": "realloc-alert", "title": "クロス Org 再配置の機会" },
+        {
+          "id": "kpis",
+          "items": [
+            { "label": "総フリート", "sub": "可視 Org 範囲" },
+            { "label": "有効ライセンス", "sub": "更新の参考" },
+            { "label": "期限切れがある Org" },
+            { "label": "制限された Org（RBAC / Plan）" }
+          ]
+        },
+        {
+          "id": "coverage-gauge",
+          "title": "フリート ライセンスカバレッジ",
+          "center_label": "有効",
+          "info_title": "フリートカバレッジ健全性"
+        },
+        { "id": "org-type-matrix", "title": "フリート構成 · Org × デバイス種別", "legend_min": "0", "legend_max": "多い" },
+        { "id": "license-matrix", "title": "ライセンス状況 · Org × ステータス", "legend_min": "なし", "legend_max": "多い" },
+        { "id": "recommendations", "title": "AI 推奨アクション", "empty_text": "現時点でフリート再配置は不要" },
+        {
+          "id": "candidate-list",
+          "title": "再配置候補リスト · Main_Org デバイス",
+          "meta_template": "${count} 件の候補",
+          "filters": [
+            { "label": "全て" },
+            { "label": "期限切れ" },
+            { "label": "AP" },
+            { "label": "Switch" }
+          ],
+          "detail_fields": [
+            { "label": "Device ID" },
+            { "label": "MAC" },
+            { "label": "シリアル" },
+            { "label": "登録日" },
+            { "label": "ライセンス期限" },
+            { "label": "現在のネットワーク" }
+          ]
+        }
+      ]
+    }
   }
 }
