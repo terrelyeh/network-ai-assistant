@@ -129,9 +129,25 @@ def validate_spec(spec: dict) -> None:
         raise ValueError("spec.sections must be non-empty")
     live_aliases = set((spec.get("live_data") or {}).keys())
     for i, s in enumerate(spec["sections"]):
+        # raw_html section: AI-authored HTML escape hatch (see design.md §3.3)
+        if "raw_html" in s:
+            if not isinstance(s["raw_html"], str):
+                raise ValueError(f"sections[{i}].raw_html must be a string")
+            if not s.get("raw_html_reason"):
+                print(
+                    f"WARN: sections[{i}].raw_html missing 'raw_html_reason'. "
+                    "Per design.md §3.3, every raw_html section should explain "
+                    "why a widget wasn't used and what widget should eventually "
+                    "be added.",
+                    file=sys.stderr,
+                )
+            continue
+        # widget section: must reference an existing widget file
         w = s.get("widget")
         if not w:
-            raise ValueError(f"sections[{i}].widget required")
+            raise ValueError(
+                f"sections[{i}] must have either 'widget' or 'raw_html'"
+            )
         path = WIDGETS_DIR / f"{w}.html"
         if not path.exists():
             raise ValueError(f"sections[{i}].widget '{w}' not found at {path}")
@@ -153,10 +169,12 @@ def compose(spec: dict, theme: str = "light", locale: str | None = None) -> str:
     theme_css = assemble_theme(theme)
     runtime_js = read(RUNTIME_DIR / "runtime.js")
 
-    # Collect widget assets, deduped by widget name
+    # Collect widget assets, deduped by widget name (raw_html sections skipped)
     seen = set()
     widget_assets = []
     for s in sections:
+        if "raw_html" in s:
+            continue
         if s["widget"] in seen: continue
         seen.add(s["widget"])
         widget_assets.append(load_widget_assets(s["widget"]))
@@ -167,7 +185,16 @@ def compose(spec: dict, theme: str = "light", locale: str | None = None) -> str:
 
     # Mount points for sections
     body_sections = []
-    for s in sections:
+    for i, s in enumerate(sections):
+        if "raw_html" in s:
+            # AI-authored escape hatch — inline the HTML directly.
+            sid = s.get("id") or f"raw-html-{i}"
+            reason = s.get("raw_html_reason", "")
+            comment = f"<!-- raw_html · {sid} · reason: {reason} -->" if reason else ""
+            body_sections.append(
+                f'{comment}\n<div data-section-id="{sid}" data-section-type="raw_html" style="margin-bottom: 20px;">{s["raw_html"]}</div>'
+            )
+            continue
         sid = s.get("id") or s["widget"]
         # Some widgets (alert, kpi_grid, chip_strip) are inline; cards/tables/tree are <div class="card">
         body_sections.append(f'<div data-widget-id="{sid}" data-widget="{s["widget"]}" style="margin-bottom: 20px;"></div>')

@@ -108,6 +108,8 @@ window.Dashboard = (() => {
     liveData = spec.live_data || {};
     // Wire each section
     for (const section of spec.sections) {
+      // raw_html sections are static; no widget lifecycle needed.
+      if (section.raw_html !== undefined) continue;
       const factory = widgets.get(section.widget);
       if (!factory) {
         console.error('Unknown widget:', section.widget);

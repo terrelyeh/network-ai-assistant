@@ -1,0 +1,149 @@
+<style>
+.w-pivot { font-size: 13px; overflow-x: auto; }
+.w-pivot table { border-collapse: collapse; width: 100%; min-width: 480px; }
+.w-pivot th, .w-pivot td {
+  padding: 8px 12px; vertical-align: middle;
+  border-bottom: 1px solid var(--border);
+}
+.w-pivot thead th {
+  text-align: right; font-weight: 600;
+  font-size: 10px; color: var(--text-3);
+  text-transform: uppercase; letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+.w-pivot thead th:first-child { text-align: left; }
+.w-pivot tbody th {
+  text-align: left; font-weight: 600; color: var(--text-1);
+  font-size: 13px; white-space: nowrap;
+}
+.w-pivot tbody td {
+  text-align: right; font-variant-numeric: tabular-nums;
+  color: var(--text-1); font-weight: 500;
+}
+.w-pivot .cell-empty { color: var(--text-3); font-weight: 400; }
+.w-pivot .cell-sub {
+  display: block; font-size: 11px; color: var(--text-3);
+  font-weight: 400; margin-top: 1px;
+  font-variant-numeric: tabular-nums;
+}
+.w-pivot .cell-sub.crit { color: var(--critical); }
+.w-pivot .cell-sub.warn { color: var(--warning); }
+.w-pivot .cell-sub.ok { color: var(--success); }
+.w-pivot .cell-sub.info { color: var(--info); }
+.w-pivot tr.totals-row { background: var(--surface-2); font-weight: 700; }
+.w-pivot tr.totals-row td, .w-pivot tr.totals-row th { border-bottom: 0; padding-top: 12px; }
+.w-pivot .totals-col {
+  background: var(--surface-2); font-weight: 700;
+  border-left: 1px solid var(--border-strong);
+}
+.w-pivot tbody tr:hover td:not(.totals-col),
+.w-pivot tbody tr:hover th:not(.totals-col) {
+  background: var(--surface-2);
+}
+.w-pivot tbody tr.totals-row:hover td,
+.w-pivot tbody tr.totals-row:hover th { background: var(--surface-2); }
+.w-pivot td.heat-1 { background: rgba(185,28,28,0.04); }
+.w-pivot td.heat-2 { background: rgba(185,28,28,0.10); }
+.w-pivot td.heat-3 { background: rgba(185,28,28,0.18); }
+.w-pivot td.heat-4 { background: rgba(185,28,28,0.28); color: var(--critical); font-weight: 700; }
+</style>
+
+<script>
+/* pivot_table widget
+ * Renders a 2D cross-tabulation: rows × cols, with cells showing value (+ optional sub-value).
+ *
+ * Spec config:
+ *   title: string
+ *   meta: string
+ *   compute: name of computeFns key that returns:
+ *     { rows: [{key, label}], cols: [{key, label}], cells: {[rowKey]: {[colKey]: {value, sub?, severity?, heat?}}} }
+ *   show_totals: 'both' | 'rows' | 'cols' | 'none'  (default: 'both')
+ *   heatmap: bool — if true, color cells by intensity relative to max value
+ */
+Dashboard.register('pivot_table', ({ el, config, ctx }) => {
+  el.classList.add('card');
+  el.innerHTML = `
+    <div class="card-hdr">
+      <h2>${config.title || 'Pivot Table'}</h2>
+      <span class="meta" data-bind="meta">—</span>
+    </div>
+    <div class="w-pivot" data-role="body"></div>
+  `;
+  const body = el.querySelector('[data-role="body"]');
+  const meta = el.querySelector('[data-bind="meta"]');
+
+  return {
+    render(data) {
+      const computed = (config.compute && window.computeFns[config.compute])
+        ? window.computeFns[config.compute](data, config)
+        : (config.data || { rows: [], cols: [], cells: {} });
+
+      const { rows = [], cols = [], cells = {} } = computed;
+      const showTotals = config.show_totals || 'both';
+      const wantRowTotal = showTotals === 'both' || showTotals === 'rows';
+      const wantColTotal = showTotals === 'both' || showTotals === 'cols';
+      const wantHeatmap = !!config.heatmap;
+
+      // Compute totals
+      const rowTotals = {};
+      const colTotals = {};
+      let grandTotal = 0;
+      let maxVal = 0;
+      for (const r of rows) {
+        let rt = 0;
+        for (const c of cols) {
+          const v = (cells[r.key] && cells[r.key][c.key] && cells[r.key][c.key].value) || 0;
+          rt += v;
+          colTotals[c.key] = (colTotals[c.key] || 0) + v;
+          if (v > maxVal) maxVal = v;
+        }
+        rowTotals[r.key] = rt;
+        grandTotal += rt;
+      }
+
+      const heatClass = (v) => {
+        if (!wantHeatmap || !maxVal) return '';
+        const ratio = v / maxVal;
+        if (ratio >= 0.75) return 'heat-4';
+        if (ratio >= 0.5) return 'heat-3';
+        if (ratio >= 0.25) return 'heat-2';
+        if (ratio > 0) return 'heat-1';
+        return '';
+      };
+
+      const headRow = `<tr>
+        <th>${config.row_header || ''}</th>
+        ${cols.map(c => `<th>${c.label}</th>`).join('')}
+        ${wantRowTotal ? `<th class="totals-col">${config.row_total_label || 'Total'}</th>` : ''}
+      </tr>`;
+
+      const bodyRows = rows.map(r => {
+        const cellsHtml = cols.map(c => {
+          const cell = (cells[r.key] && cells[r.key][c.key]) || null;
+          if (!cell || cell.value == null) return `<td class="cell-empty">·</td>`;
+          const v = cell.value;
+          const sub = cell.sub != null ? `<span class="cell-sub ${cell.severity || ''}">${cell.sub}</span>` : '';
+          return `<td class="${heatClass(v)}">${v}${sub}</td>`;
+        }).join('');
+        const totalCell = wantRowTotal
+          ? `<td class="totals-col">${rowTotals[r.key]}</td>`
+          : '';
+        return `<tr><th>${r.label}</th>${cellsHtml}${totalCell}</tr>`;
+      }).join('');
+
+      const totalsRow = wantColTotal ? `<tr class="totals-row">
+        <th>${config.col_total_label || 'Total'}</th>
+        ${cols.map(c => `<td>${colTotals[c.key] || 0}</td>`).join('')}
+        ${wantRowTotal ? `<td class="totals-col">${grandTotal}</td>` : ''}
+      </tr>` : '';
+
+      body.innerHTML = `<table>
+        <thead>${headRow}</thead>
+        <tbody>${bodyRows}${totalsRow}</tbody>
+      </table>`;
+
+      meta.textContent = `${rows.length} × ${cols.length} · ${grandTotal} total`;
+    }
+  };
+});
+</script>

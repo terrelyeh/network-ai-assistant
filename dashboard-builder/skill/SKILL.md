@@ -6,6 +6,21 @@ description: >
   Output is a single .html file that polls live-data/*.json every 5 seconds.
 ---
 
+## Design Rules — MANDATORY
+
+⚠️ **Before composing any dashboard spec**, you MUST use the **Read tool** to load `references/design.md` and follow its visual conventions.
+
+This is **non-negotiable**. `design.md` defines:
+- The 3-layer model (Frame / Tokens / Body content)
+- Required design tokens (never hardcode colors — always `var(--…)`)
+- When to use widgets vs `raw_html` escape hatch
+- Quality bar for what makes a "good" dashboard
+- Reverse-patterns to avoid (no Chart.js, no inline `<head>`, no hardcoded hex codes)
+
+If you skip this read, dashboards will drift from EnGenius brand consistency — a product defect.
+
+**Session-cache rule**: if you've already read `design.md` earlier in this session, you may rely on context, but explicitly confirm to yourself which sections apply before writing the spec.
+
 # Dashboard Builder
 
 This skill turns a small spec JSON into a polished, interactive HTML dashboard. Visual consistency is guaranteed by sharing a single design system (theme/tokens.css + base.css) and a widget library (widgets/*.html). Each widget is self-contained: HTML partial + JS module that registers itself on a shared `Dashboard` runtime.
@@ -33,6 +48,12 @@ This skill turns a small spec JSON into a polished, interactive HTML dashboard. 
       "widget": "<widget_name>",     // must match a file in widgets/
       "id": "string",                // optional; used by scroll/flash targets
       // ... widget-specific config; see references/widget_<name>.md
+    },
+    {
+      "id": "string",                // optional; identifier for this section
+      "raw_html": "<div class='card'>...</div>",  // escape hatch: AI-authored HTML
+      "raw_html_reason": "why no widget fits + what widget should eventually replace this"
+      // see design.md §3.3 for rules; raw_html must use var(--…) tokens, no external libs
     }
   ],
   "footer": {                        // optional
@@ -48,11 +69,18 @@ This skill turns a small spec JSON into a polished, interactive HTML dashboard. 
 |---|---|---|
 | `alert` | Banner (critical/warning/info/success) | references/widget_alert.md |
 | `kpi_grid` | 2-6 KPI cards in a row, optional clickable | references/widget_kpi_grid.md |
-| `card` | Generic surface with header + chips + content slot | references/widget_card.md |
+| `donut` | Composition pie ring (% of 100) | references/widget_donut.md |
+| `gauge` | Single metric vs threshold | references/widget_gauge.md |
 | `table` | Tabular data with filter chips + expandable rows | references/widget_table.md |
 | `bar_list` | Compositional bar chart (horizontal bars w/ labels) | references/widget_bar_list.md |
+| `stacked_bar_list` | Multi-segment bars per row (e.g. Active/Expired/Other in one bar) | references/widget_stacked_bar_list.md |
+| `pivot_table` | 2D cross-tabulation (rows × cols, with cell value + optional sub-value/heatmap) | references/widget_pivot_table.md |
 | `chip_strip` | List of small tags (e.g. empty networks) | references/widget_chip_strip.md |
 | `topology_tree` | Hierarchical org → network → device tree | references/widget_topology_tree.md |
+| `timeline` | Dated items on horizontal axis | references/widget_timeline.md |
+| `heatmap` | 2D matrix with cell-intensity colors | references/widget_heatmap.md |
+
+> Don't see what you need? Check `references/design.md §3.3` — you can use a `raw_html` section as an escape hatch (with `raw_html_reason` explaining why and what widget should eventually be added).
 
 ## Flow Modules
 

@@ -1,0 +1,139 @@
+<style>
+.w-stackbar { font-size: 13px; }
+.w-stackbar .row {
+  display: grid;
+  grid-template-columns: 110px 1fr 60px;
+  align-items: center; gap: 12px; margin-bottom: 10px;
+}
+.w-stackbar .label { color: var(--text-1); font-weight: 500; }
+.w-stackbar .track {
+  display: flex; height: 14px; border-radius: 4px;
+  background: var(--surface-2); overflow: hidden;
+  border: 1px solid var(--border);
+}
+.w-stackbar .seg {
+  height: 100%;
+  transition: opacity .15s ease;
+  cursor: default;
+}
+.w-stackbar .seg.sev-critical { background: var(--critical); }
+.w-stackbar .seg.sev-warning { background: var(--warning); }
+.w-stackbar .seg.sev-success { background: var(--success); }
+.w-stackbar .seg.sev-info { background: var(--info); }
+.w-stackbar .seg.sev-brand { background: var(--brand); }
+.w-stackbar .seg.sev-muted { background: var(--text-3); opacity: 0.4; }
+.w-stackbar .seg:hover { opacity: 0.7; }
+.w-stackbar .total {
+  text-align: right; font-weight: 700;
+  font-variant-numeric: tabular-nums; color: var(--text-1);
+}
+.w-stackbar .legend {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  margin-top: 14px; padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.w-stackbar .legend-item {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; color: var(--text-2); font-weight: 500;
+}
+.w-stackbar .legend-swatch {
+  width: 10px; height: 10px; border-radius: 2px;
+}
+.w-stackbar .legend-swatch.sev-critical { background: var(--critical); }
+.w-stackbar .legend-swatch.sev-warning { background: var(--warning); }
+.w-stackbar .legend-swatch.sev-success { background: var(--success); }
+.w-stackbar .legend-swatch.sev-info { background: var(--info); }
+.w-stackbar .legend-swatch.sev-brand { background: var(--brand); }
+.w-stackbar .legend-swatch.sev-muted { background: var(--text-3); opacity: 0.4; }
+.w-stackbar .empty {
+  text-align: center; padding: 20px;
+  color: var(--text-3); font-size: 12px;
+}
+</style>
+
+<script>
+/* stacked_bar_list widget
+ * Renders rows where each row has a single bar divided into multiple severity-coded segments.
+ * Useful for: per-org Active/Expired/Other breakdown in one bar.
+ *
+ * Spec config:
+ *   title: string
+ *   meta: string
+ *   compute: name of computeFns key that returns:
+ *     { rows: [{label, total?, segments: [{value, severity, label?}]}], legend?: [{label, severity}] }
+ *   sort_by_total: bool (default true) — sort rows by total descending
+ */
+Dashboard.register('stacked_bar_list', ({ el, config, ctx }) => {
+  el.classList.add('card');
+  el.innerHTML = `
+    <div class="card-hdr">
+      <h2>${config.title || 'Stacked Distribution'}</h2>
+      <span class="meta" data-bind="meta">—</span>
+    </div>
+    <div class="w-stackbar" data-role="body"></div>
+  `;
+  const body = el.querySelector('[data-role="body"]');
+  const meta = el.querySelector('[data-bind="meta"]');
+
+  return {
+    render(data) {
+      const computed = (config.compute && window.computeFns[config.compute])
+        ? window.computeFns[config.compute](data, config)
+        : (config.data || { rows: [], legend: [] });
+
+      let { rows = [], legend = [] } = computed;
+      const sortByTotal = config.sort_by_total !== false;
+
+      // Compute totals and globalMax
+      rows = rows.map(r => {
+        const segs = r.segments || [];
+        const total = r.total != null
+          ? r.total
+          : segs.reduce((s, x) => s + (x.value || 0), 0);
+        return { ...r, segments: segs, total };
+      });
+
+      if (sortByTotal) {
+        rows = rows.slice().sort((a, b) => b.total - a.total);
+      }
+
+      const globalMax = Math.max(1, ...rows.map(r => r.total));
+
+      if (rows.length === 0) {
+        body.innerHTML = `<div class="empty">No data</div>`;
+        meta.textContent = '0 rows';
+        return;
+      }
+
+      const rowsHtml = rows.map(r => {
+        const trackWidthPct = (r.total / globalMax) * 100;
+        const segsHtml = r.segments.map(seg => {
+          if (!seg.value) return '';
+          const widthPct = r.total > 0 ? (seg.value / r.total) * 100 : 0;
+          const sevClass = `sev-${seg.severity || 'muted'}`;
+          const lbl = seg.label || '';
+          return `<div class="seg ${sevClass}" style="width:${widthPct}%" title="${lbl}: ${seg.value}"></div>`;
+        }).join('');
+        return `<div class="row">
+          <div class="label">${r.label}</div>
+          <div style="display:flex">
+            <div class="track" style="width:${trackWidthPct}%">${segsHtml}</div>
+          </div>
+          <div class="total">${r.total}</div>
+        </div>`;
+      }).join('');
+
+      const legendHtml = legend.length ? `<div class="legend">
+        ${legend.map(l => `<div class="legend-item">
+          <span class="legend-swatch sev-${l.severity}"></span>${l.label}
+        </div>`).join('')}
+      </div>` : '';
+
+      body.innerHTML = rowsHtml + legendHtml;
+
+      const totalAll = rows.reduce((s, r) => s + r.total, 0);
+      meta.textContent = `${rows.length} rows · ${totalAll} total`;
+    }
+  };
+});
+</script>

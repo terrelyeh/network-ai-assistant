@@ -1,6 +1,8 @@
 # Widget Catalog · Quick Reference
 
-10 widgets currently available. Each widget has its own detail page in this folder.
+> **Before composing any dashboard**, read [`design.md`](design.md) — the 3-layer model + design tokens + when to use `raw_html` escape hatch. **MANDATORY** per dashboard-builder/SKILL.md.
+
+12 widgets currently available. Each widget has its own detail page in this folder.
 
 | Widget | One-liner | Best for | Detail |
 |---|---|---|---|
@@ -8,12 +10,16 @@
 | [`kpi_grid`](widget_kpi_grid.md) | 2-6 metric cards | "Current state at a glance" | Clickable cross-widget targets |
 | [`table`](widget_table.md) | Filterable rows + expand for detail | "Show me records" | filters / expandable / row-click events |
 | [`bar_list`](widget_bar_list.md) | Horizontal bars per category | "Distribution / composition" | grouped bars, severity colors |
+| [`stacked_bar_list`](widget_stacked_bar_list.md) ⭐ | Multi-segment bars per row | "Per-org Active/Expired/Other in one bar" | scaled to global max, sortable, legend |
 | [`donut`](widget_donut.md) | SVG ring chart with center metric | "% of total" framing | hover sync, 2-6 segments |
 | [`gauge`](widget_gauge.md) | Half-circle gauge with target | "Where are we on the scale?" | thresholds, delta vs target |
+| [`pivot_table`](widget_pivot_table.md) ⭐ | 2D cross-tab (rows × cols) | "Type × org matrix, value + sub-value per cell" | row/col totals, optional heatmap, sub-value coloring |
 | [`chip_strip`](widget_chip_strip.md) | Dashed tags | "Minor list, no attributes" | empty-state aware |
 | [`topology_tree`](widget_topology_tree.md) | Hierarchical org → net → device | "Cross-org structure" | RBAC-aware, click device → expand table row |
 | [`timeline`](widget_timeline.md) | Dated items on horizontal axis | "When things happen / are due" | TODAY marker, severity by date |
 | [`heatmap`](widget_heatmap.md) | 2D matrix with cell-intensity colors | "Hotspot in 2 dimensions" | palette options, hover tooltip |
+
+⭐ = added 2026-05-17 in response to V1 vs V2 case study (see [`docs/persona-test-results.md`](../../../docs/persona-test-results.md)).
 
 ## Future candidates (not built yet)
 

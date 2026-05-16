@@ -154,6 +154,8 @@
 
 **Tie-break 規則**：超過 1 個信號落在同一欄 → 走那欄。落在兩欄之間 → 走文字，並在結尾**問**「要拉 dashboard 嗎？」
 
+> 🎨 **走 dashboard 那一欄時的額外規則**：必須先用 Read tool 載入 `references/design.md`（如果同 session 還沒讀過），照它的 3 層架構（Frame / Tokens / Body content）組 spec。不要自己 hand-roll Chart.js / D3，那會破壞跨 dashboard 視覺一致性。現有 widget 不夠用時用 `raw_html` section 並填 `raw_html_reason`。詳見 `design.md §3.3`。
+
 ### 3.2 具體決策範例
 
 | 客戶問 | 我選 | 為什麼 |
