@@ -1,8 +1,10 @@
 # Dashboard Design Rules · EnGenius Network AI-Assistant
 
-> **Version**: v0 (2026-05-17)
+> **Version**: v0.2 (2026-05-17)
 > **Audience**: Claude / any LLM agent composing dashboards via `dashboard-builder` skill
 > **Goal**: 讓 AI 在 widget library 之外保留自由度，**同時**確保每張 dashboard 看起來像同一個產品
+
+> ⚠️ **使用情境注意**：本文件假設 dashboard 用在 **demo 帳號 / 開發者自己的 staging 帳號**。如果是 SI / Partner 用自家帳號**幫終端客戶**跑生產 dashboard，請手動加上 PII 匿名化處理（員工姓名、email 等）— 這個 case design.md 不規範，由 SI 自己判斷情境。
 
 ---
 
@@ -24,6 +26,26 @@
 ```
 
 **規矩**：Layer 1+2 不可違反，Layer 3 自由發揮 — 但要套 tokens、要在無法用 widget 時於 raw_html section 內留 comment 說明「為什麼這裡要 hand-roll」。
+
+---
+
+## 🚫 絕對不能做（Hard Prohibitions）
+
+**下面 9 條沒有例外**。違反任一條 → 停下、詢問使用者、不要 generate。這些是「會破壞 demo / 違法 / 系統會崩」的紅線。
+
+| # | 類別 | NEVER | 理由 |
+|---|---|---|---|
+| ① | 安全 | 在 raw_html 或任何輸出中放 API key / token / password / secret | 即使 demo 也會在 screenshot / git history 留痕，外洩風險 |
+| ② | 安全 | 在 raw_html 內 `fetch()` 外部 URL（compose.py 已 inject Google Fonts 是唯一例外）| 資料不應該離開 dashboard 上下文 |
+| ③ | 安全 | 用 `eval` / `new Function(...)` / `setTimeout("string", ...)` | 代碼注入路徑 |
+| ④ | 系統 | 在 raw_html 內寫 `<script>` 標籤 | runtime.js 是唯一執行環境，外部 script 繞過 widget event bus |
+| ⑤ | 系統 | 引外部 JS / CSS lib（Chart.js / D3 / Bootstrap / FontAwesome / Tailwind CDN）| 視覺一致性 + i18n + theme switch 全崩 |
+| ⑥ | 系統 | 用 `!important` 蓋 theme tokens | 破壞 dark mode cascade |
+| ⑦ | 品牌 | 連結到競品（Cisco / Aruba / Ubiquiti / Meraki / TP-Link / Netgear 等）| 不要在自家 dashboard 幫客戶看到競品 |
+| ⑧ | 品牌 / 法務 | 編造不存在的功能（「點此續訂」「升級 PRO」按鈕沒後端支援，按了沒反應）| 信任受損 + 可能涉及不實宣傳 |
+| ⑨ | 品質 | 用棄用 HTML（`<marquee>` / `<blink>` / `<font>` / `<center>` / `<frameset>`）| 1990 年代的東西，現代瀏覽器不一定 work |
+
+> 軟性的「不建議但不會崩」反 pattern → 見 §8 Soft anti-patterns。差別：§🚫 是「**遇到就停**」，§8 是「**儘量避免**」。
 
 ---
 
@@ -223,26 +245,77 @@
 
 ---
 
-## 7. 反 pattern · 不要做的事
+## 7. Output filename convention
 
-| 反 pattern | 為什麼不行 |
+Dashboard 輸出檔名走**雙模式**，根據是 validated（預錄）還是 ad-hoc（即興）：
+
+### 7.1 Validated specs（穩定檔名）
+
+對應 `examples/<topic>.spec.json` 的 dashboard 用穩定檔名，方便書籤、SI 給客戶分享：
+
+| 檔名 pattern | 範例 | 用途 |
+|---|---|---|
+| `<topic>.html` | `org-health.html` | 預設語言版（zh-TW）|
+| `<topic>-en.html` | `org-health-en.html` | 英文版 |
+| `<topic>-ja.html` | `org-health-ja.html` | 日文版 |
+| `<topic>-dark.html` | `org-health-dark.html` | Dark theme variant |
+
+特性：可書籤、URL 可分享、會被覆蓋（每次重 compose 同一檔）。
+
+### 7.2 Ad-hoc generation（永遠帶 timestamp）
+
+當 AI 在對話中即興組 dashboard（不是跑 validated examples），**預設**用 timestamped 檔名：
+
+```
+canvas-<topic>-YYYYMMDD-HHMMSS.html
+```
+
+範例：`canvas-org-device-distribution-20260517-002928.html`
+
+**為什麼一定要 timestamp**：
+
+- ✅ **Wedge 證據**：booth 觀眾看到 URL 在變 = 證明「剛剛生的」，不是預錄
+- ✅ **歷史保留**：每次生成保留一份，舊的不被蓋
+- ✅ **配 generated-log.html**：log entry 對應 timestamped canvas，可追溯
+- ❌ 如果固定檔名 → 觀眾看不出是 ad-hoc 還是 cached
+
+### 7.3 操作員的指令模板
+
+| 情境 | 跑什麼 |
 |---|---|
-| 引 Chart.js / D3 / 任何外部 CDN viz lib | 視覺風格跟既有 widget 不一致；無 theme switch；無 i18n |
-| 自己寫 `<head>` / `<title>` / Google Fonts link | compose.py 已包，重複會衝突 |
-| Hardcode `color: #xxx` | Dark theme 不會 cascade |
-| 寫 inline `onclick="..."` 互動 | 跳過 event bus，跨 widget 跳轉壞掉 |
-| 一頁塞 10+ section | 客戶找不到重點 |
-| Section 之間留太大 margin | 視覺破碎 |
-| 把所有 KPI 數字塞 1 個 `kpi_grid`（超過 6 個）| 對手機 / 小螢幕崩 |
-| 表格 row 沒辦法展開細節 | 客戶要點進另一個 widget 查 → 動線斷 |
+| Booth 主秀（按腳本走）| `python compose.py --spec examples/<topic>.spec.json --out <topic>.html` |
+| Booth 主秀多語 | `python compose.py --spec examples/<topic>.spec.json --locale ja --out <topic>-ja.html` |
+| Booth ad-hoc（觀眾問新問題）| `python compose.py --spec /tmp/adhoc.spec.json --out canvas-<topic>-$(date +%Y%m%d-%H%M%S).html` |
 
 ---
 
-## 8. 給 LLM 的執行 checklist
+## 8. Soft anti-patterns · 不建議但不會崩
+
+> 跟 §🚫 Hard prohibitions 差別：§🚫 是「**遇到就停**」，§8 是「**儘量避免**」。下面是 UX / 品質類的常見錯誤，做了不會崩，但 dashboard 會差。
+
+| 反 pattern | 為什麼不好 |
+|---|---|
+| 一頁塞 10+ section | 客戶找不到重點，掃描成本太高 |
+| Section 之間留太大 margin | 視覺破碎，看不出哪些是相關的 |
+| 把所有 KPI 數字塞 1 個 `kpi_grid`（超過 6 個）| 對手機 / 小螢幕崩 |
+| 表格 row 沒辦法展開細節 | 客戶要點進另一個 widget 查 → 動線斷 |
+| Donut 超過 6 個 segment | 顏色辨識度下降，legend 變超長 |
+| Bar list 沒排序 | 一眼看不到「最大的是誰」 |
+| Alert 文字超過 3 行 | 變成 paragraph，失去「一句話判斷」的本意 |
+| 在 §🚫 的紅線邊緣寫 raw_html | 若不確定 → 不要寫，問使用者 |
+
+---
+
+## 9. 給 LLM 的執行 checklist
 
 組 spec 之前自問：
 
 ```
+先掃 §🚫:
+[ ] 沒違反 9 條 hard prohibitions
+[ ] 沒在 raw_html 放 secret / 引外部 lib / 寫 <script>
+
+再規劃內容:
 [ ] 我要表達的內容是什麼？（用一句話）
 [ ] 這個內容用既有 widget 能表達嗎？
 [ ] 如果不能，是哪個 widget 該補？我先用 raw_html 並寫 reason
@@ -250,13 +323,19 @@
 [ ] 每個顏色用了 var(--...) tokens？
 [ ] 字串都可以 i18n 覆寫？
 [ ] 客戶 5/10/30 秒能找到什麼？
+
+決定 output:
+[ ] Validated → 穩定檔名（§7.1）
+[ ] Ad-hoc → timestamped 檔名（§7.2）
 ```
 
 ---
 
-## 9. 維護注意事項
+## 10. 維護注意事項
 
+- **§🚫 Hard prohibitions**：新發現的紅線加進來時，明確標明「會破壞 demo / 違法 / 系統會崩」其中哪一類
 - **§3.2 widget 表**：新 widget 加進來時更新這裡 + `references/index.md`
-- **§7 反 pattern**：累積踩坑後補
+- **§7 filename convention**：當有新的命名場景出現再補
+- **§8 Soft anti-patterns**：累積踩坑後補
 - **§3.3 raw_html_reason 累積分析**：每月 review 一次，看哪些 reason 重複 → 變成新 widget needs
-- **目標長度**：≤ 400 行（每次 dashboard-builder 觸發都載入，token 成本控制）
+- **目標長度**：≤ 450 行（每次 dashboard-builder 觸發都載入，token 成本控制）
