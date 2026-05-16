@@ -77,6 +77,51 @@ def load_widget_assets(name: str) -> dict:
     }
 
 
+def deep_merge(base, override):
+    """Deep merge override into base.
+    - dict + dict: recursive merge, override wins per-key
+    - list of {id: ...} on both sides: merge by id (override fields win)
+    - equal-length list: positional merge (covers kpi items, columns, filters)
+    - other list / scalar / type mismatch: override replaces
+    """
+    if isinstance(base, dict) and isinstance(override, dict):
+        out = dict(base)
+        for k, v in override.items():
+            out[k] = deep_merge(out[k], v) if k in out else v
+        return out
+    if isinstance(base, list) and isinstance(override, list):
+        # id-based merge for sections
+        if (base and override
+                and all(isinstance(x, dict) and "id" in x for x in base)
+                and all(isinstance(x, dict) and "id" in x for x in override)):
+            by_id = {x["id"]: i for i, x in enumerate(base)}
+            out = [dict(x) for x in base]
+            for o in override:
+                if o["id"] in by_id:
+                    out[by_id[o["id"]]] = deep_merge(out[by_id[o["id"]]], o)
+                else:
+                    out.append(o)
+            return out
+        # Positional merge for equal-length lists
+        if len(base) == len(override):
+            return [deep_merge(b, o) for b, o in zip(base, override)]
+        return override
+    return override
+
+
+def apply_locale(spec: dict, locale: str | None) -> dict:
+    """Merge `spec.locales[locale]` into spec; strip the locales key from output.
+    No-op if locale is None / 'default' / not declared."""
+    stripped = {k: v for k, v in spec.items() if k != "locales"}
+    if not locale or locale == "default":
+        return stripped
+    overrides = (spec.get("locales") or {}).get(locale)
+    if overrides is None:
+        print(f"WARN: locale '{locale}' not declared in spec.locales; using default.", file=sys.stderr)
+        return stripped
+    return deep_merge(stripped, overrides)
+
+
 def validate_spec(spec: dict) -> None:
     if "title" not in spec:
         raise ValueError("spec.title required")
@@ -92,7 +137,11 @@ def validate_spec(spec: dict) -> None:
             raise ValueError(f"sections[{i}].widget '{w}' not found at {path}")
 
 
-def compose(spec: dict, theme: str = "light") -> str:
+def compose(spec: dict, theme: str = "light", locale: str | None = None) -> str:
+    # `_html_lang` is the lang attribute on <html>; default zh-TW unless overridden
+    html_lang_default = spec.get("html_lang", "zh-TW")
+    spec = apply_locale(spec, locale)
+    html_lang = spec.get("html_lang", html_lang_default)
     validate_spec(spec)
     title = spec.get("title", "Dashboard")
     subtitle = spec.get("subtitle", "")
@@ -142,7 +191,7 @@ def compose(spec: dict, theme: str = "light") -> str:
 """ if footer else ""
 
     html = f"""<!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="{html_lang}">
 <head>
 <meta charset="UTF-8">
 <title>{title}</title>
@@ -204,11 +253,12 @@ def main():
     ap.add_argument("--spec", required=True, help="Path to spec JSON file")
     ap.add_argument("--out", required=True, help="Output HTML path")
     ap.add_argument("--theme", default="light", help="Theme variant: 'light' (default) or 'dark' (uses tokens-dark.css)")
+    ap.add_argument("--locale", default=None, help="Locale override; merges spec.locales[<locale>] into base spec. Example: --locale en or --locale ja")
     args = ap.parse_args()
 
     spec = json.loads(Path(args.spec).read_text(encoding="utf-8"))
     try:
-        html = compose(spec, theme=args.theme)
+        html = compose(spec, theme=args.theme, locale=args.locale)
     except (ValueError, FileNotFoundError) as e:
         print(f"ERROR: {e}", file=sys.stderr)
         sys.exit(1)

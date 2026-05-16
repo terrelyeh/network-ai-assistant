@@ -113,5 +113,86 @@
       "get_inventory (× 5 orgs)",
       "get_org_memberships_overall"
     ]
+  },
+
+  "locales": {
+    "en": {
+      "html_lang": "en",
+      "title": "Multi-Org Governance Audit",
+      "subtitle": "MSP/Partner lens · cross-5-org access health + compliance review",
+      "compute_fns": "(() => { const cf = window.computeFns; const flat = data => (data.topology?.orgs || []).flatMap(o => (o.devices || []).map(d => ({...d, org_name: o.org_name}))); const isExp = d => d.license_status === 'expired'; cf.gov_summary = (data) => { const orgs = data.topology?.orgs || []; const acc = orgs.filter(o => o.hv_status === 'ok' && o.inv_status === 'ok').length; const blocked = orgs.filter(o => o.hv_status !== 'ok' || o.inv_status !== 'ok').length; const all = flat(data); const exp = all.filter(isExp).length; return `Managing ${orgs.length} orgs: ${acc} fully visible, ${blocked} blocked by RBAC/Plan; ${exp} of ${all.length} visible devices have expired licenses.`; }; cf.org_total = (data) => (data.topology?.orgs || []).length; cf.org_accessible = (data) => (data.topology?.orgs || []).filter(o => o.hv_status === 'ok' && o.inv_status === 'ok').length; cf.org_accessible_sub = (data) => { const partial = (data.topology?.orgs || []).filter(o => o.hv_status === 'ok' && o.inv_status !== 'ok').length; return partial > 0 ? `+${partial} partially limited` : 'fully visible'; }; cf.fleet_total = (data) => flat(data).length; cf.fleet_total_sub = (data) => `${flat(data).filter(isExp).length} expired`; cf.member_total = (data) => (data.memberships?.org_member_candidates || []).length; cf.member_admin_count = (data) => (data.memberships?.org_member_candidates || []).filter(m => m.org_role === 'admin').length; cf.member_admin_sub = (data) => `${cf.member_admin_count(data)} admins`; cf.org_access_segments = (data) => { const orgs = data.topology?.orgs || []; const fully = orgs.filter(o => o.hv_status === 'ok' && o.inv_status === 'ok'); const partial = orgs.filter(o => o.hv_status === 'ok' && o.inv_status !== 'ok'); const rbac = orgs.filter(o => o.hv_status === 'forbidden' || o.inv_status === 'forbidden').filter(o => o.hv_status !== 'ok'); const plan = orgs.filter(o => o.hv_status === 'payment_required'); return [ { label: 'Fully Accessible', value: fully.length, severity: 'success' }, { label: 'Partially Visible', value: partial.length, severity: 'warning' }, { label: 'RBAC Blocked (403)', value: rbac.length, severity: 'critical' }, { label: 'Plan Blocked (402)', value: plan.length, severity: 'muted' } ].filter(s => s.value > 0); }; cf.license_status_segments = (data) => { const all = flat(data); const exp = all.filter(isExp).length; const act = all.length - exp; return [ { label: 'Expired', value: exp, severity: 'critical' }, { label: 'Active', value: act, severity: 'success' } ].filter(s => s.value > 0); }; cf.cross_org_findings = (data) => { const orgs = data.topology?.orgs || []; const findings = []; const blocked = orgs.filter(o => o.hv_status !== 'ok'); if (blocked.length) findings.push({ label: `${blocked.length} org(s) cannot be audited: ${blocked.map(o => o.org_name).join(', ')}` }); const all = flat(data); const exp = all.filter(isExp); if (exp.length) findings.push({ label: `${exp.length} devices with expired licenses (in ${[...new Set(exp.map(d => d.org_name))].join(', ')})` }); const members = data.memberships?.org_member_candidates || []; const stale = members.filter(m => m.last_login_time && (Date.now() - m.last_login_time) > 365 * 86400000); if (stale.length) findings.push({ label: `${stale.length} stale accounts still hold permissions (>1y no login)` }); const orgsNoDev = orgs.filter(o => o.hv_status === 'ok' && (o.networks || []).length > 0 && (o.devices || []).length === 0); if (orgsNoDev.length) findings.push({ label: `${orgsNoDev.length} org(s) with networks but no devices: ${orgsNoDev.map(o => o.org_name).join(', ')}` }); return findings; }; })();",
+      "sections": [
+        { "id": "gov-alert", "title": "Cross-Org Governance Summary" },
+        {
+          "id": "kpis",
+          "items": [
+            { "label": "Total Orgs", "sub": "managed" },
+            { "label": "Fully Accessible" },
+            { "label": "Total Devices" },
+            { "label": "Team Members" }
+          ]
+        },
+        { "id": "access-mix", "title": "Orgs by Access Level", "center_label": "Orgs" },
+        { "id": "topology", "title": "Network Topology · All Orgs (RBAC-aware)" },
+        { "id": "findings", "title": "Cross-Org Findings · Action Items", "empty_text": "No cross-org governance issues found" },
+        { "id": "license-mix", "title": "Fleet License Status", "center_label": "Devices" },
+        {
+          "id": "team-roster",
+          "title": "Team Members · Main_Org (cross-org member API pending RD)",
+          "meta_template": "${count} members",
+          "filters": [
+            { "label": "All" },
+            { "label": "Admins" },
+            { "label": "Stale" }
+          ],
+          "detail_fields": [
+            { "label": "User ID" },
+            { "label": "Email" },
+            { "label": "Status" },
+            { "label": "Last Login" },
+            { "label": "Network Access" }
+          ]
+        }
+      ]
+    },
+    "ja": {
+      "html_lang": "ja",
+      "title": "マルチ Org ガバナンス監査",
+      "subtitle": "MSP / Partner 視点 · 5 つの Org のアクセス健全性とコンプライアンス確認",
+      "compute_fns": "(() => { const cf = window.computeFns; const flat = data => (data.topology?.orgs || []).flatMap(o => (o.devices || []).map(d => ({...d, org_name: o.org_name}))); const isExp = d => d.license_status === 'expired'; cf.gov_summary = (data) => { const orgs = data.topology?.orgs || []; const acc = orgs.filter(o => o.hv_status === 'ok' && o.inv_status === 'ok').length; const blocked = orgs.filter(o => o.hv_status !== 'ok' || o.inv_status !== 'ok').length; const all = flat(data); const exp = all.filter(isExp).length; return `${orgs.length} 個の Org を管理：${acc} 個が完全可視、${blocked} 個が RBAC / Plan により制限。可視 ${all.length} デバイス中 ${exp} 台のライセンスが期限切れ。`; }; cf.org_total = (data) => (data.topology?.orgs || []).length; cf.org_accessible = (data) => (data.topology?.orgs || []).filter(o => o.hv_status === 'ok' && o.inv_status === 'ok').length; cf.org_accessible_sub = (data) => { const partial = (data.topology?.orgs || []).filter(o => o.hv_status === 'ok' && o.inv_status !== 'ok').length; return partial > 0 ? `+${partial} 部分制限` : '完全可視'; }; cf.fleet_total = (data) => flat(data).length; cf.fleet_total_sub = (data) => `${flat(data).filter(isExp).length} 期限切れ`; cf.member_total = (data) => (data.memberships?.org_member_candidates || []).length; cf.member_admin_count = (data) => (data.memberships?.org_member_candidates || []).filter(m => m.org_role === 'admin').length; cf.member_admin_sub = (data) => `${cf.member_admin_count(data)} admin`; cf.org_access_segments = (data) => { const orgs = data.topology?.orgs || []; const fully = orgs.filter(o => o.hv_status === 'ok' && o.inv_status === 'ok'); const partial = orgs.filter(o => o.hv_status === 'ok' && o.inv_status !== 'ok'); const rbac = orgs.filter(o => o.hv_status === 'forbidden' || o.inv_status === 'forbidden').filter(o => o.hv_status !== 'ok'); const plan = orgs.filter(o => o.hv_status === 'payment_required'); return [ { label: '完全アクセス可', value: fully.length, severity: 'success' }, { label: '部分可視', value: partial.length, severity: 'warning' }, { label: 'RBAC 制限 (403)', value: rbac.length, severity: 'critical' }, { label: 'Plan 制限 (402)', value: plan.length, severity: 'muted' } ].filter(s => s.value > 0); }; cf.license_status_segments = (data) => { const all = flat(data); const exp = all.filter(isExp).length; const act = all.length - exp; return [ { label: '期限切れ', value: exp, severity: 'critical' }, { label: '有効', value: act, severity: 'success' } ].filter(s => s.value > 0); }; cf.cross_org_findings = (data) => { const orgs = data.topology?.orgs || []; const findings = []; const blocked = orgs.filter(o => o.hv_status !== 'ok'); if (blocked.length) findings.push({ label: `${blocked.length} 個の Org が監査不可：${blocked.map(o => o.org_name).join(', ')}` }); const all = flat(data); const exp = all.filter(isExp); if (exp.length) findings.push({ label: `${exp.length} 台のデバイスが期限切れ（${[...new Set(exp.map(d => d.org_name))].join(', ')}）` }); const members = data.memberships?.org_member_candidates || []; const stale = members.filter(m => m.last_login_time && (Date.now() - m.last_login_time) > 365 * 86400000); if (stale.length) findings.push({ label: `${stale.length} 個の休眠アカウントが権限を保持（1 年以上未ログイン）` }); const orgsNoDev = orgs.filter(o => o.hv_status === 'ok' && (o.networks || []).length > 0 && (o.devices || []).length === 0); if (orgsNoDev.length) findings.push({ label: `${orgsNoDev.length} 個の Org にネットワークはあるがデバイス未配備：${orgsNoDev.map(o => o.org_name).join(', ')}` }); return findings; }; })();",
+      "sections": [
+        { "id": "gov-alert", "title": "全 Org ガバナンス概要" },
+        {
+          "id": "kpis",
+          "items": [
+            { "label": "総 Org 数", "sub": "管理対象" },
+            { "label": "完全アクセス可" },
+            { "label": "総デバイス数" },
+            { "label": "チームメンバー" }
+          ]
+        },
+        { "id": "access-mix", "title": "アクセスレベル別 Org 構成", "center_label": "Org" },
+        { "id": "topology", "title": "ネットワークトポロジー · 全 Org（RBAC 対応）" },
+        { "id": "findings", "title": "全 Org の検出事項 · 対応待ち", "empty_text": "全 Org のガバナンス問題なし" },
+        { "id": "license-mix", "title": "フリート ライセンス状況", "center_label": "デバイス" },
+        {
+          "id": "team-roster",
+          "title": "チームメンバー · Main_Org（クロス Org メンバー API は RD 対応待ち）",
+          "meta_template": "${count} 名",
+          "filters": [
+            { "label": "全て" },
+            { "label": "Admin" },
+            { "label": "休眠" }
+          ],
+          "detail_fields": [
+            { "label": "User ID" },
+            { "label": "Email" },
+            { "label": "ステータス" },
+            { "label": "最終ログイン" },
+            { "label": "ネットワーク権限" }
+          ]
+        }
+      ]
+    }
   }
 }
