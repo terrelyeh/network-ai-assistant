@@ -5,13 +5,21 @@
 - **Line 1** — 在既有 EnGenius Cloud 網管平台**內**整合 AI Chat 助理（員工自助 + SMB IT 駕駛艙）
 - **Line 2** ⭐ **現 focus** — 把 Cloud API 包成 SKILL，給 AI coding agent（Claude Code）用，並基於情境**動態生成 dashboard**
 
-完整 14 個策略/技術頁 + 4 個 mockup + 1 sales deck + 7 份內部技術文件 + Live PoC 連真實 staging API。
-
-- 🎯 **[home-product.html](./home-product.html)** — 產品 / 行銷 hub
-- 🛠 **[home-engineering.html](./home-engineering.html)** — 工程 / 技術 hub
-- 🧪 **[prototype/scenarios.html](./prototype/scenarios.html)** ★ — Live PoC 展示集（真實 API 串通）
-
 🔗 **Live**: https://network-ai-assistant.vercel.app
+
+## 🚀 開始這裡
+
+### ⭐ Dashboard Builder（主秀，2026-05 新建）
+**[`dashboard-builder/architecture.html`](./dashboard-builder/architecture.html)** — 完整架構說明 + 10 widget catalog + 7 張 live dashboard + RD 待補項目
+
+- 跨真實 EnGenius Cloud staging API · 雙 script workflow（refresh-all + compose.py）
+- **10 widget** · **5 validated 情境** · **3 locale**（zh-TW / EN / JA） · **light + dark theme**
+- 整套 skill 自包含在 [`dashboard-builder/skill/`](./dashboard-builder/skill/)（將來移交 RD 整合進 api-skills）
+
+### 主要 hub 頁
+- 🎯 [home-product.html](./home-product.html) — 產品 / 行銷 hub
+- 🛠 [home-engineering.html](./home-engineering.html) — 工程 / 技術 hub
+- 🧪 [prototype/scenarios.html](./prototype/scenarios.html) — 早期 PoC 展示集（2026-05-13 之前的版本）
 
 ## 📂 從哪裡開始
 
@@ -29,9 +37,16 @@
 - [`playbook-examples.html`](./playbook-examples.html) — 5 個 playbook 範例
 
 ### ⭐ Wedge Product（進入點產品）
-- [`dashboard-builder-demo.html`](./dashboard-builder-demo.html) — 10 場景互動 demo（widget header 用 EnGenius Cloud logo，chat 側用品牌藍）
-- [`dashboard-builder-implementation.html`](./dashboard-builder-implementation.html) — 實作完整指南（4 tab · 客戶/工程深入用）
-- [`dashboard-builder-prep.html`](./dashboard-builder-prep.html) — ★ 前端準備指南（內部 kickoff 對齊 · sticky TOC + 右側滑入 design tokens panel）
+
+**主入口（2026-05 新建，最新進度）**：
+- [`dashboard-builder/architecture.html`](./dashboard-builder/architecture.html) — 完整架構說明
+- [`dashboard-builder/widget-catalog.html`](./dashboard-builder/widget-catalog.html) — 10 widget spec viewer
+- 7 張 live dashboard：org-health / offboarding-audit / license-renewal / multi-org-governance / cross-org-reallocation（每張都有 zh-TW / EN / JA 三語言版 + light/dark theme）
+
+**早期行銷頁（仍在站上，但內容對應的是 prototype，非 dashboard-builder）**：
+- [`dashboard-builder-demo.html`](./dashboard-builder-demo.html) — 10 場景互動 demo
+- [`dashboard-builder-implementation.html`](./dashboard-builder-implementation.html) — 實作完整指南（4 tab）
+- [`dashboard-builder-prep.html`](./dashboard-builder-prep.html) — 前端準備指南
 
 > Dashboard Builder 是**跨模式 wedge product**，不是 Mode B 子功能。
 > 行銷上獨立主推、工程上仍是 third skill class。

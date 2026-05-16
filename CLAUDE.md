@@ -1,6 +1,6 @@
 # CLAUDE.md — Network AI-Assistant Proposal Site
 
-> Last updated: 2026-05-13
+> Last updated: 2026-05-16
 
 ## Project Overview
 
@@ -122,91 +122,80 @@ network-ai-assistant/
 - 大部分頁 nav：`<a class="nav-link muted-link" href="...">`
 - 加新頁要更新所有內容頁 nav + index.html
 
-## 🎯 Line 2 PoC 現況（Dashboard Builder 工作流）
+## ★ Dashboard Builder Skill（Line 2 核心區）
 
-**目標**：訪客問問題 → 操作員跑 SKILL → AI 用真實 API 結果生 dashboard HTML →
-preview 視窗顯示 → 觀眾看到 wow。
+整套 AI demo 內容隔離在 [`dashboard-builder/`](dashboard-builder/)，跟 root + `prototype/` 不混。
+**主入口**：[`dashboard-builder/architecture.html`](dashboard-builder/architecture.html) — 完整架構說明 + gallery + 規範。
 
-### 已跑通的 6 個真實 API ops（讀取類）
-
-```python
-# 在 api-skills/ 目錄，已驗證 staging 可呼叫：
-init-orgs/get_user_orgs           # 5 orgs
-hvs/get_hierarchy_views           # 14 networks (Gordon 含 7F_shieldingRoom)
-org-devices/get_inventory         # 1 device (Vertical Demo / ESG610 gateway)
-org-licenses/get_licenses         # 3 licenses (1 expired)
-networks/get_ssid_profiles        # 1 SSID
-networks/get_general_policy_plus  # 32 policy fields
-networks/get_network_acls         # all 3 access types empty
-team-members/get_org_memberships_overall  # 3 members (黃依雯/Antony/Terrel)
-```
-
-### 已驗證流程
+### 雙 script workflow
 
 ```bash
-cd api-skills && source .venv/bin/activate
-export MANAGE_SYSTEM_URL="https://falcon.staging.engenius.ai"
-export API_KEY="<從 user 帳號生成>"
-# 跑 skill → JSON → 我讀 → 寫 canvas-<TS>.html → preview 自動顯示
+# 1) 展前撈最新 staging 資料（~14s）
+bash dashboard-builder/scripts/refresh-all.sh
+
+# 2) spec JSON → 自包含 HTML（~200ms）
+python dashboard-builder/skill/scripts/compose.py \
+  --spec dashboard-builder/skill/examples/<scenario>.spec.json \
+  --out dashboard-builder/<name>.html \
+  [--theme light|dark] [--locale en|ja]
 ```
 
-### Booth 展會工作流（驗證 work）
+`compose.py` 不打雲端、`refresh-all.sh` 不生 HTML，分工乾淨。詳見 architecture.html#howto。
 
-```
-prototype/generated-log.html ── (auto-poll 2s) ──┐
-                                                  │
-[訪客問問題]                                       │
-   ↓                                              │
-[操作員] Claude Code 跑 skill                     │
-   ↓                                              │
-[操作員] 告訴我「生 X 場景」                      │
-   ↓                                              │
-[我] 寫 canvas-<TS>.html + 加 entry 到 manifest   │
-   ↓ ────────────────────────────────────────────┘
-[generated-log] 新 entry 綠光 fresh 動畫，counter +1
-```
+### 目前狀態
 
-## ⚠️ 重要：Line 2 SKILL 限制（2026-05-13 確認）
+- **10 widgets**：alert / kpi_grid / table / bar_list / donut / gauge / chip_strip / topology_tree / timeline / heatmap
+- **5 validated specs**（S2 / S3 / S4 / S5 / S7） · 全部跑通真實 staging API
+- **3 locales**：zh-TW（預設）/ en / ja · 每個 spec 內含 `locales` 區塊，`--locale ja` 切換
+- **2 theme variants**：light + dark（`--theme dark`）
+- **Booth 主入口** 全部用 dashboard-builder/，不再經過 prototype/
 
-### 能跑（有 scripts/）
+### Validated path 紀律（不可破）
 
-`init-orgs / hvs / networks / org-devices / org-licenses / org-network-groups /
-org-network-templates / org-backups / team-members / engenius-env`
+每個要 booth demo 的情境必須：
+1. 有 `spec.json` 在 `dashboard-builder/skill/examples/`
+2. 跑過 `compose.py` 產出 HTML，視覺/互動/auto-poll 全 work
+3. 用到的每個 op 都在 RD supported 範圍（無 🔴 troubleshoot ops）
 
-### 不能跑（只有 SKILL.md 文件，沒有 scripts/）
+→ 沒過 = 不准上 booth。詳見 `dashboard-builder/architecture.html#demo-readiness`。
 
-`network-ap-troubleshoot / network-gateway-troubleshoot / network-switch-troubleshoot`
+### 3 層分工（不要混）
 
-→ subscribe_stat / subscribe_throughput / subscribe_channel_utilization 等
-**即時監控類 op 目前不能執行**。要 RD 補 scripts/ 才能做 Level 2「watch this tick」live demo。
-**Dolphin 平台支援也還在 RD 開發中**。
+- **Primitives**（RD 擁有）— 13 data skills + dashboard-builder skill 內部零件
+- **Orchestration** — Claude Code 本身（即時組裝；**不蓋 scenario skill 層**會殺掉 wedge）
+- **Playbook** — markdown 文件（widget refs / spec examples / scenario candidates）
 
-### 影響的 demo 場景
+## ⚠️ RD 端阻擋項目
 
-- ✅ 能做：Multi-org audit / Network config audit / License lifecycle / Team access — 都是讀取類 GET ops
-- ❌ 不能做：Real-time AP health / Live throughput / Sticky client hunt — 需要 subscribe_*
-- ❌ 不能做：歷史聚合（過去 N 天趨勢）— 沒有 history API
+**P0（阻 booth 戲劇性 demo）**：
+- `network-{ap,gateway,switch}-troubleshoot` 三個 skill 缺 `scripts/`
+- 47 個 op 不能執行（subscribe_* / rpc_*）→ 阻 rpc_led_dance / rpc_kick_clients / cable_diag / 即時 client list 等
+- 4 份推 RD 會議材料在 [`dashboard-builder/docs/rd-meeting/`](dashboard-builder/docs/rd-meeting/)
+
+**P1（阻新 widget 類型）**：
+- 沒有 history aggregation API → line_chart / sparkline / area_chart widget 沒法做
+- 提議 endpoint shape 在 [`dashboard-builder/docs/rd-meeting/04-history-api-proposal.md`](dashboard-builder/docs/rd-meeting/04-history-api-proposal.md)
+
+完整優先序表：[`dashboard-builder/docs/rd-priorities.md`](dashboard-builder/docs/rd-priorities.md)
 
 ## Current Status
 
-### ✅ 已完成（Line 2 PoC）
-- senao-api-skills 跑通 real falcon.staging API（6+ GET ops）
-- 4 個 canvas dashboard（multi-org / network audit / team access / license renewal）
-- scenarios.html booth menu
-- generated-log.html 自動 refresh 的歷史 log
-- booth-hospitality.html 預錄版（救命 backup）
-- alignment doc + cheat sheet 完整
+功能清單與 demo 細節詳見 [`dashboard-builder/architecture.html`](dashboard-builder/architecture.html) 跟 [README.md](README.md)。
 
-### 🔜 Next Steps（Line 2 focus）
+### 🔜 Next Steps（下個 session 焦點）
 
-優先：
-1. **dry-run 真實 booth 流程** — 模擬訪客問題 → 跑 skill → 生 dashboard → log 跳新 entry
-2. **擴 vertical 場景** — 不限飯店，按真實 staging 資料能做的（multi-org audit / security audit / license / team access 等）
-3. **跟 RD 對齊** — 缺的 troubleshoot scripts + 歷史 API（Dolphin 補丁也是）
-4. **booth presenter dry-run** — 用 cheat sheet 演練 3 遍 90 秒主秀
+**Critical（卡 RD）**：
+1. **RD 補 troubleshoot scripts** + **history aggregation API** — 解鎖 P0 + P1 整批 widget 類型
+2. RD ready 後排第 2 次 meeting（[`rd-meeting/04-history-api-proposal.md`](dashboard-builder/docs/rd-meeting/04-history-api-proposal.md) 已備好）
 
-次優先：
-- Vercel deploy 對應的 marketing 頁面 polish（行銷部分先擺著）
+**獨立可做（不等 RD）**：
+3. **Dashboard 視覺風格優化** — widget UI 還可更精緻（特別是顏色/字距/留白；可改 `skill/theme/tokens.css` 一處 cascade 全 dashboard）
+4. **新情境腦力激盪** — 找更吸睛、更有 wow 感的新 demo 故事，走 validated path pipeline 加入 examples/
+
+### 🟡 Pending（次優先）
+- 日文版需 native speaker review（目前 LLM 草稿）
+- `dashboard-builder/skill/` 整合進 `api-skills/skills/dashboard-builder/`（P2 · [`docs/rd-handoff.md`](dashboard-builder/docs/rd-handoff.md)）
+- 行銷頁 polish（Line 1 視覺 mockup）
 
 ## Common Pitfalls
 
@@ -227,21 +216,33 @@ org-network-templates / org-backups / team-members / engenius-env`
 12. **API key 千萬別 commit 到 git** — 永遠 export 到 env var
 13. **Python http.server 對 `?_=timestamp` cache-buster 會 404**（query string 被當檔名一部份）— 用 `fetch(url, { cache: 'no-store' })`
 14. **skill 的 stdout 會有 `AAAURL ...` debug print 汙染 JSON** — 要 pipe 過濾 `head -n+1 from { line` 之類的 clean function
-15. **network-{ap,gateway,switch}-troubleshoot 3 個 skill 沒有 scripts/**，只有 SKILL.md。subscribe_* 都不能執行（要 RD 補）
-16. **viewer 角色受 RBAC 限制**：能讀 network-level（SSID / policy / ACL），不能讀 org-level（inventory / licenses）。Gordon org 因此 inventory 拿不到，要拿其他 org（Vertical Demo）的 inventory demo
+15. **network-{ap,gateway,switch}-troubleshoot 3 個 skill 沒有 scripts/**（subscribe_* 不能執行）— 等 RD 補
+16. **viewer 角色受 RBAC 限制**：能讀 network-level（SSID / policy / ACL），不能讀 org-level（inventory / licenses）。Gordon / ann-AP 因此 inventory 拿不到 → 用 Main_Org 或 Vertical Demo
 17. **`get_inventory` / `get_licenses` 是 PRO plan only** — terrel org 因 BASIC 會回 402
-18. **canvas-<TS>.html 生成後要 append manifest entry**，否則 generated-log 不會顯示
+
+### Dashboard Builder Skill（這 session 新踩）
+18. **Nested `<a>` 自動 auto-close**（gallery-card 包 locale-pill 時踩到）— 外+內都要 link 必須用 wrapper div 隔開
+19. **spec 的 `compute_fns` 在 widget scripts 之後執行**（compose.py 的 script 順序）— 因此 spec 可以 override 內建 computeFns，i18n 就是用這 trick
+20. **compose.py `deep_merge` 對 sections 用 id-based merge** — spec `locales[locale].sections` 可只列要 override 的 section（partial 覆寫）
+21. **Programmatic scroll 不會 fire scroll event**（preview tool 限制）— 用 IntersectionObserver 監聽 active 狀態
+22. **dashboard-builder/ 跟 prototype/ 不互通**：canvas 內的 `live-data/` 是相對路徑，前者讀 `dashboard-builder/live-data/`、後者讀 `prototype/live-data/`
 
 ## 詳細文件
 
-### Line 2 對齊文件（給 RD / Prompt Eng / Design）
-- [docs/widget-catalog.md](docs/widget-catalog.md) — 12 widget 規格
-- [docs/skill-to-widget-mapping.md](docs/skill-to-widget-mapping.md) ★ — widget ↔ op 對齊
-- [docs/dashboard-builder-implementation-guide.md](docs/dashboard-builder-implementation-guide.md) — kickoff 對齊
-- [docs/prompt-templates.md](docs/prompt-templates.md) — LLM prompt + tool defs
+### ⭐ Dashboard Builder（本 session 新區，主要看這裡）
+- [`dashboard-builder/README.md`](dashboard-builder/README.md) — 入口導讀
+- [`dashboard-builder/architecture.html`](dashboard-builder/architecture.html) ★ — 完整架構說明（5 層 / 3 層分工 / gallery / 規範）
+- [`dashboard-builder/widget-catalog.html`](dashboard-builder/widget-catalog.html) — 10 widget spec 即時 render
+- [`dashboard-builder/docs/rd-priorities.md`](dashboard-builder/docs/rd-priorities.md) ★ — RD P0-P3 待補項目
+- [`dashboard-builder/docs/rd-handoff.md`](dashboard-builder/docs/rd-handoff.md) — skill 整合進 api-skills/ 步驟
+- [`dashboard-builder/docs/rd-meeting/`](dashboard-builder/docs/rd-meeting/) — 4 份推 RD 會議材料（agenda / ask-sheet / storyboard / history API 提案）
+- [`dashboard-builder/docs/scenario-candidates.md`](dashboard-builder/docs/scenario-candidates.md) — 10 個情境腦力激盪
+
+### Line 2 早期對齊文件（仍適用）
+- [docs/widget-catalog.md](docs/widget-catalog.md) — 早期 12 widget 規格（vs 現在實作的 10 widgets）
+- [docs/skill-to-widget-mapping.md](docs/skill-to-widget-mapping.md) — widget ↔ op 對齊
+- [docs/booth-presenter-cheatsheet.md](docs/booth-presenter-cheatsheet.md) — 展會操作手冊
 - [docs/design-tokens.md](docs/design-tokens.md) — EnGenius 視覺 tokens
-- [docs/booth-presenter-cheatsheet.md](docs/booth-presenter-cheatsheet.md) ★ — 展會操作手冊
-- [docs/refine-demo-plan.md](docs/refine-demo-plan.md) — demo 互動擴充
 
 ### Line 1 視覺 mockup（暫停推進）
 - `employee-chat-mockup.html` / `cockpit-mockup.html` / `unified-chat-mockup.html` — chat-style 對話
