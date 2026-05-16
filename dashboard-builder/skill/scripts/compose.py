@@ -207,14 +207,19 @@ def compose(spec: dict, theme: str = "light", locale: str | None = None) -> str:
 <body>
 
 <header class="db-hdr">
-  <div class="db-hdr-left">
-    <h1>{title}</h1>
-    <div class="crumb">{subtitle}</div>
-  </div>
-  <div class="db-hdr-right">
-    <button class="btn" id="db-refresh" title="重新抓取所有資料"><span class="ic">↻</span> Refresh</button>
-    <div class="live-dot">Live</div>
-    <div class="updated" id="db-updated">—</div>
+  <div class="db-hdr-inner">
+    <div class="db-hdr-left">
+      <img class="db-brand-logo" src="assets/engenius-logo.png" alt="EnGenius Cloud" />
+      <div class="db-hdr-titles">
+        <h1>{title}</h1>
+        <div class="crumb">{subtitle}</div>
+      </div>
+    </div>
+    <div class="db-hdr-right">
+      <button class="btn" id="db-refresh" title="重新抓取所有資料"><span class="ic">↻</span> Refresh</button>
+      <div class="live-dot">Live</div>
+      <div class="updated" id="db-updated">—</div>
+    </div>
   </div>
 </header>
 
