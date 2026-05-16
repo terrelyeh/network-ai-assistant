@@ -1,0 +1,110 @@
+{
+  "title": "Org 設備分布",
+  "subtitle": "7 個 org · License 狀態作為「Cloud 可管理 / 離線」代理指標",
+  "live_data": {
+    "dist": "live-data/org-device-distribution.json"
+  },
+  "compute_fns": "(() => { const cf = window.computeFns; const orgs = (data) => (data.dist && data.dist.orgs) || []; const devices = (data) => (data.dist && data.dist.devices) || []; const sum = (arr, f) => arr.reduce((a,o)=>a+(f(o)||0),0); cf.summary = (data) => { const os = orgs(data); const withDev = os.filter(o => o.total > 0); const total = sum(os, o => o.total); const exp = sum(os, o => o.expired); const act = sum(os, o => o.active); const pct = total ? Math.round(exp*100/total) : 0; return `管理 ${os.length} 個 org，其中 ${withDev.length} 個有設備。可見 ${total} 台設備裡 ${act} 台 license active（Cloud 可管），${exp} 台已過期（${pct}% 視為離線）。`; }; cf.kpi_orgs = (data) => orgs(data).length; cf.kpi_orgs_sub = (data) => { const w = orgs(data).filter(o => o.total > 0).length; return `${w} 個有設備`; }; cf.kpi_total = (data) => sum(orgs(data), o => o.total); cf.kpi_total_sub = (data) => `${sum(orgs(data), o => o.assigned)} 已指派 network`; cf.kpi_active = (data) => sum(orgs(data), o => o.active); cf.kpi_active_sub = (data) => { const t = sum(orgs(data), o => o.total); const a = sum(orgs(data), o => o.active); return t ? `${Math.round(a*100/t)}% of fleet` : '—'; }; cf.kpi_expired = (data) => sum(orgs(data), o => o.expired); cf.kpi_expired_sub = (data) => { const t = sum(orgs(data), o => o.total); const e = sum(orgs(data), o => o.expired); return t ? `${Math.round(e*100/t)}% of fleet` : '—'; }; cf.license_segments = (data) => { const a = sum(orgs(data), o => o.active); const e = sum(orgs(data), o => o.expired); const x = sum(orgs(data), o => o.other); return [ { label: 'Active', value: a, severity: 'success' }, { label: 'Expired', value: e, severity: 'critical' }, { label: 'Other', value: x, severity: 'muted' } ].filter(s => s.value > 0); }; cf.type_segments = (data) => { const agg = {}; orgs(data).forEach(o => Object.entries(o.by_type || {}).forEach(([t,v]) => { agg[t] = (agg[t] || 0) + v.total; })); const palette = { ap: 'info', switch: 'brand', gateway: 'warning', pdu: 'success', camera: 'critical', nvs: 'muted', switch_extender: 'success', bsc: 'muted', epc: 'warning', ezmaster: 'muted' }; return Object.entries(agg).sort((a,b)=>b[1]-a[1]).map(([t,v]) => ({ label: t, value: v, severity: palette[t] || 'muted' })); }; cf.expired_per_org = (data) => orgs(data).filter(o => o.expired > 0).sort((a,b) => b.expired - a.expired).map(o => ({ label: o.org_name, value: o.expired, color: 'crit' })); cf.active_per_org = (data) => orgs(data).filter(o => o.active > 0).sort((a,b) => b.active - a.active).map(o => ({ label: o.org_name, value: o.active, color: 'ok' })); cf.fleet_total = (data) => sum(orgs(data), o => o.total); })();",
+  "sections": [
+    {
+      "widget": "alert",
+      "id": "summary",
+      "severity": "warning",
+      "title": "跨 Org 設備健康摘要",
+      "body_compute": "summary"
+    },
+    {
+      "widget": "kpi_grid",
+      "id": "kpis",
+      "items": [
+        {
+          "label": "Total Orgs",
+          "value_compute": "kpi_orgs",
+          "sub_compute": "kpi_orgs_sub"
+        },
+        {
+          "label": "Total Devices",
+          "value_compute": "kpi_total",
+          "sub_compute": "kpi_total_sub",
+          "clickable": { "target": "org-table" }
+        },
+        {
+          "label": "License Active",
+          "severity": "success",
+          "value_compute": "kpi_active",
+          "sub_compute": "kpi_active_sub",
+          "clickable": { "target": "license-mix" }
+        },
+        {
+          "label": "License Expired",
+          "severity": "critical",
+          "value_compute": "kpi_expired",
+          "sub_compute": "kpi_expired_sub",
+          "clickable": { "target": "expired-bars" }
+        }
+      ]
+    },
+    {
+      "widget": "donut",
+      "id": "license-mix",
+      "title": "整體 License 狀態",
+      "compute": "license_segments",
+      "center_value_compute": "fleet_total",
+      "center_label": "Devices"
+    },
+    {
+      "widget": "donut",
+      "id": "type-mix",
+      "title": "設備類型分布（全 org 加總）",
+      "compute": "type_segments",
+      "center_value_compute": "fleet_total",
+      "center_label": "Devices"
+    },
+    {
+      "widget": "bar_list",
+      "id": "expired-bars",
+      "title": "各 Org License 狀態（Active 上 / Expired 下）",
+      "meta": "active vs expired",
+      "groups": [
+        { "compute": "active_per_org", "total_compute": "fleet_total" },
+        { "compute": "expired_per_org", "total_compute": "fleet_total" }
+      ]
+    },
+    {
+      "widget": "table",
+      "id": "org-table",
+      "title": "逐 Org 明細",
+      "data_source": "dist.orgs",
+      "row_id_field": "org_id",
+      "sort_by": { "field": "total", "dir": "desc" },
+      "meta_template": "${count} orgs",
+      "filters": [
+        { "label": "All", "filter": "all" }
+      ],
+      "columns": [
+        { "label": "Org", "field": "org_name" },
+        { "label": "Total", "field": "total", "align": "right" },
+        { "label": "Active", "field": "active", "align": "right" },
+        { "label": "Expired", "field": "expired", "align": "right" },
+        { "label": "Other", "field": "other", "align": "right" },
+        { "label": "Assigned", "field": "assigned", "align": "right" },
+        { "label": "Unassigned", "field": "unassigned", "align": "right" },
+        { "label": "Main Types", "field": "main_types" }
+      ],
+      "expandable_rows": true,
+      "detail_fields": [
+        { "label": "Org ID", "field": "org_id" },
+        { "label": "Total Devices", "field": "total", "large": true },
+        { "label": "Active / Expired / Other", "field": "active", "large": true },
+        { "label": "Assigned to Network", "field": "assigned" },
+        { "label": "Main Types", "field": "main_types", "full_width": true }
+      ]
+    }
+  ],
+  "footer": {
+    "ops_used": [
+      "get_user_orgs",
+      "get_inventory (× 7 orgs)"
+    ]
+  }
+}

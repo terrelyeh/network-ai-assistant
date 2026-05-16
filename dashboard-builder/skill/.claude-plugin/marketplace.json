@@ -1,0 +1,17 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "dashboard-builder",
+  "description": "EnGenius Network AI-Assistant — dashboard composition skill. Compose live, interactive HTML dashboards from spec JSON using a widget-based design system.",
+  "owner": {
+    "name": "Terrel Yeh",
+    "email": "terrel.yeh@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "dashboard-builder",
+      "source": "./",
+      "description": "Compose live, interactive HTML dashboards from spec JSON. Pair with senao-api-skills for full Network AI-Assistant experience: data skills gather → dashboard-builder renders → SMB customer sees visual canvas with auto-poll and drill-down.",
+      "category": "visualization"
+    }
+  ]
+}

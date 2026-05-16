@@ -1,0 +1,11 @@
+{
+  "name": "dashboard-builder",
+  "version": "0.1.0",
+  "description": "Compose live, interactive HTML dashboards from spec JSON. Used by Network AI-Assistant to generate visual dashboards when persona's escalation matrix signals (multi-org, time-trend, multi-dimensional, sharing intent) trigger dashboard-class output instead of plain text.",
+  "author": {
+    "name": "Terrel Yeh",
+    "email": "terrel.yeh@gmail.com"
+  },
+  "homepage": "https://network-ai-assistant.vercel.app/dashboard-builder/architecture.html",
+  "repository": "https://github.com/terrelyeh/network-ai-assistant.git"
+}
