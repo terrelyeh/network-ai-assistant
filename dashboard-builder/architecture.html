@@ -978,6 +978,7 @@
     <a class="toc-item" href="#library-growth" data-target="library-growth"><span class="toc-num">03c</span> Library 哲學</a>
     <a class="toc-item" href="#gallery" data-target="gallery"><span class="toc-num">03d</span> 範例 Gallery</a>
     <a class="toc-item" href="#skill-internals" data-target="skill-internals"><span class="toc-num">03e</span> Skill 內部</a>
+    <a class="toc-item" href="#design-system" data-target="design-system"><span class="toc-num">03f</span> Design System</a>
     <a class="toc-item" href="#howto" data-target="howto"><span class="toc-num">04</span> 怎麼用</a>
     <a class="toc-item" href="#demo-readiness" data-target="demo-readiness"><span class="toc-num">04b</span> Demo Readiness</a>
     <a class="toc-item" href="#flow" data-target="flow"><span class="toc-num">05</span> Demo Flow</a>
@@ -989,7 +990,7 @@
 <main class="content">
 
 <header class="hero" id="overview">
-  <span class="eyebrow">Network AI-Assistant · v4 (Persona-aware)</span>
+  <span class="eyebrow">Network AI-Assistant · v5 (Persona + Design System)</span>
   <h1>Network <span class="accent">AI-Assistant</span> · 在 LLM 環境裡用的 EnGenius Cloud 工具集</h1>
   <p class="lede">
     這是<strong>在 LLM coding 環境（Claude Code）中使用</strong>的 EnGenius Cloud 管理工具集，<strong>不是</strong>雲端管理平台 GUI 內嵌的 AI chatbox。
@@ -1187,9 +1188,13 @@
       <div class="tl-tagline">
         <strong>知識層</strong>——非執行體，純粹是 markdown 文件。Claude 在對話中讀這些文件，學會「該怎麼想」「該選哪個 widget」「常見情境長怎樣」。改 playbook = 改 Claude 行為，不用改程式碼。
       </div>
-      <div class="tl-item" style="background: rgba(251,191,36,0.10); border-color: rgba(251,191,36,0.3); margin-bottom: 12px;">
-        <div class="key" style="color: #d97706;">⭐ network-admin-persona.md <span style="font-weight: 400; color: var(--text-3); font-size: 11px; margin-left: 8px;">最重要 · 每次 skill 觸發都載入</span></div>
+      <div class="tl-item" style="background: rgba(251,191,36,0.10); border-color: rgba(251,191,36,0.3); margin-bottom: 8px;">
+        <div class="key" style="color: #d97706;">⭐ network-admin-persona.md <span style="font-weight: 400; color: var(--text-3); font-size: 11px; margin-left: 8px;">每次 skill 觸發都載入</span></div>
         <div class="val">AI 網管人格 + 升級條件矩陣（text / dashboard / action）+ SMB vertical 適應 + 詞彙翻譯表。<strong>詳見 <a href="#persona">§02c</a></strong>。</div>
+      </div>
+      <div class="tl-item" style="background: rgba(251,191,36,0.10); border-color: rgba(251,191,36,0.3); margin-bottom: 12px;">
+        <div class="key" style="color: #d97706;">⭐ design.md <span style="font-weight: 400; color: var(--text-3); font-size: 11px; margin-left: 8px;">dashboard-builder 觸發時載入</span></div>
+        <div class="val">Dashboard 視覺設計守則 · 3 層架構（Frame / Tokens / Body）· 9 條 hard prohibitions · raw_html escape hatch · filename convention。<strong>詳見 <a href="#design-system">§03f</a></strong>。</div>
       </div>
       <div class="tl-grid">
         <div class="tl-item">
@@ -1386,16 +1391,20 @@
     有了 persona，同一份 API 結果變成「廚房那台 AP 從 14:23 開始失聯，可能是斷電。要我幫你查嗎？」——直接拉開 wedge 跟其他「LLM + API」工具的差距。
   </div>
 
-  <h3 style="margin-top: 32px;">兩層知識架構</h3>
-  <p>Persona 不是孤立的一份文件——它是「給 Claude 的知識體系」的第 1 層。目前定義 2 層：</p>
+  <h3 style="margin-top: 32px;">三層知識架構</h3>
+  <p>Persona 不是孤立的一份文件——它是「給 Claude 的知識體系」的第 1 層。v0.2 起共 3 層（持久化的 Playbook 文件）：</p>
 
   <div class="tl-grid" style="margin-top: 16px;">
     <div class="tl-item" style="background: rgba(251,191,36,0.10); border-color: rgba(251,191,36,0.3);">
-      <div class="key" style="color: #d97706;">① <a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/dashboard-builder/skill/references/network-admin-persona.md" target="_blank" style="color: #d97706; text-decoration: underline;">persona.md ↗</a> <span style="font-weight: 400; font-size: 10px; color: var(--text-3); margin-left: 6px;">已 commit · 356 行 · 點擊閱讀完整內容</span></div>
-      <div class="val"><strong>Voice + 輸出格式 + 升級條件</strong>。Claude 每次被 skill 觸發都載入。內含 4 條 voice 原則、15 個詞彙翻譯、6 個 SMB vertical 適應、6×3 升級矩陣、3 種輸出模板。</div>
+      <div class="key" style="color: #d97706;">① <a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/dashboard-builder/skill/references/network-admin-persona.md" target="_blank" style="color: #d97706; text-decoration: underline;">persona.md ↗</a> <span style="font-weight: 400; font-size: 10px; color: var(--text-3); margin-left: 6px;">已 commit · 358 行 · 點擊閱讀</span></div>
+      <div class="val"><strong>Voice + 輸出形式判斷</strong>。Claude 每次被任何 skill 觸發都載入。4 條 voice 原則、15 個詞彙翻譯、6 個 SMB vertical 適應、6×3 升級矩陣（text / dashboard / action）、3 種輸出模板。</div>
+    </div>
+    <div class="tl-item" style="background: rgba(251,191,36,0.10); border-color: rgba(251,191,36,0.3);">
+      <div class="key" style="color: #d97706;">② <a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/dashboard-builder/skill/references/design.md" target="_blank" style="color: #d97706; text-decoration: underline;">design.md ↗</a> <span style="font-weight: 400; font-size: 10px; color: var(--text-3); margin-left: 6px;">已 commit · 341 行 · v0.2 新增</span></div>
+      <div class="val"><strong>Dashboard 視覺設計守則</strong>。Claude 觸發 dashboard-builder skill 時載入。3 層架構（Frame / Tokens / Body）、9 條 🚫 hard prohibitions、raw_html escape hatch 規則、filename convention、quality bar。<strong>詳見 <a href="#design-system">§03f Design System</a></strong>。</div>
     </div>
     <div class="tl-item">
-      <div class="key">② house-rules.md <span style="font-weight: 400; font-size: 10px; color: var(--text-3); margin-left: 6px;">未來 P2 · ~120 行</span></div>
+      <div class="key">③ house-rules.md <span style="font-weight: 400; font-size: 10px; color: var(--text-3); margin-left: 6px;">未來 P2 · ~120 行</span></div>
       <div class="val"><strong>EnGenius 品牌觀點</strong>。HVS 分數解讀區間、永遠不推薦的反 pattern、平台特有 gotcha（例：cloud show offline 但現場正常 = cloud-agent 沒同步）。需 RD + 業務 + PMM 共寫。</div>
     </div>
   </div>
@@ -1634,8 +1643,8 @@
     <a class="cta" href="widget-catalog.html">📖 開啟 Widget Catalog →</a>
   </div>
 
-  <h3 style="margin-top: 28px;">10 個 widget 速覽</h3>
-  <p class="section-lede" style="margin-bottom: 14px;">點任一進 catalog 對應頁。</p>
+  <h3 style="margin-top: 28px;">12 個 widget 速覽</h3>
+  <p class="section-lede" style="margin-bottom: 14px;">點任一進 catalog 對應頁。⭐ = v0.2 (2026-05-17) 新增，回應 hand-roll vs compose.py 案例。</p>
   <div class="widget-grid">
     <a class="widget-card" href="widget-catalog.html#widget_alert">
       <div class="icon">⚠</div>
@@ -1657,6 +1666,11 @@
       <div class="info"><div class="name">bar_list</div><div class="desc">橫條圖 · 多群分組 + severity 顏色</div></div>
       <div class="arrow">→</div>
     </a>
+    <a class="widget-card" href="widget-catalog.html#widget_stacked_bar_list">
+      <div class="icon">📊</div>
+      <div class="info"><div class="name">stacked_bar_list ⭐</div><div class="desc">多 segment 堆疊條 · per-row Active/Expired/Other 同條</div></div>
+      <div class="arrow">→</div>
+    </a>
     <a class="widget-card" href="widget-catalog.html#widget_donut">
       <div class="icon">🎯</div>
       <div class="info"><div class="name">donut</div><div class="desc">SVG 圓環圖 · % 構成 + hover 同步</div></div>
@@ -1665,6 +1679,11 @@
     <a class="widget-card" href="widget-catalog.html#widget_gauge">
       <div class="icon">⏲</div>
       <div class="info"><div class="name">gauge</div><div class="desc">半圓速度計 · 對比 target + 嚴重度</div></div>
+      <div class="arrow">→</div>
+    </a>
+    <a class="widget-card" href="widget-catalog.html#widget_pivot_table">
+      <div class="icon">🔲</div>
+      <div class="info"><div class="name">pivot_table ⭐</div><div class="desc">2D 交叉矩陣 · rows × cols + 可選 heatmap + sub-value</div></div>
       <div class="arrow">→</div>
     </a>
     <a class="widget-card" href="widget-catalog.html#widget_chip_strip">
@@ -1688,6 +1707,9 @@
       <div class="arrow">→</div>
     </a>
   </div>
+  <p style="margin-top: 16px; font-size: 13px; color: var(--text-3);">
+    💡 既有 widget 不夠用？走 <strong>raw_html escape hatch</strong>（design.md §3.3）— 同樣套 theme tokens、但可手寫任何 HTML。詳見 <a href="#design-system">§03f Design System</a>。
+  </p>
 </section>
 
 <section id="library-growth">
@@ -1942,7 +1964,7 @@
     <div class="skill-row folder">
       <span class="icon">📁</span>
       <span class="name">references/</span>
-      <span class="desc">Persona + 10 個 widget 的 markdown spec</span>
+      <span class="desc">Persona + Design rules + 12 個 widget 的 markdown spec</span>
     </div>
     <a class="skill-row file nested" href="skill/references/network-admin-persona.md" target="_blank" style="background: rgba(251,191,36,0.08);">
       <span class="icon">⭐</span>
@@ -1950,8 +1972,23 @@
       <span class="tag" style="background: #fbbf24; color: #1a1a1a;">persona v0</span>
       <span class="desc">AI 網管人格 + 升級條件 + SMB vertical 適應 · <strong>每次 skill 觸發都載入</strong>（詳見 <a href="#persona">§02c</a>）</span>
     </a>
+    <a class="skill-row file nested" href="skill/references/design.md" target="_blank" style="background: rgba(251,191,36,0.08);">
+      <span class="icon">⭐</span>
+      <span class="name">design.md</span>
+      <span class="tag" style="background: #fbbf24; color: #1a1a1a;">design v0.2</span>
+      <span class="desc">Dashboard 視覺守則 · 3 層架構 + 🚫 9 條 hard prohibitions + raw_html escape hatch · <strong>dashboard-builder 觸發時載入</strong>（詳見 <a href="#design-system">§03f</a>）</span>
+    </a>
     <div class="skill-row note">
-      → 10 個 widget spec 一鍵閱讀請去 <a href="widget-catalog.html">Widget Catalog</a>（marked.js 即時渲染）
+      → 12 個 widget spec 一鍵閱讀請去 <a href="widget-catalog.html">Widget Catalog</a>（marked.js 即時渲染）
+    </div>
+
+    <div class="skill-row folder">
+      <span class="icon">📁</span>
+      <span class="name">.claude-plugin/</span>
+      <span class="desc">v0.2 新增 · 讓 dashboard-builder 可被 /plugins install</span>
+    </div>
+    <div class="skill-row note nested">
+      <code>marketplace.json</code> · <code>plugin.json</code> · 雙 manifest 設計（見 <a href="#design-system">§03f</a>）
     </div>
 
     <div class="skill-row folder">
@@ -2002,6 +2039,106 @@
 
   <h3>跟 RD 接手相關的事</h3>
   <p>這整個 skill 目前 host 在 <code>dashboard-builder/skill/</code>，是 PMM 的 prototype 區。長期應該移到 <code>api-skills/skills/dashboard-builder/</code> 跟 RD 的 13 個 data skill 並列。具體步驟、命名規範、驗收 checklist 都寫在 <a href="docs/rd-handoff.md">docs/rd-handoff.md</a>。</p>
+</section>
+
+<section id="design-system">
+  <h2><span class="num-tag">03f</span>Design System · 規範 + 自由的混合</h2>
+  <p class="section-lede">
+    v0.2 (2026-05-17) 新增。為了回應 <a href="docs/persona-test-results.md">V1 hand-roll vs V2 compose.py 案例</a>暴露的問題（widget library 不夠表達時 AI 會繞過去走 Chart.js），把 dashboard-builder 升級成「**統一規範 + 自由發揮逃生口**」的混合模式。
+  </p>
+
+  <div class="pull" style="background: rgba(59,130,246,0.06); border-color: rgba(59,130,246,0.3);">
+    <span class="badge" style="background: #3b82f6; color: white;">v0.2 核心轉變</span>
+    舊版：「AI 從 10 個 widget 拼裝」（受限於現有 widget）<br>
+    新版：「AI 在 design system 內自由創作 — 既有 widget 優先，不夠時走 <code>raw_html</code>，但永遠套 theme tokens + 永不違反 9 條 hard prohibitions」
+  </div>
+
+  <h3 style="margin-top: 32px;">三層架構 · 自由度由低到高</h3>
+
+  <div class="tl-grid" style="margin-top: 16px;">
+    <div class="tl-item">
+      <div class="key">Layer 1 · Frame（強制，無自由度）</div>
+      <div class="val">由 <code>compose.py</code> 自動套：logo + title + Refresh button + Live indicator + footer + 5 秒 auto-poll + Inter/Noto Sans TC 字體。AI <strong>不能改</strong>。</div>
+    </div>
+    <div class="tl-item">
+      <div class="key">Layer 2 · Design tokens（強制，必須遵守）</div>
+      <div class="val">所有顏色 / 字距 / 圓角 / 陰影 must use <code>var(--...)</code> CSS variables. 切到 dark / light theme 時自動 cascade — 不能 hardcode hex。</div>
+    </div>
+    <div class="tl-item">
+      <div class="key">Layer 3 · Body content（自由發揮 — 但有規範）</div>
+      <div class="val">AI 決定用哪個 widget / 怎麼排。優先用既有 widget；不夠用時走 <code>raw_html</code> section（但必須遵守 9 條 🚫 hard prohibitions）。</div>
+    </div>
+  </div>
+
+  <h3 style="margin-top: 36px;">🚫 9 條 Hard Prohibitions · 遇到就停</h3>
+  <p>這些是「會破壞 demo / 違法 / 系統會崩」的紅線。違反任一條 = AI 應該停下、問使用者、不要 generate。</p>
+
+  <div style="overflow-x: auto; margin-top: 14px;">
+  <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+    <thead>
+      <tr style="background: var(--surface-2);">
+        <th style="padding: 10px 14px; text-align: left; border: 1px solid var(--border);">#</th>
+        <th style="padding: 10px 14px; text-align: left; border: 1px solid var(--border); width: 22%;">類別</th>
+        <th style="padding: 10px 14px; text-align: left; border: 1px solid var(--border);">NEVER</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td style="padding: 8px 14px; border: 1px solid var(--border);">①</td><td style="padding: 8px 14px; border: 1px solid var(--border);">安全</td><td style="padding: 8px 14px; border: 1px solid var(--border);">在 raw_html 或任何輸出中放 API key / token / password / secret</td></tr>
+      <tr><td style="padding: 8px 14px; border: 1px solid var(--border);">②</td><td style="padding: 8px 14px; border: 1px solid var(--border);">安全</td><td style="padding: 8px 14px; border: 1px solid var(--border);">在 raw_html 內 <code>fetch()</code> 外部 URL</td></tr>
+      <tr><td style="padding: 8px 14px; border: 1px solid var(--border);">③</td><td style="padding: 8px 14px; border: 1px solid var(--border);">安全</td><td style="padding: 8px 14px; border: 1px solid var(--border);">用 <code>eval</code> / <code>new Function</code> / <code>setTimeout("string")</code></td></tr>
+      <tr><td style="padding: 8px 14px; border: 1px solid var(--border);">④</td><td style="padding: 8px 14px; border: 1px solid var(--border);">系統</td><td style="padding: 8px 14px; border: 1px solid var(--border);">在 raw_html 內寫 <code>&lt;script&gt;</code> 標籤</td></tr>
+      <tr><td style="padding: 8px 14px; border: 1px solid var(--border);">⑤</td><td style="padding: 8px 14px; border: 1px solid var(--border);">系統</td><td style="padding: 8px 14px; border: 1px solid var(--border);">引外部 JS / CSS lib（Chart.js / D3 / Bootstrap / FontAwesome / Tailwind CDN）</td></tr>
+      <tr><td style="padding: 8px 14px; border: 1px solid var(--border);">⑥</td><td style="padding: 8px 14px; border: 1px solid var(--border);">系統</td><td style="padding: 8px 14px; border: 1px solid var(--border);">用 <code>!important</code> 蓋 theme tokens</td></tr>
+      <tr><td style="padding: 8px 14px; border: 1px solid var(--border);">⑦</td><td style="padding: 8px 14px; border: 1px solid var(--border);">品牌</td><td style="padding: 8px 14px; border: 1px solid var(--border);">連結到競品（Cisco / Aruba / Ubiquiti / Meraki / TP-Link / Netgear）</td></tr>
+      <tr><td style="padding: 8px 14px; border: 1px solid var(--border);">⑧</td><td style="padding: 8px 14px; border: 1px solid var(--border);">品牌 / 法務</td><td style="padding: 8px 14px; border: 1px solid var(--border);">編造不存在的功能（按鈕沒後端、URL 通往不存在頁面）</td></tr>
+      <tr><td style="padding: 8px 14px; border: 1px solid var(--border);">⑨</td><td style="padding: 8px 14px; border: 1px solid var(--border);">品質</td><td style="padding: 8px 14px; border: 1px solid var(--border);">用棄用 HTML（<code>&lt;marquee&gt;</code>, <code>&lt;blink&gt;</code>, <code>&lt;font&gt;</code>, <code>&lt;center&gt;</code>）</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p style="margin-top: 10px; font-size: 13px; color: var(--text-3);">差別於 <strong>Soft anti-patterns</strong>（UX 不建議但不會崩，例如 1 頁塞 10+ section、Donut &gt; 6 segment）。完整內容見 <a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/dashboard-builder/skill/references/design.md" target="_blank">design.md ↗</a>。</p>
+
+  <h3 style="margin-top: 36px;">raw_html Escape Hatch · 自我擴張的 Widget Library</h3>
+  <p>當既有 widget 表達不了，AI 可以用 <code>raw_html</code> section 寫任意 HTML — 但必須附 <code>raw_html_reason</code> 解釋「為什麼選擇 hand-roll + 未來該抽象成什麼 widget」：</p>
+
+  <pre style="background: #1a1a1a; color: #e0e0e0; padding: 14px 18px; border-radius: 8px; overflow-x: auto; font-size: 12px; line-height: 1.55; font-family: var(--font-mono);">{
+  "id": "custom-section",
+  "raw_html": "&lt;div class='card'&gt;...&lt;/div&gt;",
+  "raw_html_reason": "Pivot table 類型 × Org，現有 widget 無法表達；未來該補 pivot_table widget"
+}</pre>
+
+  <p style="margin-top: 14px;">每次 AI 用 raw_html 都留一個 <strong>「下個 widget 該補什麼」的線索</strong>。累積 N 個類似 reason 之後 → 自然抽象成新 widget（這就是 v0.2 新增 <code>pivot_table</code> + <code>stacked_bar_list</code> 的由來）。</p>
+
+  <div class="tl-rel-card" style="margin-top: 18px; background: var(--surface-2);">
+    <strong>Self-improving widget library</strong>：raw_html 不是「逃避用 widget」，是「**真實使用案例驅動的需求蒐集**」。AI 用法本身在告訴我們缺什麼 widget。
+  </div>
+
+  <h3 style="margin-top: 36px;">Filename Convention · 雙模式</h3>
+
+  <div class="tl-grid" style="margin-top: 16px;">
+    <div class="tl-item">
+      <div class="key">Validated specs（穩定檔名）</div>
+      <div class="val"><code>&lt;topic&gt;.html</code> · <code>&lt;topic&gt;-en.html</code> · <code>&lt;topic&gt;-ja.html</code> · <code>&lt;topic&gt;-dark.html</code><br>對應 <code>examples/&lt;topic&gt;.spec.json</code>，可書籤、可分享、會被覆蓋。</div>
+    </div>
+    <div class="tl-item">
+      <div class="key">Ad-hoc generation（永遠 timestamped）</div>
+      <div class="val"><code>canvas-&lt;topic&gt;-YYYYMMDD-HHMMSS.html</code><br>AI 即興組 dashboard 時用 — 每次生新檔，舊的保留。<br><strong>Booth wedge 關鍵</strong>：觀眾看到 URL 在變 = 證明「剛剛生的」，不是預錄。</div>
+    </div>
+  </div>
+
+  <h3 style="margin-top: 36px;">.claude-plugin/ · Plugin Install 機制</h3>
+  <p>v0.2 起 dashboard-builder 可被 <code>/plugins</code> install（跟 senao-api-skills 一樣的機制）：</p>
+  <ul>
+    <li><code>.claude-plugin/marketplace.json</code> — 商店招牌（一個 marketplace 可有多 plugin）</li>
+    <li><code>.claude-plugin/plugin.json</code> — 商品說明（單一 plugin 的 metadata）</li>
+    <li><code>skills/dashboard-builder/</code> — symlinks 指回 plugin root，符合 Claude Code 預期的 <code>skills/&lt;n&gt;/SKILL.md</code> discovery layout</li>
+  </ul>
+  <p>裝完後 <code>/skills</code> 會看到 <code>dashboard-builder:dashboard-builder</code>，Claude 在對話中觸發 dashboard 生成時自動載入。</p>
+
+  <div class="pull" style="background: rgba(16,185,129,0.06); border-color: rgba(16,185,129,0.3); margin-top: 24px;">
+    <span class="badge" style="background: #10b981; color: white;">完整實測通過</span>
+    v0.2 整套機制（design.md + raw_html + 2 個新 widget + plugin install）已在 2026-05-17 跑通端到端測試。完整紀錄見 <a href="docs/persona-test-results.md">persona-test-results.md</a>。
+  </div>
 </section>
 
 <section id="howto">
@@ -2077,13 +2214,30 @@ python dashboard-builder/skill/scripts/compose.py \
 </section>
 
 <section id="demo-readiness">
-  <h2><span class="num-tag">04b</span>Demo Readiness · validated path 紀律</h2>
+  <h2><span class="num-tag">04b</span>Demo Readiness · 主秀 validated · off-script 走 design.md</h2>
   <p class="section-lede">
-    Live demo 沒有「我來試試看」這種選項——<strong>每個要在 booth 演出的情境都必須事先成為 validated path</strong>。沒驗證的不准上場。這是「wedge 故事即時組」的相反面：<span class="hl-accent">外觀即時、底層保底</span>。
+    Live demo 是「外觀即時、底層保底」。<strong>主秀必須走 validated path（事先驗證過），off-script 觀眾意外問題走 design.md ad-hoc 模式</strong>。v0.2 之前是「全部都得 validated」，新規則更貼近實際 booth 操作節奏。
   </p>
 
-  <h3>Validated Path 的 3 個必要條件</h3>
-  <p>一個情境要被當作 validated path，必須三件事都完成：</p>
+  <div class="tl-grid" style="margin-top: 16px;">
+    <div class="tl-item" style="background: rgba(16,185,129,0.06); border-color: rgba(16,185,129,0.3);">
+      <div class="key" style="color: #047857;">✅ 主秀情境 · 必須 validated path</div>
+      <div class="val"><strong>booth 主秀腳本上的故事</strong>（5 個現有 validated：S2 / S3 / S4 / S5 / S7）= 觀眾預期會看到的 dashboard。這些<strong>沒驗證過不准上</strong>，因為要在大廳即興 = 風險太高。穩定檔名（<code>&lt;topic&gt;.html</code>）。</div>
+    </div>
+    <div class="tl-item" style="background: rgba(251,191,36,0.08); border-color: rgba(251,191,36,0.3);">
+      <div class="key" style="color: #b45309;">⚡ Off-script 觀眾問題 · 走 design.md ad-hoc</div>
+      <div class="val">觀眾問「能不能也看 X？」這種<strong>沒事先準備的 wow moment</strong> = 即興用 design.md 規範組 dashboard。受 <a href="#design-system">§03f Design System</a> 約束（3 層架構 + 9 條 hard prohibitions + raw_html escape hatch），仍視覺一致。Timestamped 檔名（<code>canvas-...-YYYYMMDD-HHMMSS.html</code>）。</div>
+    </div>
+  </div>
+
+  <div class="pull" style="background: rgba(59,130,246,0.06); border-color: rgba(59,130,246,0.3); margin-top: 18px;">
+    <span class="badge" style="background: #3b82f6; color: white;">v0.2 新規則</span>
+    舊：「<strong>所有</strong>情境都得 validated」→ 觀眾意外問問題就 demo 不出來，客戶會發現是劇本<br>
+    新：「主秀 validated · off-script 即興」→ 故事連續性 ✓ + 即興部分有 design.md 規範保證視覺一致 ✓
+  </div>
+
+  <h3 style="margin-top: 32px;">Validated Path 的 3 個必要條件（主秀情境用）</h3>
+  <p>主秀情境要被當作 validated path，必須三件事都完成：</p>
   <div class="checklist">
     <div class="check-item">
       <div class="check-icon">✓</div>
