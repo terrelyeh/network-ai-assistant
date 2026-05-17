@@ -1,0 +1,19 @@
+{
+  "network_candidates": [
+    {
+      "source_path": "templates.*",
+      "target_bucket": "org_configuration_template_candidates",
+      "field_map": {
+        "template_id": "id",
+        "name": "name"
+      },
+      "display_fields": ["template_id", "name"],
+      "required_fields": ["id", "name"],
+      "required_output_field": "template_id",
+      "defaults": {}
+    }
+  ],
+  "clear_buckets_before_extract": [],
+  "evidence_limit": 30,
+  "candidate_limit": 500
+}

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "senao-api-skills",
+  "owner": {
+    "name": "Ian Lai",
+    "email": "a186235@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "senao-api-skills",
+      "source": "./",
+      "description": "API skills for org management, network configuration, AP/switch diagnostics, and team membership",
+      "repository": "git@atlantis.senao.com:engenius_cloud/cloud_6/ai-agent/agents/api-skills.git"
+    }
+  ]
+}

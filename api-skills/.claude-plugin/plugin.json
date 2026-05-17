@@ -1,0 +1,9 @@
+{
+  "name": "senao-api-skills",
+  "version": "0.1.0",
+  "description": "AI agent skills for the Engenius (Senao) WiFi management system. Enables agents to interact with the Engenius cloud management REST API for org management, network configuration, AP/switch diagnostics, and team membership.",
+  "author": {
+    "name": "Ian Lai"
+  },
+  "repository": "git@atlantis.senao.com:engenius_cloud/cloud_6/ai-agent/agents/api-skills.git"
+}

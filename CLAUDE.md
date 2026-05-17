@@ -1,14 +1,39 @@
-# CLAUDE.md — Network AI-Assistant Proposal Site
+# CLAUDE.md — 你的專業 AI 網管 · EnGenius Cloud AI Agent Skill Suite
 
-> Last updated: 2026-05-17
+> Last updated: 2026-05-17（資料夾重整：root 為主軸、早期 proposal 進 `proposal-archive/`）
 
 ## Project Overview
 
-純靜態 HTML 產品提案網站 — 「**Network AI-Assistant**」AI 網管助理。
-**目前 focus：Product Line 2（Dashboard Builder + EnGenius Cloud SKILLs）**。
+純靜態 HTML 站 — 主軸是 **「你的專業 AI 網管」**（Dashboard Builder Skill）。
+2026-05-17 完成資料夾重整：
+
+- **root** = 主軸產品入口（`index.html` 直接帶進 `dashboard-builder/`）
+- **`dashboard-builder/`** = 完整 skill + 17 張 dashboard + docs（Line 2 收斂結果）
+- **`api-skills/`** = RD 提供的 13 個 EnGenius Cloud data skill，**現已 vendor 進 repo**（先前是 gitignored）。`.venv/` / `__pycache__/` / `.env*` 仍排除。Source-of-truth：RD；本地測試 OK 後 commit 進來
+- **`proposal-archive/`** = 早期 proposal 階段所有材料（2026-04 ~ 05-13 之前的兩線敘事、mockup、舊版 PoC、pitch deck）。歷史脈絡保留，但跟主軸隔離。
+- **`scripts/sync-refs.sh`** = persona / design.md 由 `dashboard-builder/skill/references/` 同步到 `api-skills/references/`
+- **`README.oss-draft.md`** = OSS-facing 對外 README 草稿（功能介紹 / install / usage / features / license）。**release 上 GitHub 公開時**直接 rename 取代 `README.md` 即可。在此之前 `README.md` 保持內部狀態文件用途，避免維護兩份對外文件邊改邊飄
 
 完整功能與內容結構詳見 [README.md](README.md)。
 **Live**: https://network-ai-assistant.vercel.app
+
+## 🗂 資料夾重整對照（2026-05-17）
+
+| 之前位置（root） | 重整後位置 |
+|---|---|
+| `index.html` | 重寫為主軸入口；舊內容 copy 到 `proposal-archive/index.html` 並加 archive banner |
+| `home-product.html` / `home-engineering.html` | `proposal-archive/` |
+| `overview-pm-mkt.html` / `two-modes.html` / `use-case-matrix.html` / `system-diagram.html` | `proposal-archive/` |
+| `architecture-v2-zh.html` / `architecture-v2.html` | `proposal-archive/` |
+| `playbook-examples.html` / `blind-spots.html` / `pitch-deck.html` | `proposal-archive/` |
+| `mockup-gallery.html` + 4 個 `*-mockup.html` | `proposal-archive/` |
+| `dashboard-builder-{demo,implementation,prep}.html`（注意：是早期行銷頁，**不是** `dashboard-builder/` 子資料夾）| `proposal-archive/` |
+| `prototype/` | `proposal-archive/prototype/` |
+| `docs/` | `proposal-archive/docs/` |
+| `dashboard-builder/` ★ | **原地不動**（主軸） |
+| `assets/` | **原地不動**（共用 logo / diagram） |
+
+**path 修正**：archived 頁面內 `"assets/..."` → `"../assets/..."`；`proposal-archive/prototype/*.html` 內 `"../assets/..."` → `"../../assets/..."`。dashboard-builder/ 沒引用 root pages，所以不需要動。
 
 ## 🎯 兩條產品線（重要 — 兩線不要混）
 
@@ -35,39 +60,29 @@
 
 ```
 network-ai-assistant/
-├── 14 個內容頁 HTML（index / home-product / home-engineering / overview-pm-mkt
-│   / two-modes / system-diagram / use-case-matrix / mockup-gallery
-│   / dashboard-builder-demo / dashboard-builder-implementation
-│   / dashboard-builder-prep / architecture-v2-zh / architecture-v2
-│   / playbook-examples / blind-spots / pitch-deck）
-├── 4 個 mockup HTML（employee-chat / cockpit / dashboard-builder-flow / unified-chat）
-├── assets/
-│   ├── engenius-logo.png
-│   ├── diagram-architecture-overview.png   一張高層次架構圖（給投影片用）
-│   └── diagram-architecture-overview.svg   ↑ SVG 原檔
-├── docs/                                   給 RD / 設計 / prompt eng 的對齊文件
-│   ├── widget-catalog.md                   12 widgets 完整規格（P0/P1/P2）
-│   ├── prompt-templates.md                 LLM system prompt + tool defs + few-shot
-│   ├── dashboard-builder-implementation-guide.md  前端實作準備指南
-│   ├── design-tokens.md                    EnGenius Cloud design tokens
-│   ├── skill-to-widget-mapping.md          ★ widget ↔ op 對齊文件（含 RD action items）
-│   ├── booth-presenter-cheatsheet.md       ★ 展會操作員 cheat sheet
-│   └── refine-demo-plan.md                 demo refine 互動規劃
-├── prototype/                              舊版 PoC + 展會用 dashboard（2026-05-13 之前）
-│   ├── canvas.html                         Multi-Org Audit dashboard（真實 staging API）
-│   ├── canvas-network-audit.html           Network Config Audit
-│   ├── canvas-team-access.html             Team Access Audit
-│   ├── canvas-<TS>.html                    Timestamped 新生 dashboard（demo workflow）
-│   ├── scenarios.html                      Booth 操作員 menu（list 所有 canvas）
-│   ├── generated-log.html                  ★ 自動 refresh 的「AI 今天生過什麼」log
-│   ├── generated-manifest.json             ↑ 每生一張 dashboard 就 append entry
-│   ├── booth-hospitality.html              預錄 5-phase 飯店場景 demo（純戲劇 backup）
-│   ├── booth-data/hospitality.json         ↑ 合成假資料
-│   ├── api-responses/*.json                早期保留的真實 API 回應
-│   ├── live-data/*.json                    早期 PoC 用的 staging snapshot
-│   ├── data.json                           dashboard-live.html 用的聚合 JSON
-│   └── dashboard-live.html                 3-tab 整合版 PoC（含 LLM agent trace）
-├── dashboard-builder/                      ★ v0.2（Persona-aware + Design System）
+├── index.html                              ★ 主站首頁（專業 AI 網管 entry · 直接帶進 dashboard-builder）
+├── README.md / CLAUDE.md
+├── assets/                                 共用：engenius-logo / diagram-architecture-overview
+│
+├── proposal-archive/                       📚 早期 proposal 階段歷史檔案（2026-04 ~ 05-13 之前）
+│   ├── index.html                          archive hub（原本的 2-card chooser + archive banner）
+│   ├── home-product.html / home-engineering.html
+│   ├── overview-pm-mkt.html / two-modes.html / use-case-matrix.html / system-diagram.html
+│   ├── architecture-v2-{zh,}.html          系統架構互動版（含 zh⇄en 切換）
+│   ├── playbook-examples.html / blind-spots.html / pitch-deck.html
+│   ├── mockup-gallery.html + 4 個 *-mockup.html（employee-chat / cockpit / dashboard-builder-flow / unified-chat）
+│   ├── dashboard-builder-{demo,implementation,prep}.html  早期行銷頁（內容對應 prototype，**不是** dashboard-builder/）
+│   ├── prototype/                          舊版 PoC（2026-05-13 之前）
+│   │   ├── canvas*.html / scenarios.html / dashboard-live.html
+│   │   ├── booth-hospitality.html + booth-data/
+│   │   ├── generated-log.html + generated-manifest.json
+│   │   ├── api-responses/ + live-data/ + data.json
+│   └── docs/                               早期 Line 2 對齊文件
+│       ├── widget-catalog.md / prompt-templates.md / skill-to-widget-mapping.md
+│       ├── dashboard-builder-implementation-guide.md / design-tokens.md
+│       ├── booth-presenter-cheatsheet.md / refine-demo-plan.md
+│
+├── dashboard-builder/                      ★ 主軸 · v0.2（Persona-aware + Design System）
 │   ├── README.md                           入口導讀
 │   ├── architecture.html                   主說明頁（v5 · §00 產品全貌 · §02c Persona · §03f Design System · §04b 雙軌 Demo Readiness）
 │   ├── widget-catalog.html                 12 widget spec viewer（markdown render）
@@ -91,8 +106,18 @@ network-ai-assistant/
 │       ├── devlog.{md,html}                AI 工具開發案例分享（已上 ai-learning-notes）
 │       ├── rd-handoff.md / rd-priorities.md
 │       └── rd-meeting/                     5 份推 RD 會議材料（含 deck #5 Persona 提案）
-└── api-skills/                             RD 給的 senao-api-skills v0.1.0（gitignored，本機 + plugin install）
-    └── references/                         本機 sync 過去的 persona.md + design.md（讓 RD skill 也載入）
+├── api-skills/                             🔌 RD 提供的 senao-api-skills（已 vendor 進 repo）
+│   ├── .claude-plugin/marketplace.json     plugin manifest（可被 /plugins install）
+│   ├── CLAUDE.md / 安裝說明.txt / requirements.txt
+│   ├── references/                         persona + design.md 鏡像（由 scripts/sync-refs.sh 同步）
+│   ├── skills/                             13 個 data skill（hvs / networks / org-devices / org-licenses /
+│   │                                        engenius-env / init-orgs / org-backups / org-network-groups /
+│   │                                        org-network-templates / team-members / network-{ap,gateway,switch}-troubleshoot）
+│   ├── metadata/
+│   ├── .venv/                              ★ gitignored
+│   └── __pycache__/                        ★ gitignored
+└── scripts/
+    └── sync-refs.sh                        同步 dashboard-builder/skill/references/{persona,design}.md → api-skills/references/
 ```
 
 ## Architecture & Data Flow
@@ -209,16 +234,69 @@ cp $SRC/examples/*.json $CACHE/examples/
 
 → 然後 `/clear` 或重啟 Claude Code 讓對話重新 load。
 
+### RD 給新 / 更新的 skill — AI 處理 workflow
+
+User 偏好「不寫 import script，直接把 RD 給的內容丟給 AI 處理」。當 user 說類似「RD 給我新版 X」/「幫我整合這個新 skill」/「RD 補了 troubleshoot scripts」時，按下面流程：
+
+**1. 判斷 user 給的範圍**
+- 整包 `api-skills/` 替換？看路徑是否包含 `skills/` + `CLAUDE.md` + `requirements.txt`
+- 單一 skill 更新？看路徑是否是 `skills/<name>/` 結構（含 `SKILL.md`）
+- 只是補 `scripts/`？看路徑是否就是 `scripts/` 資料夾（多半是 troubleshoot 那 3 個）
+- 全新 skill？看 `skills/<新名字>/` 在現有 `api-skills/skills/` 沒見過
+
+**2. rsync 進來，必須排除**
+```bash
+rsync -av --delete \
+  --exclude='.venv/' \
+  --exclude='__pycache__/' \
+  --exclude='*.pyc' \
+  --exclude='.claude/' \
+  --exclude='.env*' \
+  --exclude='references/' \    # 保護 dashboard-builder/skill/references/ 為 source-of-truth
+  <user-給的路徑>/ \
+  ./api-skills/<目標位置>/
+```
+
+**`references/` 為什麼要排除**：`dashboard-builder/skill/references/{persona,design}.md` 才是 canonical，`api-skills/references/` 是 mirror。RD 那邊可能有過時版本，不能讓他蓋。除非 user 明確說「RD 改了 persona」，才考慮反向 sync。
+
+**3. 看變更**
+```bash
+git diff --stat api-skills/
+# 若改動很多，再 git diff 細節
+```
+
+**4. 提醒 user 測試**
+- `/plugins` Uninstall + Reinstall `senao-api-skills`，然後**重啟 Claude Code**（不是 `/clear`）
+- 試一個對話 invoke 該 skill 看會不會錯
+- 若是 troubleshoot scripts，特別測 booth 預錄場景需要的 op：`rpc_led_dance` / `rpc_kick_clients` / `subscribe_cable_diag` / `subscribe_client_list` / `rpc_reboot`
+
+**5. 更新狀態文件**（很容易忘）
+- `CLAUDE.md` 「⚠️ RD 端阻擋項目」section — 解開的項目要拿掉
+- `README.md` 「目前狀態」表 — `⚠️` 改 `✅`
+- `dashboard-builder/docs/rd-priorities.md` — 對應 P0/P1 項目劃掉
+- 新 skill 要新增到 `README.oss-draft.md` 的「13 個 data skill」表
+
+**6. Commit + PR**
+- Branch: `update/api-skills-<簡述>-YYYYMMDD` 或 `feat/api-skills-<新skill名>`
+- Commit message 要寫清楚 RD 改了什麼、AI 測過什麼
+- `gh pr create` 開 PR
+
 ## ⚠️ RD 端阻擋項目
 
-**P0（阻 booth 戲劇性 demo）**：
-- `network-{ap,gateway,switch}-troubleshoot` 三個 skill 缺 `scripts/`
-- 47 個 op 不能執行（subscribe_* / rpc_*）→ 阻 rpc_led_dance / rpc_kick_clients / cable_diag / 即時 client list 等
-- 4 份推 RD 會議材料在 [`dashboard-builder/docs/rd-meeting/`](dashboard-builder/docs/rd-meeting/)
+**P0（阻 booth 戲劇性 demo · 2026-05-17 重新框架）**：
+- ~~47 個 troubleshoot script 全部要 RD 寫~~ ← 已重新評估，**真正需要 RD 的只剩 1-2 個關鍵資訊**：
+  - dolphin 的 URL pattern + 一個 working curl 範例
+  - subscribe 的 streaming protocol（或 polling 替代方案）
+- 詳見 [`dashboard-builder/docs/rd-meeting/06-api-doc-questions.md`](dashboard-builder/docs/rd-meeting/06-api-doc-questions.md) — 10 個明確問題，按 P0/P1/P2 排序
 
 **P1（阻新 widget 類型）**：
 - 沒有 history aggregation API → line_chart / sparkline / area_chart widget 沒法做
 - 提議 endpoint shape 在 [`dashboard-builder/docs/rd-meeting/04-history-api-proposal.md`](dashboard-builder/docs/rd-meeting/04-history-api-proposal.md)
+
+**OpenAPI gap visualization（自助工具）**：
+- 跑 `python3 scripts/build-openapi.py` 自動掃 `api-skills/skills/*/SKILL.md` → 生 `openapi.json`
+- `api-docs.html` 用 Swagger UI 渲染 → 47 個 `x-rd-pending` op 視覺化顯示為「⚠ TBD」
+- **這就是給 RD 看的 gap 報告**，比文字訴求直觀
 
 完整優先序表：[`dashboard-builder/docs/rd-priorities.md`](dashboard-builder/docs/rd-priorities.md)
 
@@ -261,7 +339,7 @@ cp $SRC/examples/*.json $CACHE/examples/
 10. **dashboard-builder-prep.html 用 CSS counter 自動編號** — 不要手動改數字
 
 ### Line 2 / API SKILL
-11. **api-skills/ 是 RD 給的 separate repo**（gitignored，不要 commit 它的內容）
+11. **api-skills/ 已 vendor 進 repo**（2026-05-17 改變）— `skills/` / `references/` / `metadata/` / `.claude-plugin/` 全部 commit；`.venv/` / `__pycache__/` / `.env*` 由 .gitignore 排除。RD 新版來時 workflow：覆寫 → `git diff` → 測試 → commit
 12. **API key 千萬別 commit 到 git** — 永遠 export 到 env var
 13. **Python http.server 對 `?_=timestamp` cache-buster 會 404**（query string 被當檔名一部份）— 用 `fetch(url, { cache: 'no-store' })`
 14. **skill 的 stdout 會有 `AAAURL ...` debug print 汙染 JSON** — 要 pipe 過濾 `head -n+1 from { line` 之類的 clean function

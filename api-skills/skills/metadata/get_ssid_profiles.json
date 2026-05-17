@@ -1,0 +1,53 @@
+{
+  "ids": [
+    {
+      "memory_key": "ssid_profile_id",
+      "source_path": "*",
+      "value_field": "id",
+      "required_fields": ["id", "ssid_name"],
+      "take": "first"
+    }
+  ],
+  "network_candidates": [
+    {
+      "source_path": "*",
+      "target_bucket": "ssid_profile_candidates",
+      "field_map": {
+        "ssid_profile_id": "id",
+        "ssid_name": "ssid_name",
+        "ssid_category": "ssid_category",
+        "is_enable": "is_enable",
+        "is_used_by_lan_ports": "is_used_by_lan_ports",
+        "is_hidden": "is_hidden",
+        "is_emergency_wifi": "is_emergency_wifi",
+        "network_id": "$memory.ids.network_id",
+        "hierarchy_view_id": "$memory.ids.hierarchy_view_id",
+        "org_id": "$memory.ids.org_id"
+      },
+      "display_fields": [
+        "org_id",
+        "network_id",
+        "hierarchy_view_id",
+        "ssid_profile_id",
+        "ssid_name",
+        "ssid_category",
+        "is_enable",
+        "is_used_by_lan_ports",
+        "is_hidden",
+        "is_emergency_wifi"
+      ],
+      "required_fields": ["id", "ssid_name"],
+      "required_output_field": "ssid_profile_id",
+      "replace_scope_field": "network_id",
+      "replace_scope_value_source": "$memory.ids.network_id",
+      "defaults": {
+        "network_id": "$memory.ids.network_id",
+        "hierarchy_view_id": "$memory.ids.hierarchy_view_id",
+        "org_id": "$memory.ids.org_id"
+      }
+    }
+  ],
+  "clear_buckets_before_extract": ["ssid_profile_candidates"],
+  "evidence_limit": 30,
+  "candidate_limit": 100
+}

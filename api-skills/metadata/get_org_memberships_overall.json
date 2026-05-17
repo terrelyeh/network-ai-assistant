@@ -1,0 +1,54 @@
+{
+  "ids": [],
+  "network_candidates": [
+    {
+      "source_path": "*",
+      "target_bucket": "org_member_candidates",
+      "field_map": {
+        "user_id": "id",
+        "user_name": "name",
+        "email": "email",
+        "user_status": "status",
+        "last_login_time": "last_login_time",
+        "org_id": "org.id",
+        "org_name": "org.name",
+        "org_role": "org.role",
+        "org_status": "org.status",
+        "networks": "networks"
+      },
+      "display_fields": [
+        "org_id",
+        "org_name",
+        "org_role",
+        "org_status",
+        "user_id",
+        "user_name",
+        "email",
+        "user_status",
+        "last_login_time",
+        "networks"
+      ],
+      "required_fields": ["id", "name", "email"],
+      "required_output_field": "user_id",
+      "defaults": {}
+    },
+    {
+      "source_path": "*.networks.*",
+      "target_bucket": "network_membership_candidates",
+      "field_map": {
+        "network_id": "id",
+        "network_name": "name",
+        "hierarchy_view_id": "hierarchy_view_id",
+        "network_role": "role",
+        "network_status": "status"
+      },
+      "display_fields": ["network_id", "network_name", "hierarchy_view_id", "network_role", "network_status"],
+      "required_fields": ["id", "name"],
+      "required_output_field": "network_id",
+      "defaults": {}
+    }
+  ],
+  "clear_buckets_before_extract": ["org_member_candidates", "network_membership_candidates"],
+  "evidence_limit": 30,
+  "candidate_limit": 30
+}

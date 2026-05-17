@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>API Docs · EnGenius Cloud AI Agent Skill Suite</title>
+<link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  body {
+    margin: 0;
+    background: #f5f7fb;
+    font-family: 'Inter', 'Noto Sans TC', sans-serif;
+  }
+
+  /* Top banner */
+  .banner {
+    background: linear-gradient(135deg, #0a1628 0%, #0f1e3a 100%);
+    color: #f8fafc;
+    padding: 28px 32px 24px;
+    border-bottom: 3px solid #fbbf24;
+  }
+  .banner-inner { max-width: 1460px; margin: 0 auto; }
+  .banner h1 {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin: 0 0 6px;
+  }
+  .banner h1 .warn { color: #fbbf24; }
+  .banner h1 .accent { color: #ff6b35; }
+  .banner .sub {
+    color: #cbd5e1;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+  .banner .meta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: #94a3b8;
+  }
+  .banner .meta span {
+    padding: 4px 10px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 999px;
+  }
+  .banner .meta strong { color: #f8fafc; }
+  .banner .meta .ok { color: #00d9c5; }
+  .banner .meta .pending { color: #fbbf24; }
+  .banner a {
+    color: #00d9c5;
+    text-decoration: none;
+    border-bottom: 1px dotted #00d9c5;
+  }
+  .banner a:hover { color: #fbbf24; border-bottom-color: #fbbf24; }
+
+  /* Note panel */
+  .note {
+    max-width: 1460px;
+    margin: 20px auto 0;
+    padding: 14px 22px;
+    background: #fef9e7;
+    border: 1px solid #f0d674;
+    border-left: 4px solid #fbbf24;
+    border-radius: 8px;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: #5a4a16;
+  }
+  .note strong { color: #3d3105; }
+  .note code {
+    background: rgba(0,0,0,0.06);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+  }
+
+  /* Swagger UI wrapper */
+  #swagger-ui {
+    max-width: 1460px;
+    margin: 16px auto;
+  }
+
+  /* Make x-rd-pending ops visually distinct */
+  .opblock[data-path*="x-rd-pending"] {
+    opacity: 0.7;
+  }
+  .opblock[data-path*="x-rd-pending"] .opblock-summary-path::before {
+    content: "⚠ TBD · ";
+    color: #fbbf24;
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+
+<header class="banner">
+  <div class="banner-inner">
+    <h1>EnGenius Cloud · <span class="warn">AI Agent</span> <span class="accent">API Docs</span></h1>
+    <div class="sub">
+      Auto-generated from <code style="background:rgba(255,255,255,0.08);padding:1px 6px;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:12px;">api-skills/skills/*/SKILL.md</code> · 互動式 API 文件 powered by Swagger UI
+    </div>
+    <div class="meta">
+      <span><strong>94</strong> total ops</span>
+      <span class="ok"><strong>47</strong> fully documented ✓</span>
+      <span class="pending"><strong>47</strong> ⚠ pending RD docs</span>
+      <span><strong>12</strong> skills (tags)</span>
+      <span>OpenAPI <strong>3.1.0</strong></span>
+      <span>·</span>
+      <span>spec: <a href="openapi.json">openapi.json</a></span>
+      <span>·</span>
+      <span><a href="index.html">← back to project hub</a></span>
+    </div>
+  </div>
+</header>
+
+<div class="note">
+  ⚠ <strong>關於 47 個 <code>x-rd-pending</code> ops</strong> — RPC / Subscribe / 5 個 stragglers 還沒拿到 HTTP method/path 文件，所以暫時放在 <code>/x-rd-pending/&lt;skill&gt;/&lt;op&gt;</code> pseudo-path 下，UI 上會看到 ⚠ TBD 前綴。RD 補完文件後重跑 <code>scripts/build-openapi.py</code> 自動補完。具體缺什麼見 <a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/dashboard-builder/docs/rd-meeting/06-api-doc-questions.md">rd-meeting/06-api-doc-questions.md</a>。
+</div>
+
+<div id="swagger-ui"></div>
+
+<script src="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui-bundle.js"></script>
+<script src="https://unpkg.com/swagger-ui-dist@5.17.14/swagger-ui-standalone-preset.js"></script>
+<script>
+  window.onload = () => {
+    window.ui = SwaggerUIBundle({
+      url: 'openapi.json',
+      dom_id: '#swagger-ui',
+      deepLinking: true,
+      docExpansion: 'none',
+      filter: true,
+      tagsSorter: 'alpha',
+      operationsSorter: 'alpha',
+      tryItOutEnabled: true,
+      presets: [
+        SwaggerUIBundle.presets.apis,
+        SwaggerUIStandalonePreset
+      ],
+      plugins: [SwaggerUIBundle.plugins.DownloadUrl],
+      layout: 'StandaloneLayout',
+    });
+  };
+</script>
+
+</body>
+</html>

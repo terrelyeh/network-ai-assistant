@@ -1,0 +1,21 @@
+{
+  "network_candidates": [
+    {
+      "source_path": "backups.*",
+      "target_bucket": "org_backup_candidates",
+      "field_map": {
+        "backup_id": "id",
+        "name": "name",
+        "network_id": "network_id",
+        "network_name": "network_name"
+      },
+      "display_fields": ["backup_id", "name", "network_name"],
+      "required_fields": ["id", "name"],
+      "required_output_field": "backup_id",
+      "defaults": {}
+    }
+  ],
+  "clear_buckets_before_extract": [],
+  "evidence_limit": 30,
+  "candidate_limit": 500
+}

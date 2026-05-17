@@ -1,0 +1,23 @@
+{
+  "ids": [],
+  "network_candidates": [
+    {
+      "source_path": "*",
+      "target_bucket": "add_device_results",
+      "field_map": {
+        "device_id": "id",
+        "code": "code",
+        "message": "message",
+        "expired_date": "expired_date",
+        "license_status": "license_status"
+      },
+      "display_fields": ["device_id", "code", "message", "expired_date", "license_status"],
+      "required_fields": ["id"],
+      "required_output_field": "device_id",
+      "defaults": {}
+    }
+  ],
+  "clear_buckets_before_extract": [],
+  "evidence_limit": 30,
+  "candidate_limit": 500
+}

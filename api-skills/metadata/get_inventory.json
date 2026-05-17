@@ -1,0 +1,72 @@
+{
+  "ids": [],
+  "network_candidates": [
+    {
+      "source_path": "$",
+      "target_bucket": "inventory_response_meta",
+      "field_map": {
+        "response_size": "size"
+      },
+      "display_fields": ["response_size"],
+      "required_fields": ["size"],
+      "required_output_field": "response_size",
+      "defaults": {}
+    },
+    {
+      "source_path": "devices.*",
+      "target_bucket": "device_candidates",
+      "field_map": {
+        "device_id": "id",
+        "hierarchy_view_id": "hierarchy_view_id",
+        "network_id": "network_id",
+        "network_name": "network_name",
+        "name": "name",
+        "type": "type",
+        "model": "model",
+        "series": "series",
+        "mac": "mac",
+        "license_status": "license_status",
+        "license_type": "license_type",
+        "ai_license_status": "ai_license_status",
+        "ai_license_type": "ai_license_type",
+        "serial_number": "serial_number",
+        "description": "description",
+        "registered_by": "registered_by",
+        "created_time": "created_time",
+        "modified_time": "modified_time",
+        "registered_time": "registered_time",
+        "expired_date": "expired_date",
+        "ai_expired_date": "ai_expired_date"
+      },
+      "display_fields": [
+        "device_id",
+        "hierarchy_view_id",
+        "network_id",
+        "network_name",
+        "name",
+        "type",
+        "model",
+        "series",
+        "mac",
+        "license_status",
+        "license_type",
+        "ai_license_status",
+        "ai_license_type",
+        "serial_number",
+        "description",
+        "registered_by",
+        "created_time",
+        "modified_time",
+        "registered_time",
+        "expired_date",
+        "ai_expired_date"
+      ],
+      "required_fields": ["id"],
+      "required_output_field": "device_id",
+      "defaults": {}
+    }
+  ],
+  "clear_buckets_before_extract": [],
+  "evidence_limit": 30,
+  "candidate_limit": 500
+}
