@@ -950,8 +950,7 @@
     <a href="#layers-deep-dive">5 層深度</a>
     <a href="#how-ai-works">AI 怎麼運作</a>
     <a href="#primitives">Skill = Primitive</a>
-    <a href="#dashboard">Dashboard</a>
-    <a href="#scenarios">情境</a>
+    <a href="#dashboard">Dashboard + 證明</a>
     <a href="#roadmap">Roadmap</a>
     <a href="technical.html">Technical →</a>
   </div>
@@ -968,10 +967,9 @@
     <a class="toc-item" href="#layers-deep-dive" data-target="layers-deep-dive"><span class="toc-num">§03</span> 每一層深度說明</a>
     <a class="toc-item" href="#how-ai-works" data-target="how-ai-works"><span class="toc-num">§04</span> AI 怎麼運作</a>
     <a class="toc-item" href="#primitives" data-target="primitives"><span class="toc-num">§05</span> Skill = Primitive</a>
-    <a class="toc-item" href="#dashboard" data-target="dashboard"><span class="toc-num">§06</span> Dashboard 是 output 之一</a>
-    <a class="toc-item" href="#scenarios" data-target="scenarios"><span class="toc-num">§07</span> 已驗證情境</a>
-    <a class="toc-item" href="#roadmap" data-target="roadmap"><span class="toc-num">§08</span> Roadmap</a>
-    <a class="toc-item" href="#status" data-target="status"><span class="toc-num">§09</span> Status</a>
+    <a class="toc-item" href="#dashboard" data-target="dashboard"><span class="toc-num">§06</span> Dashboard · 5 個 proof points</a>
+    <a class="toc-item" href="#roadmap" data-target="roadmap"><span class="toc-num">§07</span> Roadmap</a>
+    <a class="toc-item" href="#status" data-target="status"><span class="toc-num">§08</span> Status</a>
     <div class="toc-section" style="margin-top: 24px;">Appendix</div>
     <a class="toc-item" href="#appendix-skills" data-target="appendix-skills"><span class="toc-num">A</span> Skills × Scenarios</a>
     <a class="toc-item" href="#appendix-glossary" data-target="appendix-glossary"><span class="toc-num">B</span> Glossary</a>
@@ -1475,26 +1473,19 @@
 </section>
 
 <section id="dashboard">
-  <h2><span class="num-tag">§06</span>Dashboard 只是 Output 之一</h2>
+  <h2><span class="num-tag">§06</span>Dashboard Output · 即時組裝 + 實例證明</h2>
   <p class="section-lede">
-    當 AI 判斷該開 dashboard 時，會用 dashboard-builder skill 即時組裝。這只是三種 output 形式之一 — 不是這套產品的主角，但是視覺最直觀的一種。
+    當 AI 判斷該開 dashboard 時，會用 dashboard-builder skill 即時組裝。<strong>三種 output 形式（text / dashboard / action）之一</strong> — 不是這套產品的主角，但視覺最直觀。
   </p>
 
   <h3>怎麼運作（簡介）</h3>
-  <p>AI 根據對話結果寫出一份 <strong>spec JSON</strong>（描述要哪些 section、用哪些 widget、餵什麼資料），跑 <code class="mono">compose.py</code> 即時生成自包含的 HTML — 5 個 validated 情境跨 3 個語言 + light/dark theme 共 17 張現成 canvas 可參考。</p>
+  <p>AI 根據對話結果寫出一份 <strong>spec JSON</strong>（描述要哪些 section、用哪些 widget、餵什麼資料），跑 <code class="mono">compose.py</code> 即時生成自包含的 HTML。<strong>每次都是即時組</strong>，不是從預寫模板挑一個出來。</p>
 
-  <div class="pull">
-    <span class="badge">想看技術細節嗎？</span>
-    Widget library 設計、12 widget catalog、Library Growth 哲學、9 條 Design Hard Prohibitions、compose.py 完整 workflow、Demo Readiness pipeline、資料層限制 — 全部在<br>
-    <strong>→ <a href="technical.html">Dashboard Builder · Technical Deep-Dive</a></strong>
+  <h3 style="margin-top: 28px;">5 個 Proof Points · 驗證 pipeline 跑得通</h3>
+  <div class="pull" style="background: rgba(3,169,244,0.05); border-left-color: var(--cyan); margin-bottom: 18px;">
+    <span class="badge" style="color: var(--cyan);">先說清楚 · 這不是 5 個預寫模板</span>
+    下面 5 個是<strong>我們已經驗證「AI 能從 skill primitives 即時組出來」的具體例子</strong> — 不是這套產品「能做的全部 dashboard」。同樣的 skill 組合，AI 可以組出完全不同的 dashboard 回答不同問題。<strong>使用者問什麼就組什麼</strong>，這 5 個只是 evidence 證明 pipeline 跑得通、把產品從「論述」變成「可看可摸」。腦力激盪中還有 20+ 個情境（見 <a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/dashboard-builder/docs/scenario-candidates.md">scenario-candidates.md</a>），但 AI <strong>不限於這份清單</strong>。
   </div>
-</section>
-
-<section id="scenarios">
-  <h2><span class="num-tag">§07</span>已驗證的 5 個情境</h2>
-  <p class="section-lede">
-    跑真實 EnGenius Cloud staging API 的 dashboard 範例。每個情境跨 3 個語言（zh-TW / EN / JA）+ light/dark theme，共 17 張 canvas。腦力激盪中還有 S8-S12 + N/T/M 新菜色約 20 個情境（見 <a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/dashboard-builder/docs/scenario-candidates.md">scenario-candidates.md</a>）。
-  </p>
 
   <table class="tbl" style="margin-top: 20px;">
     <thead>
@@ -1549,10 +1540,16 @@
     <a href="org-health-en.html">English</a> ·
     <a href="org-health-ja.html">日本語</a> 三個變體
   </p>
+
+  <div class="pull" style="margin-top: 24px;">
+    <span class="badge">想看技術細節嗎？</span>
+    Widget library 設計、12 widget catalog、Library Growth 哲學、9 條 Design Hard Prohibitions、compose.py 完整 workflow、Demo Readiness pipeline、資料層限制 — 全部在<br>
+    <strong>→ <a href="technical.html">Dashboard Builder · Technical Deep-Dive</a></strong>
+  </div>
 </section>
 
 <section id="roadmap">
-  <h2><span class="num-tag">§08</span>Roadmap</h2>
+  <h2><span class="num-tag">§07</span>Roadmap</h2>
   <p class="section-lede">
     這套產品還在進化。下面是短/中/長期計畫 — 每階段都有具體交付，不是空願景。
   </p>
@@ -1572,7 +1569,7 @@
     <tbody>
       <tr>
         <td><code class="mono">house-rules.md</code></td>
-        <td>EnGenius 品牌觀點 — HVS 分數區間建議、設備推薦邏輯、什麼絕對不該推、平台特有 gotcha</td>
+        <td>EnGenius 平台規則與規範 — HVS 分數定義、license-device 綁定規則、plan 限制、設備支援矩陣、平台 quirks（事實層面，非主觀建議）</td>
         <td class="warn">🔜 P2</td>
       </tr>
       <tr>
@@ -1607,7 +1604,7 @@
 </section>
 
 <section id="status">
-  <h2><span class="num-tag">§09</span>Status 速覽</h2>
+  <h2><span class="num-tag">§08</span>Status 速覽</h2>
   <table class="tbl">
     <thead>
       <tr><th>區塊</th><th>狀態</th><th>備註</th></tr>
