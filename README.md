@@ -1,7 +1,8 @@
 # 你的專業 AI 網管 · EnGenius Cloud AI Agent Skill Suite
 
-> 把 EnGenius Cloud 整套 API 變成 AI 可動手做事的能力。
-> 一個能跨多 org 看健康、查盲點、即時生 dashboard 的 AI 網管助理。
+> 把 EnGenius Cloud 整套 API 變成 AI 可動手做事的能力 —
+> 一個有 voice、有判斷、會記憶的 AI 同事（不是 chatbot、不是 BI dashboard）。
+> 所有 dashboard 都是 **AI 即時組裝的**，不預寫；AI 自己挑回 text / dashboard / action 哪種 output。
 
 🔗 **Live demo**: https://network-ai-assistant.vercel.app
 📍 **所有 URL 整理**：[`URLS.md`](./URLS.md)
@@ -14,19 +15,18 @@
 
 | | 內容 | 用途 |
 |---|---|---|
-| **[`dashboard-builder/`](./dashboard-builder/)** | dashboard-builder skill + 17 張 live dashboard + 12 widget + persona + design system | 動態組裝 AI 網管 dashboard |
-| **[`api-skills/`](./api-skills/)** | RD 提供的 13 個 EnGenius Cloud data skill（hvs / networks / org-devices / troubleshoot…） | 打雲端 API 做實際讀寫操作 |
+| **[`api-skills/`](./api-skills/)** | RD 提供的 13 個 EnGenius Cloud data skill（hvs / networks / org-devices / troubleshoot…）— **目前 13、持續擴增** | Skill primitives · AI 自由組合用 |
+| **[`dashboard-builder/`](./dashboard-builder/)** | dashboard-builder skill + 12 widget + persona + design system + 17 張範例 canvas | AI 即時組裝 dashboard（不預寫模板） |
 
 兩包搭配 = 完整的「你的專業 AI 網管」。Claude Code 透過 `/plugins install` 兩個 plugin 後即可使用。
 
-## 🎯 主軸 · Dashboard Builder
+## 🎯 Dashboard Builder
 
 **[`dashboard-builder/`](./dashboard-builder/)** — 整套 skill + 17 張 live dashboard + 完整 design system。
 
-- **12 widgets** · **6 validated 情境** · **3 locales**（zh-TW / EN / JA）· **light + dark theme**
+- **12 widgets** · **5 個 validated proof scenarios** · **3 locales**（zh-TW / EN / JA）· **light + dark theme**
 - 跑真實 EnGenius Cloud staging API · 雙 script workflow（refresh-all + compose.py）
-- **AI 網管 persona**（[`skill/references/network-admin-persona.md`](./dashboard-builder/skill/references/network-admin-persona.md)）
-- **Design System 守則**（[`skill/references/design.md`](./dashboard-builder/skill/references/design.md)）
+- 5 層知識架構：**persona / design**（✅ ready）+ **house-rules / playbooks / memory**（🔜 規劃中）
 - **Claude Code plugin**（可 `/plugins install`）
 
 ### 主入口
