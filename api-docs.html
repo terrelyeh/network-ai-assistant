@@ -200,14 +200,20 @@
     margin: 16px auto;
   }
 
-  /* Make x-rd-pending ops visually distinct */
-  .opblock[data-path*="x-rd-pending"] {
+  /* Make x-rd-pending ops visually distinct · marked via JS below */
+  .opblock.rd-pending {
     opacity: 0.7;
+    background: rgba(245,158,11,0.04) !important;
+    border-left: 4px solid var(--warn) !important;
   }
-  .opblock[data-path*="x-rd-pending"] .opblock-summary-path::before {
+  .opblock.rd-pending .opblock-summary-path::before {
     content: "⚠ TBD · ";
     color: var(--warn);
     font-weight: 700;
+    margin-right: 4px;
+  }
+  .opblock.rd-pending .opblock-summary-method {
+    background: var(--text-3) !important;
   }
 </style>
 </head>
@@ -242,33 +248,37 @@
     <div class="howto-grid">
       <div class="howto-step">
         <div class="num">1</div>
+        <div class="step-title">先按 <code>Authorize</code> 填 api-key</div>
+        <div class="step-body">
+          頁面最上方右側有 <strong>🔓 Authorize</strong> 按鈕。會跳出兩個欄位：<code>apiKeyAuth</code>（給大部分 skill 用）跟 <code>xAuthToken</code>（給 networks/* 用）— <strong>兩個都填同一個 api-key 值</strong>就對了。
+        </div>
+      </div>
+      <div class="howto-step">
+        <div class="num">2</div>
         <div class="step-title">找你要的 skill</div>
         <div class="step-body">
           下方分組顯示 <strong>13 個 skill 標籤</strong>（<code>hvs</code> / <code>networks</code> / <code>org-devices</code>…）。按一下 tag 名稱展開該 skill 底下所有 op。
         </div>
       </div>
       <div class="howto-step">
-        <div class="num">2</div>
-        <div class="step-title">點開某個 op</div>
-        <div class="step-body">
-          展開 op 後會看到 <strong>HTTP method（GET/POST...）+ URL path</strong>、参數說明、Request body schema、Response example。GET 是讀取、POST/PATCH/DELETE 是改設定。
-        </div>
-      </div>
-      <div class="howto-step">
         <div class="num">3</div>
-        <div class="step-title">「Try it out」實際打打看</div>
+        <div class="step-title">點開 op 看細節 · 行裡兩個 icon</div>
         <div class="step-body">
-          op 右上角有 <strong>Try it out</strong> 按鈕 → 填參數 → <strong>Execute</strong> → 看真實回應。需要先按右上 <code>Authorize</code> 輸入 api-key header。
+          左邊彩色 badge = HTTP method（🟢 GET 讀 · 🟡 POST 寫 · 🔵 PATCH 改 · 🔴 DELETE 刪）。右邊 <strong>🔒</strong> = 這個 op 要 auth（已 Authorize 過就 OK）。
         </div>
       </div>
       <div class="howto-step">
         <div class="num">4</div>
-        <div class="step-title">注意 ⚠ TBD 標記</div>
+        <div class="step-title">Try it out → Execute</div>
         <div class="step-body">
-          有 <strong>⚠ TBD</strong> 前綴的 op 在 <code>/x-rd-pending/</code> 路徑下 — 表示 RD 還沒提供 dolphin URL pattern，現在<strong>還不能打</strong>。可以看 schema 但 Try it out 不會 work。
+          op 右上角 <strong>Try it out</strong> → 填 params → <strong>Execute</strong> → 看真實回應、curl 命令。<strong>⚠ TBD</strong> 開頭的 op（在 troubleshoot skills 下）打不通 — 等 RD 補 dolphin URL。
         </div>
       </div>
     </div>
+
+    <p style="font-size: 12.5px; color: var(--text-3); margin: 16px 0 0; padding-top: 14px; border-top: 1px solid var(--border);">
+      💡 <strong>Server dropdown</strong>（在 Authorize 旁邊）只改「Execute 送到哪個 base URL」，不改 op 清單本身。staging / dev / prod 切換就在這。
+    </p>
   </div>
 </div>
 
@@ -298,6 +308,29 @@
       plugins: [SwaggerUIBundle.plugins.DownloadUrl],
       layout: 'StandaloneLayout',
     });
+
+    // Mark x-rd-pending ops with ⚠ TBD prefix. Swagger UI re-renders on
+    // every tag expand/collapse, so we MutationObserve and re-mark.
+    const markPending = () => {
+      document.querySelectorAll('.opblock').forEach((block) => {
+        if (block.classList.contains('rd-pending')) return;
+        const pathEl = block.querySelector('.opblock-summary-path');
+        if (!pathEl) return;
+        const pathText = pathEl.textContent || '';
+        if (pathText.includes('x-rd-pending')) {
+          block.classList.add('rd-pending');
+        }
+      });
+    };
+
+    // Run after initial render + on any DOM mutation (tag toggle re-renders).
+    setTimeout(markPending, 600);
+    setTimeout(markPending, 1500);
+    const observer = new MutationObserver(() => markPending());
+    const swaggerRoot = document.getElementById('swagger-ui');
+    if (swaggerRoot) {
+      observer.observe(swaggerRoot, { childList: true, subtree: true });
+    }
   };
 </script>
 
