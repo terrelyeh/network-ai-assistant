@@ -1290,14 +1290,40 @@
   <p>絕對不寫 「first do X, then Y, finally Z」— 這會凍結 AI 判斷力 = 把 AI 變成 stored procedure = 殺掉 wedge。寫的是「思考骨架」「診斷維度」「該問的問題」— AI 自己依情境拼出步驟。</p>
 
   <div class="pull">
-    <span class="badge">舉例 · troubleshoot.md 該長什麼樣</span>
+    <span class="badge">原則 · script vs mental model</span>
     <strong>❌ 不寫</strong>：「Step 1: 跑 <code class="mono">get_inventory</code> · Step 2: 跑 <code class="mono">subscribe_ping</code> · Step 3: ...」<br><br>
-    <strong>✅ 該寫</strong>：「Wifi 連不上的三定問 — (1) 是 client 還是 AP 出問題？看 <code class="mono">client_list</code> + <code class="mono">stat</code> · (2) 訊號還是設定？看 <code class="mono">channel_util</code> + <code class="mono">ssid_profile</code> · (3) 即時的還是長期的？看 <code class="mono">ping</code> + <code class="mono">throughput</code> 趨勢」
+    <strong>✅ 該寫</strong>：「思考骨架 + 該問的問題 + 不要做的事」— 讓 AI 自己依情境拼步驟。
   </div>
+
+  <h4 style="margin-top: 28px;">具體範例 · <code class="mono">troubleshoot.md</code> 將長什麼樣</h4>
+  <pre style="font-size: 13px; line-height: 1.7;"><span class="comment"># Troubleshoot Playbook · Mental Model</span>
+
+<span class="kw">## 思考的 3 層</span>
+1. <span class="key">**Client side**</span> — 是不是只有這台 / 這種裝置壞？
+   - 典型：iOS 跟 Android 行為不同、舊裝置不支援 WPA3、距離太遠
+2. <span class="key">**Radio side**</span> — 是不是這台 AP / 這個 SSID 設定？
+   - 典型：通道壅塞、power 太低、SSID isolation 設錯
+3. <span class="key">**Uplink side**</span> — 是不是上游 switch / gateway / WAN？
+   - 典型：PoE 不足、uplink 線品質差、ISP 不穩
+
+<span class="kw">## 詢問三定問</span>
+1. <span class="str">「多少裝置受影響？」</span>（1 台 vs 一整個 SSID 差很多）
+2. <span class="str">「什麼時候開始的？」</span>（持續 vs 突發）
+3. <span class="str">「有什麼東西**剛改過**？」</span>（最常見的元凶）
+
+<span class="kw">## 不要做的事</span>
+- 不要一開始就 reboot AP（資料還沒蒐集就重開 = 把證據刷掉）
+- 不要建議客戶換硬體（先 exhaust 設定面的可能性）</pre>
+  <p style="font-size: 13.5px; color: var(--text-3); font-style: italic; margin-top: 8px;">
+    ↑ 給 AI 思考的骨架，不限制具體該怎麼回。AI 還是依當下資料即時組合回應。
+  </p>
+
+  <h4 style="margin-top: 28px;">怎麼載入 · 條件式</h4>
+  <p>跟 persona / design.md「每次 skill 觸發都 MANDATORY-load」不同，playbooks 是<strong>條件式載入</strong> — AI 判斷使用者意圖屬於 configure / troubleshoot / monitor 哪一類，才 load 對應的 mental model。三個檔不同時 load 避免 context 浪費。</p>
 
   <h4>狀態</h4>
   <ul>
-    <li><span class="warn">🔜</span> 下個 session 起跑（configure.md 跟 monitor.md 先做，troubleshoot.md 等 RD 補 dolphin URL 後再寫）</li>
+    <li><span class="warn">🔜</span> 下個 session 起跑（<code class="mono">configure.md</code> 跟 <code class="mono">monitor.md</code> 先做，<code class="mono">troubleshoot.md</code> 等 RD 補 dolphin URL 後再寫 — 因為 troubleshoot 強烈依賴 subscribe / rpc ops）</li>
   </ul>
 
   <h3 id="layer-memory" style="margin-top: 40px;">§03.5 · memory/&lt;org-id&gt;.md · 記得跟你講過什麼 <span class="warn" style="font-size:13px; font-weight:600;">🔜 post-launch</span></h3>
@@ -1312,8 +1338,33 @@
   <h4>為什麼這個 layer 重要</h4>
   <p>沒 memory = AI 永遠是「一次性問答工具」。有 memory = AI 是「長期合作的同事」— 你不用每次重講上下文。<strong>這是「colleague 而不是 tool」定位的最後一塊拼圖。</strong></p>
 
-  <h4>為什麼還沒設計</h4>
-  <p>4 種可能類型（project / conversation / customer / user memory）都有道理。SI 場景最需要 customer memory，但具體該 namespace 怎麼分、TTL 多長、privacy boundary 怎麼劃 — 沒有真實使用就會猜錯。<strong>等真實 SI 用 1-2 個月、收集踩坑後再實作</strong>，避免閉門造車。</p>
+  <h4>資料夾結構 · 按 org_id namespace（規劃示意）</h4>
+  <pre style="font-size: 13px; line-height: 1.7;">references/memory/
+├── &lt;org-id-1&gt;.md       <span class="comment"># Main_Org 的 memory</span>
+├── &lt;org-id-2&gt;.md       <span class="comment"># Claudia 的 memory</span>
+└── &lt;org-id-3&gt;.md       <span class="comment"># Senna 的 memory</span></pre>
+  <p>每個 org-id 一份檔案（<strong>per-customer namespace</strong>）— SI / MSP 跨多個客戶時不會混淆。每次 session 開始按目前操作的 <code class="mono">org_id</code> load 對應檔案。</p>
+
+  <h4 style="margin-top: 28px;">每份檔案內容 · 規劃中的範例</h4>
+  <pre style="font-size: 13px; line-height: 1.7;"><span class="comment"># Memory · Main_Org</span>
+
+<span class="kw">## Open follow-ups（待追蹤）</span>
+- [ ] 2026-05-15: 王小明離職, 3 個 ACL 還沒清 — 操作員「下週 IT 進來再清」
+- [ ] 2026-05-17: license 7 月底到期, 操作員要 review
+
+<span class="kw">## 已知 quirks（這個客戶特有）</span>
+- POS 系統 23:00-23:30 會跑 batch update, 會短暫斷線 → 不用告警
+- 9F 收銀台 AP 跟天花板距離特別遠, 訊號就是會弱 → 不是 bug, 是物理限制
+
+<span class="kw">## Recent context（最近發生的事）</span>
+- 2026-05-17 早上: 客戶跨 org 設備分布, AI 拉了 dashboard
+- 2026-05-15 下午: 執行了離職權限清理（5 個 user de-membered）</pre>
+  <p style="font-size: 13.5px; color: var(--text-3); font-style: italic; margin-top: 8px;">
+    ↑ 3 個 section（待追蹤 / 已知 quirks / 最近發生）涵蓋大部分跨 session 記憶需求。每次 AI 開新對話時 load，session 結束時把該記的 append 回去。
+  </p>
+
+  <h4 style="margin-top: 28px;">為什麼還沒設計</h4>
+  <p>4 種可能類型（project / conversation / customer / user memory）都有道理。SI 場景最需要 customer memory（上面的 by-org 設計就是這個），但具體該 namespace 怎麼分、TTL 多長、privacy boundary 怎麼劃 — 沒有真實使用就會猜錯。<strong>等真實 SI 用 1-2 個月、收集踩坑後再實作</strong>，避免閉門造車。</p>
 
   <div class="pull" style="margin-top: 24px;">
     <span class="badge">總結 · 為什麼這 5 個 layer 是「colleague 而不是 tool」的關鍵</span>
