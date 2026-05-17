@@ -234,6 +234,53 @@ cp $SRC/examples/*.json $CACHE/examples/
 
 → 然後 `/clear` 或重啟 Claude Code 讓對話重新 load。
 
+### RD 給新 / 更新的 skill — AI 處理 workflow
+
+User 偏好「不寫 import script，直接把 RD 給的內容丟給 AI 處理」。當 user 說類似「RD 給我新版 X」/「幫我整合這個新 skill」/「RD 補了 troubleshoot scripts」時，按下面流程：
+
+**1. 判斷 user 給的範圍**
+- 整包 `api-skills/` 替換？看路徑是否包含 `skills/` + `CLAUDE.md` + `requirements.txt`
+- 單一 skill 更新？看路徑是否是 `skills/<name>/` 結構（含 `SKILL.md`）
+- 只是補 `scripts/`？看路徑是否就是 `scripts/` 資料夾（多半是 troubleshoot 那 3 個）
+- 全新 skill？看 `skills/<新名字>/` 在現有 `api-skills/skills/` 沒見過
+
+**2. rsync 進來，必須排除**
+```bash
+rsync -av --delete \
+  --exclude='.venv/' \
+  --exclude='__pycache__/' \
+  --exclude='*.pyc' \
+  --exclude='.claude/' \
+  --exclude='.env*' \
+  --exclude='references/' \    # 保護 dashboard-builder/skill/references/ 為 source-of-truth
+  <user-給的路徑>/ \
+  ./api-skills/<目標位置>/
+```
+
+**`references/` 為什麼要排除**：`dashboard-builder/skill/references/{persona,design}.md` 才是 canonical，`api-skills/references/` 是 mirror。RD 那邊可能有過時版本，不能讓他蓋。除非 user 明確說「RD 改了 persona」，才考慮反向 sync。
+
+**3. 看變更**
+```bash
+git diff --stat api-skills/
+# 若改動很多，再 git diff 細節
+```
+
+**4. 提醒 user 測試**
+- `/plugins` Uninstall + Reinstall `senao-api-skills`，然後**重啟 Claude Code**（不是 `/clear`）
+- 試一個對話 invoke 該 skill 看會不會錯
+- 若是 troubleshoot scripts，特別測 booth 預錄場景需要的 op：`rpc_led_dance` / `rpc_kick_clients` / `subscribe_cable_diag` / `subscribe_client_list` / `rpc_reboot`
+
+**5. 更新狀態文件**（很容易忘）
+- `CLAUDE.md` 「⚠️ RD 端阻擋項目」section — 解開的項目要拿掉
+- `README.md` 「目前狀態」表 — `⚠️` 改 `✅`
+- `dashboard-builder/docs/rd-priorities.md` — 對應 P0/P1 項目劃掉
+- 新 skill 要新增到 `README.oss-draft.md` 的「13 個 data skill」表
+
+**6. Commit + PR**
+- Branch: `update/api-skills-<簡述>-YYYYMMDD` 或 `feat/api-skills-<新skill名>`
+- Commit message 要寫清楚 RD 改了什麼、AI 測過什麼
+- `gh pr create` 開 PR
+
 ## ⚠️ RD 端阻擋項目
 
 **P0（阻 booth 戲劇性 demo）**：
