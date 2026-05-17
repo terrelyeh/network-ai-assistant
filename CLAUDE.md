@@ -1,6 +1,6 @@
 # CLAUDE.md — 你的專業 AI 網管 · EnGenius Cloud AI Agent Skill Suite
 
-> Last updated: 2026-05-17（架構語言收斂 session · 完成 PR #9–#17）
+> Last updated: 2026-05-17（架構語言收斂 + UI polish + RD 對話策略收斂 · 完成 PR #9–#26）
 
 ## Project Overview
 
@@ -186,15 +186,30 @@ rsync -av --delete \
 5. **更新狀態文件**（很容易忘）：CLAUDE.md「⚠️ RD 端阻擋項目」、README 狀態表、`dashboard-builder/docs/rd-priorities.md`、`README.oss-draft.md` skill 清單
 6. Commit + PR（branch: `update/api-skills-<簡述>` 或 `feat/api-skills-<新skill名>`）
 
-## ⚠️ RD 端阻擋項目
+## ⚠️ RD 端阻擋項目（2026-05-17 重新評估）
 
-**P0（解鎖 47 個 troubleshoot op）**：拿到 1 個關鍵資訊就解鎖大部分
-- dolphin 的 URL pattern + 一個 working curl 範例（已驗證 14 種 path 全 404 — [`docs/rd-meeting/06-api-doc-questions.md`](dashboard-builder/docs/rd-meeting/06-api-doc-questions.md) Q1+Q2）
-- subscribe 的 streaming protocol（或 polling 替代方案）— Q3+Q4
+**關鍵框架 · 兩種 ask 的本質區分**：
 
-**P1（阻新 widget 類型）**：
-- 沒有 history aggregation API → line_chart / sparkline / area_chart widget 沒法做
-- 提議 endpoint shape 在 [`docs/rd-meeting/04-history-api-proposal.md`](dashboard-builder/docs/rd-meeting/04-history-api-proposal.md)
+| 類型 | 含義 | RD 工作量 | 我們今天問 RD 都是這類 |
+|---|---|---|---|
+| **Documentation gap** | RD 已有 backend，沒給我們 URL / curl 範例 | 5 分鐘 | ✅ |
+| **Architecture gap** | RD 從零建新 backend service | 數工作週 | ❌（我們**沒**要求這類）|
+
+舊框架（已棄用）把 history API 當成「請 RD 建新 backend」(architecture gap)，新框架釐清那是「請 RD 分享 GUI 已用的 endpoint」(documentation gap) — Cloud GUI 已顯示歷史 chart，backend 必然有，只是沒包成 skill。
+
+**P0（這次 meeting 必拿）— 全部都是 5 分鐘的 ask**：
+- **Q1+Q2 dolphin URL pattern** + 一個 working curl 範例 → 解鎖 47 個 troubleshoot op（已驗證 14 種 path 全 404 — 不可能用猜的）
+- **Q3+Q4 subscribe streaming 協定**（或 polling 替代方案）
+- **Q9 history endpoint URL**（reframed · 2026-05-17）— Cloud GUI 用哪個 endpoint 拿歷史數據？拿到就解鎖 line_chart / sparkline / area_chart widget
+
+詳見 [`docs/rd-meeting/06-api-doc-questions.md`](dashboard-builder/docs/rd-meeting/06-api-doc-questions.md)。
+
+**自助驗證路徑 · 不用等 RD**：
+- **Q1+Q2 → 試過 14 種 path 全 404**（已 verify · 真的需要 RD 給 URL）
+- **Q9 → 自己用 Chrome DevTools** 開 Cloud GUI Network tab 抓 history endpoint URL（可能 5 分鐘自己搞定，不用問 RD）
+
+**Plan B fallback · 只在 Plan A 失敗時觸發**：
+- [`docs/rd-meeting/04-history-api-proposal.md`](dashboard-builder/docs/rd-meeting/04-history-api-proposal.md) — 萬一 RD 說「GUI 是內部微服務拼的、沒乾淨對外 history API」，才走這條 3 工作週的 backend 投資路線
 
 **自助工具 · OpenAPI gap 視覺化**：
 - 跑 `python3 scripts/build-openapi.py` 自動掃 `api-skills/skills/*/SKILL.md` → 生 `openapi.json`
@@ -261,6 +276,7 @@ rsync -av --delete \
 26. **不要把 dashboards 講成「我們做的 5 個情境」** — 是「5 個 proof points 證明 pipeline 跑得通」
 27. **house-rules.md ≠ 品牌觀點** — 是 EnGenius 平台硬性規則與規範（事實，不是主觀建議）
 28. **改 architecture.html 章節 numbering 要同步改 TOC + top-nav** — 三個地方都要更新
+29. **跟 RD 對話要分 documentation gap vs architecture gap** — Cloud GUI 能顯示某資料 = backend 已有 = 那是 doc gap（5 分鐘的 ask）· 真正要 RD 從零建新 backend service 才是 arch gap（數工作週）。**不要把 doc gap 包裝成 arch gap**（RD 看到工作量估計會拖），也**不要把 arch gap 包裝成 doc gap**（RD 答不出來會尷尬）。Q9 history API 從 arch gap 重新框定為 doc gap 就是這個 lesson（2026-05-17）
 
 ## 詳細文件
 
