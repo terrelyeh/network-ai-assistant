@@ -84,7 +84,8 @@ network-ai-assistant/
 │
 ├── dashboard-builder/                      ★ 主軸 · v0.2（Persona-aware + Design System）
 │   ├── README.md                           入口導讀
-│   ├── architecture.html                   主說明頁（v5 · §00 產品全貌 · §02c Persona · §03f Design System · §04b 雙軌 Demo Readiness）
+│   ├── architecture.html                   ★ 主說明頁（v6 · 2026-05-17 重寫）· 你的 AI 專業網管定位 + 6 面向 + Roadmap + Appendix（700 行）
+│   ├── technical.html                      Technical Deep-Dive（2026-05-17 split out）· widget / spec / compose / design system / demo readiness（1900 行）
 │   ├── widget-catalog.html                 12 widget spec viewer（markdown render）
 │   ├── *.html                              17 張 dashboard canvas（5 情境 × 3 語言 + dark + ad-hoc canvas-*-TS.html）
 │   ├── live-data/*.json                    最新 staging snapshot（refresh-all.sh 寫入）
