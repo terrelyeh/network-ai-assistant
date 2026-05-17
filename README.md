@@ -4,6 +4,7 @@
 > 一個能跨多 org 看健康、查盲點、即時生 dashboard 的 AI 網管助理。
 
 🔗 **Live demo**: https://network-ai-assistant.vercel.app
+📍 **所有 URL 整理**：[`URLS.md`](./URLS.md)
 
 > **狀態**：專案開發中，尚未正式 release。對外 OSS-facing 版的 README 草稿存在 [`README.oss-draft.md`](./README.oss-draft.md)，未來上 GitHub 公開時取代本檔即可。
 
