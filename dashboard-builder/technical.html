@@ -1,0 +1,1937 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard Builder · Technical Deep-Dive · Network AI-Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-1: #f5f2ea;
+    --bg-2: #ebe6da;
+    --surface: #ffffff;
+    --surface-2: #fbfaf7;
+    --border: rgba(60,50,35,0.12);
+    --border-strong: rgba(60,50,35,0.22);
+    --text: #1a2332;
+    --text-2: #475569;
+    --text-3: #94a3b8;
+    --accent: #ff6b35;
+    --cyan: #03a9f4;
+    --warn: #f59e0b;
+    --success: #10b981;
+    --critical: #b91c1c;
+    --radius: 14px;
+    --shadow-sm: 0 1px 2px rgba(15,23,42,.04), 0 0 0 1px rgba(15,23,42,.04);
+    --shadow-md: 0 6px 18px rgba(15,23,42,.08), 0 1px 2px rgba(15,23,42,.04);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg-1);
+    background-image: radial-gradient(at 0% 0%, var(--bg-2) 0%, var(--bg-1) 50%);
+    color: var(--text);
+    font-family: 'Inter', 'Noto Sans TC', system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    letter-spacing: 0.005em;
+  }
+  .num { font-variant-numeric: tabular-nums; }
+  .mono { font-family: 'JetBrains Mono', monospace; font-variant-numeric: tabular-nums; }
+
+  /* Nav */
+  nav {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(245, 242, 234, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  nav .brand { font-weight: 700; font-size: 16px; letter-spacing: 0; }
+  nav .brand .accent { color: var(--accent); }
+  nav .links { display: flex; gap: 20px; font-size: 14px; }
+  nav .links a { color: var(--text-2); text-decoration: none; font-weight: 500; }
+  nav .links a:hover { color: var(--accent); }
+
+  /* Layout: sticky TOC left + main content */
+  .layout-grid {
+    max-width: 1380px; margin: 0 auto;
+    padding: 32px 32px 96px;
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 56px;
+    align-items: start;
+  }
+  main.content { min-width: 0; max-width: 880px; }
+
+  /* TOC sidebar */
+  aside.toc {
+    position: sticky; top: 72px;
+    align-self: start;
+    max-height: calc(100vh - 96px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 8px 0;
+    /* Subtle scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+  }
+  aside.toc::-webkit-scrollbar { width: 4px; }
+  aside.toc::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 2px; }
+
+  .toc-inner { padding: 4px 0; }
+  .toc-section {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--text-3);
+    margin: 8px 0 10px; padding: 0 14px;
+  }
+  .toc-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 14px; margin: 1px 0;
+    border-left: 2px solid transparent;
+    font-size: 13.5px; font-weight: 500;
+    color: var(--text-2); text-decoration: none;
+    transition: all .14s ease;
+    line-height: 1.4;
+  }
+  .toc-item:hover {
+    color: var(--accent); background: rgba(255,107,53,0.05);
+  }
+  .toc-item.active {
+    color: var(--accent); background: rgba(255,107,53,0.08);
+    border-left-color: var(--accent); font-weight: 700;
+  }
+  .toc-item .toc-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--text-3);
+    flex-shrink: 0; min-width: 28px;
+    font-weight: 600;
+  }
+  .toc-item.active .toc-num { color: var(--accent); }
+
+  /* Hero */
+  .hero { margin-bottom: 56px; }
+  .hero .eyebrow {
+    display: inline-block; font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--accent); padding: 4px 10px; border-radius: 999px;
+    background: rgba(255,107,53,0.1); margin-bottom: 16px;
+  }
+  .hero h1 {
+    margin: 0 0 16px; font-size: 44px; font-weight: 800;
+    letter-spacing: -0.025em; line-height: 1.1;
+  }
+  .hero h1 .accent { color: var(--accent); }
+  .hero .lede {
+    font-size: 19px; color: var(--text-2);
+    line-height: 1.65;
+  }
+  .hero .lede .hl { color: var(--text); font-weight: 600; }
+
+  /* Section */
+  section { margin-bottom: 64px; }
+  h2 {
+    margin: 0 0 12px; font-size: 30px; font-weight: 700;
+    letter-spacing: -0.01em; line-height: 1.25;
+  }
+  h2 .num-tag {
+    font-size: 14px; font-weight: 600; color: var(--text-3);
+    letter-spacing: 0.04em; margin-right: 14px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  h3 { margin: 28px 0 10px; font-size: 19px; font-weight: 700; letter-spacing: 0; line-height: 1.4; }
+  h4 { margin: 18px 0 8px; font-size: 15px; font-weight: 700; color: var(--text-2); }
+  p { margin: 0 0 14px; color: var(--text-2); }
+  ol, ul { color: var(--text-2); padding-left: 24px; }
+  ol li, ul li { margin-bottom: 6px; }
+  .section-lede { font-size: 17px; color: var(--text-2); margin-bottom: 28px; line-height: 1.7; }
+
+  /* Big quote box */
+  .pull {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    padding: 24px 30px; border-radius: var(--radius);
+    box-shadow: var(--shadow-sm); margin: 24px 0;
+    font-size: 18px; font-weight: 500; color: var(--text); line-height: 1.65;
+  }
+  .pull .badge { font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.06em; display: block; margin-bottom: 8px; }
+
+  /* 5-layer diagram */
+  .arch-diagram {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px; box-shadow: var(--shadow-sm);
+  }
+  .layer {
+    border: 1.5px solid var(--border-strong);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    background: var(--surface-2);
+    display: grid; grid-template-columns: 60px 1fr 220px; gap: 16px; align-items: center;
+  }
+  .layer .lvl {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    color: var(--text-3); font-weight: 700; letter-spacing: 0.06em;
+  }
+  .layer .lvl b { display: block; font-size: 20px; color: var(--text); margin-top: 2px; }
+  .layer .what { }
+  .layer .what .title { font-weight: 700; font-size: 16px; margin-bottom: 5px; }
+  .layer .what .desc { font-size: 14px; color: var(--text-2); line-height: 1.6; }
+  .layer .owner { font-size: 12px; color: var(--text-3); text-align: right; }
+  .layer .owner .pill {
+    display: inline-block; padding: 4px 9px; border-radius: 999px;
+    background: rgba(15,23,42,0.06); color: var(--text-2);
+    font-weight: 600; font-size: 11px; letter-spacing: 0.04em;
+    text-transform: uppercase; margin-left: 4px;
+  }
+  .layer.l5 { background: linear-gradient(135deg, #fff4ee 0%, var(--surface-2) 100%); border-color: rgba(255,107,53,0.3); }
+  .layer.l4 { background: linear-gradient(135deg, #eaf6fe 0%, var(--surface-2) 100%); border-color: rgba(3,169,244,0.3); }
+  .layer.l3 { background: linear-gradient(135deg, #fef7e6 0%, var(--surface-2) 100%); border-color: rgba(245,158,11,0.3); }
+  .layer.l2 { }
+  .layer.l1 { background: linear-gradient(135deg, #f0f9f1 0%, var(--surface-2) 100%); border-color: rgba(16,185,129,0.3); }
+  .arrow {
+    text-align: center; color: var(--text-3); font-size: 18px; line-height: 1;
+    margin: -2px 0; user-select: none;
+  }
+
+  /* Widget anatomy section */
+  .anatomy {
+    display: grid; grid-template-columns: 1.1fr 1fr; gap: 28px;
+    margin-top: 18px;
+  }
+  .anatomy .visual {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow-sm);
+  }
+  .anatomy .legend {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow-sm);
+  }
+  .canvas-mock {
+    border: 1px solid var(--border); border-radius: 8px;
+    overflow: hidden; background: #fafaf7;
+  }
+  .mock-block {
+    border-bottom: 2px dashed var(--accent);
+    padding: 14px 16px; position: relative;
+    background: #fff;
+  }
+  .mock-block:last-child { border-bottom: 0; }
+  .mock-block .tag {
+    position: absolute; top: 8px; right: 10px;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: var(--accent); font-weight: 700; letter-spacing: 0.02em;
+    background: rgba(255,107,53,0.1); padding: 2px 7px; border-radius: 999px;
+  }
+  .mock-block .title { font-weight: 700; font-size: 13px; margin-bottom: 8px; }
+  .mock-block .placeholder {
+    height: 8px; background: var(--bg-2); border-radius: 4px;
+    margin-bottom: 4px;
+  }
+  .mock-block .placeholder.short { width: 60%; }
+  .mock-block .placeholder.shorter { width: 30%; }
+  .mock-block .row {
+    display: flex; gap: 6px; align-items: center;
+    padding: 4px 0; border-bottom: 1px solid var(--border);
+    font-size: 11px;
+  }
+  .mock-block .row:last-child { border-bottom: 0; }
+  .mock-block .row .pill {
+    font-size: 9px; padding: 2px 6px; border-radius: 999px;
+    background: rgba(185,28,28,0.1); color: var(--critical); font-weight: 600;
+  }
+  .mock-block .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+  .mock-block .mini-kpi {
+    border: 1px solid var(--border); border-radius: 6px; padding: 6px 8px;
+    background: var(--surface-2);
+  }
+  .mock-block .mini-kpi .lbl { font-size: 8px; text-transform: uppercase; color: var(--text-3); }
+  .mock-block .mini-kpi .val { font-size: 18px; font-weight: 700; }
+  .mock-block .tree-row {
+    display: flex; gap: 6px; align-items: center; font-size: 11px;
+    padding: 3px 0;
+  }
+  .mock-block .tree-row.indent-1 { padding-left: 12px; }
+  .mock-block .tree-row.indent-2 { padding-left: 24px; }
+
+  /* Legend */
+  .legend h3 { margin: 0 0 14px; font-size: 17px; }
+  .legend .entry { display: grid; grid-template-columns: 150px 1fr; gap: 12px; margin-bottom: 16px; }
+  .legend .entry .name {
+    font-family: 'JetBrains Mono', monospace; font-size: 13px;
+    background: rgba(255,107,53,0.1); color: var(--accent);
+    padding: 5px 10px; border-radius: 6px; font-weight: 700;
+    align-self: start; text-align: center;
+  }
+  .legend .entry .desc { font-size: 14px; line-height: 1.65; color: var(--text-2); }
+  .legend .entry .desc strong { color: var(--text); }
+
+  /* Code block */
+  pre {
+    background: #1a2332;
+    color: #e2e8f0;
+    padding: 18px 20px;
+    border-radius: 10px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13.5px; line-height: 1.65;
+    margin: 14px 0;
+  }
+  pre .comment { color: #94a3b8; font-style: italic; }
+  pre .key { color: #93c5fd; }
+  pre .str { color: #fcd34d; }
+  pre .kw { color: #f0abfc; }
+  code:not(pre code) {
+    background: rgba(60,50,35,0.08);
+    padding: 2px 7px; border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.92em;
+  }
+
+  /* Step list */
+  .steps { counter-reset: step; padding-left: 0; list-style: none; }
+  .steps > li {
+    counter-increment: step;
+    padding: 20px 24px 20px 70px;
+    background: var(--surface);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 14px; position: relative;
+  }
+  .steps > li::before {
+    content: counter(step);
+    position: absolute; left: 20px; top: 20px;
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--accent); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 15px;
+  }
+  .steps > li .step-title { font-weight: 700; font-size: 16px; margin-bottom: 5px; }
+  .steps > li .step-body { font-size: 15px; color: var(--text-2); line-height: 1.65; }
+  .steps > li pre { margin-top: 12px; font-size: 13px; }
+
+  /* Table */
+  .tbl { width: 100%; border-collapse: collapse; font-size: 14px; margin: 14px 0; }
+  .tbl th { text-align: left; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-3); padding: 11px 12px; border-bottom: 1px solid var(--border-strong); }
+  .tbl td { padding: 12px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.55; }
+  .tbl .ok { color: var(--success); font-weight: 600; }
+  .tbl .warn { color: var(--warn); font-weight: 600; }
+  .tbl .crit { color: var(--critical); font-weight: 600; }
+
+  /* Demo flow */
+  .flow {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 24px;
+    box-shadow: var(--shadow-sm);
+  }
+  .flow-step {
+    display: grid; grid-template-columns: 70px 1fr; gap: 16px;
+    padding: 16px 0; border-bottom: 1px solid var(--border);
+    align-items: start;
+  }
+  .flow-step:last-child { border-bottom: 0; }
+  .flow-step .timer {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; font-weight: 700;
+    text-align: center; padding: 7px 10px;
+    border-radius: 8px;
+    background: rgba(3,169,244,0.1); color: var(--cyan);
+  }
+  .flow-step .timer.eye { background: rgba(255,107,53,0.12); color: var(--accent); }
+  .flow-step .who { font-size: 12px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; }
+  .flow-step .what { font-size: 15px; color: var(--text); margin-top: 4px; line-height: 1.6; }
+  .flow-step .what em { color: var(--accent); font-style: normal; font-weight: 600; }
+
+  /* Inline highlights */
+  .hl-accent { color: var(--accent); font-weight: 600; }
+  .hl-cyan { color: var(--cyan); font-weight: 600; }
+  .hl-warn { color: var(--warn); font-weight: 600; }
+
+  /* Term with annotation */
+  .term {
+    color: var(--accent); font-weight: 700;
+    border-bottom: 1.5px dotted var(--accent);
+    cursor: help; position: relative;
+  }
+  .term::after {
+    content: attr(data-def);
+    position: absolute; top: calc(100% + 8px); left: 50%;
+    transform: translateX(-50%);
+    background: var(--text); color: white;
+    padding: 8px 12px; border-radius: 8px;
+    font-size: 13px; font-weight: 500; line-height: 1.5;
+    white-space: nowrap; max-width: 360px;
+    box-shadow: var(--shadow-md);
+    opacity: 0; pointer-events: none;
+    transition: opacity .15s ease;
+    z-index: 100;
+  }
+  .term::before {
+    content: '';
+    position: absolute; top: 100%; left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    border: 6px solid transparent;
+    border-bottom-color: var(--text);
+    opacity: 0; pointer-events: none;
+    transition: opacity .15s ease;
+    z-index: 100;
+  }
+  .term:hover::after, .term:hover::before { opacity: 1; }
+
+  /* Footer */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px; text-align: center;
+    color: var(--text-3); font-size: 13px;
+  }
+
+  /* Gallery */
+  .gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .gallery-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    box-shadow: var(--shadow-sm); transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .gallery-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+  .gallery-card .meta {
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface-2);
+  }
+  .gallery-card .meta h3 {
+    margin: 0 0 6px; font-size: 17px; font-weight: 700; line-height: 1.35;
+  }
+  .gallery-card .meta .sub {
+    font-size: 13px; color: var(--text-2); line-height: 1.55;
+  }
+  .gallery-card .meta .ops {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--text-3); margin-top: 8px; line-height: 1.5;
+  }
+  .gallery-card .meta .widgets {
+    display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px;
+  }
+  .gallery-card .meta .widgets .tag {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    background: rgba(255,107,53,0.12); color: var(--accent);
+    padding: 3px 8px; border-radius: 999px; font-weight: 600;
+  }
+  .gallery-card .shot {
+    position: relative;
+    overflow: hidden;
+    max-height: 320px;
+  }
+  .gallery-card .shot img {
+    width: 100%; display: block; height: auto;
+  }
+  a.gallery-card { text-decoration: none; color: inherit; display: block; }
+
+  /* Gallery item wrapper: card + locale row stacked */
+  .gallery-item { display: flex; flex-direction: column; gap: 6px; }
+  .locale-row {
+    display: flex; gap: 5px; align-items: center;
+    padding: 6px 18px;
+  }
+  .locale-row .locales-label {
+    color: var(--text-3); font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    margin-right: 6px;
+  }
+  .locale-row .locale-pill {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px;
+    padding: 4px 12px; border-radius: 999px;
+    background: var(--surface); border: 1px solid var(--border-strong);
+    color: var(--text-2); font-weight: 600;
+    text-decoration: none;
+    transition: all .12s ease;
+  }
+  .locale-row .locale-pill:hover {
+    border-color: var(--accent); color: var(--accent);
+    background: rgba(255,107,53,0.08);
+  }
+
+  .gallery-card .shot .open-hint {
+    position: absolute; bottom: 12px; right: 12px;
+    background: var(--text); color: white;
+    padding: 6px 12px; border-radius: 8px;
+    font-size: 11px; font-weight: 600;
+    opacity: 0; transition: opacity .15s ease;
+  }
+  .gallery-card:hover .shot .open-hint { opacity: 1; }
+
+  /* Library growth section */
+  .growth-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+    margin: 20px 0;
+  }
+  .growth-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 18px 20px;
+    box-shadow: var(--shadow-sm);
+  }
+  .growth-card .when {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-3); margin-bottom: 10px;
+  }
+  .growth-card .what {
+    font-size: 17px; font-weight: 700; margin-bottom: 8px;
+  }
+  .growth-card .detail {
+    font-size: 14px; color: var(--text-2); line-height: 1.65;
+  }
+  .growth-card.active { border-color: rgba(255,107,53,0.4); }
+  .growth-card.active .when { color: var(--accent); }
+
+  /* Limits section */
+  .limit-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px 24px;
+    box-shadow: var(--shadow-sm); margin-bottom: 14px;
+  }
+  .limit-card.blocked { border-left: 4px solid var(--critical); }
+  .limit-card.partial { border-left: 4px solid var(--warn); }
+  .limit-card .label {
+    font-size: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; margin-bottom: 6px;
+  }
+  .limit-card.blocked .label { color: var(--critical); }
+  .limit-card.partial .label { color: var(--warn); }
+  .limit-card h3 { margin: 0 0 10px; font-size: 19px; }
+  .limit-card .detail { font-size: 15px; color: var(--text-2); line-height: 1.7; margin-bottom: 10px; }
+  .limit-card .blocker {
+    font-size: 13px; font-family: 'JetBrains Mono', monospace;
+    background: var(--surface-2); padding: 10px 14px; border-radius: 6px;
+    color: var(--text-2); margin-top: 10px; line-height: 1.55;
+  }
+
+  /* Widget catalog section */
+  .catalog-hero {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 28px 32px;
+    box-shadow: var(--shadow-sm); margin-bottom: 20px;
+    display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center;
+  }
+  .catalog-hero h3 {
+    margin: 0 0 8px; font-size: 20px; font-weight: 700;
+  }
+  .catalog-hero p { margin: 0; font-size: 15px; color: var(--text-2); line-height: 1.65; }
+  .catalog-hero .cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent); color: white;
+    padding: 14px 24px; border-radius: 10px;
+    text-decoration: none; font-weight: 700; font-size: 15px;
+    transition: transform .15s ease, box-shadow .15s ease;
+    white-space: nowrap;
+  }
+  .catalog-hero .cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(255,107,53,0.3);
+  }
+
+  .widget-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+  }
+  .widget-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 18px;
+    box-shadow: var(--shadow-sm);
+    display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center;
+    text-decoration: none; color: inherit;
+    transition: transform .12s ease, border-color .12s ease;
+  }
+  .widget-card:hover {
+    border-color: var(--accent);
+    transform: translateX(2px);
+  }
+  .widget-card .icon {
+    width: 40px; height: 40px;
+    background: rgba(255,107,53,0.1); color: var(--accent);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .widget-card .info .name {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700; font-size: 14px; color: var(--text);
+    margin-bottom: 3px;
+  }
+  .widget-card .info .desc {
+    font-size: 13px; color: var(--text-2); line-height: 1.55;
+  }
+  .widget-card .arrow {
+    color: var(--text-3); font-size: 18px; font-weight: 700;
+  }
+  .widget-card:hover .arrow { color: var(--accent); }
+
+  /* 3-layer diagram */
+  .three-layers {
+    display: flex; flex-direction: column; gap: 0;
+    position: relative;
+  }
+  .tl-box {
+    position: relative;
+    background: var(--surface);
+    border: 1.5px solid var(--border-strong);
+    border-radius: var(--radius);
+    padding: 26px 30px;
+    box-shadow: var(--shadow-sm);
+    z-index: 2;
+  }
+  .tl-box .tl-hdr {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 14px; flex-wrap: wrap; gap: 14px;
+  }
+  .tl-box .tl-title {
+    font-size: 24px; font-weight: 800;
+    letter-spacing: -0.005em;
+  }
+  .tl-box .tl-role {
+    font-size: 12px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; padding: 5px 12px; border-radius: 999px;
+  }
+  .tl-box .tl-tagline {
+    font-size: 16px; color: var(--text-2);
+    margin-bottom: 20px; line-height: 1.7;
+  }
+  .tl-box .tl-tagline strong { color: var(--text); font-weight: 700; }
+  .tl-box .tl-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 12px;
+  }
+  .tl-item {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+  .tl-item .key {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; font-weight: 700;
+    color: var(--text); margin-bottom: 4px;
+  }
+  .tl-item .val {
+    font-size: 13px; color: var(--text-2); line-height: 1.55;
+  }
+
+  .tl-box.playbook {
+    background: linear-gradient(135deg, #fff4ee 0%, var(--surface) 60%);
+    border-color: rgba(255,107,53,0.35);
+  }
+  .tl-box.playbook .tl-role {
+    background: rgba(255,107,53,0.15);
+    color: var(--accent);
+  }
+  .tl-box.orchestration {
+    background: linear-gradient(135deg, #eaf6fe 0%, var(--surface) 60%);
+    border-color: rgba(3,169,244,0.35);
+  }
+  .tl-box.orchestration .tl-role {
+    background: rgba(3,169,244,0.15);
+    color: var(--cyan);
+  }
+  .tl-box.primitives {
+    background: linear-gradient(135deg, #f0f9f1 0%, var(--surface) 60%);
+    border-color: rgba(16,185,129,0.35);
+  }
+  .tl-box.primitives .tl-role {
+    background: rgba(16,185,129,0.15);
+    color: var(--success);
+  }
+
+  .tl-arrow {
+    align-self: center;
+    margin: 10px 0;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 12px; font-weight: 700;
+    color: var(--text-2);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    position: relative; z-index: 3;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .tl-arrow::before {
+    content: '↓'; color: var(--accent); font-size: 16px; font-weight: 800;
+  }
+
+  .tl-relationships {
+    margin-top: 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 26px 30px;
+    box-shadow: var(--shadow-sm);
+  }
+  .tl-relationships h4 {
+    margin: 0 0 14px; font-size: 14px;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--text-3);
+  }
+  .tl-rel-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px;
+  }
+  .tl-rel-card {
+    padding: 14px 16px; font-size: 14px; line-height: 1.65;
+    border-left: 3px solid var(--accent);
+    background: var(--surface-2);
+    border-radius: 0 8px 8px 0;
+    color: var(--text-2);
+  }
+  .tl-rel-card strong { color: var(--text); font-weight: 700; display: block; margin-bottom: 6px; font-size: 15px; }
+
+  /* Primitives layer detail */
+  .primitives-split {
+    display: grid; grid-template-columns: 1.3fr 1fr; gap: 18px;
+    margin-top: 12px;
+  }
+  .prim-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 22px;
+  }
+  .prim-card-title {
+    font-size: 16px; font-weight: 700; margin-bottom: 8px;
+    color: var(--text);
+  }
+  .prim-card-desc {
+    font-size: 14px; color: var(--text-2); line-height: 1.65;
+    margin-bottom: 14px;
+  }
+  .prim-card-desc strong { color: var(--text); font-weight: 700; }
+
+  .prim-hierarchy {
+    display: flex; flex-direction: column; gap: 0;
+    margin: 14px 0 18px;
+  }
+  .prim-h-row {
+    display: grid;
+    grid-template-columns: 28px 130px auto 1fr;
+    gap: 12px; align-items: center;
+    padding: 10px 14px; border-radius: 8px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .prim-h-row.prim-h-skill { border-color: rgba(16,185,129,0.4); background: rgba(16,185,129,0.06); }
+  .prim-h-row.prim-h-op    { border-color: rgba(3,169,244,0.4);  background: rgba(3,169,244,0.06); }
+  .prim-h-row.prim-h-api   { border-color: rgba(255,107,53,0.4); background: rgba(255,107,53,0.06); }
+  .prim-h-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px; font-weight: 800;
+    color: var(--text-3); text-align: center;
+  }
+  .prim-h-label {
+    font-weight: 700; font-size: 14px; color: var(--text);
+  }
+  .prim-h-count {
+    font-size: 12px; color: var(--text-2); font-weight: 600;
+    background: var(--surface);
+    padding: 3px 10px; border-radius: 999px;
+    border: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .prim-h-desc {
+    font-size: 13px; color: var(--text-2);
+  }
+  .prim-h-desc code, .prim-card-desc code {
+    background: rgba(15,23,42,0.06); padding: 2px 6px;
+    border-radius: 4px; font-size: 0.9em;
+  }
+  .prim-h-arrow {
+    align-self: center; padding: 4px 0;
+    font-size: 11px; font-weight: 700;
+    color: var(--text-3); letter-spacing: 0.08em; text-transform: uppercase;
+    margin-left: 60px; position: relative;
+  }
+  .prim-h-arrow::before {
+    content: '↓'; color: var(--accent); margin-right: 6px; font-size: 14px;
+  }
+
+  .prim-example {
+    background: var(--surface-2);
+    border-left: 3px solid var(--accent);
+    padding: 12px 16px; border-radius: 0 8px 8px 0;
+    font-size: 13px; line-height: 1.65;
+    color: var(--text-2); margin-bottom: 16px;
+  }
+  .prim-example strong { color: var(--text); font-weight: 700; }
+  .prim-example code {
+    background: var(--surface); padding: 2px 6px; border-radius: 4px;
+    font-size: 0.92em; color: var(--text);
+  }
+
+  .prim-skills-list-label {
+    font-size: 12px; color: var(--text-3); text-transform: uppercase;
+    letter-spacing: 0.06em; font-weight: 700; margin-bottom: 10px;
+  }
+  .prim-skills-grid {
+    display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px;
+  }
+  .prim-skill-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; padding: 4px 9px; border-radius: 6px;
+    background: var(--surface); border: 1px solid var(--border-strong);
+    color: var(--text);
+  }
+  .prim-skill-tag.prim-skill-tag-blocked {
+    background: var(--critical-bg); border-color: rgba(185,28,28,0.3);
+    color: var(--critical);
+  }
+  .prim-skills-list-note {
+    font-size: 12px; color: var(--text-3); line-height: 1.5;
+  }
+  .prim-skills-list-note code {
+    background: rgba(15,23,42,0.05); padding: 1px 5px; border-radius: 3px;
+  }
+  .prim-skills-list-note a { color: var(--accent); }
+
+  /* Demo readiness — checklist + scripts */
+  .checklist {
+    display: flex; flex-direction: column; gap: 10px;
+    margin: 16px 0 24px;
+  }
+  .check-item {
+    display: flex; gap: 14px; align-items: flex-start;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    box-shadow: var(--shadow-sm);
+  }
+  .check-icon {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--success); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .check-icon.todo {
+    background: var(--surface-2); color: var(--text-3);
+    border: 1.5px solid var(--border-strong);
+    font-size: 16px;
+  }
+  .check-body {
+    font-size: 14.5px; color: var(--text-2); line-height: 1.65; flex: 1;
+  }
+  .check-body strong { color: var(--text); font-weight: 700; }
+  .check-body p { margin: 5px 0 0; }
+  .check-body code { background: rgba(15,23,42,0.06); padding: 2px 6px; border-radius: 4px; font-size: 0.92em; }
+
+  .script-split {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    margin: 18px 0 8px;
+  }
+  .script-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  .script-card-hdr {
+    background: var(--surface-2);
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .script-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700; font-size: 16px;
+    color: var(--accent);
+  }
+  .script-time {
+    font-size: 12px; color: var(--text-2);
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--surface);
+    padding: 3px 10px; border-radius: 999px;
+    border: 1px solid var(--border);
+    font-weight: 600;
+  }
+  .script-card-body {
+    padding: 16px 20px;
+  }
+  .script-card-body p {
+    margin: 0 0 10px; font-size: 14px; color: var(--text-2); line-height: 1.6;
+  }
+  .script-card-body p strong { color: var(--text); font-weight: 700; }
+  .script-card-body pre { margin: 10px 0 0; font-size: 12.5px; }
+
+  /* Skill explorer (file tree) */
+  .skill-explorer {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    box-shadow: var(--shadow-sm);
+  }
+  .skill-explorer-hdr {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 6px 0 14px; margin-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .skill-explorer-hdr .path {
+    font-family: 'JetBrains Mono', monospace; font-weight: 700;
+    font-size: 14px; color: var(--text);
+  }
+  .skill-explorer-hdr .repo-link {
+    font-size: 13px; color: var(--accent); text-decoration: none;
+    font-weight: 600;
+  }
+  .skill-explorer-hdr .repo-link:hover { text-decoration: underline; }
+
+  .skill-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 9px 12px; border-radius: 6px;
+    text-decoration: none; color: inherit;
+    transition: background .12s ease;
+  }
+  .skill-row.nested { padding-left: 36px; }
+  a.skill-row { cursor: pointer; }
+  a.skill-row:hover { background: var(--surface-2); }
+  a.skill-row:hover .name { color: var(--accent); }
+  .skill-row .icon { font-size: 16px; flex-shrink: 0; line-height: 1; }
+  .skill-row .name {
+    font-family: 'JetBrains Mono', monospace; font-weight: 700;
+    font-size: 14px; color: var(--text);
+    min-width: 210px; flex-shrink: 0;
+  }
+  .skill-row.folder .name { color: var(--accent); }
+  .skill-row .tag {
+    font-size: 11px; padding: 3px 9px; border-radius: 999px;
+    background: rgba(255,107,53,0.1); color: var(--accent); font-weight: 600;
+    flex-shrink: 0; font-family: 'JetBrains Mono', monospace;
+  }
+  .skill-row .desc {
+    font-size: 13.5px; color: var(--text-2); line-height: 1.55; flex: 1;
+  }
+  .skill-row.note {
+    padding-left: 60px; font-size: 13px; color: var(--text-3);
+    font-style: italic;
+  }
+  .skill-row.note a { color: var(--accent); font-style: normal; font-weight: 600; }
+
+  /* Collapse sidebar on narrow viewports */
+  @media (max-width: 960px) {
+    .layout-grid { grid-template-columns: 1fr; gap: 0; padding: 32px 24px 96px; }
+    aside.toc { display: none; }
+    main.content { max-width: 100%; }
+  }
+
+  @media (max-width: 720px) {
+    .gallery { grid-template-columns: 1fr; }
+    .growth-grid { grid-template-columns: 1fr; }
+    .widget-grid { grid-template-columns: 1fr; }
+    .catalog-hero { grid-template-columns: 1fr; }
+    .tl-rel-grid { grid-template-columns: 1fr; }
+    .primitives-split { grid-template-columns: 1fr; }
+    .prim-h-row { grid-template-columns: 24px 1fr; }
+    .prim-h-row > :nth-child(3), .prim-h-row > :nth-child(4) { grid-column: 2; padding-left: 0; }
+    .prim-h-arrow { margin-left: 0; text-align: center; }
+    .script-split { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">Network <span class="accent">AI-Assistant</span> · Technical</div>
+  <div class="links">
+    <a href="architecture.html">← Architecture</a>
+    <a href="#widget">Widget</a>
+    <a href="#catalog">Catalog</a>
+    <a href="#library-growth">Library 哲學</a>
+    <a href="#skill-internals">Skill 內部</a>
+    <a href="#design-system">Design System</a>
+    <a href="#howto">How to use</a>
+    <a href="#demo-readiness">Demo Readiness</a>
+    <a href="#limits">資料層限制</a>
+  </div>
+</nav>
+
+<div class="layout-grid">
+
+<aside class="toc" id="toc">
+  <div class="toc-inner">
+    <div class="toc-section">Technical Deep-Dive</div>
+    <a class="toc-item" href="#overview" data-target="overview">概觀 Overview</a>
+    <a class="toc-item" href="#widget" data-target="widget"><span class="toc-num">§1</span> 什麼是 Widget</a>
+    <a class="toc-item" href="#catalog" data-target="catalog"><span class="toc-num">§2</span> Widget Catalog</a>
+    <a class="toc-item" href="#library-growth" data-target="library-growth"><span class="toc-num">§3</span> Library 哲學</a>
+    <a class="toc-item" href="#skill-internals" data-target="skill-internals"><span class="toc-num">§4</span> Skill 內部</a>
+    <a class="toc-item" href="#design-system" data-target="design-system"><span class="toc-num">§5</span> Design System</a>
+    <a class="toc-item" href="#howto" data-target="howto"><span class="toc-num">§6</span> 4 種使用方式</a>
+    <a class="toc-item" href="#demo-readiness" data-target="demo-readiness"><span class="toc-num">§7</span> Demo Readiness</a>
+    <a class="toc-item" href="#flow" data-target="flow"><span class="toc-num">§8</span> Demo Flow</a>
+    <a class="toc-item" href="#limits" data-target="limits"><span class="toc-num">§9</span> 資料層限制</a>
+    <div class="toc-section" style="margin-top: 24px;">關聯文件</div>
+    <a class="toc-item" href="architecture.html">← 回 Architecture</a>
+    <a class="toc-item" href="widget-catalog.html">Widget Catalog (markdown)</a>
+    <a class="toc-item" href="../api-docs.html">API Docs (Swagger UI)</a>
+  </div>
+</aside>
+
+<main class="content">
+
+<header class="hero" id="overview">
+  <span class="eyebrow">Technical Deep-Dive · 2026-05-17</span>
+  <h1>Dashboard Builder · <span class="accent">Technical 內部</span></h1>
+  <p class="lede">
+    這是「<a href="architecture.html">你的 AI 專業網管</a>」中 <strong>Dashboard output 形式</strong>的技術內部細節 — Widget library 怎麼設計、Spec 怎麼組合、compose.py 怎麼跑、為什麼用 raw_html 當 escape hatch、9 條 Design hard prohibitions、Demo readiness pipeline、目前資料層卡哪些 widget 類型。
+    <br><br>
+    <span class="hl">想看產品定位 / AI 怎麼判斷 output 形式 / Roadmap</span>，請去 <a href="architecture.html">架構主頁 ←</a>。
+  </p>
+</header>
+
+<section id="widget">
+  <h2><span class="num-tag">§1</span>什麼是「Widget」？</h2>
+  <p class="section-lede">
+    Widget = <span class="hl-accent">可重複使用的 UI 零件</span>。把一張 dashboard 拆成幾個可組合的小積木，每個積木負責一種視覺呈現，知道怎麼讀 JSON、怎麼畫自己。換情境時不用重寫 dashboard，只要換不同零件組合。
+  </p>
+
+  <div class="anatomy">
+    <div class="visual">
+      <h4 style="margin-top: 0;">一張 dashboard 拆解</h4>
+      <div class="canvas-mock">
+        <div class="mock-block">
+          <span class="tag">alert</span>
+          <div class="title" style="color: var(--critical);">⚠ License 全面過期警示</div>
+          <div class="placeholder"></div>
+          <div class="placeholder short"></div>
+        </div>
+        <div class="mock-block">
+          <span class="tag">kpi_grid</span>
+          <div class="grid-3">
+            <div class="mini-kpi"><div class="lbl">Devices</div><div class="val">10</div></div>
+            <div class="mini-kpi"><div class="lbl">Expired</div><div class="val" style="color: var(--critical);">10</div></div>
+            <div class="mini-kpi"><div class="lbl">Networks</div><div class="val">3/10</div></div>
+          </div>
+        </div>
+        <div class="mock-block">
+          <span class="tag">table</span>
+          <div class="title">Device Fleet</div>
+          <div class="row"><span>ECW115</span><span style="margin-left:auto;color:var(--text-3);font-size:10px">New_1.3.10</span><span class="pill">expired</span></div>
+          <div class="row"><span>ECW230</span><span style="margin-left:auto;color:var(--text-3);font-size:10px">Sec_Network</span><span class="pill">expired</span></div>
+          <div class="row"><span>借Hom</span><span style="margin-left:auto;color:var(--text-3);font-size:10px">Sec_Network</span><span class="pill">expired</span></div>
+        </div>
+        <div class="mock-block">
+          <span class="tag">bar_list</span>
+          <div class="title">Composition</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:11px;margin-bottom:6px"><span style="width:50px">AP</span><div style="flex:1;height:5px;background:var(--cyan);border-radius:3px;width:90%"></div><span>9</span></div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:11px"><span style="width:50px">SWITCH</span><div style="flex:1;height:5px;background:var(--warn);border-radius:3px;max-width:10%"></div><span>1</span></div>
+        </div>
+        <div class="mock-block">
+          <span class="tag">topology_tree</span>
+          <div class="title">Network Topology</div>
+          <div class="tree-row">🏢 Main_Org <span style="color:var(--text-3);font-size:10px">10 net · 10 dev</span></div>
+          <div class="tree-row indent-1">📡 Sec_Network</div>
+          <div class="tree-row indent-2">📶 ECW230</div>
+          <div class="tree-row indent-2">🔘 借Hom</div>
+        </div>
+      </div>
+      <div style="font-size: 12px; color: var(--text-3); margin-top: 12px; text-align: center;">
+        每塊橘色虛線分區 = 一個 widget。一張 dashboard 由多個 widget 疊出來。
+      </div>
+    </div>
+
+    <div class="legend">
+      <h3>6 個 widget（目前）</h3>
+      <div class="entry">
+        <span class="name">alert</span>
+        <span class="desc"><strong>警示橫條</strong>。severity 分 critical / warning / info / success。body 可寫死或用 compute function 從 JSON 算出來。</span>
+      </div>
+      <div class="entry">
+        <span class="name">kpi_grid</span>
+        <span class="desc"><strong>KPI 卡片列</strong>。支援 2-6 張卡，每張可點擊跳到另一個 widget，數字可從 JSON 路徑直接讀或用 compute function 算。</span>
+      </div>
+      <div class="entry">
+        <span class="name">table</span>
+        <span class="desc"><strong>表格</strong>。內建 filter chips、可展開 row 看 detail、可排序、可接收跨 widget 事件（topology 點 device → table 自動展開那一行）。</span>
+      </div>
+      <div class="entry">
+        <span class="name">bar_list</span>
+        <span class="desc"><strong>橫條圖</strong>。多組 bar，可以分群（type 一群、license 一群）。</span>
+      </div>
+      <div class="entry">
+        <span class="name">chip_strip</span>
+        <span class="desc"><strong>標籤條</strong>。用來秀「empty networks」「stale services」等不需要表格化的小量項目。</span>
+      </div>
+      <div class="entry">
+        <span class="name">topology_tree</span>
+        <span class="desc"><strong>樹狀圖</strong>。Org → Network → Device 階層、可展開、被 RBAC 擋的 org 會顯示 403/402 badge。</span>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="margin-top: 32px;">換情境 = 換 spec JSON，不用重寫 dashboard</h3>
+  <p>同樣這 6 個 widget，可以組出完全不同的 dashboard：</p>
+  <pre><span class="comment">// 情境 A：Org 健康總覽（現有版）</span>
+{
+  <span class="key">"title"</span>: <span class="str">"Main_Org · 健康總覽"</span>,
+  <span class="key">"sections"</span>: [
+    { <span class="key">"widget"</span>: <span class="str">"alert"</span>, <span class="key">"severity"</span>: <span class="str">"critical"</span>, <span class="key">"title"</span>: <span class="str">"License 全面過期警示"</span> },
+    { <span class="key">"widget"</span>: <span class="str">"kpi_grid"</span>, <span class="key">"items"</span>: [<span class="comment">/* 4 KPIs */</span>] },
+    { <span class="key">"widget"</span>: <span class="str">"table"</span>, <span class="key">"title"</span>: <span class="str">"Device Fleet"</span>, ... },
+    { <span class="key">"widget"</span>: <span class="str">"topology_tree"</span>, <span class="key">"title"</span>: <span class="str">"Network Topology"</span> }
+  ]
+}
+
+<span class="comment">// 情境 B：離職員工權限大掃除（新情境）</span>
+{
+  <span class="key">"title"</span>: <span class="str">"Off-boarding Compliance Audit"</span>,
+  <span class="key">"sections"</span>: [
+    { <span class="key">"widget"</span>: <span class="str">"alert"</span>, <span class="key">"severity"</span>: <span class="str">"warning"</span>, <span class="key">"title"</span>: <span class="str">"5 人超過 1 年沒登入仍持有 network 權限"</span> },
+    { <span class="key">"widget"</span>: <span class="str">"kpi_grid"</span>, <span class="key">"items"</span>: [<span class="comment">/* stale users / risk accesses */</span>] },
+    { <span class="key">"widget"</span>: <span class="str">"table"</span>, <span class="key">"title"</span>: <span class="str">"Stale Members（only）"</span>, ... }
+  ]
+}</pre>
+  <p>不用碰任何 widget 程式碼，只要寫新 spec JSON → <code>compose.py</code> → 出新 dashboard。</p>
+</section>
+
+<section id="catalog">
+  <h2><span class="num-tag">§2</span>Widget Catalog · 12 份規格文件</h2>
+  <p class="section-lede">
+    每個 widget 都有專屬規格文件——說明何時用 / 何時不用 / config schema / compute function 簽名 / 範例。Claude 在對話中組 dashboard 時會讀這些文件決定用哪個 widget；RD 美化 widget 時可參考它的 contract。
+  </p>
+
+  <div class="catalog-hero">
+    <div>
+      <h3>瀏覽完整規格</h3>
+      <p>單頁 catalog viewer 含 sidebar 導覽 + markdown 即時渲染。每份文件可直接複製 raw path 給 RD 或 Claude。</p>
+    </div>
+    <a class="cta" href="widget-catalog.html">📖 開啟 Widget Catalog →</a>
+  </div>
+
+  <h3 style="margin-top: 28px;">12 個 widget 速覽</h3>
+  <p class="section-lede" style="margin-bottom: 14px;">點任一進 catalog 對應頁。⭐ = v0.2 (2026-05-17) 新增，回應 hand-roll vs compose.py 案例。</p>
+  <div class="widget-grid">
+    <a class="widget-card" href="widget-catalog.html#widget_alert">
+      <div class="icon">⚠</div>
+      <div class="info"><div class="name">alert</div><div class="desc">高優先警示橫條 · critical/warning/info/success</div></div>
+      <div class="arrow">→</div>
+    </a>
+    <a class="widget-card" href="widget-catalog.html#widget_kpi_grid">
+      <div class="icon">📊</div>
+      <div class="info"><div class="name">kpi_grid</div><div class="desc">2-6 KPI 卡片 · 可點擊跨 widget 跳轉</div></div>
+      <div class="arrow">→</div>
+    </a>
+    <a class="widget-card" href="widget-catalog.html#widget_table">
+      <div class="icon">📋</div>
+      <div class="info"><div class="name">table</div><div class="desc">表格 · filter + row 展開 + 跨 widget 事件</div></div>
+      <div class="arrow">→</div>
+    </a>
+    <a class="widget-card" href="widget-catalog.html#widget_bar_list">
+      <div class="icon">📈</div>
+      <div class="info"><div class="name">bar_list</div><div class="desc">橫條圖 · 多群分組 + severity 顏色</div></div>
+      <div class="arrow">→</div>
+    </a>
+    <a class="widget-card" href="widget-catalog.html#widget_stacked_bar_list">
+      <div class="icon">📊</div>
+      <div class="info"><div class="name">stacked_bar_list ⭐</div><div class="desc">多 segment 堆疊條 · per-row Active/Expired/Other 同條</div></div>
+      <div class="arrow">→</div>
+    </a>
+    <a class="widget-card" href="widget-catalog.html#widget_donut">
+      <div class="icon">🎯</div>
+      <div class="info"><div class="name">donut</div><div class="desc">SVG 圓環圖 · % 構成 + hover 同步</div></div>
+      <div class="arrow">→</div>
+    </a>
+    <a class="widget-card" href="widget-catalog.html#widget_gauge">
+      <div class="icon">⏲</div>
+      <div class="info"><div class="name">gauge</div><div class="desc">半圓速度計 · 對比 target + 嚴重度</div></div>
+      <div class="arrow">→</div>
+    </a>
+    <a class="widget-card" href="widget-catalog.html#widget_pivot_table">
+      <div class="icon">🔲</div>
+      <div class="info"><div class="name">pivot_table ⭐</div><div class="desc">2D 交叉矩陣 · rows × cols + 可選 heatmap + sub-value</div></div>
+      <div class="arrow">→</div>
+    </a>
+    <a class="widget-card" href="widget-catalog.html#widget_chip_strip">
+      <div class="icon">🏷</div>
+      <div class="info"><div class="name">chip_strip</div><div class="desc">標籤條 · 適合「次要清單」</div></div>
+      <div class="arrow">→</div>
+    </a>
+    <a class="widget-card" href="widget-catalog.html#widget_topology_tree">
+      <div class="icon">🌐</div>
+      <div class="info"><div class="name">topology_tree</div><div class="desc">階層樹 · org→net→device · RBAC 感知</div></div>
+      <div class="arrow">→</div>
+    </a>
+    <a class="widget-card" href="widget-catalog.html#widget_timeline">
+      <div class="icon">⏱</div>
+      <div class="info"><div class="name">timeline</div><div class="desc">時間軸 · TODAY marker + 自動 severity</div></div>
+      <div class="arrow">→</div>
+    </a>
+    <a class="widget-card" href="widget-catalog.html#widget_heatmap">
+      <div class="icon">🔥</div>
+      <div class="info"><div class="name">heatmap</div><div class="desc">2D 矩陣 · 強度 colormap + tooltip</div></div>
+      <div class="arrow">→</div>
+    </a>
+  </div>
+  <p style="margin-top: 16px; font-size: 13px; color: var(--text-3);">
+    💡 既有 widget 不夠用？走 <strong>raw_html escape hatch</strong>（design.md §3.3）— 同樣套 theme tokens、但可手寫任何 HTML。詳見 <a href="#design-system">§03f Design System</a>。
+  </p>
+</section>
+
+<section id="library-growth">
+  <h2><span class="num-tag">§3</span>Library 哲學：按需擴張，不一次蓋好</h2>
+  <p class="section-lede">
+    Widget library 不是一次盤點所有可能的視覺化、提前 build。<span class="hl-accent">每次有新情境，才從中萃取出真正用得到的 widget。</span>這樣保證每個 widget 都有 production-grade 的真實使用案例，避免「為了完整性建出沒人用的元件」。
+  </p>
+
+  <div class="growth-grid">
+    <div class="growth-card">
+      <div class="when">2026-05-15 凌晨</div>
+      <div class="what">6 widget</div>
+      <div class="detail">Org 健康總覽（S3）→ 萃取 alert / kpi_grid / table / bar_list / chip_strip / topology_tree</div>
+    </div>
+    <div class="growth-card">
+      <div class="when">2026-05-15 23:25</div>
+      <div class="what">6 widget</div>
+      <div class="detail">Off-boarding Audit（S4）→ 證明可以「不加 widget」就做新情境，純寫 spec</div>
+    </div>
+    <div class="growth-card active">
+      <div class="when">2026-05-16 00:30</div>
+      <div class="what">+ timeline = 7</div>
+      <div class="detail">License Renewal（S5）需要時間軸視覺 → 加 timeline widget（30 分鐘）</div>
+    </div>
+    <div class="growth-card active">
+      <div class="when">2026-05-16 00:50</div>
+      <div class="what">+ donut = 8</div>
+      <div class="detail">Multi-Org Governance（S2）需要「% of total」框架 → 加 donut widget（45 分鐘）</div>
+    </div>
+    <div class="growth-card active">
+      <div class="when">2026-05-16 01:14</div>
+      <div class="what">+ gauge + heatmap = 10</div>
+      <div class="detail">Cross-Org Reallocation（S7）需要「fleet 健康度」+「2D 構成」→ 加 gauge（速度計）+ heatmap（矩陣）兩個 widget</div>
+    </div>
+    <div class="growth-card">
+      <div class="when">未來</div>
+      <div class="what">candidates</div>
+      <div class="detail">sparkline / map — 等下個情境需要才做。<strong>line_chart</strong> 等資料層補 history API（見下方限制）。</div>
+    </div>
+  </div>
+
+  <h3>判斷「該不該加 widget」的 3 個問題</h3>
+  <ol>
+    <li><strong>現有 widget 真的做不到嗎？</strong>很多時候 bar_list / table + compute_fn 就能解，不用新 widget。</li>
+    <li><strong>會被重用嗎？</strong>如果只有這次 demo 用到，建議用一次性 HTML 嵌入而非變 widget。</li>
+    <li><strong>有沒有設計 token 還沒覆蓋的視覺？</strong>如果有，先補 token、再寫 widget，避免硬碼顏色。</li>
+  </ol>
+
+  <p style="margin-top: 16px;"><strong>Library 不是越大越好</strong>——8 個經過真實使用、彼此互不重疊的 widget，比 30 個「以防萬一」的 widget 對 Claude 更友善：選擇少 → 不會選錯 → 視覺更一致。</p>
+</section>
+
+<section id="skill-internals">
+  <h2><span class="num-tag">§4</span>Skill 內部結構 · 參考資料</h2>
+  <p class="section-lede">
+    Widget catalog viewer 已涵蓋 <code>widgets/</code> 跟 <code>references/</code>。這一節列出 skill 其餘的內部檔案——SKILL.md 規格、Python 入口、design tokens、6 個 spec 範例。<strong>給 RD 接手時或自己改造時都會用到</strong>。
+  </p>
+
+  <div class="skill-explorer">
+    <div class="skill-explorer-hdr">
+      <div class="path">📦 dashboard-builder/skill/</div>
+      <a class="repo-link" href="https://github.com/terrelyeh/network-ai-assistant/tree/main/dashboard-builder/skill" target="_blank">View on GitHub →</a>
+    </div>
+
+    <a class="skill-row file" href="skill/SKILL.md" target="_blank">
+      <span class="icon">📄</span>
+      <span class="name">SKILL.md</span>
+      <span class="tag">spec</span>
+      <span class="desc">Skill 合約 + Flow Modules + Constraints（給 RD 看的，最重要的文件）</span>
+    </a>
+
+    <div class="skill-row folder">
+      <span class="icon">📁</span>
+      <span class="name">scripts/</span>
+      <span class="desc">入口程式</span>
+    </div>
+    <a class="skill-row file nested" href="skill/scripts/compose.py" target="_blank">
+      <span class="icon">🐍</span>
+      <span class="name">compose.py</span>
+      <span class="tag">~180 lines</span>
+      <span class="desc">spec JSON → 自包含 HTML 主入口；支援 <code>--theme dark/light</code> flag</span>
+    </a>
+
+    <div class="skill-row folder">
+      <span class="icon">📁</span>
+      <span class="name">theme/</span>
+      <span class="desc">設計變數 + shell layout</span>
+    </div>
+    <a class="skill-row file nested" href="skill/theme/tokens.css" target="_blank">
+      <span class="icon">🎨</span>
+      <span class="name">tokens.css</span>
+      <span class="tag">light</span>
+      <span class="desc">設計變數（color / radius / shadow / font）—— <strong>一改 cascade 全 dashboard 升級</strong></span>
+    </a>
+    <a class="skill-row file nested" href="skill/theme/tokens-dark.css" target="_blank">
+      <span class="icon">🎨</span>
+      <span class="name">tokens-dark.css</span>
+      <span class="tag">dark</span>
+      <span class="desc">深色主題；<code>compose.py --theme dark</code> 時用</span>
+    </a>
+    <a class="skill-row file nested" href="skill/theme/base.css" target="_blank">
+      <span class="icon">🎨</span>
+      <span class="name">base.css</span>
+      <span class="tag">shell</span>
+      <span class="desc">layout / sticky header / pills / chips / flash 等共用樣式</span>
+    </a>
+
+    <div class="skill-row folder">
+      <span class="icon">📁</span>
+      <span class="name">widgets/</span>
+      <span class="desc">10 個 widget HTML partial（style + template + script 三合一）</span>
+    </div>
+    <div class="skill-row note">
+      → 想看每個 widget 的規格、範例 spec、配色，去 <a href="widget-catalog.html">Widget Catalog</a> 視覺化瀏覽
+    </div>
+
+    <a class="skill-row file" href="skill/runtime/runtime.js" target="_blank">
+      <span class="icon">⚙</span>
+      <span class="name">runtime/runtime.js</span>
+      <span class="tag">poll + bus</span>
+      <span class="desc">每 5 秒 fetch live-data、widget 註冊機制、跨 widget event bus</span>
+    </a>
+
+    <div class="skill-row folder">
+      <span class="icon">📁</span>
+      <span class="name">references/</span>
+      <span class="desc">Persona + Design rules + 12 個 widget 的 markdown spec</span>
+    </div>
+    <a class="skill-row file nested" href="skill/references/network-admin-persona.md" target="_blank" style="background: rgba(251,191,36,0.08);">
+      <span class="icon">⭐</span>
+      <span class="name">network-admin-persona.md</span>
+      <span class="tag" style="background: #fbbf24; color: #1a1a1a;">persona v0</span>
+      <span class="desc">AI 網管人格 + 升級條件 + SMB vertical 適應 · <strong>每次 skill 觸發都載入</strong>（詳見 <a href="#persona">§02c</a>）</span>
+    </a>
+    <a class="skill-row file nested" href="skill/references/design.md" target="_blank" style="background: rgba(251,191,36,0.08);">
+      <span class="icon">⭐</span>
+      <span class="name">design.md</span>
+      <span class="tag" style="background: #fbbf24; color: #1a1a1a;">design v0.2</span>
+      <span class="desc">Dashboard 視覺守則 · 3 層架構 + 🚫 9 條 hard prohibitions + raw_html escape hatch · <strong>dashboard-builder 觸發時載入</strong>（詳見 <a href="#design-system">§03f</a>）</span>
+    </a>
+    <div class="skill-row note">
+      → 12 個 widget spec 一鍵閱讀請去 <a href="widget-catalog.html">Widget Catalog</a>（marked.js 即時渲染）
+    </div>
+
+    <div class="skill-row folder">
+      <span class="icon">📁</span>
+      <span class="name">.claude-plugin/</span>
+      <span class="desc">v0.2 新增 · 讓 dashboard-builder 可被 /plugins install</span>
+    </div>
+    <div class="skill-row note nested">
+      <code>marketplace.json</code> · <code>plugin.json</code> · 雙 manifest 設計（見 <a href="#design-system">§03f</a>）
+    </div>
+
+    <div class="skill-row folder">
+      <span class="icon">📁</span>
+      <span class="name">examples/</span>
+      <span class="desc">5 個 validated spec JSON 範例</span>
+    </div>
+    <a class="skill-row file nested" href="skill/examples/org-health.spec.json" target="_blank">
+      <span class="icon">📋</span>
+      <span class="name">org-health.spec.json</span>
+      <span class="tag">S3</span>
+      <span class="desc">設備 / license / 人員 + topology · <strong>主秀</strong></span>
+    </a>
+    <a class="skill-row file nested" href="skill/examples/off-boarding-audit.spec.json" target="_blank">
+      <span class="icon">📋</span>
+      <span class="name">off-boarding-audit.spec.json</span>
+      <span class="tag">S4</span>
+      <span class="desc">離職權限稽核（SOC2 / ISO27001 視角）</span>
+    </a>
+    <a class="skill-row file nested" href="skill/examples/license-renewal.spec.json" target="_blank">
+      <span class="icon">📋</span>
+      <span class="name">license-renewal.spec.json</span>
+      <span class="tag">S5</span>
+      <span class="desc">跨 org license 到期 timeline + 預算規劃</span>
+    </a>
+    <a class="skill-row file nested" href="skill/examples/multi-org-governance.spec.json" target="_blank">
+      <span class="icon">📋</span>
+      <span class="name">multi-org-governance.spec.json</span>
+      <span class="tag">S2</span>
+      <span class="desc">MSP 跨 5 org 治理（donut × 2 + topology）</span>
+    </a>
+    <a class="skill-row file nested" href="skill/examples/cross-org-reallocation.spec.json" target="_blank">
+      <span class="icon">📋</span>
+      <span class="name">cross-org-reallocation.spec.json</span>
+      <span class="tag">S7</span>
+      <span class="desc">設備調撥規劃（gauge + heatmap × 2）</span>
+    </a>
+  </div>
+
+  <h3 style="margin-top: 32px;">怎麼讀這些檔案最快</h3>
+  <ul>
+    <li><strong>SKILL.md</strong> — 5 分鐘看完 skill 合約：用法 / Flow Modules / 限制（C* constraints）</li>
+    <li><strong>compose.py</strong> — ~180 行 Python，看完知道「spec JSON 怎麼變 HTML」</li>
+    <li><strong>theme/tokens.css</strong> — 一頁 CSS 變數，理解整套視覺系統的基底</li>
+    <li><strong>examples/*.spec.json</strong> — 5 個跑通的 spec，照抄一份就能加新 dashboard，<strong>不用改任何 widget</strong></li>
+    <li><strong>widgets/*.html</strong>（在 Widget Catalog 看）— 想加新 widget 時，挑風格接近的當模板</li>
+  </ul>
+
+  <h3>跟 RD 接手相關的事</h3>
+  <p>這整個 skill 目前 host 在 <code>dashboard-builder/skill/</code>，是 PMM 的 prototype 區。長期應該移到 <code>api-skills/skills/dashboard-builder/</code> 跟 RD 的 13 個 data skill 並列。具體步驟、命名規範、驗收 checklist 都寫在 <a href="docs/rd-handoff.md">docs/rd-handoff.md</a>。</p>
+</section>
+
+<section id="design-system">
+  <h2><span class="num-tag">§5</span>Design System · 規範 + 自由的混合</h2>
+  <p class="section-lede">
+    v0.2 (2026-05-17) 新增。為了回應 <a href="docs/persona-test-results.md">V1 hand-roll vs V2 compose.py 案例</a>暴露的問題（widget library 不夠表達時 AI 會繞過去走 Chart.js），把 dashboard-builder 升級成「**統一規範 + 自由發揮逃生口**」的混合模式。
+  </p>
+
+  <div class="pull" style="background: rgba(59,130,246,0.06); border-color: rgba(59,130,246,0.3);">
+    <span class="badge" style="background: #3b82f6; color: white;">v0.2 核心轉變</span>
+    舊版：「AI 從 10 個 widget 拼裝」（受限於現有 widget）<br>
+    新版：「AI 在 design system 內自由創作 — 既有 widget 優先，不夠時走 <code>raw_html</code>，但永遠套 theme tokens + 永不違反 9 條 hard prohibitions」
+  </div>
+
+  <h3 style="margin-top: 32px;">三層架構 · 自由度由低到高</h3>
+
+  <div class="tl-grid" style="margin-top: 16px;">
+    <div class="tl-item">
+      <div class="key">Layer 1 · Frame（強制，無自由度）</div>
+      <div class="val">由 <code>compose.py</code> 自動套：logo + title + Refresh button + Live indicator + footer + 5 秒 auto-poll + Inter/Noto Sans TC 字體。AI <strong>不能改</strong>。</div>
+    </div>
+    <div class="tl-item">
+      <div class="key">Layer 2 · Design tokens（強制，必須遵守）</div>
+      <div class="val">所有顏色 / 字距 / 圓角 / 陰影 must use <code>var(--...)</code> CSS variables. 切到 dark / light theme 時自動 cascade — 不能 hardcode hex。</div>
+    </div>
+    <div class="tl-item">
+      <div class="key">Layer 3 · Body content（自由發揮 — 但有規範）</div>
+      <div class="val">AI 決定用哪個 widget / 怎麼排。優先用既有 widget；不夠用時走 <code>raw_html</code> section（但必須遵守 9 條 🚫 hard prohibitions）。</div>
+    </div>
+  </div>
+
+  <h3 style="margin-top: 36px;">🚫 9 條 Hard Prohibitions · 遇到就停</h3>
+  <p>這些是「會破壞 demo / 違法 / 系統會崩」的紅線。違反任一條 = AI 應該停下、問使用者、不要 generate。</p>
+
+  <div style="overflow-x: auto; margin-top: 14px;">
+  <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+    <thead>
+      <tr style="background: var(--surface-2);">
+        <th style="padding: 10px 14px; text-align: left; border: 1px solid var(--border);">#</th>
+        <th style="padding: 10px 14px; text-align: left; border: 1px solid var(--border); width: 22%;">類別</th>
+        <th style="padding: 10px 14px; text-align: left; border: 1px solid var(--border);">NEVER</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td style="padding: 8px 14px; border: 1px solid var(--border);">①</td><td style="padding: 8px 14px; border: 1px solid var(--border);">安全</td><td style="padding: 8px 14px; border: 1px solid var(--border);">在 raw_html 或任何輸出中放 API key / token / password / secret</td></tr>
+      <tr><td style="padding: 8px 14px; border: 1px solid var(--border);">②</td><td style="padding: 8px 14px; border: 1px solid var(--border);">安全</td><td style="padding: 8px 14px; border: 1px solid var(--border);">在 raw_html 內 <code>fetch()</code> 外部 URL</td></tr>
+      <tr><td style="padding: 8px 14px; border: 1px solid var(--border);">③</td><td style="padding: 8px 14px; border: 1px solid var(--border);">安全</td><td style="padding: 8px 14px; border: 1px solid var(--border);">用 <code>eval</code> / <code>new Function</code> / <code>setTimeout("string")</code></td></tr>
+      <tr><td style="padding: 8px 14px; border: 1px solid var(--border);">④</td><td style="padding: 8px 14px; border: 1px solid var(--border);">系統</td><td style="padding: 8px 14px; border: 1px solid var(--border);">在 raw_html 內寫 <code>&lt;script&gt;</code> 標籤</td></tr>
+      <tr><td style="padding: 8px 14px; border: 1px solid var(--border);">⑤</td><td style="padding: 8px 14px; border: 1px solid var(--border);">系統</td><td style="padding: 8px 14px; border: 1px solid var(--border);">引外部 JS / CSS lib（Chart.js / D3 / Bootstrap / FontAwesome / Tailwind CDN）</td></tr>
+      <tr><td style="padding: 8px 14px; border: 1px solid var(--border);">⑥</td><td style="padding: 8px 14px; border: 1px solid var(--border);">系統</td><td style="padding: 8px 14px; border: 1px solid var(--border);">用 <code>!important</code> 蓋 theme tokens</td></tr>
+      <tr><td style="padding: 8px 14px; border: 1px solid var(--border);">⑦</td><td style="padding: 8px 14px; border: 1px solid var(--border);">品牌</td><td style="padding: 8px 14px; border: 1px solid var(--border);">連結到競品（Cisco / Aruba / Ubiquiti / Meraki / TP-Link / Netgear）</td></tr>
+      <tr><td style="padding: 8px 14px; border: 1px solid var(--border);">⑧</td><td style="padding: 8px 14px; border: 1px solid var(--border);">品牌 / 法務</td><td style="padding: 8px 14px; border: 1px solid var(--border);">編造不存在的功能（按鈕沒後端、URL 通往不存在頁面）</td></tr>
+      <tr><td style="padding: 8px 14px; border: 1px solid var(--border);">⑨</td><td style="padding: 8px 14px; border: 1px solid var(--border);">品質</td><td style="padding: 8px 14px; border: 1px solid var(--border);">用棄用 HTML（<code>&lt;marquee&gt;</code>, <code>&lt;blink&gt;</code>, <code>&lt;font&gt;</code>, <code>&lt;center&gt;</code>）</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p style="margin-top: 10px; font-size: 13px; color: var(--text-3);">差別於 <strong>Soft anti-patterns</strong>（UX 不建議但不會崩，例如 1 頁塞 10+ section、Donut &gt; 6 segment）。完整內容見 <a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/dashboard-builder/skill/references/design.md" target="_blank">design.md ↗</a>。</p>
+
+  <h3 style="margin-top: 36px;">raw_html Escape Hatch · 自我擴張的 Widget Library</h3>
+  <p>當既有 widget 表達不了，AI 可以用 <code>raw_html</code> section 寫任意 HTML — 但必須附 <code>raw_html_reason</code> 解釋「為什麼選擇 hand-roll + 未來該抽象成什麼 widget」：</p>
+
+  <pre style="background: #1a1a1a; color: #e0e0e0; padding: 14px 18px; border-radius: 8px; overflow-x: auto; font-size: 12px; line-height: 1.55; font-family: var(--font-mono);">{
+  "id": "custom-section",
+  "raw_html": "&lt;div class='card'&gt;...&lt;/div&gt;",
+  "raw_html_reason": "Pivot table 類型 × Org，現有 widget 無法表達；未來該補 pivot_table widget"
+}</pre>
+
+  <p style="margin-top: 14px;">每次 AI 用 raw_html 都留一個 <strong>「下個 widget 該補什麼」的線索</strong>。累積 N 個類似 reason 之後 → 自然抽象成新 widget（這就是 v0.2 新增 <code>pivot_table</code> + <code>stacked_bar_list</code> 的由來）。</p>
+
+  <div class="tl-rel-card" style="margin-top: 18px; background: var(--surface-2);">
+    <strong>Self-improving widget library</strong>：raw_html 不是「逃避用 widget」，是「**真實使用案例驅動的需求蒐集**」。AI 用法本身在告訴我們缺什麼 widget。
+  </div>
+
+  <h3 style="margin-top: 36px;">Filename Convention · 雙模式</h3>
+
+  <div class="tl-grid" style="margin-top: 16px;">
+    <div class="tl-item">
+      <div class="key">Validated specs（穩定檔名）</div>
+      <div class="val"><code>&lt;topic&gt;.html</code> · <code>&lt;topic&gt;-en.html</code> · <code>&lt;topic&gt;-ja.html</code> · <code>&lt;topic&gt;-dark.html</code><br>對應 <code>examples/&lt;topic&gt;.spec.json</code>，可書籤、可分享、會被覆蓋。</div>
+    </div>
+    <div class="tl-item">
+      <div class="key">Ad-hoc generation（永遠 timestamped）</div>
+      <div class="val"><code>canvas-&lt;topic&gt;-YYYYMMDD-HHMMSS.html</code><br>AI 即興組 dashboard 時用 — 每次生新檔，舊的保留。<br><strong>Booth wedge 關鍵</strong>：觀眾看到 URL 在變 = 證明「剛剛生的」，不是預錄。</div>
+    </div>
+  </div>
+
+  <h3 style="margin-top: 36px;">.claude-plugin/ · Plugin Install 機制</h3>
+  <p>v0.2 起 dashboard-builder 可被 <code>/plugins</code> install（跟 senao-api-skills 一樣的機制）：</p>
+  <ul>
+    <li><code>.claude-plugin/marketplace.json</code> — 商店招牌（一個 marketplace 可有多 plugin）</li>
+    <li><code>.claude-plugin/plugin.json</code> — 商品說明（單一 plugin 的 metadata）</li>
+    <li><code>skills/dashboard-builder/</code> — symlinks 指回 plugin root，符合 Claude Code 預期的 <code>skills/&lt;n&gt;/SKILL.md</code> discovery layout</li>
+  </ul>
+  <p>裝完後 <code>/skills</code> 會看到 <code>dashboard-builder:dashboard-builder</code>，Claude 在對話中觸發 dashboard 生成時自動載入。</p>
+
+  <div class="pull" style="background: rgba(16,185,129,0.06); border-color: rgba(16,185,129,0.3); margin-top: 24px;">
+    <span class="badge" style="background: #10b981; color: white;">完整實測通過</span>
+    v0.2 整套機制（design.md + raw_html + 2 個新 widget + plugin install）已在 2026-05-17 跑通端到端測試。完整紀錄見 <a href="docs/persona-test-results.md">persona-test-results.md</a>。
+  </div>
+</section>
+
+<section id="howto">
+  <h2><span class="num-tag">§6</span>怎麼用 Dashboard Builder Skill</h2>
+  <p class="section-lede">三個情境，每個情境都是 Claude Code 對話中觸發。Skill 本身就是一個 Python 入口加一堆 HTML 零件。</p>
+
+  <h3>用法一：Claude 在對話中自動跑（典型 demo 場景）</h3>
+  <ol class="steps">
+    <li>
+      <div class="step-title">訪客問問題</div>
+      <div class="step-body">「幫我看 Main_Org 健康狀況」</div>
+    </li>
+    <li>
+      <div class="step-title">Claude 跑 data skills、把結果寫進 live-data/</div>
+      <div class="step-body">並行呼叫 <code>get_user_orgs</code> / <code>get_hierarchy_views</code> / <code>get_inventory</code> / <code>get_licenses</code> / <code>get_org_memberships_overall</code>，輸出到 <code>prototype/live-data/*.json</code></div>
+    </li>
+    <li>
+      <div class="step-title">Claude 寫一份 spec JSON</div>
+      <div class="step-body">大概 100-150 行的 JSON，描述「想要幾個 widget、按什麼順序、用哪份 live-data」。範例：<code>dashboard-builder-skill/examples/org-health.spec.json</code></div>
+    </li>
+    <li>
+      <div class="step-title">Claude 呼叫 compose.py</div>
+      <div class="step-body">
+<pre>python prototype/dashboard-builder-skill/scripts/compose.py \
+  --spec my-spec.json \
+  --out dashboard-builder/canvas-name.html</pre>
+        產出單一 HTML 檔（46KB），自包含所有 widget CSS + JS + runtime。
+      </div>
+    </li>
+    <li>
+      <div class="step-title">瀏覽器自動打開 preview</div>
+      <div class="step-body">Dashboard 載入後立即 fetch live-data/、render 所有 widget，每 5 秒 poll 一次更新。</div>
+    </li>
+    <li>
+      <div class="step-title">Claude append manifest log entry</div>
+      <div class="step-body"><code>generated-log.html</code> 立即跳出新 entry，操作員可從那邊回追今天 demo 過什麼。</div>
+    </li>
+  </ol>
+
+  <h3>用法二：手動 compose 已有 spec（重現舊 demo）</h3>
+  <pre><span class="comment"># 重新跑 examples/org-health.spec.json 產生新 timestamp 的 canvas</span>
+python prototype/dashboard-builder-skill/scripts/compose.py \
+  --spec prototype/dashboard-builder-skill/examples/org-health.spec.json \
+  --out dashboard-builder/org-health-test.html
+
+<span class="comment"># 跑完打開 preview server</span>
+open http://localhost:58778/dashboard-builder/org-health.html</pre>
+
+  <h3>用法三：刷新 live-data 但保留 canvas（最常用）</h3>
+  <p>展會中要 demo「live 數字會跳」效果：</p>
+  <pre><span class="comment"># 1. 操作員執行 refresh 腳本（重撈 staging API）</span>
+bash dashboard-builder/scripts/refresh-all.sh
+
+<span class="comment"># 2. Dashboard 已開著的話，5 秒內自動 reflect 新數字</span>
+<span class="comment"># 不用重 compose、不用重 reload</span></pre>
+
+  <h3>用法四：切視覺主題 + 切語言（i18n）</h3>
+  <p>每個 spec 都有 <code>locales</code> 區塊（zh-TW / en / ja）。用 <code>--locale</code> flag 切換：</p>
+  <pre><span class="comment"># 預設（spec 的 zh-TW）</span>
+python dashboard-builder/skill/scripts/compose.py \
+  --spec dashboard-builder/skill/examples/org-health.spec.json \
+  --out dashboard-builder/test.html
+
+<span class="comment"># 英文版</span>
+... --locale en
+
+<span class="comment"># 日文版（日本展會用）</span>
+... --locale ja
+
+<span class="comment"># 日文 + dark mode 雙堆疊</span>
+... --locale ja --theme dark</pre>
+  <p style="margin-top: 10px;">→ Gallery 上每張 dashboard card 下方都有「view in 中 / EN / 日」切換鍵，點任一個直接看對應語言版本。日文版作為日本 booth 主秀，需要 native speaker review 過後正式上場。</p>
+</section>
+
+<section id="demo-readiness">
+  <h2><span class="num-tag">§7</span>Demo Readiness · 主秀 validated · off-script 走 design.md</h2>
+  <p class="section-lede">
+    Live demo 是「外觀即時、底層保底」。<strong>主秀必須走 validated path（事先驗證過），off-script 觀眾意外問題走 design.md ad-hoc 模式</strong>。v0.2 之前是「全部都得 validated」，新規則更貼近實際 booth 操作節奏。
+  </p>
+
+  <div class="tl-grid" style="margin-top: 16px;">
+    <div class="tl-item" style="background: rgba(16,185,129,0.06); border-color: rgba(16,185,129,0.3);">
+      <div class="key" style="color: #047857;">✅ 主秀情境 · 必須 validated path</div>
+      <div class="val"><strong>booth 主秀腳本上的故事</strong>（5 個現有 validated：S2 / S3 / S4 / S5 / S7）= 觀眾預期會看到的 dashboard。這些<strong>沒驗證過不准上</strong>，因為要在大廳即興 = 風險太高。穩定檔名（<code>&lt;topic&gt;.html</code>）。</div>
+    </div>
+    <div class="tl-item" style="background: rgba(251,191,36,0.08); border-color: rgba(251,191,36,0.3);">
+      <div class="key" style="color: #b45309;">⚡ Off-script 觀眾問題 · 走 design.md ad-hoc</div>
+      <div class="val">觀眾問「能不能也看 X？」這種<strong>沒事先準備的 wow moment</strong> = 即興用 design.md 規範組 dashboard。受 <a href="#design-system">§03f Design System</a> 約束（3 層架構 + 9 條 hard prohibitions + raw_html escape hatch），仍視覺一致。Timestamped 檔名（<code>canvas-...-YYYYMMDD-HHMMSS.html</code>）。</div>
+    </div>
+  </div>
+
+  <div class="pull" style="background: rgba(59,130,246,0.06); border-color: rgba(59,130,246,0.3); margin-top: 18px;">
+    <span class="badge" style="background: #3b82f6; color: white;">v0.2 新規則</span>
+    舊：「<strong>所有</strong>情境都得 validated」→ 觀眾意外問問題就 demo 不出來，客戶會發現是劇本<br>
+    新：「主秀 validated · off-script 即興」→ 故事連續性 ✓ + 即興部分有 design.md 規範保證視覺一致 ✓
+  </div>
+
+  <h3 style="margin-top: 32px;">Validated Path 的 3 個必要條件（主秀情境用）</h3>
+  <p>主秀情境要被當作 validated path，必須三件事都完成：</p>
+  <div class="checklist">
+    <div class="check-item">
+      <div class="check-icon">✓</div>
+      <div class="check-body">
+        <strong>1. 有對應的 <code>spec.json</code> 存在於 <code>skill/examples/</code></strong>
+        <p>不能用 Claude「現場從零寫 spec」當主秀。Claude 可以微調既有 spec（改 title、改 KPI 標籤、加 1-2 個 widget），但骨幹必須是已存在的 JSON 檔。目前 5 個 validated：S2 / S3 / S4 / S5 / S7。</p>
+      </div>
+    </div>
+    <div class="check-item">
+      <div class="check-icon">✓</div>
+      <div class="check-body">
+        <strong>2. 已用 <code>compose.py</code> 成功跑過、產出可看的 HTML</strong>
+        <p>產出的 HTML 必須能在瀏覽器開、視覺正常、所有 widget 渲染正確、互動 work、auto-poll work。任何一項壞，這個情境不准上 booth。</p>
+      </div>
+    </div>
+    <div class="check-item">
+      <div class="check-icon">✓</div>
+      <div class="check-body">
+        <strong>3. 連到的每個 op 都在 RD 已 supported 範圍</strong>
+        <p>spec footer 的 <code>ops_used</code> 列出來的每個 op 必須能跑（在 <a href="docs/rd-priorities.md">rd-priorities.md</a> 的「已 supported」清單裡）。任何「規劃中」🔴 的 op 都不算。</p>
+      </div>
+    </div>
+  </div>
+
+  <h3>兩個關鍵 script · 每個 validated path 都會跑</h3>
+  <p>整套 demo 流程靠這兩個 script 撐起來——一個撈雲端、一個產 HTML。</p>
+
+  <div class="script-split">
+    <div class="script-card">
+      <div class="script-card-hdr">
+        <span class="script-name">refresh-all.sh</span>
+        <span class="script-time">~14 秒</span>
+      </div>
+      <div class="script-card-body">
+        <p><strong>做什麼：</strong>呼叫 6 個 RD data skill，把雲端最新狀態存進 <code>live-data/*.json</code>。</p>
+        <p><strong>什麼時候跑：</strong>展會開始前 5 分鐘；或展中想 demo「資料剛剛變了」時。</p>
+<pre><span class="comment"># 展前準備</span>
+bash dashboard-builder/scripts/refresh-all.sh
+
+<span class="comment"># Output:</span>
+<span class="comment">#   live-data/orgs.json         (5 orgs)</span>
+<span class="comment">#   live-data/hierarchy.json    (10 networks)</span>
+<span class="comment">#   live-data/inventory.json    (10 devices)</span>
+<span class="comment">#   live-data/licenses.json</span>
+<span class="comment">#   live-data/memberships.json  (11 members, 5 stale)</span>
+<span class="comment">#   live-data/topology.json     (cross-org)</span></pre>
+      </div>
+    </div>
+
+    <div class="script-card">
+      <div class="script-card-hdr">
+        <span class="script-name">compose.py</span>
+        <span class="script-time">~200 ms</span>
+      </div>
+      <div class="script-card-body">
+        <p><strong>做什麼：</strong>吃一份 <code>spec.json</code> + 讀 widgets/theme/runtime，組成一份自包含 HTML。</p>
+        <p><strong>什麼時候跑：</strong>每次驗證情境時；展中如果要重 compose 用客製化 spec。</p>
+<pre><span class="comment"># 從既有 spec 生 dashboard</span>
+python dashboard-builder/skill/scripts/compose.py \
+  --spec dashboard-builder/skill/examples/org-health.spec.json \
+  --out /tmp/test.html
+
+<span class="comment"># 換 dark mode</span>
+... --theme dark</pre>
+      </div>
+    </div>
+  </div>
+
+  <h3 style="margin-top: 28px;">新情境的 Validation Pipeline · 6 步</h3>
+  <p>有了新情境想法 → 走完這 6 步才能上 booth：</p>
+  <ol class="steps">
+    <li>
+      <div class="step-title">確認需要的 op 都能跑</div>
+      <div class="step-body">查 <a href="docs/rd-priorities.md">rd-priorities.md</a>，把這個情境會用到的 op 都列一遍。如果有任何一個在 P0 待完成或 troubleshoot skill 內 → 暫停，等 RD 補完才能繼續。</div>
+    </li>
+    <li>
+      <div class="step-title">寫 spec.json（複製近的範例改）</div>
+      <div class="step-body">不要從零寫——挑 <code>examples/</code> 裡最近的（角度、widget 組合接近的），複製、改 title / KPI compute_fns / data source / widget 選擇。</div>
+    </li>
+    <li>
+      <div class="step-title">跑 compose.py 產 HTML</div>
+      <div class="step-body">先用 <code>--out /tmp/test.html</code> 試水溫。視覺看起來對才搬到 <code>dashboard-builder/&lt;name&gt;.html</code>。</div>
+    </li>
+    <li>
+      <div class="step-title">驗證互動 + auto-poll + cross-widget event</div>
+      <div class="step-body">點 KPI 卡跳轉、展開 row、按 Refresh、5 秒 poll 自動更新、topology tree 點 device 跳 table——每一項都要 work。任何一個壞，回 step 2 修 spec。</div>
+    </li>
+    <li>
+      <div class="step-title">截圖加進 gallery</div>
+      <div class="step-body">用 playwright 或瀏覽器截全頁圖，存到 <code>assets/shots/</code>。在 <code>architecture.html</code> 的 <code>#gallery</code> 區段加新 card。</div>
+    </li>
+    <li>
+      <div class="step-title">Git commit + push</div>
+      <div class="step-body">這個情境正式成為 validated path，可以上 booth。同步更新 README + manifest（如果有用 booth log）。</div>
+    </li>
+  </ol>
+
+  <h3 style="margin-top: 28px;">展前 5 分鐘 Readiness Checklist</h3>
+  <p>展會當天每場 demo 之前跑：</p>
+  <div class="checklist">
+    <div class="check-item">
+      <div class="check-icon todo">☐</div>
+      <div class="check-body"><strong>refresh-all.sh 跑成功</strong>，6 個 JSON 都新鮮（mtime 在 5 分鐘以內）</div>
+    </div>
+    <div class="check-item">
+      <div class="check-icon todo">☐</div>
+      <div class="check-body"><strong>5 個 spec 各跑一次 compose.py</strong>，全部 exit 0 + 印出 file size</div>
+    </div>
+    <div class="check-item">
+      <div class="check-icon todo">☐</div>
+      <div class="check-body"><strong>每個產出的 HTML 在瀏覽器開一次</strong>，視覺 + 互動 + auto-poll 確認 work</div>
+    </div>
+    <div class="check-item">
+      <div class="check-icon todo">☐</div>
+      <div class="check-body"><strong>Vercel URL 開得開</strong>（demo 機當機時的 fallback）</div>
+    </div>
+    <div class="check-item">
+      <div class="check-icon todo">☐</div>
+      <div class="check-body"><strong>API_KEY 跟 MANAGE_SYSTEM_URL env 對</strong>（terminal 跑 <code>echo $API_KEY</code> 確認）</div>
+    </div>
+  </div>
+
+  <p style="margin-top: 24px;"><strong>任何一項沒過 → 那個情境不准上 booth，當天少帶</strong>。Demo 的鐵律：寧可少一個故事，不要在觀眾面前看著 error message。</p>
+</section>
+
+<section id="flow">
+  <h2><span class="num-tag">§8</span>90 秒 Booth Demo 節奏</h2>
+  <p class="section-lede">展前準備 + 主秀 + 彩蛋。整段不超過 2 分鐘。</p>
+
+  <div class="flow">
+    <div class="flow-step">
+      <div class="timer">展前</div>
+      <div>
+        <div class="who">操作員</div>
+        <div class="what">跑 <code>refresh-all.sh</code> → 確認所有 6 個 JSON 是 5 分鐘內的資料</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="timer">0:00</div>
+      <div>
+        <div class="who">訪客</div>
+        <div class="what">「我管 5 個客戶的網路，能幫我看一下總體狀況嗎？」</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="timer">0:15</div>
+      <div>
+        <div class="who">操作員 → Claude Code</div>
+        <div class="what">「幫我撈所有 org 的 device + license + member」</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="timer eye">0:18</div>
+      <div>
+        <div class="who">Claude</div>
+        <div class="what">並行跑 5 個 skill → 寫 live-data/*.json → 回覆「Main_Org 有 10 台設備、<em>全部 license expired</em>，要不要先看這個？」</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="timer">0:30</div>
+      <div>
+        <div class="who">操作員 → Claude</div>
+        <div class="what">「對，做一張 dashboard 從健康角度看」</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="timer eye">0:35</div>
+      <div>
+        <div class="who">Claude</div>
+        <div class="what">寫 spec JSON → 呼叫 compose.py → <em>產出 canvas-org-health-&lt;TS&gt;.html</em></div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="timer">0:40</div>
+      <div>
+        <div class="who">操作員</div>
+        <div class="what">開 browser preview → 訪客看到 dashboard <em>已經 live</em></div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="timer">0:50</div>
+      <div>
+        <div class="who">訪客</div>
+        <div class="what">瀏覽 dashboard，問：「我想看跨 5 個 org 的關係」</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="timer eye">1:00</div>
+      <div>
+        <div class="who">Claude</div>
+        <div class="what">跑 topology aggregate 腳本 → 改 spec、append topology_tree section → <em>重新 compose</em> → 觀眾看到 dashboard 在他眼前長出新區塊</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="timer eye">1:25</div>
+      <div>
+        <div class="who">訪客</div>
+        <div class="what">「Front Desk 已經 5 年沒登入了還有 7 個 network 權限？」（核心 wow）</div>
+      </div>
+    </div>
+    <div class="flow-step">
+      <div class="timer">1:40</div>
+      <div>
+        <div class="who">操作員 → Claude</div>
+        <div class="what">「列出可疑成員」→ Claude highlight 那幾筆、建議下一步操作（不執行寫入）</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="limits">
+  <h2><span class="num-tag">§9</span>資料層限制 · 哪些故事還不能講</h2>
+  <p class="section-lede">
+    現有 RD skill 的覆蓋範圍是「<strong>讀寫設定 + 當前快照</strong>」。<span class="hl-accent">所有需要歷史聚合 / 即時 streaming 的故事都還做不出來</span>，因為對應 API 還不存在。這個限制不是 dashboard-builder 的問題，是資料層尚未長出來。
+  </p>
+
+  <div class="limit-card blocked">
+    <div class="label">🔴 完全擋住</div>
+    <h3>趨勢 / 歷史聚合（"過去 7 天 throughput"、"本月流量 top 10"）</h3>
+    <p class="detail">
+      EnGenius Cloud 的 GET API 只回「現在」的快照，沒有「過去 N 天聚合」endpoint。所有「趨勢線」、「月度比較」、「年度報表」類 dashboard 都做不出來。
+    </p>
+    <div class="blocker">RD action: 補 history aggregation API（例如 /metrics/throughput?from=...&to=...&groupBy=day）</div>
+  </div>
+
+  <div class="limit-card blocked">
+    <div class="label">🔴 完全擋住</div>
+    <h3>即時 streaming（"AP CPU 即時跳動"、"在線 client 即時列表"）</h3>
+    <p class="detail">
+      規格上 RD 有 <code>subscribe_stat</code>、<code>subscribe_throughput</code>、<code>subscribe_client_list</code> 等 25+ 個 op，但 <strong>3 個 troubleshoot skill 都還沒 scripts/</strong>。SKILL.md 列出來、references/ 規格寫好了，但無法執行。
+    </p>
+    <div class="blocker">RD action: 補 network-ap/gw/sw-troubleshoot skill 的 scripts/call_api.py（含 WebSocket / SSE 協定支援）</div>
+  </div>
+
+  <div class="limit-card blocked">
+    <div class="label">🔴 完全擋住</div>
+    <h3>實體拓樸（"哪台 AP 接到 switch 哪個 port"、"線路斷在哪裡"）</h3>
+    <p class="detail">
+      需要 <code>subscribe_fdb_list</code>、<code>subscribe_arp_list</code>、<code>subscribe_cable_diag</code> — 也在 troubleshoot skill 內、也都還沒 scripts。所以我們的 topology_tree 只能畫<strong>邏輯</strong>階層（org → network → device），畫不出實體連線。
+    </p>
+    <div class="blocker">RD action: 同上</div>
+  </div>
+
+  <div class="limit-card partial">
+    <div class="label">🟡 部分擋住</div>
+    <h3>跨 org 成員聚合（"哪些人在多個 org 都有權限"）</h3>
+    <p class="detail">
+      <code>get_org_memberships_overall</code> 只能撈一個 org 的成員。要看「一個 user 在 5 個 org 各有什麼權限」需要拼接 5 次呼叫 + 用 email 比對。Dashboard 可以做（用 compute_fn 拼），但成本高。
+    </p>
+    <div class="blocker">RD action（nice-to-have）: 補 cross-org membership endpoint</div>
+  </div>
+
+  <div class="limit-card partial">
+    <div class="label">🟡 部分擋住</div>
+    <h3>裝置物理位置（"地圖上標出各分店設備"）</h3>
+    <p class="detail">
+      Network / device 沒有 GPS / address 欄位。hierarchy_view 名稱可能含地點線索（如 "Taipei"、"LA"），但需要 geocoding 推測。<strong>map widget 因此被延後</strong>，要等 RD 加 location 欄位。
+    </p>
+    <div class="blocker">RD action（nice-to-have）: device/network 加 location 欄位（address / lat / lon）</div>
+  </div>
+
+  <h3 style="margin-top: 28px;">現在能做的 widget 類型</h3>
+  <p>受限於上述限制，dashboard-builder library 目前聚焦 <strong>「當前狀態的多維呈現」</strong>：</p>
+  <ul>
+    <li>✅ <strong>單一指標</strong>（kpi_grid）— "現在有 10 台設備"</li>
+    <li>✅ <strong>分類 / 構成</strong>（bar_list, donut）— "AP 9 / Switch 1"、"40% accessible / 40% partial"</li>
+    <li>✅ <strong>清單明細</strong>（table）— "列出所有 stale members"</li>
+    <li>✅ <strong>結構關係</strong>（topology_tree）— "Org → Network → Device 階層"</li>
+    <li>✅ <strong>單點時間軸</strong>（timeline）— "license 何時到期"（不是「過去到現在的趨勢」，是「現在到未來的點」）</li>
+    <li>❌ <strong>連續趨勢線</strong>（line_chart / sparkline）— 需要歷史 API</li>
+    <li>❌ <strong>即時跳動</strong>（live_meter / activity_feed）— 需要 streaming API</li>
+    <li>❌ <strong>地理</strong>（map）— 需要 location 欄位</li>
+  </ul>
+</section>
+
+</main>
+
+</div>
+
+<footer>
+  AI Demo Architecture v3 · Last updated 2026-05-16 · Network AI-Assistant Proposal Site
+</footer>
+
+<script>
+(() => {
+  // Smooth scroll for both TOC and top-nav anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      const target = document.getElementById(a.getAttribute('href').slice(1));
+      if (!target) return;
+      e.preventDefault();
+      const top = target.getBoundingClientRect().top + window.scrollY - 70;
+      window.scrollTo({ top, behavior: 'smooth' });
+      history.replaceState(null, '', a.getAttribute('href'));
+    });
+  });
+
+  // TOC active highlight: IntersectionObserver (fires reliably on any scroll method)
+  const tocItems = document.querySelectorAll('.toc-item');
+  const targets = Array.from(tocItems)
+    .map(i => ({ id: i.dataset.target, el: document.getElementById(i.dataset.target) }))
+    .filter(t => t.el);
+
+  const setActive = (id) => {
+    tocItems.forEach(i => i.classList.toggle('active', i.dataset.target === id));
+  };
+
+  const OFFSET = 120;
+
+  // Strategy: observe each section; when intersecting, store current top.
+  // On every callback, scan all targets fresh and pick the LATEST one
+  // whose top is <= OFFSET (i.e. most recently scrolled past).
+  const intersecting = new Set();
+
+  function pickActive() {
+    let active = targets[0]?.id || 'overview';
+    let bestTop = -Infinity;
+    for (const t of targets) {
+      const top = t.el.getBoundingClientRect().top;
+      if (top <= OFFSET && top > bestTop) {
+        active = t.id;
+        bestTop = top;
+      }
+    }
+    setActive(active);
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) intersecting.add(e.target.id);
+      else intersecting.delete(e.target.id);
+    });
+    pickActive();
+  }, {
+    // Track whenever any part of the section enters/leaves the viewport
+    rootMargin: '0px',
+    threshold: [0, 0.25, 0.5, 0.75, 1]
+  });
+
+  targets.forEach(t => observer.observe(t.el));
+
+  // Fallback: also recompute on scroll + resize (in case IO doesn't fire for some reason)
+  let raf = null;
+  const schedulePick = () => {
+    if (raf) return;
+    raf = requestAnimationFrame(() => { raf = null; pickActive(); });
+  };
+  window.addEventListener('scroll', schedulePick, { passive: true });
+  window.addEventListener('resize', schedulePick, { passive: true });
+  document.addEventListener('scroll', schedulePick, { passive: true, capture: true });
+
+  // Initial pick
+  pickActive();
+})();
+</script>
+
+</body>
+</html>

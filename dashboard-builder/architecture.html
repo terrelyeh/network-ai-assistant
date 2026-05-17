@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<title>AI Demo Architecture · Dashboard Builder</title>
+<title>你的 AI 專業網管 · Architecture · Network AI-Assistant</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -944,21 +944,16 @@
 <body>
 
 <nav>
-  <div class="brand">Network <span class="accent">AI-Assistant</span></div>
+  <div class="brand">Network <span class="accent">AI-Assistant</span> · Architecture</div>
   <div class="links">
-    <a href="#wedge">Wedge</a>
-    <a href="#layers">5 Layers</a>
-    <a href="#three-layers">3 層分工</a>
-    <a href="#widget">What is a widget</a>
-    <a href="#catalog">Widget Catalog</a>
-    <a href="#library-growth">Library 哲學</a>
-    <a href="#gallery">範例 Gallery</a>
-    <a href="#skill-internals">Skill 內部</a>
-    <a href="#howto">How to use</a>
-    <a href="#demo-readiness">Demo Readiness</a>
-    <a href="#flow">Demo flow</a>
-    <a href="#limits">資料層限制</a>
-    <a href="#status">Status</a>
+    <a href="#facets">6 面向</a>
+    <a href="#layers-deep-dive">5 層深度</a>
+    <a href="#how-ai-works">AI 怎麼運作</a>
+    <a href="#primitives">Skill = Primitive</a>
+    <a href="#dashboard">Dashboard</a>
+    <a href="#scenarios">情境</a>
+    <a href="#roadmap">Roadmap</a>
+    <a href="technical.html">Technical →</a>
   </div>
 </nav>
 
@@ -967,1652 +962,682 @@
 <aside class="toc" id="toc">
   <div class="toc-inner">
     <div class="toc-section">On this page</div>
-    <a class="toc-item" href="#overview" data-target="overview">概觀 Overview</a>
-    <a class="toc-item" href="#positioning" data-target="positioning"><span class="toc-num">★</span> 產品定位 · 我們在做什麼</a>
-    <a class="toc-item" href="#product" data-target="product"><span class="toc-num">00</span> 產品全貌 · 3 Capability</a>
-    <a class="toc-item" href="#wedge" data-target="wedge"><span class="toc-num">01</span> 兩個無法妥協的原則</a>
-    <a class="toc-item" href="#layers" data-target="layers"><span class="toc-num">02</span> 5 層架構</a>
-    <a class="toc-item" href="#three-layers" data-target="three-layers"><span class="toc-num">02b</span> 3 層分工</a>
-    <a class="toc-item" href="#persona" data-target="persona"><span class="toc-num">02c</span> AI 網管人格層</a>
-    <a class="toc-item" href="#widget" data-target="widget"><span class="toc-num">03</span> 什麼是 Widget</a>
-    <a class="toc-item" href="#catalog" data-target="catalog"><span class="toc-num">03b</span> Widget Catalog</a>
-    <a class="toc-item" href="#library-growth" data-target="library-growth"><span class="toc-num">03c</span> Library 哲學</a>
-    <a class="toc-item" href="#gallery" data-target="gallery"><span class="toc-num">03d</span> 範例 Gallery</a>
-    <a class="toc-item" href="#skill-internals" data-target="skill-internals"><span class="toc-num">03e</span> Skill 內部</a>
-    <a class="toc-item" href="#design-system" data-target="design-system"><span class="toc-num">03f</span> Design System</a>
-    <a class="toc-item" href="#howto" data-target="howto"><span class="toc-num">04</span> 怎麼用</a>
-    <a class="toc-item" href="#demo-readiness" data-target="demo-readiness"><span class="toc-num">04b</span> Demo Readiness</a>
-    <a class="toc-item" href="#flow" data-target="flow"><span class="toc-num">05</span> Demo Flow</a>
-    <a class="toc-item" href="#limits" data-target="limits"><span class="toc-num">06</span> 資料層限制</a>
-    <a class="toc-item" href="#status" data-target="status"><span class="toc-num">07</span> Status</a>
+    <a class="toc-item" href="#overview" data-target="overview">Overview</a>
+    <a class="toc-item" href="#what-is" data-target="what-is"><span class="toc-num">§01</span> 是什麼 / 不是什麼</a>
+    <a class="toc-item" href="#facets" data-target="facets"><span class="toc-num">§02</span> 6 個專業面向</a>
+    <a class="toc-item" href="#layers-deep-dive" data-target="layers-deep-dive"><span class="toc-num">§03</span> 每一層深度說明</a>
+    <a class="toc-item" href="#how-ai-works" data-target="how-ai-works"><span class="toc-num">§04</span> AI 怎麼運作</a>
+    <a class="toc-item" href="#primitives" data-target="primitives"><span class="toc-num">§05</span> Skill = Primitive</a>
+    <a class="toc-item" href="#dashboard" data-target="dashboard"><span class="toc-num">§06</span> Dashboard 是 output 之一</a>
+    <a class="toc-item" href="#scenarios" data-target="scenarios"><span class="toc-num">§07</span> 已驗證情境</a>
+    <a class="toc-item" href="#roadmap" data-target="roadmap"><span class="toc-num">§08</span> Roadmap</a>
+    <a class="toc-item" href="#status" data-target="status"><span class="toc-num">§09</span> Status</a>
+    <div class="toc-section" style="margin-top: 24px;">Appendix</div>
+    <a class="toc-item" href="#appendix-skills" data-target="appendix-skills"><span class="toc-num">A</span> Skills × Scenarios</a>
+    <a class="toc-item" href="#appendix-glossary" data-target="appendix-glossary"><span class="toc-num">B</span> Glossary</a>
+    <a class="toc-item" href="#appendix-resources" data-target="appendix-resources"><span class="toc-num">C</span> Resources</a>
+    <div class="toc-section" style="margin-top: 24px;">關聯文件</div>
+    <a class="toc-item" href="technical.html">Technical Deep-Dive →</a>
+    <a class="toc-item" href="../api-docs.html">API Docs (Swagger UI)</a>
+    <a class="toc-item" href="../api-skills/">api-skills 總覽</a>
   </div>
 </aside>
 
 <main class="content">
 
 <header class="hero" id="overview">
-  <span class="eyebrow">Network AI-Assistant · v5 (Persona + Design System)</span>
-  <h1>EnGenius Cloud <span class="accent">AI Agent Skill Suite</span><br>你的專業 AI 網管</h1>
+  <span class="eyebrow">Network AI-Assistant · 2026-05-17</span>
+  <h1>你的<span class="accent">專業 AI 網管</span></h1>
   <p class="lede">
-    這是<strong>在 LLM coding 環境（Claude Code）中使用</strong>的 EnGenius Cloud 管理工具集，<strong>不是</strong>雲端管理平台 GUI 內嵌的 AI chatbox。
-    Claude Code 在對話中編排 RD 的 <span class="hl">13 個 data skill</span> + <span class="hl">dashboard-builder skill</span> + <span class="hl">persona</span>，依使用者問題自動選輸出形式：文字 / dashboard / 動手操作。
+    把 EnGenius Cloud 整套 API 變成 AI 可動手做事的能力 — 一個有 voice、有判斷、會記憶的 AI 同事，而不是又一個 chatbot、又一張 BI dashboard。
     <br><br>
-    <strong>本頁聚焦 Capability 1（Dashboard Builder）</strong>。整體 3 個 capability 全貌見下方 <a href="#product">§00 產品全貌</a>。「<span class="hl">即時組成</span>」是我們的 <span class="term" data-def="wedge product = 切入市場的楔子；產品定位用詞，指最小可贏的競爭差異點">wedge</span>——不是預先做好的模板，而是訪客問問題的當下，AI 才決定 dashboard 長什麼樣。
+    Claude Code 在對話中編排 <span class="hl">13 個 data skill</span>（最小 primitive 單位）+ <span class="hl">persona / design / playbook / memory / house-rules</span> 5 層知識架構，依使用者問題即時組合資訊，自己判斷該回 <span class="hl">文字 / dashboard / 動手操作</span>。
+    <br><br>
+    <strong>所有 dashboard 都是 AI 即時組裝的</strong> — 沒有預先寫好的模板，每次都是 AI 從 skills 即時拉資料、依情境組出當下最該呈現的視覺。
   </p>
 </header>
 
-<section id="positioning">
-  <h2><span class="num-tag">★</span>產品定位 · 我們在做什麼</h2>
-  <p class="section-lede">
-    用一句話講完：<strong>EnGenius Cloud · AI Agent Skill Suite · 你的專業 AI 網管</strong>。<br>
-    這個定位同時釘住兩件事 — <strong>產品類別</strong>（給 AI Agent 用的 skill 套件，不是新的 GUI、不是 chatbot widget）+ <strong>客戶體驗</strong>（專業 AI 網管，不是一次性問答工具）。
-  </p>
+<section id="what-is">
+  <h2><span class="num-tag">§01</span>這是什麼 / 不是什麼</h2>
+  <p class="section-lede">最容易誤解的點是「這套東西不在 EnGenius Cloud 網頁裡」— 它是<strong>在使用者自己的 LLM coding 環境（Claude Code）裡跑</strong>的 AI agent skill suite。</p>
 
-  <div class="pull" style="background: rgba(251,191,36,0.08); border-color: rgba(251,191,36,0.3);">
-    <span class="badge" style="background: #fbbf24; color: #1a1a1a;">為什麼這個 framing 重要</span>
-    Network AI-Assistant <strong>不是</strong>「ChatGPT for Networks」、也不是「又一個 BI dashboard」、更不是「SaaS 預設 view」。<br>
-    它是把 <strong>IT 網管顧問的專業能力拆解成可量產的數位資產</strong> — 透過知識架構分層 + 13 個 EnGenius Cloud data skills，組成一個有 voice、有判斷、有設計守則、有專業意見、會診斷、有記憶的數位網管。
+  <div class="pull">
+    <span class="badge">✅ 是 / ❌ 不是</span>
+    <strong>✅ 是</strong>：你在 Claude Code 終端機裡用自然語言對話，AI 透過 skill 呼叫 EnGenius Cloud API，回你文字 / 即時組裝 dashboard HTML / 動手操作雲端設定<br>
+    <strong>❌ 不是</strong>：在 cloud.engenius.com 網頁裡開一個聊天視窗（那是另一條路線「Cloud-Embedded AI」，目前未推進）<br>
+    <strong>❌ 不是</strong>：又一個 BI dashboard / SaaS 預設 view（dashboard 不是預寫的，是 AI 即時組）<br>
+    <strong>❌ 不是</strong>：純「LLM + API」工具（我們有完整 persona / playbook / memory 讓 AI 像專業同事）
   </div>
 
-  <h3 style="margin-top: 36px;">每一層 = 專業 AI 網管的一個面向</h3>
-  <p>把 <a href="#layers">§02 執行架構</a>的 Capability 層 + <a href="#persona">§02c 五層知識架構</a> 加總，整套產品在客戶眼中對應到「一個完整 IT 網管」的 6 個專業面向：</p>
+  <h3>跟「LLM + API」純工具差在哪</h3>
+  <p>其他工具給你的是 <em>tool</em>（會打 API，但每次都從零開始）。我們給你的是 <em>colleague</em>：</p>
+  <ul>
+    <li><strong>有 voice</strong> — persona.md 規範語氣，不是冰冷的 datasheet</li>
+    <li><strong>有判斷</strong> — 同一個問題會根據資料複雜度決定回 text 還是 dashboard 還是直接動手</li>
+    <li><strong>有專業意見</strong> — house-rules 規範 EnGenius 平台特有的推薦邏輯（規劃中）</li>
+    <li><strong>有思考骨架</strong> — playbook 給 configure / troubleshoot / monitor 各自的 mental model（規劃中）</li>
+    <li><strong>會記得</strong> — memory/&lt;org-id&gt;.md 跨 session 記錄客戶 quirks 跟 open follow-ups（規劃中）</li>
+  </ul>
+</section>
 
-  <div style="overflow-x: auto; margin-top: 16px;">
-  <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+<section id="facets">
+  <h2><span class="num-tag">§02</span>6 個專業面向 · 完整 AI 網管的拼圖</h2>
+  <p class="section-lede">
+    把這套產品在客戶眼中對應到「一個完整 IT 網管」的 6 個專業面向 — 每一層回答一個問題：「他能做什麼 / 怎麼講話 / 生圖長什麼樣 / 有什麼意見 / 怎麼思考 / 記得什麼」。
+  </p>
+
+  <h3>整體架構一張圖</h3>
+  <p>使用者問問題 → AI 諮詢 5 個知識層 + 使用 skill primitives → 自己挑 output 形式：</p>
+
+  <div class="arch-diagram" style="margin: 28px 0;">
+
+    <!-- User -->
+    <div class="layer" style="background: var(--surface-2);">
+      <div class="lvl"><b>User</b></div>
+      <div class="what">
+        <div class="title">使用者問題（自然語言）</div>
+        <div class="desc">「今天網路怎麼樣？」· 「Ann 離職了幫我清權限」· 「7F 客人說 wifi 慢」</div>
+      </div>
+      <div class="owner"><span class="pill">input</span></div>
+    </div>
+
+    <div class="arrow">↓</div>
+
+    <!-- AI Agent consulting knowledge layers -->
+    <div class="layer l5">
+      <div class="lvl"><b>AI</b><br><span style="font-size:10px;">Orchestrator</span></div>
+      <div class="what">
+        <div class="title">Claude Code · 編排 · 諮詢 5 個知識層</div>
+        <div class="desc" style="margin-bottom:10px;">每次回應前 AI 都會「諮詢」下面 5 個 .md 檔，依情境決定該怎麼回。</div>
+        <div style="display:grid; grid-template-columns: repeat(5,1fr); gap:6px;">
+          <div style="border:1px solid rgba(16,185,129,0.4); border-radius:8px; padding:10px 8px; background:rgba(16,185,129,0.06); font-size:11.5px; line-height:1.5;">
+            <strong>persona.md</strong><br><span style="color:var(--text-3); font-size:10.5px;">怎麼講話</span><br><span class="ok" style="font-size:11px;">✅ 358 行</span>
+          </div>
+          <div style="border:1px solid rgba(16,185,129,0.4); border-radius:8px; padding:10px 8px; background:rgba(16,185,129,0.06); font-size:11.5px; line-height:1.5;">
+            <strong>design.md</strong><br><span style="color:var(--text-3); font-size:10.5px;">生圖規範</span><br><span class="ok" style="font-size:11px;">✅ 341 行</span>
+          </div>
+          <div style="border:1px solid rgba(245,158,11,0.4); border-radius:8px; padding:10px 8px; background:rgba(245,158,11,0.06); font-size:11.5px; line-height:1.5;">
+            <strong>house-rules.md</strong><br><span style="color:var(--text-3); font-size:10.5px;">專業意見</span><br><span class="warn" style="font-size:11px;">🔜 規劃</span>
+          </div>
+          <div style="border:1px solid rgba(245,158,11,0.4); border-radius:8px; padding:10px 8px; background:rgba(245,158,11,0.06); font-size:11.5px; line-height:1.5;">
+            <strong>playbooks/</strong><br><span style="color:var(--text-3); font-size:10.5px;">思考骨架 ×3</span><br><span class="warn" style="font-size:11px;">🔜 下 session</span>
+          </div>
+          <div style="border:1px solid rgba(245,158,11,0.4); border-radius:8px; padding:10px 8px; background:rgba(245,158,11,0.06); font-size:11.5px; line-height:1.5;">
+            <strong>memory/&lt;org&gt;.md</strong><br><span style="color:var(--text-3); font-size:10.5px;">長期記憶</span><br><span class="warn" style="font-size:11px;">🔜 post-launch</span>
+          </div>
+        </div>
+      </div>
+      <div class="owner"><span class="pill">consult</span></div>
+    </div>
+
+    <div class="arrow">↓</div>
+
+    <!-- Skill primitives -->
+    <div class="layer l3">
+      <div class="lvl"><b>Skills</b><br><span style="font-size:10px;">Primitives</span></div>
+      <div class="what">
+        <div class="title">Skill Bundle · AI 能做什麼（最小 unit）</div>
+        <div class="desc" style="margin-bottom:10px;">AI 自由組合這些 primitives — 沒有預先規劃，由 AI 即時挑用。</div>
+        <div style="display:grid; grid-template-columns: 1.1fr 1fr; gap:10px;">
+          <div style="border:1px solid var(--border-strong); border-radius:8px; padding:12px 14px; background: var(--surface);">
+            <div style="font-weight:700; color:var(--cyan); margin-bottom:4px;">api-skills/ <span style="color:var(--text-3); font-weight:500; font-size:12px;">13 skills · 94 ops</span></div>
+            <div style="font-size:12px; color:var(--text-2); line-height:1.55;">打 EnGenius Cloud REST API：<code class="mono" style="font-size:11px;">hvs</code> · <code class="mono" style="font-size:11px;">networks</code> · <code class="mono" style="font-size:11px;">org-devices</code> · <code class="mono" style="font-size:11px;">org-licenses</code> · <code class="mono" style="font-size:11px;">team-members</code> · <code class="mono" style="font-size:11px;">network-{ap,gateway,switch}-troubleshoot</code> …</div>
+          </div>
+          <div style="border:1px solid var(--border-strong); border-radius:8px; padding:12px 14px; background: var(--surface);">
+            <div style="font-weight:700; color:var(--warn); margin-bottom:4px;">dashboard-builder/ <span style="color:var(--text-3); font-weight:500; font-size:12px;">1 skill · 12 widgets</span></div>
+            <div style="font-size:12px; color:var(--text-2); line-height:1.55;">把 api-skills 拿到的資料即時組成 self-contained HTML dashboard — <strong>沒有預寫模板，每次都即時組裝</strong>。</div>
+          </div>
+        </div>
+      </div>
+      <div class="owner"><span class="pill">primitives</span></div>
+    </div>
+
+    <div class="arrow">↓</div>
+
+    <!-- Output -->
+    <div class="layer" style="background: linear-gradient(135deg, #fff4ee 0%, var(--surface-2) 100%); border-color: rgba(255,107,53,0.5);">
+      <div class="lvl"><b>Output</b><br><span style="font-size:10px;">AI 判斷</span></div>
+      <div class="what">
+        <div class="title">三種 Output 形式 · AI 依 persona 自己挑</div>
+        <div class="desc" style="margin-bottom:10px;">同一個 query、不同情境 → 不同 output 形式。Dashboard 是其中一個選項，不是預設。</div>
+        <div style="display:grid; grid-template-columns: repeat(3,1fr); gap:10px;">
+          <div style="border:1px solid var(--border-strong); border-radius:8px; padding:14px 10px; background:var(--surface); text-align:center;">
+            <div style="font-size:26px; line-height:1;">📝</div>
+            <div style="font-weight:700; margin-top:6px; font-size:13.5px;">Text</div>
+            <div style="font-size:11px; color:var(--text-3); margin-top:3px;">資料簡單時</div>
+          </div>
+          <div style="border:1px solid var(--border-strong); border-radius:8px; padding:14px 10px; background:var(--surface); text-align:center;">
+            <div style="font-size:26px; line-height:1;">📊</div>
+            <div style="font-weight:700; margin-top:6px; font-size:13.5px;">Dashboard</div>
+            <div style="font-size:11px; color:var(--text-3); margin-top:3px;">需對比視覺時</div>
+          </div>
+          <div style="border:1px solid var(--border-strong); border-radius:8px; padding:14px 10px; background:var(--surface); text-align:center;">
+            <div style="font-size:26px; line-height:1;">🔧</div>
+            <div style="font-weight:700; margin-top:6px; font-size:13.5px;">Action</div>
+            <div style="font-size:11px; color:var(--text-3); margin-top:3px;">使用者要動手時</div>
+          </div>
+        </div>
+      </div>
+      <div class="owner"><span class="pill">deliver</span></div>
+    </div>
+
+  </div>
+
+  <h3 style="margin-top: 40px;">每一層快速對照表</h3>
+  <table class="tbl">
     <thead>
-      <tr style="background: var(--surface-2);">
-        <th style="padding: 12px 16px; text-align: left; border: 1px solid var(--border); width: 28%;">層</th>
-        <th style="padding: 12px 16px; text-align: left; border: 1px solid var(--border); width: 16%;">狀態</th>
-        <th style="padding: 12px 16px; text-align: left; border: 1px solid var(--border);">對應到「專業 AI 網管」哪部分</th>
+      <tr>
+        <th style="width:28%">層</th>
+        <th style="width:16%">狀態</th>
+        <th>對應到「專業 AI 網管」哪部分</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td style="padding: 12px 16px; border: 1px solid var(--border); font-weight: 600;">Capability · 13 skills</td>
-        <td style="padding: 12px 16px; border: 1px solid var(--border);"><span style="color: #047857;">✅ ready</span></td>
-        <td style="padding: 12px 16px; border: 1px solid var(--border);">他<strong>能做什麼</strong> — 看設備、改設定、診斷、視覺化、（未來）動手操作</td>
-      </tr>
-      <tr style="background: rgba(16,185,129,0.04);">
-        <td style="padding: 12px 16px; border: 1px solid var(--border); font-weight: 600;"><code>persona.md</code></td>
-        <td style="padding: 12px 16px; border: 1px solid var(--border);"><span style="color: #047857;">✅ ready</span></td>
-        <td style="padding: 12px 16px; border: 1px solid var(--border);">他<strong>怎麼跟你講話</strong> — 不是 datasheet，是 SMB 客戶聽得懂的人話 + 升級條件矩陣決定該文字 / 開圖 / 動手</td>
-      </tr>
-      <tr style="background: rgba(16,185,129,0.04);">
-        <td style="padding: 12px 16px; border: 1px solid var(--border); font-weight: 600;"><code>design.md</code></td>
-        <td style="padding: 12px 16px; border: 1px solid var(--border);"><span style="color: #047857;">✅ ready</span></td>
-        <td style="padding: 12px 16px; border: 1px solid var(--border);">他<strong>生的圖長什麼樣</strong> — 跨 dashboard 視覺一致、品牌 token、9 條 hard prohibitions 守住底線</td>
+        <td><strong>Skills · 13 個</strong><br><code class="mono">api-skills/skills/</code></td>
+        <td class="ok">✅ ready</td>
+        <td>他<strong>能做什麼</strong> — 看設備、改設定、診斷、視覺化、（未來）動手操作。13 skills 含 94 個 op</td>
       </tr>
       <tr>
-        <td style="padding: 12px 16px; border: 1px solid var(--border); font-weight: 600;"><code>house-rules.md</code></td>
-        <td style="padding: 12px 16px; border: 1px solid var(--border);"><span style="color: #b45309;">🔜 未來 P2</span></td>
-        <td style="padding: 12px 16px; border: 1px solid var(--border);">他<strong>有什麼專業意見</strong> — HVS 分數怎麼解讀、什麼絕對不該推薦、EnGenius 平台特有 gotcha</td>
+        <td><strong><code class="mono">persona.md</code></strong></td>
+        <td class="ok">✅ ready</td>
+        <td>他<strong>怎麼跟你講話</strong> — 不是 datasheet 風格，是 SMB 客戶聽得懂的人話 + 升級條件矩陣決定該文字 / 開圖 / 動手</td>
       </tr>
       <tr>
-        <td style="padding: 12px 16px; border: 1px solid var(--border); font-weight: 600;"><code>playbooks/</code></td>
-        <td style="padding: 12px 16px; border: 1px solid var(--border);"><span style="color: #b45309;">🔜 下個 session</span></td>
-        <td style="padding: 12px 16px; border: 1px solid var(--border);">他<strong>怎麼思考各種任務</strong> — configure / troubleshoot / monitor 的 mental model（思考骨架而非 step-by-step script）</td>
+        <td><strong><code class="mono">design.md</code></strong></td>
+        <td class="ok">✅ ready</td>
+        <td>他<strong>生的圖長什麼樣</strong> — 跨 dashboard 視覺一致、品牌 token、9 條 hard prohibitions 守住底線</td>
       </tr>
       <tr>
-        <td style="padding: 12px 16px; border: 1px solid var(--border); font-weight: 600;"><code>memory/&lt;org-id&gt;.md</code></td>
-        <td style="padding: 12px 16px; border: 1px solid var(--border);"><span style="color: #b45309;">🔜 post-launch</span></td>
-        <td style="padding: 12px 16px; border: 1px solid var(--border);">他<strong>記得你跟他講過什麼</strong> — open follow-ups / 客戶 quirks / 上次互動脈絡（讓 AI 網管變「長期合作」而非「一次性問答」）</td>
+        <td><strong><code class="mono">house-rules.md</code></strong></td>
+        <td class="warn">🔜 規劃中</td>
+        <td>他<strong>有什麼專業意見</strong> — HVS 分數怎麼解讀、什麼絕對不該推薦、EnGenius 平台特有 gotcha</td>
+      </tr>
+      <tr>
+        <td><strong><code class="mono">playbooks/</code></strong></td>
+        <td class="warn">🔜 規劃中</td>
+        <td>他<strong>怎麼思考各種任務</strong> — configure / troubleshoot / monitor 各自的 mental model（思考骨架，非 step-by-step script）</td>
+      </tr>
+      <tr>
+        <td><strong><code class="mono">memory/&lt;org-id&gt;.md</code></strong></td>
+        <td class="warn">🔜 規劃中</td>
+        <td>他<strong>記得你跟他講過什麼</strong> — open follow-ups / 客戶 quirks / 上次互動脈絡（讓 AI 網管變「長期合作」而非「一次性問答」）</td>
       </tr>
     </tbody>
   </table>
-  </div>
 
-  <div class="pull" style="background: rgba(59,130,246,0.06); border-color: rgba(59,130,246,0.3); margin-top: 24px;">
-    <span class="badge" style="background: #3b82f6; color: white;">Wedge 故事一句話</span>
+  <div class="pull" style="margin-top: 24px;">
+    <span class="badge">Wedge 故事一句話</span>
     其他「LLM + API」工具給你的是 <em>tool</em>。我們給你的是 <em>colleague</em> — 一個有專業立場、有視覺品味、有思考骨架、會記得你的 AI 同事。
   </div>
 </section>
 
-<section id="product">
-  <h2><span class="num-tag">00</span>產品全貌 · Network AI-Assistant 是什麼</h2>
+<section id="layers-deep-dive">
+  <h2><span class="num-tag">§03</span>每一層架構深度說明</h2>
   <p class="section-lede">
-    一個容易被誤會的點：這套東西<strong>不是</strong>在 EnGenius Cloud 網頁裡加個聊天視窗。
-    它是<strong>在使用者自己的 Claude Code（或其他 LLM coding 環境）裡跑</strong>的 EnGenius Cloud 管理工具集。
-    AI 在使用者本地的終端機環境裡，透過 skill 呼叫 EnGenius Cloud API，產出文字回答、dashboard 或執行動作。
+    上面架構圖的 5 個知識層 — 每個 .md 實際在寫什麼、AI 怎麼讀它、為什麼這個 layer 存在。Skill 那層已在 §02 + §05 詳述，這節聚焦在 AI 「同事化」的 5 個 layer。
   </p>
 
-  <div class="pull" style="background: rgba(59,130,246,0.06); border-color: rgba(59,130,246,0.3);">
-    <span class="badge" style="background: #3b82f6; color: white;">這個 ≠ 那個</span>
-    <strong>✅ 是</strong>：你在 Claude Code 終端機裡用自然語言對話，AI 透過 skill 呼叫 EnGenius Cloud API，回你文字 / 生成 dashboard HTML / 動手操作雲端設定<br>
-    <strong>❌ 不是</strong>：在 cloud.engenius.com 網頁裡開一個聊天視窗（那是 Line 1 路線——「Cloud-Embedded AI」，目前未推進）
+  <h3 id="layer-persona" style="margin-top: 32px;">§03.1 · persona.md · 怎麼跟使用者講話</h3>
+  <p><strong>它在寫什麼</strong>：358 行的 voice 守則 + escalation 矩陣 + 詞彙翻譯表。定義 AI 該怎麼回應 SMB 客戶 — 不是 RD 對 RD、不是 datasheet 朗讀，是「資深網管同事 explain 給老闆聽」的語氣。</p>
+
+  <h4>三大 section（節錄概念）</h4>
+  <ul>
+    <li><strong>Voice principles</strong> — 用「我幫你看了一下」開頭、不確定要說「不確定」、jargon 翻成 SMB 友善版（HVS → 健康分數 / RBAC → 權限角色）</li>
+    <li><strong>Escalation matrix</strong> — 三種 output（text / dashboard / action）何時挑哪個的判斷規則</li>
+    <li><strong>詞彙翻譯表</strong> — 60+ 條技術詞 ↔ SMB 友善說法對照</li>
+  </ul>
+
+  <h4>AI 怎麼用</h4>
+  <p>所有 dashboard-builder skill 的 <code class="mono">SKILL.md</code> 標記 <strong>MANDATORY-loads persona.md</strong> — AI 在每次 invoke skill 前讀過、應用到當次對話。已在 2026-05-16/17 實測驗證（見 <a href="docs/persona-test-results.md">persona-test-results.md</a>）。</p>
+
+  <h4>狀態</h4>
+  <ul>
+    <li><span class="ok">✅</span> Ready · 358 行 · 已實測</li>
+    <li>檔案：<a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/dashboard-builder/skill/references/network-admin-persona.md"><code class="mono">skill/references/network-admin-persona.md</code></a></li>
+    <li>實測對話紀錄：<a href="docs/persona-test-results.md">docs/persona-test-results.md</a></li>
+  </ul>
+
+  <h3 id="layer-design" style="margin-top: 40px;">§03.2 · design.md · 生成的 dashboard 長什麼樣</h3>
+  <p><strong>它在寫什麼</strong>：341 行視覺守則。三層自由度架構（locked tokens / flexible patterns / raw_html escape） + <strong>9 條 hard prohibitions</strong>（遇到絕對停）。</p>
+
+  <h4>9 條 hard prohibitions（摘要）</h4>
+  <div class="pull" style="border-left-color: var(--critical); font-size: 14px; line-height: 1.7;">
+    🚫 不准純黑 <code class="mono">#000000</code>（用 <code class="mono">#1a2332</code>）<br>
+    🚫 數字不准用 <code class="mono">font-mono</code>（用 <code class="mono">tabular-nums</code>）<br>
+    🚫 widget container 不准 <code class="mono">box-shadow</code>（chrome 留給 layout）<br>
+    🚫 雙 theme 不准同頁混用<br>
+    🚫 color hex 不准硬寫進 widget（一律走 token）<br>
+    🚫 不准用 emoji 當主要視覺載體（語義不一致跨平台）<br>
+    🚫 chart 不准 default seaborn / matplotlib 色票<br>
+    🚫 KPI grid 不准超過一行 6 個欄位<br>
+    🚫 raw_html 不准沒寫 <code class="mono">raw_html_reason</code>（自我擴張 library 必備）
   </div>
 
-  <h3 style="margin-top: 32px;">3 個 Capability · Dashboard Builder 是其中之一</h3>
-  <p>整套 Network AI-Assistant 由 3 個 capability 組成。本頁聚焦 Capability 1，其他 2 個跨 page 或跨文件說明。</p>
+  <h4>AI 怎麼用</h4>
+  <p>dashboard-builder skill 的 <code class="mono">SKILL.md</code> 也標 <strong>MANDATORY-loads design.md</strong> — AI 組 dashboard 前過一次守則。<code class="mono">compose.py</code> 在生 HTML 時驗證部分守則（例：token 使用）。違反 raw_html 規則時印警告，作為 library growth 信號。</p>
 
-  <div style="overflow-x: auto; margin-top: 16px;">
-  <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+  <h4>狀態</h4>
+  <ul>
+    <li><span class="ok">✅</span> Ready · 341 行</li>
+    <li>檔案：<a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/dashboard-builder/skill/references/design.md"><code class="mono">skill/references/design.md</code></a></li>
+    <li>實作細節：<a href="technical.html#design-system">technical.html · §5 Design System</a></li>
+  </ul>
+
+  <h3 id="layer-house-rules" style="margin-top: 40px;">§03.3 · house-rules.md · 有什麼專業意見 <span class="warn" style="font-size:13px; font-weight:600;">🔜 規劃中</span></h3>
+  <p><strong>將寫什麼</strong>：EnGenius 平台特有的「專業意見」— persona 是 <em>HOW</em>（怎麼講話），house-rules 是 <em>WHAT</em>（有什麼立場 / 推薦）。例如：</p>
+  <ul>
+    <li>HVS 分數區間怎麼解讀（< 70 緊急 / 70-85 注意 / > 85 健康）</li>
+    <li>當客戶問「我該買 AP-Pro 還是 AP-基本」時的推薦邏輯</li>
+    <li>EnGenius 平台特有 gotcha — 例：什麼設定組合不合作、什麼 license 不能混用</li>
+    <li>什麼絕對不該推薦（deprecated 設定、有安全風險的設定）</li>
+  </ul>
+
+  <h4>AI 將怎麼用</h4>
+  <p>規劃成 context 文件，由 dashboard-builder 跟 troubleshoot skills 在「給建議」時 load。Persona 規範了「怎麼說」，house-rules 規範了「該不該說 / 該推薦什麼」。</p>
+
+  <h4>為什麼還沒寫</h4>
+  <p>需要 <strong>RD（工程觀點）+ 業務（市場觀點）一起共寫</strong>。RD 知道平台 gotcha，業務知道哪些推薦會幫客戶賺到 vs 害他踩坑。光 RD 寫會偏技術正確、光業務寫會偏 sales。Schedule 在 P2。</p>
+
+  <h3 id="layer-playbooks" style="margin-top: 40px;">§03.4 · playbooks/ · 怎麼思考各種任務 <span class="warn" style="font-size:13px; font-weight:600;">🔜 下個 session</span></h3>
+  <p><strong>將寫什麼</strong>：3 個檔案，對應網管 3 大類任務 — 每個是 <strong>mental model 而非 step-by-step script</strong>。</p>
+
+  <table class="tbl">
     <thead>
-      <tr style="background: var(--surface-2);">
-        <th style="padding: 12px 14px; text-align: left; border: 1px solid var(--border); font-weight: 600; width: 28%;">Capability</th>
-        <th style="padding: 12px 14px; text-align: left; border: 1px solid var(--border); font-weight: 600;">做什麼</th>
-        <th style="padding: 12px 14px; text-align: left; border: 1px solid var(--border); font-weight: 600; width: 22%;">狀態</th>
-      </tr>
+      <tr><th style="width:25%">檔案</th><th style="width:18%">對應任務類</th><th>內容類型</th></tr>
     </thead>
     <tbody>
-      <tr style="background: rgba(251,191,36,0.08);">
-        <td style="padding: 12px 14px; border: 1px solid var(--border); font-weight: 600;">
-          <strong>1 · Dashboard Builder</strong>
-          <span style="display: block; font-size: 11px; color: #d97706; margin-top: 4px;">⭐ 本頁主題</span>
-        </td>
-        <td style="padding: 12px 14px; border: 1px solid var(--border);">對話即時組裝視覺化 dashboard（10 widget · 5 validated 情境 · 3 語言 · light/dark theme）</td>
-        <td style="padding: 12px 14px; border: 1px solid var(--border);"><strong style="color: #047857;">✅ 已可 demo</strong></td>
+      <tr>
+        <td><code class="mono">configure.md</code></td>
+        <td>設定類 (Manage)</td>
+        <td>「新分店要怎麼建」、「template 套用前該檢查什麼」的思考骨架</td>
       </tr>
       <tr>
-        <td style="padding: 12px 14px; border: 1px solid var(--border); font-weight: 600;">
-          <strong>2 · Conversational Admin</strong>
-          <span style="display: block; font-size: 11px; color: var(--text-3); margin-top: 4px;">persona-driven</span>
-        </td>
-        <td style="padding: 12px 14px; border: 1px solid var(--border);">AI 用「網管顧問」語氣回應、翻譯術語、主動提醒、自動判斷該回文字 / dashboard / 動手 <a href="#persona">（§02c）</a></td>
-        <td style="padding: 12px 14px; border: 1px solid var(--border);"><strong style="color: #b45309;">🔜 等 RD 改 SKILL.md</strong></td>
+        <td><code class="mono">troubleshoot.md</code></td>
+        <td>診斷類</td>
+        <td>「連不上時要按哪個順序問問題」的「詢問三定問」框架</td>
       </tr>
       <tr>
-        <td style="padding: 12px 14px; border: 1px solid var(--border); font-weight: 600;">
-          <strong>3 · Action Operator</strong>
-          <span style="display: block; font-size: 11px; color: var(--text-3); margin-top: 4px;">現場動手</span>
-        </td>
-        <td style="padding: 12px 14px; border: 1px solid var(--border);">觸發實體動作：閃 LED 定位設備、踢可疑 client、cable diagnostics、遠端 reboot</td>
-        <td style="padding: 12px 14px; border: 1px solid var(--border);"><strong style="color: #b91c1c;">🔴 卡 RD P0 ops</strong> <a href="docs/rd-priorities.md">（rd-priorities）</a></td>
+        <td><code class="mono">monitor.md</code></td>
+        <td>監控類</td>
+        <td>「健檢要看哪幾個維度」、「容量 plan 要看什麼 metric」的維度框架</td>
       </tr>
     </tbody>
   </table>
+
+  <h4>關鍵設計：mental model 不是 script</h4>
+  <p>絕對不寫 「first do X, then Y, finally Z」— 這會凍結 AI 判斷力 = 把 AI 變成 stored procedure = 殺掉 wedge。寫的是「思考骨架」「診斷維度」「該問的問題」— AI 自己依情境拼出步驟。</p>
+
+  <div class="pull">
+    <span class="badge">舉例 · troubleshoot.md 該長什麼樣</span>
+    <strong>❌ 不寫</strong>：「Step 1: 跑 <code class="mono">get_inventory</code> · Step 2: 跑 <code class="mono">subscribe_ping</code> · Step 3: ...」<br><br>
+    <strong>✅ 該寫</strong>：「Wifi 連不上的三定問 — (1) 是 client 還是 AP 出問題？看 <code class="mono">client_list</code> + <code class="mono">stat</code> · (2) 訊號還是設定？看 <code class="mono">channel_util</code> + <code class="mono">ssid_profile</code> · (3) 即時的還是長期的？看 <code class="mono">ping</code> + <code class="mono">throughput</code> 趨勢」
   </div>
 
-  <h3 style="margin-top: 36px;">誰用 / 在哪用</h3>
-  <p>主要使用者：</p>
+  <h4>狀態</h4>
   <ul>
-    <li><strong>SI / Partner / 顧問</strong> — 代 SMB 客戶問問題、生報告、做網路審查</li>
-    <li><strong>技術背景的 SMB IT</strong> — 自己會用 AI coding 工具的客戶（少數，但增長中）</li>
-    <li><strong>EnGenius 內部 booth team</strong> — 展會 demo 用</li>
-    <li><strong>未來：EnGenius 內部 support / FAE</strong> — 加速處理客戶 ticket</li>
+    <li><span class="warn">🔜</span> 下個 session 起跑（configure.md 跟 monitor.md 先做，troubleshoot.md 等 RD 補 dolphin URL 後再寫）</li>
   </ul>
 
-  <div class="tl-rel-card" style="margin-top: 16px; background: var(--surface-2);">
-    <strong>SMB 終端客戶（餐廳老闆 / 診所經理 / 學校主任）不直接打字</strong>——他們透過 SI / 自家技術 IT / EnGenius 支援接觸到結果。但 persona §1 的 SMB-friendly voice 確保不管誰用，輸出語氣對 SMB 客戶友善。
-  </div>
-
-  <h3 style="margin-top: 36px;">基本使用流程</h3>
-  <ol style="margin-top: 12px;">
-    <li>SI / partner 在自己電腦開 <strong>Claude Code</strong>（CLI / Desktop / VS Code 擴充）</li>
-    <li>確保 <code>api-skills/</code>（RD 給的 EnGenius Cloud skill 套件）+ <code>dashboard-builder/skill/</code> 已安裝，環境變數 <code>MANAGE_SYSTEM_URL</code> + <code>API_KEY</code> 設好</li>
-    <li>跟 Claude 對話：「我們客戶今天網路怎樣？」「幫我看 X 客戶 7F 的 wifi 為什麼慢」「列一張到期 license 給我看」</li>
-    <li>Claude 依 <a href="#persona">persona 升級條件</a> 決定輸出形式：
-      <ul style="margin-top: 6px;">
-        <li>單一答案 → <strong>文字回應</strong>（直接 paste 回給客戶）</li>
-        <li>多維度 / 跨 org / 趨勢 → <strong>生 dashboard HTML</strong>（分享連結或截圖）</li>
-        <li>明確指令 → <strong>動手操作</strong>（先確認再動）</li>
-      </ul>
-    </li>
-    <li>產出傳遞給客戶 — 文字直接複製、dashboard HTML 分享連結或截圖、操作後回報結果</li>
-  </ol>
-
-  <h3 style="margin-top: 36px;">為什麼選「LLM coding 環境」而不是 cloud GUI 嵌入</h3>
+  <h3 id="layer-memory" style="margin-top: 40px;">§03.5 · memory/&lt;org-id&gt;.md · 記得跟你講過什麼 <span class="warn" style="font-size:13px; font-weight:600;">🔜 post-launch</span></h3>
+  <p><strong>將寫什麼</strong>：跨 session 的記憶 — per-org-id namespace 的記事本。內容可能包含：</p>
   <ul>
-    <li><strong>更新成本低</strong> — 改 persona / 加新 skill 不用動 cloud frontend 發版</li>
-    <li><strong>能力更大</strong> — Claude Code 可呼叫 shell / 多 skill 組合 / 寫檔，cloud GUI chatbox 只能讀</li>
-    <li><strong>定位差異化</strong> — 跟其他廠商的「cloud GUI + ChatGPT 翻譯」明顯不同，wedge 更深</li>
-    <li><strong>SI / partner 友善</strong> — 他們本來就在用 Claude Code 處理多家客戶，這個工具直接進工作流</li>
+    <li><strong>Open follow-ups</strong> — 「上次說要重啟 AP-7F 但客戶說沒空、約這週」</li>
+    <li><strong>客戶 quirks</strong> — 「這個 org 的 wifi-3 SSID 設定特別、不能套用標準 template」</li>
+    <li><strong>互動脈絡</strong> — 「上次跟你討論過 license 續約策略，結論是分批續」</li>
+    <li><strong>已知問題</strong> — 「2F switch 那個 port 5 一直 flapping，已通報但 RD 還沒修」</li>
   </ul>
-  <p>未來 Line 1（cloud-embedded chatbox）路線可以另外推進，但這次 focus 是 Line 2（LLM 環境工具集）。兩條路不衝突，但目前不混。</p>
-</section>
 
-<section id="wedge">
-  <h2><span class="num-tag">01</span>兩個無法妥協的原則</h2>
-  <div class="pull">
-    <span class="badge">原則 1</span>
-    資料一定真實——所有 dashboard 數字必須來自 staging API，不可硬編。<br>
-    違反 → 觀眾識破是 mockup。
-  </div>
-  <div class="pull">
-    <span class="badge">原則 2</span>
-    組裝一定即時——dashboard 結構在對話中才決定，不可全套打包成 skill 預設出來。<br>
-    違反 → 變成普通 SaaS 預設 view，wedge 故事死。
+  <h4>為什麼這個 layer 重要</h4>
+  <p>沒 memory = AI 永遠是「一次性問答工具」。有 memory = AI 是「長期合作的同事」— 你不用每次重講上下文。<strong>這是「colleague 而不是 tool」定位的最後一塊拼圖。</strong></p>
+
+  <h4>為什麼還沒設計</h4>
+  <p>4 種可能類型（project / conversation / customer / user memory）都有道理。SI 場景最需要 customer memory，但具體該 namespace 怎麼分、TTL 多長、privacy boundary 怎麼劃 — 沒有真實使用就會猜錯。<strong>等真實 SI 用 1-2 個月、收集踩坑後再實作</strong>，避免閉門造車。</p>
+
+  <div class="pull" style="margin-top: 24px;">
+    <span class="badge">總結 · 為什麼這 5 個 layer 是「colleague 而不是 tool」的關鍵</span>
+    <strong>Persona</strong> 給 AI <em>voice</em>、<strong>Design</strong> 給 AI <em>視覺品味</em>、<strong>House-rules</strong> 給 AI <em>專業立場</em>、<strong>Playbook</strong> 給 AI <em>思考骨架</em>、<strong>Memory</strong> 給 AI <em>跨 session 記憶</em>。每一層都對應一個「真實同事」的特質。少任何一層，AI 就退化成一個會打 API 的 chatbot。
   </div>
 </section>
 
-<section id="layers">
-  <h2><span class="num-tag">02</span>5 層架構</h2>
-  <p class="section-lede">由上而下：人 → AI → Skills → Cloud → 觀眾看到的東西。Claude Code 在對話中編排所有層。</p>
-
-  <div class="arch-diagram">
-    <div class="layer l5">
-      <div class="lvl">LAYER<b>L5</b></div>
-      <div class="what">
-        <div class="title">操作員 + 訪客</div>
-        <div class="desc">展會 booth presenter 在現場用自然語言跟 Claude Code 對話，訪客在旁邊看 dashboard 慢慢長出來。</div>
-      </div>
-      <div class="owner">你 booth team<span class="pill">人</span></div>
-    </div>
-    <div class="arrow">↓</div>
-
-    <div class="layer l4">
-      <div class="lvl">LAYER<b>L4</b></div>
-      <div class="what">
-        <div class="title">Claude Code（orchestrator）</div>
-        <div class="desc">從對話讀意圖 → 選哪些 data skill 要呼叫 → 寫 dashboard spec JSON → 呼叫 dashboard-builder.compose → append manifest log entry。</div>
-      </div>
-      <div class="owner">Anthropic runtime<span class="pill">AI</span></div>
-    </div>
-    <div class="arrow">↓</div>
-
-    <div class="layer l3">
-      <div class="lvl">LAYER<b>L3</b></div>
-      <div class="what">
-        <div class="title">Skills 層</div>
-        <div class="desc">
-          <strong>13 個 data skill</strong>（init-orgs / hvs / networks / org-devices / org-licenses / team-members / org-backups / network-groups / network-templates / engenius-env + 3 個 troubleshoot 🔴）<br>
-          <span class="hl-accent">+ 1 個 dashboard-builder skill</span>（theme/ + widgets/ + compose.py + runtime.js）
-        </div>
-      </div>
-      <div class="owner">RD<span class="pill">code</span></div>
-    </div>
-    <div class="arrow">↓</div>
-
-    <div class="layer l2">
-      <div class="lvl">LAYER<b>L2</b></div>
-      <div class="what">
-        <div class="title">EnGenius Cloud</div>
-        <div class="desc">falcon.staging.engenius.ai · Dolphin 平台 · Cloud GUI · 真實資料源</div>
-      </div>
-      <div class="owner">RD<span class="pill">backend</span></div>
-    </div>
-
-    <div class="arrow" style="margin-top: 12px;">────</div>
-
-    <div class="layer l1">
-      <div class="lvl">LAYER<b>L1</b></div>
-      <div class="what">
-        <div class="title">Browser + Filesystem（觀眾看到的東西）</div>
-        <div class="desc">
-          <code>prototype/live-data/*.json</code> ← Claude 寫、dashboard 讀<br>
-          <code>dashboard-builder/canvas-name.html</code> ← Claude compose 出來<br>
-          <code>prototype/generated-log.html</code> ← 每生一張，這裡跳一條 log<br>
-          static HTTP server + 瀏覽器 + 內建 setInterval 5s poll
-        </div>
-      </div>
-      <div class="owner">artifacts<span class="pill">filesystem</span></div>
-    </div>
-  </div>
-</section>
-
-<section id="three-layers">
-  <h2><span class="num-tag">02b</span>3 層分工 · Playbook · Orchestration · Primitives</h2>
+<section id="how-ai-works">
+  <h2><span class="num-tag">§04</span>AI 怎麼運作 · 即時組裝、不預寫</h2>
   <p class="section-lede">
-    把 5 層 stack 換一個角度看：依「<strong>誰擁有 / 誰決定 / 誰被組合</strong>」分成 3 層職責。<span class="hl-accent">Claude Code 是中間的 Orchestration 層，本身就是 agent</span>——我們不需要在它之上再蓋「scenario skill」層，那會凍結用法、殺掉 wedge。
+    這是整套產品最重要的設計決策 — <strong>所有 dashboard 都不是事先寫好的</strong>。AI 在收到使用者問題的當下，依情境從 skills 拉資料、自己判斷該回什麼形式、即時組裝出對應的視覺。
   </p>
 
-  <div class="three-layers">
-
-    <div class="tl-box playbook">
-      <div class="tl-hdr">
-        <div class="tl-title">📚 Playbook</div>
-        <div class="tl-role">read-only · 給 Claude 看</div>
-      </div>
-      <div class="tl-tagline">
-        <strong>知識層</strong>——非執行體，純粹是 markdown 文件。Claude 在對話中讀這些文件，學會「該怎麼想」「該選哪個 widget」「常見情境長怎樣」。改 playbook = 改 Claude 行為，不用改程式碼。
-      </div>
-      <div class="tl-item" style="background: rgba(251,191,36,0.10); border-color: rgba(251,191,36,0.3); margin-bottom: 8px;">
-        <div class="key" style="color: #d97706;">⭐ network-admin-persona.md <span style="font-weight: 400; color: var(--text-3); font-size: 11px; margin-left: 8px;">每次 skill 觸發都載入</span></div>
-        <div class="val">AI 網管人格 + 升級條件矩陣（text / dashboard / action）+ SMB vertical 適應 + 詞彙翻譯表。<strong>詳見 <a href="#persona">§02c</a></strong>。</div>
-      </div>
-      <div class="tl-item" style="background: rgba(251,191,36,0.10); border-color: rgba(251,191,36,0.3); margin-bottom: 12px;">
-        <div class="key" style="color: #d97706;">⭐ design.md <span style="font-weight: 400; color: var(--text-3); font-size: 11px; margin-left: 8px;">dashboard-builder 觸發時載入</span></div>
-        <div class="val">Dashboard 視覺設計守則 · 3 層架構（Frame / Tokens / Body）· 9 條 hard prohibitions · raw_html escape hatch · filename convention。<strong>詳見 <a href="#design-system">§03f</a></strong>。</div>
-      </div>
-      <div class="tl-grid">
-        <div class="tl-item">
-          <div class="key">widget reference docs</div>
-          <div class="val">10 份 · 每個 widget 的 schema / 何時用 / 範例</div>
-        </div>
-        <div class="tl-item">
-          <div class="key">spec examples</div>
-          <div class="val">5 份 · 已驗證的 dashboard spec JSON 模板</div>
-        </div>
-        <div class="tl-item">
-          <div class="key">scenario candidates</div>
-          <div class="val">10 個故事候選 + 可行性分級</div>
-        </div>
-        <div class="tl-item">
-          <div class="key">booth cheat sheet</div>
-          <div class="val">展會主秀腳本 + fallback 戲</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="tl-arrow">informs (Claude 讀文件)</div>
-
-    <div class="tl-box orchestration">
-      <div class="tl-hdr">
-        <div class="tl-title">🧠 Orchestration</div>
-        <div class="tl-role">decides · 即時組裝</div>
-      </div>
-      <div class="tl-tagline">
-        <strong>決策層</strong>——Claude Code 本身。每次訪客問問題，Claude 在對話中即時：理解意圖 → 選哪些 skill 要呼叫 → 拼 spec JSON → 呼叫 compose。<strong>不存在「scenario skill」這種東西</strong>，因為 Claude 就是那一層。
-      </div>
-      <div class="tl-grid">
-        <div class="tl-item">
-          <div class="key">read intent</div>
-          <div class="val">從對話讀出訪客真正關心什麼</div>
-        </div>
-        <div class="tl-item">
-          <div class="key">pick data skills</div>
-          <div class="val">從 13 個 RD skill 挑要呼叫的 op</div>
-        </div>
-        <div class="tl-item">
-          <div class="key">compose spec</div>
-          <div class="val">寫 ~150 行 JSON 描述 dashboard 形狀</div>
-        </div>
-        <div class="tl-item">
-          <div class="key">invoke + log</div>
-          <div class="val">呼叫 compose.py + append manifest</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="tl-arrow">calls (執行 skill / compose)</div>
-
-    <div class="tl-box primitives">
-      <div class="tl-hdr">
-        <div class="tl-title">🔧 Primitives</div>
-        <div class="tl-role">RD-owned · executable</div>
-      </div>
-      <div class="tl-tagline">
-        <strong>原料層</strong>——可執行的零件。每個 primitive 自己不知道「會被組成什麼 dashboard」，只負責「做好自己這一件事」。改 primitive 不需要管 Orchestration / Playbook。
-      </div>
-
-      <h4 style="margin: 4px 0 12px; font-size: 13px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em;">兩種 Primitive</h4>
-
-      <div class="primitives-split">
-        <div class="prim-card">
-          <div class="prim-card-title">A · 資料來源（撈雲端）</div>
-          <div class="prim-card-desc">把 EnGenius Cloud 的 HTTP API 包裝成 Claude 能呼叫的形式。<strong>三層階層</strong>：</div>
-          <div class="prim-hierarchy">
-            <div class="prim-h-row prim-h-skill">
-              <span class="prim-h-num">①</span>
-              <span class="prim-h-label">Skill</span>
-              <span class="prim-h-count">13 個</span>
-              <span class="prim-h-desc">業務邊界 · e.g. <code>org-devices</code></span>
-            </div>
-            <div class="prim-h-arrow">contains</div>
-            <div class="prim-h-row prim-h-op">
-              <span class="prim-h-num">②</span>
-              <span class="prim-h-label">Operation</span>
-              <span class="prim-h-count">~46 可執行 + 47 規劃中</span>
-              <span class="prim-h-desc">單一動作 · e.g. <code>get_inventory</code></span>
-            </div>
-            <div class="prim-h-arrow">wraps</div>
-            <div class="prim-h-row prim-h-api">
-              <span class="prim-h-num">③</span>
-              <span class="prim-h-label">Cloud API endpoint</span>
-              <span class="prim-h-count">真實 HTTP</span>
-              <span class="prim-h-desc"><code>GET /v2/orgs/{orgId}/inventory</code></span>
-            </div>
-          </div>
-          <div class="prim-example">
-            <strong>具體例</strong>：Claude 想撈設備清單 → 呼叫 skill <code>org-devices</code> 的 op <code>get_inventory</code> → skill 內部打 <code>GET /v2/orgs/.../inventory</code> 到 falcon.staging.engenius.ai → 回傳 JSON。Claude 不需要直接認識 HTTP endpoint，只需要知道有 op 可以叫。
-          </div>
-          <div class="prim-skills-list">
-            <div class="prim-skills-list-label">13 個 skill 各自包多少 op（粗估）：</div>
-            <div class="prim-skills-grid">
-              <span class="prim-skill-tag">init-orgs · 2</span>
-              <span class="prim-skill-tag">hvs · 1</span>
-              <span class="prim-skill-tag">networks · 8</span>
-              <span class="prim-skill-tag">org-devices · 9</span>
-              <span class="prim-skill-tag">org-licenses · 6</span>
-              <span class="prim-skill-tag">team-members · 5</span>
-              <span class="prim-skill-tag">org-backups · 5</span>
-              <span class="prim-skill-tag">org-network-groups · 4</span>
-              <span class="prim-skill-tag">org-network-templates · 6</span>
-              <span class="prim-skill-tag">engenius-env · 1</span>
-              <span class="prim-skill-tag prim-skill-tag-blocked">network-ap-troubleshoot · 25 🔴</span>
-              <span class="prim-skill-tag prim-skill-tag-blocked">network-gateway-troubleshoot · 15 🔴</span>
-              <span class="prim-skill-tag prim-skill-tag-blocked">network-switch-troubleshoot · 7 🔴</span>
-            </div>
-            <div class="prim-skills-list-note">🔴 = SKILL.md 規格已寫好但缺 <code>scripts/</code> 實作，目前不可呼叫。詳見 <a href="docs/rd-priorities.md">rd-priorities.md</a>。</div>
-          </div>
-        </div>
-
-        <div class="prim-card">
-          <div class="prim-card-title">B · 渲染引擎（出 dashboard）</div>
-          <div class="prim-card-desc">把 Claude 寫的 spec JSON + 撈到的 data，合成成可互動的 HTML。</div>
-          <div class="tl-grid" style="margin-top: 12px;">
-            <div class="tl-item">
-              <div class="key">dashboard-builder skill</div>
-              <div class="val">1 個（本 session 新增的）。負責整套 HTML 合成。</div>
-            </div>
-            <div class="tl-item">
-              <div class="key">compose.py</div>
-              <div class="val">入口 script · spec JSON → 自包含 HTML</div>
-            </div>
-            <div class="tl-item">
-              <div class="key">10 個 widget</div>
-              <div class="val">alert / kpi_grid / table / bar_list / donut / gauge / chip_strip / topology_tree / timeline / heatmap</div>
-            </div>
-            <div class="tl-item">
-              <div class="key">theme tokens + base.css</div>
-              <div class="val">設計變數 · 一改全 dashboard 升級</div>
-            </div>
-            <div class="tl-item">
-              <div class="key">runtime.js</div>
-              <div class="val">5 秒 polling + 跨 widget event bus</div>
-            </div>
-            <div class="tl-item">
-              <div class="key">references/*.md</div>
-              <div class="val">widget 規格文件（給 Claude 看）</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
+  <div class="pull" style="border-left-color: var(--cyan);">
+    <span class="badge" style="color: var(--cyan);">核心 punch line</span>
+    沒有預先做好的 dashboard 模板。每次使用者問問題，AI 都是<strong>從 13 個 skill 即時拼出當下最該呈現的資訊</strong> — 同樣的問題在不同情境下會產出完全不同的 output。
   </div>
 
-  <div class="tl-relationships">
-    <h4>3 層之間的關係</h4>
-    <div class="tl-rel-grid">
-      <div class="tl-rel-card">
-        <strong>Playbook ➡ Orchestration</strong>
-        Claude 啟動對話時讀 playbook（widget docs / spec examples / scenario candidates），知道「能用什麼 / 過去怎麼用」。改 markdown 就能微調 Claude 行為。
-      </div>
-      <div class="tl-rel-card">
-        <strong>Orchestration ➡ Primitives</strong>
-        Claude 用 shell 呼叫 RD data skill 拿 JSON、寫 spec、呼叫 compose 出 HTML。Primitives 不知道是誰呼叫它的。
-      </div>
-      <div class="tl-rel-card">
-        <strong>Primitives ⇆ Primitives</strong>
-        各 primitive <em>互不相識</em>——data skill 不知道 widget 存在、widget 不知道 cloud API 存在。Theme token 是唯一跨 widget 的耦合（且是 read-only）。
-      </div>
-    </div>
-  </div>
+  <h3>三種 output 形式 · AI 自己挑</h3>
+  <p>依 persona.md 的「升級條件矩陣」，AI 在每次回應前都會問自己：</p>
 
-  <h3 style="margin-top: 28px;">為什麼分這 3 層 vs 不分</h3>
-  <p>有些 SaaS 會把所有業務情境包成「scenario skill」（例如 <code>org-health-overview</code> = 撈 5 個 API + 預設 view）。我們<strong>故意不做這層</strong>，因為：</p>
-  <ol>
-    <li><strong>觀眾識破</strong>——「預設好的 view」跟現有 cloud GUI 沒兩樣，wedge 故事死。</li>
-    <li><strong>加新情境成本高</strong>——每加一個情境就要寫一個 scenario skill + 部署。</li>
-    <li><strong>Claude 已經很會了</strong>——對話 + playbook docs 足以讓它即時組合，不需要寫死。</li>
-  </ol>
-  <p>反過來說，如果情境需要「<strong>確定性</strong>」（同樣的問題每次出來完全相同的 dashboard），就退化為「直接 compose 既有 spec」——但這應該是<em>例外</em>，不是<em>常態</em>。</p>
-</section>
-
-<section id="persona">
-  <h2><span class="num-tag">02c</span>AI 網管人格層 · Persona</h2>
-  <p class="section-lede">
-    Persona = Claude 的「<strong>voice + 判斷規範</strong>」。讓所有 skill 的回應統一語氣、自動選對輸出形式。
-    這是 wedge 故事從「<em>AI 動態生 dashboard</em>」升級到「<strong>你的專屬 AI 網管，會自己判斷要文字回 / 開 dashboard / 動手操作</strong>」的關鍵層。
-  </p>
-
-  <div class="pull" style="background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.3);">
-    <span class="badge" style="background: #10b981; color: white;">✅ 已實測通過</span>
-    在 RD 本機 api-skills/ 安裝 + 12 個 SKILL.md 加 persona reference 後，Claude 真的會：載入 persona、套用 voice、識別 dashboard 升級訊號、誠實承認 API 限制、主動建議下一步。<br>
-    <strong>完整測試紀錄 + 對話 quote + SKILL.md 措辭 3 版迭代</strong>見 <a href="docs/persona-test-results.md">persona-test-results.md ↗</a>
-  </div>
-
-  <div class="pull" style="background: rgba(251,191,36,0.08); border-color: rgba(251,191,36,0.3);">
-    <span class="badge" style="background: #fbbf24; color: #1a1a1a;">為什麼這層必要</span>
-    沒有 persona，Claude 回客戶話會是「<code>3 台 AP offline</code>」——SMB 客戶（餐廳老闆 / 診所經理）聽不懂。<br>
-    有了 persona，同一份 API 結果變成「廚房那台 AP 從 14:23 開始失聯，可能是斷電。要我幫你查嗎？」——直接拉開 wedge 跟其他「LLM + API」工具的差距。
-  </div>
-
-  <h3 style="margin-top: 32px;">五層知識架構 · 2 ready + 3 未來規劃</h3>
-  <p>Persona 不是孤立的一份文件——它是「給 Claude 的知識體系」的第 1 層。完整知識架構共 5 層（持久化的 Playbook 文件，跟 §02 執行架構是不同概念）：</p>
-
-  <div class="tl-grid" style="margin-top: 16px;">
-    <div class="tl-item" style="background: rgba(16,185,129,0.06); border-color: rgba(16,185,129,0.3);">
-      <div class="key" style="color: #047857;">✅ ① <a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/dashboard-builder/skill/references/network-admin-persona.md" target="_blank" style="color: #047857; text-decoration: underline;">persona.md ↗</a> <span style="font-weight: 400; font-size: 10px; color: var(--text-3); margin-left: 6px;">已 commit · 358 行 · 點擊閱讀</span></div>
-      <div class="val"><strong>Voice + 輸出形式判斷</strong>。Claude 每次被任何 skill 觸發都載入。4 條 voice 原則、15 個詞彙翻譯、6 個 SMB vertical 適應、6×3 升級矩陣（text / dashboard / action）、3 種輸出模板。</div>
-    </div>
-    <div class="tl-item" style="background: rgba(16,185,129,0.06); border-color: rgba(16,185,129,0.3);">
-      <div class="key" style="color: #047857;">✅ ② <a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/dashboard-builder/skill/references/design.md" target="_blank" style="color: #047857; text-decoration: underline;">design.md ↗</a> <span style="font-weight: 400; font-size: 10px; color: var(--text-3); margin-left: 6px;">已 commit · 341 行 · v0.2 新增</span></div>
-      <div class="val"><strong>Dashboard 視覺設計守則</strong>。Claude 觸發 dashboard-builder skill 時載入。3 層架構（Frame / Tokens / Body）、9 條 🚫 hard prohibitions、raw_html escape hatch 規則、filename convention、quality bar。<strong>詳見 <a href="#design-system">§03f Design System</a></strong>。</div>
-    </div>
-    <div class="tl-item">
-      <div class="key">🔜 ③ house-rules.md <span style="font-weight: 400; font-size: 10px; color: var(--text-3); margin-left: 6px;">未來 P2 · ~120 行</span></div>
-      <div class="val"><strong>EnGenius 品牌觀點</strong>。HVS 分數解讀區間、永遠不推薦的反 pattern、平台特有 gotcha（例：cloud show offline 但現場正常 = cloud-agent 沒同步）。需 RD + 業務 + PMM 共寫。</div>
-    </div>
-    <div class="tl-item">
-      <div class="key">🔜 ④ playbooks/{configure,troubleshoot,monitor}.md <span style="font-weight: 400; font-size: 10px; color: var(--text-3); margin-left: 6px;">下個 session 設計</span></div>
-      <div class="val"><strong>任務型 mental model · 條件式載入</strong>。寫成思考骨架（診斷維度 / 詢問三定問）而非 script。例：troubleshoot.md 教 AI 把問題拆成 client side / radio side / uplink side 3 層思考。不是 step-by-step 腳本（那會凍結 AI 判斷 = 蓋 scenario skill = 殺 wedge）。</div>
-    </div>
-    <div class="tl-item">
-      <div class="key">🔜 ⑤ memory/&lt;org-id&gt;.md <span style="font-weight: 400; font-size: 10px; color: var(--text-3); margin-left: 6px;">post-launch · 等真實 SI 使用後再設計</span></div>
-      <div class="val"><strong>跨 session 長期記憶 · per-org namespace</strong>。把「一次性 AI 工具」升級成「長期管你網路的 AI 網管朋友」。內容：open follow-ups、客戶 quirks、recent observations。3 個設計難題：誰擁有 / 怎麼避免 stale 毒化判斷 / 多客戶切換。等 SI 真實用 1-2 個月後再實作，避免猜錯介面。</div>
-    </div>
-  </div>
-
-  <div class="tl-rel-card" style="margin-top: 18px; background: var(--surface-2);">
-    <strong>為什麼不把 troubleshooting 寫死成「網管百科」？</strong>
-    Claude 訓練資料已含一般網管知識；EnGenius 產品細節在 Help Center / Gitbook 才是 single source of truth，但那是另一個系統，<strong>目前不在本專案 scope</strong>。若未來要讓 Claude 能查 EnGenius 內部文件，需要單獨打通 RAG 整合（屬於 future work）。重點是：硬抄到 skill ref → 兩份 doc drift；token 成本高；過度約束會殺掉「即時判斷」的 wedge。Layer ④ playbooks 解決的是不同問題（mental model 而非 reference）。
-  </div>
-
-  <div class="pull" style="background: rgba(59,130,246,0.06); border-color: rgba(59,130,246,0.3); margin-top: 16px;">
-    <span class="badge" style="background: #3b82f6; color: white;">不要跟 §02 「5 層架構」搞混</span>
-    §02 講的「5 層」是<strong>執行架構</strong>（人 → AI → Skills → Cloud → Filesystem 的執行流）。<br>
-    這裡講的「5 層知識架構」是<strong>給 Claude 的 Playbook 文件層次</strong>（§02b 3 層分工裡的 Playbook 那層內部分結構）。<br>
-    兩個概念正交、不衝突。
-  </div>
-
-  <h3 style="margin-top: 36px;">升級條件矩陣 · text / dashboard / action</h3>
-  <p>Persona 最核心的「智慧」就是這張表。Claude 每次回應前掃過 6 條訊號，選最符合的那一欄輸出。<strong>「AI 自己判斷該開 dashboard」比「AI 生 dashboard」更厲害一個 level</strong>——這是 wedge 故事的升級點。</p>
-
-  <div style="overflow-x: auto; margin-top: 18px;">
-  <table class="persona-matrix" style="width: 100%; border-collapse: collapse; font-size: 13px;">
+  <table class="tbl">
     <thead>
-      <tr style="background: var(--surface-2);">
-        <th style="padding: 12px 14px; text-align: left; border: 1px solid var(--border); font-weight: 600;">觸發信號</th>
-        <th style="padding: 12px 14px; text-align: left; border: 1px solid var(--border); font-weight: 600;">→ 文字回應</th>
-        <th style="padding: 12px 14px; text-align: left; border: 1px solid var(--border); font-weight: 600; background: rgba(251,191,36,0.10);">→ 開 dashboard</th>
-        <th style="padding: 12px 14px; text-align: left; border: 1px solid var(--border); font-weight: 600;">→ 動手操作</th>
+      <tr>
+        <th style="width:18%">Output 形式</th>
+        <th style="width:34%">適用情境</th>
+        <th>例子</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td style="padding: 10px 14px; border: 1px solid var(--border); font-weight: 600;">設備 / 項目數量</td>
-        <td style="padding: 10px 14px; border: 1px solid var(--border);">1-5 個</td>
-        <td style="padding: 10px 14px; border: 1px solid var(--border); background: rgba(251,191,36,0.05);">6+ 個或跨 org</td>
-        <td style="padding: 10px 14px; border: 1px solid var(--border); color: var(--text-3);">—</td>
+        <td><strong>📝 Text</strong></td>
+        <td>資料簡單、結論明確、不需要視覺對比</td>
+        <td>「今天網路怎麼樣？」→「9 個 org 全綠燈、沒事，喝杯咖啡吧 ☕」</td>
       </tr>
       <tr>
-        <td style="padding: 10px 14px; border: 1px solid var(--border); font-weight: 600;">時間維度</td>
-        <td style="padding: 10px 14px; border: 1px solid var(--border);">「現在」「剛剛」</td>
-        <td style="padding: 10px 14px; border: 1px solid var(--border); background: rgba(251,191,36,0.05);">「最近一週」「趨勢」「比較」</td>
-        <td style="padding: 10px 14px; border: 1px solid var(--border); color: var(--text-3);">—</td>
+        <td><strong>📊 Dashboard</strong></td>
+        <td>資料多面向、需要對比、user 要 review 後決定</td>
+        <td>「我管的 5 個 org 健康狀態？」→ 即時組 KPI grid + alert timeline + offline 設備列表</td>
       </tr>
       <tr>
-        <td style="padding: 10px 14px; border: 1px solid var(--border); font-weight: 600;">問題形式</td>
-        <td style="padding: 10px 14px; border: 1px solid var(--border);">單一答案 / yes-no / 解釋為什麼</td>
-        <td style="padding: 10px 14px; border: 1px solid var(--border); background: rgba(251,191,36,0.05);">多維度交叉、分布、排名</td>
-        <td style="padding: 10px 14px; border: 1px solid var(--border);">明確指令</td>
-      </tr>
-      <tr>
-        <td style="padding: 10px 14px; border: 1px solid var(--border); font-weight: 600;">觀眾意圖</td>
-        <td style="padding: 10px 14px; border: 1px solid var(--border);">私下問、確認、學習</td>
-        <td style="padding: 10px 14px; border: 1px solid var(--border); background: rgba(251,191,36,0.05);">要分享、要帶到會議、要決策</td>
-        <td style="padding: 10px 14px; border: 1px solid var(--border);">「幫我關掉 / 踢掉 / 重開」</td>
-      </tr>
-      <tr>
-        <td style="padding: 10px 14px; border: 1px solid var(--border); font-weight: 600;">資料新鮮度</td>
-        <td style="padding: 10px 14px; border: 1px solid var(--border);">不在乎、cached 即可</td>
-        <td style="padding: 10px 14px; border: 1px solid var(--border); background: rgba(251,191,36,0.05);">想 live 看到變化</td>
-        <td style="padding: 10px 14px; border: 1px solid var(--border); color: var(--text-3);">—</td>
-      </tr>
-      <tr>
-        <td style="padding: 10px 14px; border: 1px solid var(--border); font-weight: 600;">使用者明示</td>
-        <td style="padding: 10px 14px; border: 1px solid var(--border);">「我只要一句話」</td>
-        <td style="padding: 10px 14px; border: 1px solid var(--border); background: rgba(251,191,36,0.05);">「拉一張圖」「show me」</td>
-        <td style="padding: 10px 14px; border: 1px solid var(--border);">動詞祈使句</td>
+        <td><strong>🔧 Action</strong></td>
+        <td>使用者明確要動手、含 confirmation gate</td>
+        <td>「都拿掉吧」→ delete_org_user_membership × N（每個 admin 角色獨立 gate）</td>
       </tr>
     </tbody>
   </table>
-  </div>
 
-  <p style="margin-top: 14px; font-size: 13px; color: var(--text-3);"><strong>Tie-break</strong>：超過 1 條訊號落在同一欄 → 走那欄。落在兩欄之間 → 走文字，並結尾問「要拉 dashboard 嗎？」</p>
+  <h3>同一個問題、不同情境 · 不同 output</h3>
+  <p>S12「早安網路健檢」就是最好的示範 — 同樣是「今天網路怎麼樣？」，AI 依資料品質自己挑：</p>
+  <ul>
+    <li><strong>全綠燈</strong> → 30 字 text reply「9 個 org 全綠燈、沒事」</li>
+    <li><strong>1-2 個 minor issue</strong> → text + alert chip（不開 dashboard）「整體 OK，但 AP-LAB-03 從昨晚 offline」</li>
+    <li><strong>多重 issue</strong> → 即時組 dashboard（KPI grid + offline timeline + license expiry timeline）</li>
+  </ul>
+  <p style="margin-top: 16px;"><strong>Dashboard 是複雜度的 escape hatch，不是預設 output。</strong></p>
+</section>
 
-  <h3 style="margin-top: 36px;">同問題、不同 voice：Before / After</h3>
-  <p>同一份 API 結果、同一個客戶問題。差別只在於 Claude 是否載入了 persona。</p>
+<section id="primitives">
+  <h2><span class="num-tag">§05</span>Skill = 最小 Primitive Unit</h2>
+  <p class="section-lede">
+    我們提供 <strong>primitives</strong>（最小可用單位），AI 自由組合。架構止於 skill 層 — 上面那些 layer（persona / design / playbook / memory / house-rules）由 AI 在 run-time 自己判斷怎麼使用。
+  </p>
 
-  <div class="tl-grid" style="margin-top: 18px;">
-    <div class="tl-item" style="background: rgba(239,68,68,0.06); border-color: rgba(239,68,68,0.25);">
-      <div class="key" style="color: #b91c1c;">❌ Before · 裸 API 風格</div>
-      <div class="val" style="font-family: var(--font-mono); font-size: 12px; line-height: 1.6;">「組織目前有 30 個 device，狀態：online=28, offline=2。Health score: 92/100。Top alerts: 1F AP signal weak (-78 dBm), Switch port 14 link down。」</div>
-      <div style="margin-top: 8px; font-size: 11px; color: var(--text-3); font-style: italic;">客戶：「我是不是要報修？」（看不懂）</div>
-    </div>
-    <div class="tl-item" style="background: rgba(16,185,129,0.06); border-color: rgba(16,185,129,0.25);">
-      <div class="key" style="color: #047857;">✅ After · Persona voice</div>
-      <div class="val" style="line-height: 1.65;">「整體還好，30 台設備裡有 2 台需要注意。一台是 1F 大廳 AP 訊號偏弱（可能是新隔的 VIP 室擋到），另一個是後場 switch 第 14 號 port 沒在用、或線鬆了。都不影響今天營業。要不要等收店後我幫你一起處理？」</div>
-      <div style="margin-top: 8px; font-size: 11px; color: var(--text-3); font-style: italic;">客戶：「好啊，那等等再說。」（理解、有掌控感）</div>
-    </div>
-  </div>
+  <h3>13 個 skill ready · 94 個 op</h3>
+  <p>Skills 是 Claude Code 的安裝單位。每個 skill 包含：</p>
+  <ul>
+    <li><code class="mono">SKILL.md</code> — op 定義（method / path / params / 描述）</li>
+    <li><code class="mono">references/&lt;op&gt;.md</code> — 每個 op 的完整 schema + 範例</li>
+    <li><code class="mono">scripts/call_api.py</code> — 5 行 delegation 到共用 framework</li>
+  </ul>
 
-  <h3 style="margin-top: 36px;">需要 RD 做什麼（&lt; 1 小時）</h3>
-  <p>Persona 機制要生效，每個既有 SKILL.md 必須 reference 它。原因：<strong>Claude Code 只在 skill 被觸發的那一刻才會去讀那個 skill 的 SKILL.md</strong>——如果 persona 不被 reference 到，就永遠看不到。</p>
+  <p>13 skills 涵蓋 5 大類：</p>
+  <table class="tbl">
+    <thead>
+      <tr><th>分類</th><th>Skills</th><th>用途</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>基礎</strong></td><td><code class="mono">engenius-env</code> · <code class="mono">init-orgs</code> · <code class="mono">hvs</code></td><td>環境切換、org 列表、健康分數</td></tr>
+      <tr><td><strong>設定管理</strong></td><td><code class="mono">networks</code> · <code class="mono">org-network-templates</code> · <code class="mono">org-network-groups</code> · <code class="mono">org-backups</code></td><td>網路設定、ACL、template、備份</td></tr>
+      <tr><td><strong>Inventory</strong></td><td><code class="mono">org-devices</code> · <code class="mono">org-licenses</code></td><td>設備、license 管理</td></tr>
+      <tr><td><strong>人員權限</strong></td><td><code class="mono">team-members</code></td><td>成員與權限</td></tr>
+      <tr><td><strong>診斷（pending）</strong></td><td><code class="mono">network-{ap,gateway,switch}-troubleshoot</code></td><td>AP / Switch / Gateway 即時診斷與操作（47 op，等 RD 補 dolphin URL）</td></tr>
+    </tbody>
+  </table>
+  <p style="margin-top: 12px;">看完整列表：<a href="../api-skills/">api-skills 總覽</a></p>
 
-  <div class="tl-grid" style="margin-top: 16px;">
-    <div class="tl-item">
-      <div class="key">A · 13 個 SKILL.md 各加 2 行</div>
-      <div class="val" style="font-family: var(--font-mono); font-size: 11px; background: var(--surface-2); padding: 10px; border-radius: 6px; margin-top: 6px; line-height: 1.5;">
-        ## Persona &amp; Output Rules<br>
-        Before responding, load `../../references/network-admin-persona.md`<br>
-        and follow its voice, output format, and escalation criteria.
-      </div>
-    </div>
-    <div class="tl-item">
-      <div class="key">B · 把 persona.md 複製進 api-skills/references/</div>
-      <div class="val">從 <code>dashboard-builder/skill/references/network-admin-persona.md</code> 直接 cp 過去。</div>
-    </div>
-    <div class="tl-item">
-      <div class="key">C · 更新 skill creation template</div>
-      <div class="val">未來新 skill 自動帶 persona reference，不會漏。</div>
-    </div>
-    <div class="tl-item">
-      <div class="key">D · api-skills/CLAUDE.md 加 reference（雙保險）</div>
-      <div class="val">user 在 api-skills repo 工作時 auto-load。</div>
-    </div>
-  </div>
+  <h3>OpenAPI 公開 · AI-agent-friendly</h3>
+  <p>我們把 13 個 skill 的 94 個 op 自動生成 <strong>OpenAPI 3.1 spec</strong>，這讓整套 skill suite 對 AI agent 特別友善：</p>
+  <ul>
+    <li><strong>AI 自動發現</strong> — 任何 LLM agent 抓 <code class="mono"><a href="../openapi.json">openapi.json</a></code> 就懂全部 API</li>
+    <li><strong>Swagger UI 互動式</strong> — <a href="../api-docs.html">api-docs.html</a> 可點按、可 Try it out、可看 schema</li>
+    <li><strong>Postman 一鍵 import</strong> — 整套 collection 自動建好</li>
+    <li><strong>各語言 SDK 自動產生</strong> — 不用人工寫 wrapper</li>
+    <li><strong>跟 code 永遠同步</strong> — script 從 SKILL.md 重生，文件不會飄掉</li>
+  </ul>
 
-  <p style="margin-top: 16px;">總工作量 <strong>&lt; 1 小時</strong>，可塞在任何 P0 troubleshoot script PR。詳細 ask + before/after 範例 + 預期 pushback 回應，見 <a href="docs/rd-meeting/05-persona-proposal.md">RD Meeting Deck #5</a>。</p>
+  <h3>未來：不只 13 個 skill</h3>
+  <p>
+    13 是現在能用的 — 但 EnGenius Cloud 的 API 還有很多沒被包成 skill。我們已經盤點完所有 API 表面（96 個 op + 還有未開發的）：
+  </p>
+  <ul>
+    <li>目前 47 個 op 完整可用（READ / MUT / DOWNLOAD）</li>
+    <li>47 個 op pending RD 提供 URL pattern</li>
+    <li>剩下還有未被組合過的 API → <strong>AI 可以基於現有 API 自己發想新 skill / 新 scenario</strong></li>
+  </ul>
+  <p>這是「<a href="../URLS.md">食材 vs 菜色</a>」的關係 — 我們提供 primitives（食材），AI 跟 PM 一起腦力激盪能煮出哪些菜色（scenario）。</p>
+</section>
 
-  <h3 style="margin-top: 36px;">為什麼 persona 不破壞 wedge 故事</h3>
-  <p>原本對外故事是「AI 動態生 dashboard」。加上 persona 後，故事升級成：</p>
-  <div class="pull" style="background: rgba(251,191,36,0.08); border-color: rgba(251,191,36,0.3);">
-    <span class="badge" style="background: #fbbf24; color: #1a1a1a;">升級後的 wedge</span>
-    <strong>「你的專屬 AI 網管 — 他會回答你、給建議、必要時生 dashboard 給你看。」</strong><br>
-    Dashboard 從<em>主角</em>變成<em>工具</em>。AI 網管才是主角——他自己判斷什麼時候用什麼形式回應。<br>
-    這比「AI 是 dashboard generator」更有人味，也更難被其他「LLM + API」工具複製。
+<section id="dashboard">
+  <h2><span class="num-tag">§06</span>Dashboard 只是 Output 之一</h2>
+  <p class="section-lede">
+    當 AI 判斷該開 dashboard 時，會用 dashboard-builder skill 即時組裝。這只是三種 output 形式之一 — 不是這套產品的主角，但是視覺最直觀的一種。
+  </p>
+
+  <h3>怎麼運作（簡介）</h3>
+  <p>AI 根據對話結果寫出一份 <strong>spec JSON</strong>（描述要哪些 section、用哪些 widget、餵什麼資料），跑 <code class="mono">compose.py</code> 即時生成自包含的 HTML — 5 個 validated 情境跨 3 個語言 + light/dark theme 共 17 張現成 canvas 可參考。</p>
+
+  <div class="pull">
+    <span class="badge">想看技術細節嗎？</span>
+    Widget library 設計、12 widget catalog、Library Growth 哲學、9 條 Design Hard Prohibitions、compose.py 完整 workflow、Demo Readiness pipeline、資料層限制 — 全部在<br>
+    <strong>→ <a href="technical.html">Dashboard Builder · Technical Deep-Dive</a></strong>
   </div>
 </section>
 
-<section id="widget">
-  <h2><span class="num-tag">03</span>什麼是「Widget」？</h2>
+<section id="scenarios">
+  <h2><span class="num-tag">§07</span>已驗證的 5 個情境</h2>
   <p class="section-lede">
-    Widget = <span class="hl-accent">可重複使用的 UI 零件</span>。把一張 dashboard 拆成幾個可組合的小積木，每個積木負責一種視覺呈現，知道怎麼讀 JSON、怎麼畫自己。換情境時不用重寫 dashboard，只要換不同零件組合。
-  </p>
-
-  <div class="anatomy">
-    <div class="visual">
-      <h4 style="margin-top: 0;">一張 dashboard 拆解</h4>
-      <div class="canvas-mock">
-        <div class="mock-block">
-          <span class="tag">alert</span>
-          <div class="title" style="color: var(--critical);">⚠ License 全面過期警示</div>
-          <div class="placeholder"></div>
-          <div class="placeholder short"></div>
-        </div>
-        <div class="mock-block">
-          <span class="tag">kpi_grid</span>
-          <div class="grid-3">
-            <div class="mini-kpi"><div class="lbl">Devices</div><div class="val">10</div></div>
-            <div class="mini-kpi"><div class="lbl">Expired</div><div class="val" style="color: var(--critical);">10</div></div>
-            <div class="mini-kpi"><div class="lbl">Networks</div><div class="val">3/10</div></div>
-          </div>
-        </div>
-        <div class="mock-block">
-          <span class="tag">table</span>
-          <div class="title">Device Fleet</div>
-          <div class="row"><span>ECW115</span><span style="margin-left:auto;color:var(--text-3);font-size:10px">New_1.3.10</span><span class="pill">expired</span></div>
-          <div class="row"><span>ECW230</span><span style="margin-left:auto;color:var(--text-3);font-size:10px">Sec_Network</span><span class="pill">expired</span></div>
-          <div class="row"><span>借Hom</span><span style="margin-left:auto;color:var(--text-3);font-size:10px">Sec_Network</span><span class="pill">expired</span></div>
-        </div>
-        <div class="mock-block">
-          <span class="tag">bar_list</span>
-          <div class="title">Composition</div>
-          <div style="display:flex;align-items:center;gap:8px;font-size:11px;margin-bottom:6px"><span style="width:50px">AP</span><div style="flex:1;height:5px;background:var(--cyan);border-radius:3px;width:90%"></div><span>9</span></div>
-          <div style="display:flex;align-items:center;gap:8px;font-size:11px"><span style="width:50px">SWITCH</span><div style="flex:1;height:5px;background:var(--warn);border-radius:3px;max-width:10%"></div><span>1</span></div>
-        </div>
-        <div class="mock-block">
-          <span class="tag">topology_tree</span>
-          <div class="title">Network Topology</div>
-          <div class="tree-row">🏢 Main_Org <span style="color:var(--text-3);font-size:10px">10 net · 10 dev</span></div>
-          <div class="tree-row indent-1">📡 Sec_Network</div>
-          <div class="tree-row indent-2">📶 ECW230</div>
-          <div class="tree-row indent-2">🔘 借Hom</div>
-        </div>
-      </div>
-      <div style="font-size: 12px; color: var(--text-3); margin-top: 12px; text-align: center;">
-        每塊橘色虛線分區 = 一個 widget。一張 dashboard 由多個 widget 疊出來。
-      </div>
-    </div>
-
-    <div class="legend">
-      <h3>6 個 widget（目前）</h3>
-      <div class="entry">
-        <span class="name">alert</span>
-        <span class="desc"><strong>警示橫條</strong>。severity 分 critical / warning / info / success。body 可寫死或用 compute function 從 JSON 算出來。</span>
-      </div>
-      <div class="entry">
-        <span class="name">kpi_grid</span>
-        <span class="desc"><strong>KPI 卡片列</strong>。支援 2-6 張卡，每張可點擊跳到另一個 widget，數字可從 JSON 路徑直接讀或用 compute function 算。</span>
-      </div>
-      <div class="entry">
-        <span class="name">table</span>
-        <span class="desc"><strong>表格</strong>。內建 filter chips、可展開 row 看 detail、可排序、可接收跨 widget 事件（topology 點 device → table 自動展開那一行）。</span>
-      </div>
-      <div class="entry">
-        <span class="name">bar_list</span>
-        <span class="desc"><strong>橫條圖</strong>。多組 bar，可以分群（type 一群、license 一群）。</span>
-      </div>
-      <div class="entry">
-        <span class="name">chip_strip</span>
-        <span class="desc"><strong>標籤條</strong>。用來秀「empty networks」「stale services」等不需要表格化的小量項目。</span>
-      </div>
-      <div class="entry">
-        <span class="name">topology_tree</span>
-        <span class="desc"><strong>樹狀圖</strong>。Org → Network → Device 階層、可展開、被 RBAC 擋的 org 會顯示 403/402 badge。</span>
-      </div>
-    </div>
-  </div>
-
-  <h3 style="margin-top: 32px;">換情境 = 換 spec JSON，不用重寫 dashboard</h3>
-  <p>同樣這 6 個 widget，可以組出完全不同的 dashboard：</p>
-  <pre><span class="comment">// 情境 A：Org 健康總覽（現有版）</span>
-{
-  <span class="key">"title"</span>: <span class="str">"Main_Org · 健康總覽"</span>,
-  <span class="key">"sections"</span>: [
-    { <span class="key">"widget"</span>: <span class="str">"alert"</span>, <span class="key">"severity"</span>: <span class="str">"critical"</span>, <span class="key">"title"</span>: <span class="str">"License 全面過期警示"</span> },
-    { <span class="key">"widget"</span>: <span class="str">"kpi_grid"</span>, <span class="key">"items"</span>: [<span class="comment">/* 4 KPIs */</span>] },
-    { <span class="key">"widget"</span>: <span class="str">"table"</span>, <span class="key">"title"</span>: <span class="str">"Device Fleet"</span>, ... },
-    { <span class="key">"widget"</span>: <span class="str">"topology_tree"</span>, <span class="key">"title"</span>: <span class="str">"Network Topology"</span> }
-  ]
-}
-
-<span class="comment">// 情境 B：離職員工權限大掃除（新情境）</span>
-{
-  <span class="key">"title"</span>: <span class="str">"Off-boarding Compliance Audit"</span>,
-  <span class="key">"sections"</span>: [
-    { <span class="key">"widget"</span>: <span class="str">"alert"</span>, <span class="key">"severity"</span>: <span class="str">"warning"</span>, <span class="key">"title"</span>: <span class="str">"5 人超過 1 年沒登入仍持有 network 權限"</span> },
-    { <span class="key">"widget"</span>: <span class="str">"kpi_grid"</span>, <span class="key">"items"</span>: [<span class="comment">/* stale users / risk accesses */</span>] },
-    { <span class="key">"widget"</span>: <span class="str">"table"</span>, <span class="key">"title"</span>: <span class="str">"Stale Members（only）"</span>, ... }
-  ]
-}</pre>
-  <p>不用碰任何 widget 程式碼，只要寫新 spec JSON → <code>compose.py</code> → 出新 dashboard。</p>
-</section>
-
-<section id="catalog">
-  <h2><span class="num-tag">03b</span>Widget Catalog · 8 份規格文件</h2>
-  <p class="section-lede">
-    每個 widget 都有專屬規格文件——說明何時用 / 何時不用 / config schema / compute function 簽名 / 範例。Claude 在對話中組 dashboard 時會讀這些文件決定用哪個 widget；RD 美化 widget 時可參考它的 contract。
-  </p>
-
-  <div class="catalog-hero">
-    <div>
-      <h3>瀏覽完整規格</h3>
-      <p>單頁 catalog viewer 含 sidebar 導覽 + markdown 即時渲染。每份文件可直接複製 raw path 給 RD 或 Claude。</p>
-    </div>
-    <a class="cta" href="widget-catalog.html">📖 開啟 Widget Catalog →</a>
-  </div>
-
-  <h3 style="margin-top: 28px;">12 個 widget 速覽</h3>
-  <p class="section-lede" style="margin-bottom: 14px;">點任一進 catalog 對應頁。⭐ = v0.2 (2026-05-17) 新增，回應 hand-roll vs compose.py 案例。</p>
-  <div class="widget-grid">
-    <a class="widget-card" href="widget-catalog.html#widget_alert">
-      <div class="icon">⚠</div>
-      <div class="info"><div class="name">alert</div><div class="desc">高優先警示橫條 · critical/warning/info/success</div></div>
-      <div class="arrow">→</div>
-    </a>
-    <a class="widget-card" href="widget-catalog.html#widget_kpi_grid">
-      <div class="icon">📊</div>
-      <div class="info"><div class="name">kpi_grid</div><div class="desc">2-6 KPI 卡片 · 可點擊跨 widget 跳轉</div></div>
-      <div class="arrow">→</div>
-    </a>
-    <a class="widget-card" href="widget-catalog.html#widget_table">
-      <div class="icon">📋</div>
-      <div class="info"><div class="name">table</div><div class="desc">表格 · filter + row 展開 + 跨 widget 事件</div></div>
-      <div class="arrow">→</div>
-    </a>
-    <a class="widget-card" href="widget-catalog.html#widget_bar_list">
-      <div class="icon">📈</div>
-      <div class="info"><div class="name">bar_list</div><div class="desc">橫條圖 · 多群分組 + severity 顏色</div></div>
-      <div class="arrow">→</div>
-    </a>
-    <a class="widget-card" href="widget-catalog.html#widget_stacked_bar_list">
-      <div class="icon">📊</div>
-      <div class="info"><div class="name">stacked_bar_list ⭐</div><div class="desc">多 segment 堆疊條 · per-row Active/Expired/Other 同條</div></div>
-      <div class="arrow">→</div>
-    </a>
-    <a class="widget-card" href="widget-catalog.html#widget_donut">
-      <div class="icon">🎯</div>
-      <div class="info"><div class="name">donut</div><div class="desc">SVG 圓環圖 · % 構成 + hover 同步</div></div>
-      <div class="arrow">→</div>
-    </a>
-    <a class="widget-card" href="widget-catalog.html#widget_gauge">
-      <div class="icon">⏲</div>
-      <div class="info"><div class="name">gauge</div><div class="desc">半圓速度計 · 對比 target + 嚴重度</div></div>
-      <div class="arrow">→</div>
-    </a>
-    <a class="widget-card" href="widget-catalog.html#widget_pivot_table">
-      <div class="icon">🔲</div>
-      <div class="info"><div class="name">pivot_table ⭐</div><div class="desc">2D 交叉矩陣 · rows × cols + 可選 heatmap + sub-value</div></div>
-      <div class="arrow">→</div>
-    </a>
-    <a class="widget-card" href="widget-catalog.html#widget_chip_strip">
-      <div class="icon">🏷</div>
-      <div class="info"><div class="name">chip_strip</div><div class="desc">標籤條 · 適合「次要清單」</div></div>
-      <div class="arrow">→</div>
-    </a>
-    <a class="widget-card" href="widget-catalog.html#widget_topology_tree">
-      <div class="icon">🌐</div>
-      <div class="info"><div class="name">topology_tree</div><div class="desc">階層樹 · org→net→device · RBAC 感知</div></div>
-      <div class="arrow">→</div>
-    </a>
-    <a class="widget-card" href="widget-catalog.html#widget_timeline">
-      <div class="icon">⏱</div>
-      <div class="info"><div class="name">timeline</div><div class="desc">時間軸 · TODAY marker + 自動 severity</div></div>
-      <div class="arrow">→</div>
-    </a>
-    <a class="widget-card" href="widget-catalog.html#widget_heatmap">
-      <div class="icon">🔥</div>
-      <div class="info"><div class="name">heatmap</div><div class="desc">2D 矩陣 · 強度 colormap + tooltip</div></div>
-      <div class="arrow">→</div>
-    </a>
-  </div>
-  <p style="margin-top: 16px; font-size: 13px; color: var(--text-3);">
-    💡 既有 widget 不夠用？走 <strong>raw_html escape hatch</strong>（design.md §3.3）— 同樣套 theme tokens、但可手寫任何 HTML。詳見 <a href="#design-system">§03f Design System</a>。
-  </p>
-</section>
-
-<section id="library-growth">
-  <h2><span class="num-tag">03b</span>Library 哲學：按需擴張，不一次蓋好</h2>
-  <p class="section-lede">
-    Widget library 不是一次盤點所有可能的視覺化、提前 build。<span class="hl-accent">每次有新情境，才從中萃取出真正用得到的 widget。</span>這樣保證每個 widget 都有 production-grade 的真實使用案例，避免「為了完整性建出沒人用的元件」。
-  </p>
-
-  <div class="growth-grid">
-    <div class="growth-card">
-      <div class="when">2026-05-15 凌晨</div>
-      <div class="what">6 widget</div>
-      <div class="detail">Org 健康總覽（S3）→ 萃取 alert / kpi_grid / table / bar_list / chip_strip / topology_tree</div>
-    </div>
-    <div class="growth-card">
-      <div class="when">2026-05-15 23:25</div>
-      <div class="what">6 widget</div>
-      <div class="detail">Off-boarding Audit（S4）→ 證明可以「不加 widget」就做新情境，純寫 spec</div>
-    </div>
-    <div class="growth-card active">
-      <div class="when">2026-05-16 00:30</div>
-      <div class="what">+ timeline = 7</div>
-      <div class="detail">License Renewal（S5）需要時間軸視覺 → 加 timeline widget（30 分鐘）</div>
-    </div>
-    <div class="growth-card active">
-      <div class="when">2026-05-16 00:50</div>
-      <div class="what">+ donut = 8</div>
-      <div class="detail">Multi-Org Governance（S2）需要「% of total」框架 → 加 donut widget（45 分鐘）</div>
-    </div>
-    <div class="growth-card active">
-      <div class="when">2026-05-16 01:14</div>
-      <div class="what">+ gauge + heatmap = 10</div>
-      <div class="detail">Cross-Org Reallocation（S7）需要「fleet 健康度」+「2D 構成」→ 加 gauge（速度計）+ heatmap（矩陣）兩個 widget</div>
-    </div>
-    <div class="growth-card">
-      <div class="when">未來</div>
-      <div class="what">candidates</div>
-      <div class="detail">sparkline / map — 等下個情境需要才做。<strong>line_chart</strong> 等資料層補 history API（見下方限制）。</div>
-    </div>
-  </div>
-
-  <h3>判斷「該不該加 widget」的 3 個問題</h3>
-  <ol>
-    <li><strong>現有 widget 真的做不到嗎？</strong>很多時候 bar_list / table + compute_fn 就能解，不用新 widget。</li>
-    <li><strong>會被重用嗎？</strong>如果只有這次 demo 用到，建議用一次性 HTML 嵌入而非變 widget。</li>
-    <li><strong>有沒有設計 token 還沒覆蓋的視覺？</strong>如果有，先補 token、再寫 widget，避免硬碼顏色。</li>
-  </ol>
-
-  <p style="margin-top: 16px;"><strong>Library 不是越大越好</strong>——8 個經過真實使用、彼此互不重疊的 widget，比 30 個「以防萬一」的 widget 對 Claude 更友善：選擇少 → 不會選錯 → 視覺更一致。</p>
-</section>
-
-<section id="gallery">
-  <h2><span class="num-tag">03c</span>4 張範例 Gallery · 同一套 widget、不同故事</h2>
-  <p class="section-lede">
-    4 張 dashboard 用同一套 widget 套組（最多 8 種）+ 不同 spec JSON 組出來，視覺一致、互動一致、但故事完全不同。<span class="hl-accent">這就是 widget reuse 的證據。</span>
+    跑真實 EnGenius Cloud staging API 的 dashboard 範例。每個情境跨 3 個語言（zh-TW / EN / JA）+ light/dark theme，共 17 張 canvas。腦力激盪中還有 S8-S12 + N/T/M 新菜色約 20 個情境（見 <a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/dashboard-builder/docs/scenario-candidates.md">scenario-candidates.md</a>）。
   </p>
 
   <div class="gallery">
-    <div class="gallery-item">
-      <a class="gallery-card" href="org-health.html">
-      <div class="meta">
-        <h3>S3 · Org 健康總覽</h3>
-        <div class="sub">設備、license、人員 + 跨 org 樹狀結構，給 IT manager 看「整體健康」</div>
-        <div class="ops">ops: get_user_orgs + get_hierarchy_views + get_inventory + get_licenses + get_org_memberships_overall</div>
-        <div class="widgets">
-          <span class="tag">alert</span><span class="tag">kpi_grid</span><span class="tag">table×2</span><span class="tag">bar_list</span><span class="tag">chip_strip</span><span class="tag">topology_tree</span>
-        </div>
+    <a class="gallery-card" href="org-health.html">
+      <div class="gallery-thumb"><img src="assets/shots/org-health.png" alt="Org Health"></div>
+      <div class="gallery-meta">
+        <div class="gallery-title">S3 · Org 健康總覽</div>
+        <div class="gallery-sub">HVS + inventory + alert · 主秀</div>
       </div>
-      <div class="shot"><img src="assets/shots/org-health.png" alt="Org Health"><span class="open-hint">開啟 →</span></div>
     </a>
-      <div class="locale-row">
-        <span class="locales-label">view in</span>
-        <a class="locale-pill" href="org-health.html">中</a>
-        <a class="locale-pill" href="org-health-en.html">EN</a>
-        <a class="locale-pill" href="org-health-ja.html">日</a>
+    <a class="gallery-card" href="offboarding-audit.html">
+      <div class="gallery-thumb"><img src="assets/shots/offboarding-audit.png" alt="Offboarding"></div>
+      <div class="gallery-meta">
+        <div class="gallery-title">S4 · Off-boarding Audit</div>
+        <div class="gallery-sub">SOC2 視角離職權限稽核</div>
       </div>
-    </div>
-
-    <div class="gallery-item">
-      <a class="gallery-card" href="offboarding-audit.html">
-      <div class="meta">
-        <h3>S4 · Off-boarding Compliance Audit</h3>
-        <div class="sub">SOC2/ISO27001 視角 · 找出 1+ 年沒登入仍持有 network 權限的帳號</div>
-        <div class="ops">ops: get_org_memberships_overall</div>
-        <div class="widgets">
-          <span class="tag">alert</span><span class="tag">kpi_grid</span><span class="tag">table×2</span><span class="tag">chip_strip</span>
-        </div>
-      </div>
-      <div class="shot"><img src="assets/shots/offboarding-audit.png" alt="Off-boarding Audit"><span class="open-hint">開啟 →</span></div>
     </a>
-      <div class="locale-row">
-        <span class="locales-label">view in</span>
-        <a class="locale-pill" href="offboarding-audit.html">中</a>
-        <a class="locale-pill" href="offboarding-audit-en.html">EN</a>
-        <a class="locale-pill" href="offboarding-audit-ja.html">日</a>
+    <a class="gallery-card" href="license-renewal.html">
+      <div class="gallery-thumb"><img src="assets/shots/license-renewal.png" alt="License Renewal"></div>
+      <div class="gallery-meta">
+        <div class="gallery-title">S5 · License Renewal</div>
+        <div class="gallery-sub">跨 org license 到期 timeline</div>
       </div>
-    </div>
-
-    <div class="gallery-item">
-      <a class="gallery-card" href="license-renewal.html">
-      <div class="meta">
-        <h3>S5 · License Renewal Planning</h3>
-        <div class="sub">跨 org timeline · 規劃 license 續約優先序 + 視覺化過期分布</div>
-        <div class="ops">ops: get_user_orgs + get_hierarchy_views + get_inventory</div>
-        <div class="widgets">
-          <span class="tag">alert</span><span class="tag">kpi_grid</span><span class="tag" style="background:rgba(76,153,82,0.15);color:var(--success)">timeline (new)</span><span class="tag">bar_list</span><span class="tag">table</span>
-        </div>
-      </div>
-      <div class="shot"><img src="assets/shots/license-renewal.png" alt="License Renewal"><span class="open-hint">開啟 →</span></div>
     </a>
-      <div class="locale-row">
-        <span class="locales-label">view in</span>
-        <a class="locale-pill" href="license-renewal.html">中</a>
-        <a class="locale-pill" href="license-renewal-en.html">EN</a>
-        <a class="locale-pill" href="license-renewal-ja.html">日</a>
+    <a class="gallery-card" href="multi-org-governance.html">
+      <div class="gallery-thumb"><img src="assets/shots/multi-org-governance.png" alt="Multi-Org Governance"></div>
+      <div class="gallery-meta">
+        <div class="gallery-title">S2 · Multi-Org Governance</div>
+        <div class="gallery-sub">MSP partner 跨 5 個 org 治理</div>
       </div>
-    </div>
-
-    <div class="gallery-item">
-      <a class="gallery-card" href="multi-org-governance.html">
-      <div class="meta">
-        <h3>S2 · Multi-Org Governance Audit</h3>
-        <div class="sub">MSP/Partner 視角 · 跨 5 個 org 的存取健康 + 合規檢視（含 RBAC blocked org 處理）</div>
-        <div class="ops">ops: get_user_orgs + get_hierarchy_views×5 + get_inventory×5 + get_org_memberships_overall</div>
-        <div class="widgets">
-          <span class="tag">alert</span><span class="tag">kpi_grid</span><span class="tag" style="background:rgba(76,153,82,0.15);color:var(--success)">donut×2 (new)</span><span class="tag">topology_tree</span><span class="tag">chip_strip</span><span class="tag">table</span>
-        </div>
-      </div>
-      <div class="shot"><img src="assets/shots/multi-org-governance.png" alt="Multi-Org Governance"><span class="open-hint">開啟 →</span></div>
     </a>
-      <div class="locale-row">
-        <span class="locales-label">view in</span>
-        <a class="locale-pill" href="multi-org-governance.html">中</a>
-        <a class="locale-pill" href="multi-org-governance-en.html">EN</a>
-        <a class="locale-pill" href="multi-org-governance-ja.html">日</a>
+    <a class="gallery-card" href="cross-org-reallocation.html">
+      <div class="gallery-thumb"><img src="assets/shots/cross-org-reallocation.png" alt="Cross-Org Reallocation"></div>
+      <div class="gallery-meta">
+        <div class="gallery-title">S7 · Cross-Org Reallocation</div>
+        <div class="gallery-sub">跨 org 設備調撥規劃</div>
       </div>
-    </div>
-
-    <div class="gallery-item">
-      <a class="gallery-card" href="cross-org-reallocation.html">
-      <div class="meta">
-        <h3>S7 · Cross-Org Reallocation Planner</h3>
-        <div class="sub">Partner/MSP 視角 · 識別跨 org 設備重新配置機會、license 健康度 gauge、orgs × types heatmap</div>
-        <div class="ops">ops: get_user_orgs + get_hierarchy_views×5 + get_inventory×5（無 mutation — 規劃模式）</div>
-        <div class="widgets">
-          <span class="tag">alert</span><span class="tag">kpi_grid</span><span class="tag" style="background:rgba(76,153,82,0.15);color:var(--success)">gauge (new)</span><span class="tag" style="background:rgba(76,153,82,0.15);color:var(--success)">heatmap×2 (new)</span><span class="tag">chip_strip</span><span class="tag">table</span>
-        </div>
-      </div>
-      <div class="shot"><img src="assets/shots/cross-org-reallocation.png" alt="Cross-Org Reallocation"><span class="open-hint">開啟 →</span></div>
     </a>
-      <div class="locale-row">
-        <span class="locales-label">view in</span>
-        <a class="locale-pill" href="cross-org-reallocation.html">中</a>
-        <a class="locale-pill" href="cross-org-reallocation-en.html">EN</a>
-        <a class="locale-pill" href="cross-org-reallocation-ja.html">日</a>
-      </div>
-    </div>
-
     <a class="gallery-card" href="org-health-dark.html">
-      <div class="meta">
-        <h3>S3 · Org 健康總覽 <span style="background:#1a2d4d;color:#00d9c5;padding:2px 8px;border-radius:6px;font-size:10px;font-family:'JetBrains Mono',monospace;margin-left:6px;">--theme dark</span></h3>
-        <div class="sub">同樣 spec、同樣資料、同樣 widget——只是 <code>compose.py --theme dark</code>。證明 theme variant 完全可切換。</div>
-        <div class="ops">spec: org-health.spec.json · theme: tokens-dark.css</div>
-        <div class="widgets">
-          <span class="tag" style="background:rgba(0,217,197,0.15);color:#00d9c5">theme variant demo</span>
-        </div>
+      <div class="gallery-thumb"><img src="assets/shots/org-health-dark.png" alt="Org Health Dark Theme"></div>
+      <div class="gallery-meta">
+        <div class="gallery-title">S3 · Dark theme variant</div>
+        <div class="gallery-sub"><code class="mono">--theme dark</code> 一指令切換</div>
       </div>
-      <div class="shot"><img src="assets/shots/org-health-dark.png" alt="Org Health Dark Mode"><span class="open-hint">開啟 →</span></div>
     </a>
   </div>
-
-  <h3 style="margin-top: 32px;">重要觀察</h3>
-  <ul>
-    <li><strong>4 張視覺一致</strong>——同一套 theme tokens，改 1 處（如 `--brand`）4 張全部自動更新。</li>
-    <li><strong>跨 dashboard 不重複造輪</strong>——topology_tree 在 S3 跟 S2 都用到、table 在所有 4 張都用到。</li>
-    <li><strong>故事完全不同</strong>——S3 是「健康」、S4 是「合規」、S5 是「規劃」、S2 是「governance」。同樣資料、不同框架。</li>
-    <li><strong>新 widget 解鎖新類型故事</strong>——timeline 解鎖「時間規劃」、donut 解鎖「% 構成框架」。沒這兩個 widget 之前的 dashboard 就講不出這兩種故事。</li>
-  </ul>
 </section>
 
-<section id="skill-internals">
-  <h2><span class="num-tag">03e</span>Skill 內部結構 · 參考資料</h2>
+<section id="roadmap">
+  <h2><span class="num-tag">§08</span>Roadmap</h2>
   <p class="section-lede">
-    Widget catalog viewer 已涵蓋 <code>widgets/</code> 跟 <code>references/</code>。這一節列出 skill 其餘的內部檔案——SKILL.md 規格、Python 入口、design tokens、6 個 spec 範例。<strong>給 RD 接手時或自己改造時都會用到</strong>。
+    這套產品還在進化。下面是短/中/長期計畫 — 每階段都有具體交付，不是空願景。
   </p>
 
-  <div class="skill-explorer">
-    <div class="skill-explorer-hdr">
-      <div class="path">📦 dashboard-builder/skill/</div>
-      <a class="repo-link" href="https://github.com/terrelyeh/network-ai-assistant/tree/main/dashboard-builder/skill" target="_blank">View on GitHub →</a>
-    </div>
-
-    <a class="skill-row file" href="skill/SKILL.md" target="_blank">
-      <span class="icon">📄</span>
-      <span class="name">SKILL.md</span>
-      <span class="tag">spec</span>
-      <span class="desc">Skill 合約 + Flow Modules + Constraints（給 RD 看的，最重要的文件）</span>
-    </a>
-
-    <div class="skill-row folder">
-      <span class="icon">📁</span>
-      <span class="name">scripts/</span>
-      <span class="desc">入口程式</span>
-    </div>
-    <a class="skill-row file nested" href="skill/scripts/compose.py" target="_blank">
-      <span class="icon">🐍</span>
-      <span class="name">compose.py</span>
-      <span class="tag">~180 lines</span>
-      <span class="desc">spec JSON → 自包含 HTML 主入口；支援 <code>--theme dark/light</code> flag</span>
-    </a>
-
-    <div class="skill-row folder">
-      <span class="icon">📁</span>
-      <span class="name">theme/</span>
-      <span class="desc">設計變數 + shell layout</span>
-    </div>
-    <a class="skill-row file nested" href="skill/theme/tokens.css" target="_blank">
-      <span class="icon">🎨</span>
-      <span class="name">tokens.css</span>
-      <span class="tag">light</span>
-      <span class="desc">設計變數（color / radius / shadow / font）—— <strong>一改 cascade 全 dashboard 升級</strong></span>
-    </a>
-    <a class="skill-row file nested" href="skill/theme/tokens-dark.css" target="_blank">
-      <span class="icon">🎨</span>
-      <span class="name">tokens-dark.css</span>
-      <span class="tag">dark</span>
-      <span class="desc">深色主題；<code>compose.py --theme dark</code> 時用</span>
-    </a>
-    <a class="skill-row file nested" href="skill/theme/base.css" target="_blank">
-      <span class="icon">🎨</span>
-      <span class="name">base.css</span>
-      <span class="tag">shell</span>
-      <span class="desc">layout / sticky header / pills / chips / flash 等共用樣式</span>
-    </a>
-
-    <div class="skill-row folder">
-      <span class="icon">📁</span>
-      <span class="name">widgets/</span>
-      <span class="desc">10 個 widget HTML partial（style + template + script 三合一）</span>
-    </div>
-    <div class="skill-row note">
-      → 想看每個 widget 的規格、範例 spec、配色，去 <a href="widget-catalog.html">Widget Catalog</a> 視覺化瀏覽
-    </div>
-
-    <a class="skill-row file" href="skill/runtime/runtime.js" target="_blank">
-      <span class="icon">⚙</span>
-      <span class="name">runtime/runtime.js</span>
-      <span class="tag">poll + bus</span>
-      <span class="desc">每 5 秒 fetch live-data、widget 註冊機制、跨 widget event bus</span>
-    </a>
-
-    <div class="skill-row folder">
-      <span class="icon">📁</span>
-      <span class="name">references/</span>
-      <span class="desc">Persona + Design rules + 12 個 widget 的 markdown spec</span>
-    </div>
-    <a class="skill-row file nested" href="skill/references/network-admin-persona.md" target="_blank" style="background: rgba(251,191,36,0.08);">
-      <span class="icon">⭐</span>
-      <span class="name">network-admin-persona.md</span>
-      <span class="tag" style="background: #fbbf24; color: #1a1a1a;">persona v0</span>
-      <span class="desc">AI 網管人格 + 升級條件 + SMB vertical 適應 · <strong>每次 skill 觸發都載入</strong>（詳見 <a href="#persona">§02c</a>）</span>
-    </a>
-    <a class="skill-row file nested" href="skill/references/design.md" target="_blank" style="background: rgba(251,191,36,0.08);">
-      <span class="icon">⭐</span>
-      <span class="name">design.md</span>
-      <span class="tag" style="background: #fbbf24; color: #1a1a1a;">design v0.2</span>
-      <span class="desc">Dashboard 視覺守則 · 3 層架構 + 🚫 9 條 hard prohibitions + raw_html escape hatch · <strong>dashboard-builder 觸發時載入</strong>（詳見 <a href="#design-system">§03f</a>）</span>
-    </a>
-    <div class="skill-row note">
-      → 12 個 widget spec 一鍵閱讀請去 <a href="widget-catalog.html">Widget Catalog</a>（marked.js 即時渲染）
-    </div>
-
-    <div class="skill-row folder">
-      <span class="icon">📁</span>
-      <span class="name">.claude-plugin/</span>
-      <span class="desc">v0.2 新增 · 讓 dashboard-builder 可被 /plugins install</span>
-    </div>
-    <div class="skill-row note nested">
-      <code>marketplace.json</code> · <code>plugin.json</code> · 雙 manifest 設計（見 <a href="#design-system">§03f</a>）
-    </div>
-
-    <div class="skill-row folder">
-      <span class="icon">📁</span>
-      <span class="name">examples/</span>
-      <span class="desc">5 個 validated spec JSON 範例</span>
-    </div>
-    <a class="skill-row file nested" href="skill/examples/org-health.spec.json" target="_blank">
-      <span class="icon">📋</span>
-      <span class="name">org-health.spec.json</span>
-      <span class="tag">S3</span>
-      <span class="desc">設備 / license / 人員 + topology · <strong>主秀</strong></span>
-    </a>
-    <a class="skill-row file nested" href="skill/examples/off-boarding-audit.spec.json" target="_blank">
-      <span class="icon">📋</span>
-      <span class="name">off-boarding-audit.spec.json</span>
-      <span class="tag">S4</span>
-      <span class="desc">離職權限稽核（SOC2 / ISO27001 視角）</span>
-    </a>
-    <a class="skill-row file nested" href="skill/examples/license-renewal.spec.json" target="_blank">
-      <span class="icon">📋</span>
-      <span class="name">license-renewal.spec.json</span>
-      <span class="tag">S5</span>
-      <span class="desc">跨 org license 到期 timeline + 預算規劃</span>
-    </a>
-    <a class="skill-row file nested" href="skill/examples/multi-org-governance.spec.json" target="_blank">
-      <span class="icon">📋</span>
-      <span class="name">multi-org-governance.spec.json</span>
-      <span class="tag">S2</span>
-      <span class="desc">MSP 跨 5 org 治理（donut × 2 + topology）</span>
-    </a>
-    <a class="skill-row file nested" href="skill/examples/cross-org-reallocation.spec.json" target="_blank">
-      <span class="icon">📋</span>
-      <span class="name">cross-org-reallocation.spec.json</span>
-      <span class="tag">S7</span>
-      <span class="desc">設備調撥規劃（gauge + heatmap × 2）</span>
-    </a>
-  </div>
-
-  <h3 style="margin-top: 32px;">怎麼讀這些檔案最快</h3>
+  <h3>🔥 短期（進行中）</h3>
   <ul>
-    <li><strong>SKILL.md</strong> — 5 分鐘看完 skill 合約：用法 / Flow Modules / 限制（C* constraints）</li>
-    <li><strong>compose.py</strong> — ~180 行 Python，看完知道「spec JSON 怎麼變 HTML」</li>
-    <li><strong>theme/tokens.css</strong> — 一頁 CSS 變數，理解整套視覺系統的基底</li>
-    <li><strong>examples/*.spec.json</strong> — 5 個跑通的 spec，照抄一份就能加新 dashboard，<strong>不用改任何 widget</strong></li>
-    <li><strong>widgets/*.html</strong>（在 Widget Catalog 看）— 想加新 widget 時，挑風格接近的當模板</li>
+    <li><strong>OpenAPI spec 自動化</strong>（✅ 已上線）— <a href="../openapi.json">openapi.json</a> + <a href="../api-docs.html">Swagger UI</a></li>
+    <li><strong>47 個 RPC / Subscribe op 解鎖</strong> — 卡 RD 給 dolphin URL pattern，見 <a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/dashboard-builder/docs/rd-meeting/06-api-doc-questions.md">06-api-doc-questions.md</a></li>
+    <li><strong>新 scenario 探索</strong> — 已腦力激盪 ~20 個新菜色（N/T/M/X 系列）</li>
   </ul>
 
-  <h3>跟 RD 接手相關的事</h3>
-  <p>這整個 skill 目前 host 在 <code>dashboard-builder/skill/</code>，是 PMM 的 prototype 區。長期應該移到 <code>api-skills/skills/dashboard-builder/</code> 跟 RD 的 13 個 data skill 並列。具體步驟、命名規範、驗收 checklist 都寫在 <a href="docs/rd-handoff.md">docs/rd-handoff.md</a>。</p>
-</section>
-
-<section id="design-system">
-  <h2><span class="num-tag">03f</span>Design System · 規範 + 自由的混合</h2>
-  <p class="section-lede">
-    v0.2 (2026-05-17) 新增。為了回應 <a href="docs/persona-test-results.md">V1 hand-roll vs V2 compose.py 案例</a>暴露的問題（widget library 不夠表達時 AI 會繞過去走 Chart.js），把 dashboard-builder 升級成「**統一規範 + 自由發揮逃生口**」的混合模式。
-  </p>
-
-  <div class="pull" style="background: rgba(59,130,246,0.06); border-color: rgba(59,130,246,0.3);">
-    <span class="badge" style="background: #3b82f6; color: white;">v0.2 核心轉變</span>
-    舊版：「AI 從 10 個 widget 拼裝」（受限於現有 widget）<br>
-    新版：「AI 在 design system 內自由創作 — 既有 widget 優先，不夠時走 <code>raw_html</code>，但永遠套 theme tokens + 永不違反 9 條 hard prohibitions」
-  </div>
-
-  <h3 style="margin-top: 32px;">三層架構 · 自由度由低到高</h3>
-
-  <div class="tl-grid" style="margin-top: 16px;">
-    <div class="tl-item">
-      <div class="key">Layer 1 · Frame（強制，無自由度）</div>
-      <div class="val">由 <code>compose.py</code> 自動套：logo + title + Refresh button + Live indicator + footer + 5 秒 auto-poll + Inter/Noto Sans TC 字體。AI <strong>不能改</strong>。</div>
-    </div>
-    <div class="tl-item">
-      <div class="key">Layer 2 · Design tokens（強制，必須遵守）</div>
-      <div class="val">所有顏色 / 字距 / 圓角 / 陰影 must use <code>var(--...)</code> CSS variables. 切到 dark / light theme 時自動 cascade — 不能 hardcode hex。</div>
-    </div>
-    <div class="tl-item">
-      <div class="key">Layer 3 · Body content（自由發揮 — 但有規範）</div>
-      <div class="val">AI 決定用哪個 widget / 怎麼排。優先用既有 widget；不夠用時走 <code>raw_html</code> section（但必須遵守 9 條 🚫 hard prohibitions）。</div>
-    </div>
-  </div>
-
-  <h3 style="margin-top: 36px;">🚫 9 條 Hard Prohibitions · 遇到就停</h3>
-  <p>這些是「會破壞 demo / 違法 / 系統會崩」的紅線。違反任一條 = AI 應該停下、問使用者、不要 generate。</p>
-
-  <div style="overflow-x: auto; margin-top: 14px;">
-  <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+  <h3>📐 中期（規劃中）</h3>
+  <table class="tbl">
     <thead>
-      <tr style="background: var(--surface-2);">
-        <th style="padding: 10px 14px; text-align: left; border: 1px solid var(--border);">#</th>
-        <th style="padding: 10px 14px; text-align: left; border: 1px solid var(--border); width: 22%;">類別</th>
-        <th style="padding: 10px 14px; text-align: left; border: 1px solid var(--border);">NEVER</th>
-      </tr>
+      <tr><th style="width:25%">交付物</th><th>內容</th><th style="width:20%">狀態</th></tr>
     </thead>
     <tbody>
-      <tr><td style="padding: 8px 14px; border: 1px solid var(--border);">①</td><td style="padding: 8px 14px; border: 1px solid var(--border);">安全</td><td style="padding: 8px 14px; border: 1px solid var(--border);">在 raw_html 或任何輸出中放 API key / token / password / secret</td></tr>
-      <tr><td style="padding: 8px 14px; border: 1px solid var(--border);">②</td><td style="padding: 8px 14px; border: 1px solid var(--border);">安全</td><td style="padding: 8px 14px; border: 1px solid var(--border);">在 raw_html 內 <code>fetch()</code> 外部 URL</td></tr>
-      <tr><td style="padding: 8px 14px; border: 1px solid var(--border);">③</td><td style="padding: 8px 14px; border: 1px solid var(--border);">安全</td><td style="padding: 8px 14px; border: 1px solid var(--border);">用 <code>eval</code> / <code>new Function</code> / <code>setTimeout("string")</code></td></tr>
-      <tr><td style="padding: 8px 14px; border: 1px solid var(--border);">④</td><td style="padding: 8px 14px; border: 1px solid var(--border);">系統</td><td style="padding: 8px 14px; border: 1px solid var(--border);">在 raw_html 內寫 <code>&lt;script&gt;</code> 標籤</td></tr>
-      <tr><td style="padding: 8px 14px; border: 1px solid var(--border);">⑤</td><td style="padding: 8px 14px; border: 1px solid var(--border);">系統</td><td style="padding: 8px 14px; border: 1px solid var(--border);">引外部 JS / CSS lib（Chart.js / D3 / Bootstrap / FontAwesome / Tailwind CDN）</td></tr>
-      <tr><td style="padding: 8px 14px; border: 1px solid var(--border);">⑥</td><td style="padding: 8px 14px; border: 1px solid var(--border);">系統</td><td style="padding: 8px 14px; border: 1px solid var(--border);">用 <code>!important</code> 蓋 theme tokens</td></tr>
-      <tr><td style="padding: 8px 14px; border: 1px solid var(--border);">⑦</td><td style="padding: 8px 14px; border: 1px solid var(--border);">品牌</td><td style="padding: 8px 14px; border: 1px solid var(--border);">連結到競品（Cisco / Aruba / Ubiquiti / Meraki / TP-Link / Netgear）</td></tr>
-      <tr><td style="padding: 8px 14px; border: 1px solid var(--border);">⑧</td><td style="padding: 8px 14px; border: 1px solid var(--border);">品牌 / 法務</td><td style="padding: 8px 14px; border: 1px solid var(--border);">編造不存在的功能（按鈕沒後端、URL 通往不存在頁面）</td></tr>
-      <tr><td style="padding: 8px 14px; border: 1px solid var(--border);">⑨</td><td style="padding: 8px 14px; border: 1px solid var(--border);">品質</td><td style="padding: 8px 14px; border: 1px solid var(--border);">用棄用 HTML（<code>&lt;marquee&gt;</code>, <code>&lt;blink&gt;</code>, <code>&lt;font&gt;</code>, <code>&lt;center&gt;</code>）</td></tr>
+      <tr>
+        <td><code class="mono">house-rules.md</code></td>
+        <td>EnGenius 品牌觀點 — HVS 分數區間建議、設備推薦邏輯、什麼絕對不該推、平台特有 gotcha</td>
+        <td class="warn">🔜 P2</td>
+      </tr>
+      <tr>
+        <td><code class="mono">playbooks/configure.md</code></td>
+        <td>設定類任務的 mental model — 新分店、template 套用、policy 變更等的思考骨架</td>
+        <td class="warn">🔜 下個 session</td>
+      </tr>
+      <tr>
+        <td><code class="mono">playbooks/troubleshoot.md</code></td>
+        <td>診斷類任務的 mental model — 連線問題、效能問題、設備異常的詢問三定問</td>
+        <td class="warn">🔜 等 RD 補 troubleshoot scripts</td>
+      </tr>
+      <tr>
+        <td><code class="mono">playbooks/monitor.md</code></td>
+        <td>監控類任務的 mental model — 健檢、容量、合規稽核的維度</td>
+        <td class="warn">🔜 下個 session</td>
+      </tr>
+      <tr>
+        <td><code class="mono">memory/&lt;org-id&gt;.md</code></td>
+        <td>跨 session 記憶 — 客戶 quirks / open follow-ups / 上次互動脈絡。等真實 SI 用 1-2 個月再設計避免猜錯</td>
+        <td class="warn">🔜 post-launch</td>
+      </tr>
     </tbody>
   </table>
-  </div>
 
-  <p style="margin-top: 10px; font-size: 13px; color: var(--text-3);">差別於 <strong>Soft anti-patterns</strong>（UX 不建議但不會崩，例如 1 頁塞 10+ section、Donut &gt; 6 segment）。完整內容見 <a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/dashboard-builder/skill/references/design.md" target="_blank">design.md ↗</a>。</p>
-
-  <h3 style="margin-top: 36px;">raw_html Escape Hatch · 自我擴張的 Widget Library</h3>
-  <p>當既有 widget 表達不了，AI 可以用 <code>raw_html</code> section 寫任意 HTML — 但必須附 <code>raw_html_reason</code> 解釋「為什麼選擇 hand-roll + 未來該抽象成什麼 widget」：</p>
-
-  <pre style="background: #1a1a1a; color: #e0e0e0; padding: 14px 18px; border-radius: 8px; overflow-x: auto; font-size: 12px; line-height: 1.55; font-family: var(--font-mono);">{
-  "id": "custom-section",
-  "raw_html": "&lt;div class='card'&gt;...&lt;/div&gt;",
-  "raw_html_reason": "Pivot table 類型 × Org，現有 widget 無法表達；未來該補 pivot_table widget"
-}</pre>
-
-  <p style="margin-top: 14px;">每次 AI 用 raw_html 都留一個 <strong>「下個 widget 該補什麼」的線索</strong>。累積 N 個類似 reason 之後 → 自然抽象成新 widget（這就是 v0.2 新增 <code>pivot_table</code> + <code>stacked_bar_list</code> 的由來）。</p>
-
-  <div class="tl-rel-card" style="margin-top: 18px; background: var(--surface-2);">
-    <strong>Self-improving widget library</strong>：raw_html 不是「逃避用 widget」，是「**真實使用案例驅動的需求蒐集**」。AI 用法本身在告訴我們缺什麼 widget。
-  </div>
-
-  <h3 style="margin-top: 36px;">Filename Convention · 雙模式</h3>
-
-  <div class="tl-grid" style="margin-top: 16px;">
-    <div class="tl-item">
-      <div class="key">Validated specs（穩定檔名）</div>
-      <div class="val"><code>&lt;topic&gt;.html</code> · <code>&lt;topic&gt;-en.html</code> · <code>&lt;topic&gt;-ja.html</code> · <code>&lt;topic&gt;-dark.html</code><br>對應 <code>examples/&lt;topic&gt;.spec.json</code>，可書籤、可分享、會被覆蓋。</div>
-    </div>
-    <div class="tl-item">
-      <div class="key">Ad-hoc generation（永遠 timestamped）</div>
-      <div class="val"><code>canvas-&lt;topic&gt;-YYYYMMDD-HHMMSS.html</code><br>AI 即興組 dashboard 時用 — 每次生新檔，舊的保留。<br><strong>Booth wedge 關鍵</strong>：觀眾看到 URL 在變 = 證明「剛剛生的」，不是預錄。</div>
-    </div>
-  </div>
-
-  <h3 style="margin-top: 36px;">.claude-plugin/ · Plugin Install 機制</h3>
-  <p>v0.2 起 dashboard-builder 可被 <code>/plugins</code> install（跟 senao-api-skills 一樣的機制）：</p>
+  <h3>🌌 長期（願景）</h3>
   <ul>
-    <li><code>.claude-plugin/marketplace.json</code> — 商店招牌（一個 marketplace 可有多 plugin）</li>
-    <li><code>.claude-plugin/plugin.json</code> — 商品說明（單一 plugin 的 metadata）</li>
-    <li><code>skills/dashboard-builder/</code> — symlinks 指回 plugin root，符合 Claude Code 預期的 <code>skills/&lt;n&gt;/SKILL.md</code> discovery layout</li>
-  </ul>
-  <p>裝完後 <code>/skills</code> 會看到 <code>dashboard-builder:dashboard-builder</code>，Claude 在對話中觸發 dashboard 生成時自動載入。</p>
-
-  <div class="pull" style="background: rgba(16,185,129,0.06); border-color: rgba(16,185,129,0.3); margin-top: 24px;">
-    <span class="badge" style="background: #10b981; color: white;">完整實測通過</span>
-    v0.2 整套機制（design.md + raw_html + 2 個新 widget + plugin install）已在 2026-05-17 跑通端到端測試。完整紀錄見 <a href="docs/persona-test-results.md">persona-test-results.md</a>。
-  </div>
-</section>
-
-<section id="howto">
-  <h2><span class="num-tag">04</span>怎麼用 Dashboard Builder Skill</h2>
-  <p class="section-lede">三個情境，每個情境都是 Claude Code 對話中觸發。Skill 本身就是一個 Python 入口加一堆 HTML 零件。</p>
-
-  <h3>用法一：Claude 在對話中自動跑（典型 demo 場景）</h3>
-  <ol class="steps">
-    <li>
-      <div class="step-title">訪客問問題</div>
-      <div class="step-body">「幫我看 Main_Org 健康狀況」</div>
-    </li>
-    <li>
-      <div class="step-title">Claude 跑 data skills、把結果寫進 live-data/</div>
-      <div class="step-body">並行呼叫 <code>get_user_orgs</code> / <code>get_hierarchy_views</code> / <code>get_inventory</code> / <code>get_licenses</code> / <code>get_org_memberships_overall</code>，輸出到 <code>prototype/live-data/*.json</code></div>
-    </li>
-    <li>
-      <div class="step-title">Claude 寫一份 spec JSON</div>
-      <div class="step-body">大概 100-150 行的 JSON，描述「想要幾個 widget、按什麼順序、用哪份 live-data」。範例：<code>dashboard-builder-skill/examples/org-health.spec.json</code></div>
-    </li>
-    <li>
-      <div class="step-title">Claude 呼叫 compose.py</div>
-      <div class="step-body">
-<pre>python prototype/dashboard-builder-skill/scripts/compose.py \
-  --spec my-spec.json \
-  --out dashboard-builder/canvas-name.html</pre>
-        產出單一 HTML 檔（46KB），自包含所有 widget CSS + JS + runtime。
-      </div>
-    </li>
-    <li>
-      <div class="step-title">瀏覽器自動打開 preview</div>
-      <div class="step-body">Dashboard 載入後立即 fetch live-data/、render 所有 widget，每 5 秒 poll 一次更新。</div>
-    </li>
-    <li>
-      <div class="step-title">Claude append manifest log entry</div>
-      <div class="step-body"><code>generated-log.html</code> 立即跳出新 entry，操作員可從那邊回追今天 demo 過什麼。</div>
-    </li>
-  </ol>
-
-  <h3>用法二：手動 compose 已有 spec（重現舊 demo）</h3>
-  <pre><span class="comment"># 重新跑 examples/org-health.spec.json 產生新 timestamp 的 canvas</span>
-python prototype/dashboard-builder-skill/scripts/compose.py \
-  --spec prototype/dashboard-builder-skill/examples/org-health.spec.json \
-  --out dashboard-builder/org-health-test.html
-
-<span class="comment"># 跑完打開 preview server</span>
-open http://localhost:58778/dashboard-builder/org-health.html</pre>
-
-  <h3>用法三：刷新 live-data 但保留 canvas（最常用）</h3>
-  <p>展會中要 demo「live 數字會跳」效果：</p>
-  <pre><span class="comment"># 1. 操作員執行 refresh 腳本（重撈 staging API）</span>
-bash dashboard-builder/scripts/refresh-all.sh
-
-<span class="comment"># 2. Dashboard 已開著的話，5 秒內自動 reflect 新數字</span>
-<span class="comment"># 不用重 compose、不用重 reload</span></pre>
-
-  <h3>用法四：切視覺主題 + 切語言（i18n）</h3>
-  <p>每個 spec 都有 <code>locales</code> 區塊（zh-TW / en / ja）。用 <code>--locale</code> flag 切換：</p>
-  <pre><span class="comment"># 預設（spec 的 zh-TW）</span>
-python dashboard-builder/skill/scripts/compose.py \
-  --spec dashboard-builder/skill/examples/org-health.spec.json \
-  --out dashboard-builder/test.html
-
-<span class="comment"># 英文版</span>
-... --locale en
-
-<span class="comment"># 日文版（日本展會用）</span>
-... --locale ja
-
-<span class="comment"># 日文 + dark mode 雙堆疊</span>
-... --locale ja --theme dark</pre>
-  <p style="margin-top: 10px;">→ Gallery 上每張 dashboard card 下方都有「view in 中 / EN / 日」切換鍵，點任一個直接看對應語言版本。日文版作為日本 booth 主秀，需要 native speaker review 過後正式上場。</p>
-</section>
-
-<section id="demo-readiness">
-  <h2><span class="num-tag">04b</span>Demo Readiness · 主秀 validated · off-script 走 design.md</h2>
-  <p class="section-lede">
-    Live demo 是「外觀即時、底層保底」。<strong>主秀必須走 validated path（事先驗證過），off-script 觀眾意外問題走 design.md ad-hoc 模式</strong>。v0.2 之前是「全部都得 validated」，新規則更貼近實際 booth 操作節奏。
-  </p>
-
-  <div class="tl-grid" style="margin-top: 16px;">
-    <div class="tl-item" style="background: rgba(16,185,129,0.06); border-color: rgba(16,185,129,0.3);">
-      <div class="key" style="color: #047857;">✅ 主秀情境 · 必須 validated path</div>
-      <div class="val"><strong>booth 主秀腳本上的故事</strong>（5 個現有 validated：S2 / S3 / S4 / S5 / S7）= 觀眾預期會看到的 dashboard。這些<strong>沒驗證過不准上</strong>，因為要在大廳即興 = 風險太高。穩定檔名（<code>&lt;topic&gt;.html</code>）。</div>
-    </div>
-    <div class="tl-item" style="background: rgba(251,191,36,0.08); border-color: rgba(251,191,36,0.3);">
-      <div class="key" style="color: #b45309;">⚡ Off-script 觀眾問題 · 走 design.md ad-hoc</div>
-      <div class="val">觀眾問「能不能也看 X？」這種<strong>沒事先準備的 wow moment</strong> = 即興用 design.md 規範組 dashboard。受 <a href="#design-system">§03f Design System</a> 約束（3 層架構 + 9 條 hard prohibitions + raw_html escape hatch），仍視覺一致。Timestamped 檔名（<code>canvas-...-YYYYMMDD-HHMMSS.html</code>）。</div>
-    </div>
-  </div>
-
-  <div class="pull" style="background: rgba(59,130,246,0.06); border-color: rgba(59,130,246,0.3); margin-top: 18px;">
-    <span class="badge" style="background: #3b82f6; color: white;">v0.2 新規則</span>
-    舊：「<strong>所有</strong>情境都得 validated」→ 觀眾意外問問題就 demo 不出來，客戶會發現是劇本<br>
-    新：「主秀 validated · off-script 即興」→ 故事連續性 ✓ + 即興部分有 design.md 規範保證視覺一致 ✓
-  </div>
-
-  <h3 style="margin-top: 32px;">Validated Path 的 3 個必要條件（主秀情境用）</h3>
-  <p>主秀情境要被當作 validated path，必須三件事都完成：</p>
-  <div class="checklist">
-    <div class="check-item">
-      <div class="check-icon">✓</div>
-      <div class="check-body">
-        <strong>1. 有對應的 <code>spec.json</code> 存在於 <code>skill/examples/</code></strong>
-        <p>不能用 Claude「現場從零寫 spec」當主秀。Claude 可以微調既有 spec（改 title、改 KPI 標籤、加 1-2 個 widget），但骨幹必須是已存在的 JSON 檔。目前 5 個 validated：S2 / S3 / S4 / S5 / S7。</p>
-      </div>
-    </div>
-    <div class="check-item">
-      <div class="check-icon">✓</div>
-      <div class="check-body">
-        <strong>2. 已用 <code>compose.py</code> 成功跑過、產出可看的 HTML</strong>
-        <p>產出的 HTML 必須能在瀏覽器開、視覺正常、所有 widget 渲染正確、互動 work、auto-poll work。任何一項壞，這個情境不准上 booth。</p>
-      </div>
-    </div>
-    <div class="check-item">
-      <div class="check-icon">✓</div>
-      <div class="check-body">
-        <strong>3. 連到的每個 op 都在 RD 已 supported 範圍</strong>
-        <p>spec footer 的 <code>ops_used</code> 列出來的每個 op 必須能跑（在 <a href="docs/rd-priorities.md">rd-priorities.md</a> 的「已 supported」清單裡）。任何「規劃中」🔴 的 op 都不算。</p>
-      </div>
-    </div>
-  </div>
-
-  <h3>兩個關鍵 script · 每個 validated path 都會跑</h3>
-  <p>整套 demo 流程靠這兩個 script 撐起來——一個撈雲端、一個產 HTML。</p>
-
-  <div class="script-split">
-    <div class="script-card">
-      <div class="script-card-hdr">
-        <span class="script-name">refresh-all.sh</span>
-        <span class="script-time">~14 秒</span>
-      </div>
-      <div class="script-card-body">
-        <p><strong>做什麼：</strong>呼叫 6 個 RD data skill，把雲端最新狀態存進 <code>live-data/*.json</code>。</p>
-        <p><strong>什麼時候跑：</strong>展會開始前 5 分鐘；或展中想 demo「資料剛剛變了」時。</p>
-<pre><span class="comment"># 展前準備</span>
-bash dashboard-builder/scripts/refresh-all.sh
-
-<span class="comment"># Output:</span>
-<span class="comment">#   live-data/orgs.json         (5 orgs)</span>
-<span class="comment">#   live-data/hierarchy.json    (10 networks)</span>
-<span class="comment">#   live-data/inventory.json    (10 devices)</span>
-<span class="comment">#   live-data/licenses.json</span>
-<span class="comment">#   live-data/memberships.json  (11 members, 5 stale)</span>
-<span class="comment">#   live-data/topology.json     (cross-org)</span></pre>
-      </div>
-    </div>
-
-    <div class="script-card">
-      <div class="script-card-hdr">
-        <span class="script-name">compose.py</span>
-        <span class="script-time">~200 ms</span>
-      </div>
-      <div class="script-card-body">
-        <p><strong>做什麼：</strong>吃一份 <code>spec.json</code> + 讀 widgets/theme/runtime，組成一份自包含 HTML。</p>
-        <p><strong>什麼時候跑：</strong>每次驗證情境時；展中如果要重 compose 用客製化 spec。</p>
-<pre><span class="comment"># 從既有 spec 生 dashboard</span>
-python dashboard-builder/skill/scripts/compose.py \
-  --spec dashboard-builder/skill/examples/org-health.spec.json \
-  --out /tmp/test.html
-
-<span class="comment"># 換 dark mode</span>
-... --theme dark</pre>
-      </div>
-    </div>
-  </div>
-
-  <h3 style="margin-top: 28px;">新情境的 Validation Pipeline · 6 步</h3>
-  <p>有了新情境想法 → 走完這 6 步才能上 booth：</p>
-  <ol class="steps">
-    <li>
-      <div class="step-title">確認需要的 op 都能跑</div>
-      <div class="step-body">查 <a href="docs/rd-priorities.md">rd-priorities.md</a>，把這個情境會用到的 op 都列一遍。如果有任何一個在 P0 待完成或 troubleshoot skill 內 → 暫停，等 RD 補完才能繼續。</div>
-    </li>
-    <li>
-      <div class="step-title">寫 spec.json（複製近的範例改）</div>
-      <div class="step-body">不要從零寫——挑 <code>examples/</code> 裡最近的（角度、widget 組合接近的），複製、改 title / KPI compute_fns / data source / widget 選擇。</div>
-    </li>
-    <li>
-      <div class="step-title">跑 compose.py 產 HTML</div>
-      <div class="step-body">先用 <code>--out /tmp/test.html</code> 試水溫。視覺看起來對才搬到 <code>dashboard-builder/&lt;name&gt;.html</code>。</div>
-    </li>
-    <li>
-      <div class="step-title">驗證互動 + auto-poll + cross-widget event</div>
-      <div class="step-body">點 KPI 卡跳轉、展開 row、按 Refresh、5 秒 poll 自動更新、topology tree 點 device 跳 table——每一項都要 work。任何一個壞，回 step 2 修 spec。</div>
-    </li>
-    <li>
-      <div class="step-title">截圖加進 gallery</div>
-      <div class="step-body">用 playwright 或瀏覽器截全頁圖，存到 <code>assets/shots/</code>。在 <code>architecture.html</code> 的 <code>#gallery</code> 區段加新 card。</div>
-    </li>
-    <li>
-      <div class="step-title">Git commit + push</div>
-      <div class="step-body">這個情境正式成為 validated path，可以上 booth。同步更新 README + manifest（如果有用 booth log）。</div>
-    </li>
-  </ol>
-
-  <h3 style="margin-top: 28px;">展前 5 分鐘 Readiness Checklist</h3>
-  <p>展會當天每場 demo 之前跑：</p>
-  <div class="checklist">
-    <div class="check-item">
-      <div class="check-icon todo">☐</div>
-      <div class="check-body"><strong>refresh-all.sh 跑成功</strong>，6 個 JSON 都新鮮（mtime 在 5 分鐘以內）</div>
-    </div>
-    <div class="check-item">
-      <div class="check-icon todo">☐</div>
-      <div class="check-body"><strong>5 個 spec 各跑一次 compose.py</strong>，全部 exit 0 + 印出 file size</div>
-    </div>
-    <div class="check-item">
-      <div class="check-icon todo">☐</div>
-      <div class="check-body"><strong>每個產出的 HTML 在瀏覽器開一次</strong>，視覺 + 互動 + auto-poll 確認 work</div>
-    </div>
-    <div class="check-item">
-      <div class="check-icon todo">☐</div>
-      <div class="check-body"><strong>Vercel URL 開得開</strong>（demo 機當機時的 fallback）</div>
-    </div>
-    <div class="check-item">
-      <div class="check-icon todo">☐</div>
-      <div class="check-body"><strong>API_KEY 跟 MANAGE_SYSTEM_URL env 對</strong>（terminal 跑 <code>echo $API_KEY</code> 確認）</div>
-    </div>
-  </div>
-
-  <p style="margin-top: 24px;"><strong>任何一項沒過 → 那個情境不准上 booth，當天少帶</strong>。Demo 的鐵律：寧可少一個故事，不要在觀眾面前看著 error message。</p>
-</section>
-
-<section id="flow">
-  <h2><span class="num-tag">05</span>90 秒 Booth Demo 節奏</h2>
-  <p class="section-lede">展前準備 + 主秀 + 彩蛋。整段不超過 2 分鐘。</p>
-
-  <div class="flow">
-    <div class="flow-step">
-      <div class="timer">展前</div>
-      <div>
-        <div class="who">操作員</div>
-        <div class="what">跑 <code>refresh-all.sh</code> → 確認所有 6 個 JSON 是 5 分鐘內的資料</div>
-      </div>
-    </div>
-    <div class="flow-step">
-      <div class="timer">0:00</div>
-      <div>
-        <div class="who">訪客</div>
-        <div class="what">「我管 5 個客戶的網路，能幫我看一下總體狀況嗎？」</div>
-      </div>
-    </div>
-    <div class="flow-step">
-      <div class="timer">0:15</div>
-      <div>
-        <div class="who">操作員 → Claude Code</div>
-        <div class="what">「幫我撈所有 org 的 device + license + member」</div>
-      </div>
-    </div>
-    <div class="flow-step">
-      <div class="timer eye">0:18</div>
-      <div>
-        <div class="who">Claude</div>
-        <div class="what">並行跑 5 個 skill → 寫 live-data/*.json → 回覆「Main_Org 有 10 台設備、<em>全部 license expired</em>，要不要先看這個？」</div>
-      </div>
-    </div>
-    <div class="flow-step">
-      <div class="timer">0:30</div>
-      <div>
-        <div class="who">操作員 → Claude</div>
-        <div class="what">「對，做一張 dashboard 從健康角度看」</div>
-      </div>
-    </div>
-    <div class="flow-step">
-      <div class="timer eye">0:35</div>
-      <div>
-        <div class="who">Claude</div>
-        <div class="what">寫 spec JSON → 呼叫 compose.py → <em>產出 canvas-org-health-&lt;TS&gt;.html</em></div>
-      </div>
-    </div>
-    <div class="flow-step">
-      <div class="timer">0:40</div>
-      <div>
-        <div class="who">操作員</div>
-        <div class="what">開 browser preview → 訪客看到 dashboard <em>已經 live</em></div>
-      </div>
-    </div>
-    <div class="flow-step">
-      <div class="timer">0:50</div>
-      <div>
-        <div class="who">訪客</div>
-        <div class="what">瀏覽 dashboard，問：「我想看跨 5 個 org 的關係」</div>
-      </div>
-    </div>
-    <div class="flow-step">
-      <div class="timer eye">1:00</div>
-      <div>
-        <div class="who">Claude</div>
-        <div class="what">跑 topology aggregate 腳本 → 改 spec、append topology_tree section → <em>重新 compose</em> → 觀眾看到 dashboard 在他眼前長出新區塊</div>
-      </div>
-    </div>
-    <div class="flow-step">
-      <div class="timer eye">1:25</div>
-      <div>
-        <div class="who">訪客</div>
-        <div class="what">「Front Desk 已經 5 年沒登入了還有 7 個 network 權限？」（核心 wow）</div>
-      </div>
-    </div>
-    <div class="flow-step">
-      <div class="timer">1:40</div>
-      <div>
-        <div class="who">操作員 → Claude</div>
-        <div class="what">「列出可疑成員」→ Claude highlight 那幾筆、建議下一步操作（不執行寫入）</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="limits">
-  <h2><span class="num-tag">06</span>資料層限制 · 哪些故事還不能講</h2>
-  <p class="section-lede">
-    現有 RD skill 的覆蓋範圍是「<strong>讀寫設定 + 當前快照</strong>」。<span class="hl-accent">所有需要歷史聚合 / 即時 streaming 的故事都還做不出來</span>，因為對應 API 還不存在。這個限制不是 dashboard-builder 的問題，是資料層尚未長出來。
-  </p>
-
-  <div class="limit-card blocked">
-    <div class="label">🔴 完全擋住</div>
-    <h3>趨勢 / 歷史聚合（"過去 7 天 throughput"、"本月流量 top 10"）</h3>
-    <p class="detail">
-      EnGenius Cloud 的 GET API 只回「現在」的快照，沒有「過去 N 天聚合」endpoint。所有「趨勢線」、「月度比較」、「年度報表」類 dashboard 都做不出來。
-    </p>
-    <div class="blocker">RD action: 補 history aggregation API（例如 /metrics/throughput?from=...&to=...&groupBy=day）</div>
-  </div>
-
-  <div class="limit-card blocked">
-    <div class="label">🔴 完全擋住</div>
-    <h3>即時 streaming（"AP CPU 即時跳動"、"在線 client 即時列表"）</h3>
-    <p class="detail">
-      規格上 RD 有 <code>subscribe_stat</code>、<code>subscribe_throughput</code>、<code>subscribe_client_list</code> 等 25+ 個 op，但 <strong>3 個 troubleshoot skill 都還沒 scripts/</strong>。SKILL.md 列出來、references/ 規格寫好了，但無法執行。
-    </p>
-    <div class="blocker">RD action: 補 network-ap/gw/sw-troubleshoot skill 的 scripts/call_api.py（含 WebSocket / SSE 協定支援）</div>
-  </div>
-
-  <div class="limit-card blocked">
-    <div class="label">🔴 完全擋住</div>
-    <h3>實體拓樸（"哪台 AP 接到 switch 哪個 port"、"線路斷在哪裡"）</h3>
-    <p class="detail">
-      需要 <code>subscribe_fdb_list</code>、<code>subscribe_arp_list</code>、<code>subscribe_cable_diag</code> — 也在 troubleshoot skill 內、也都還沒 scripts。所以我們的 topology_tree 只能畫<strong>邏輯</strong>階層（org → network → device），畫不出實體連線。
-    </p>
-    <div class="blocker">RD action: 同上</div>
-  </div>
-
-  <div class="limit-card partial">
-    <div class="label">🟡 部分擋住</div>
-    <h3>跨 org 成員聚合（"哪些人在多個 org 都有權限"）</h3>
-    <p class="detail">
-      <code>get_org_memberships_overall</code> 只能撈一個 org 的成員。要看「一個 user 在 5 個 org 各有什麼權限」需要拼接 5 次呼叫 + 用 email 比對。Dashboard 可以做（用 compute_fn 拼），但成本高。
-    </p>
-    <div class="blocker">RD action（nice-to-have）: 補 cross-org membership endpoint</div>
-  </div>
-
-  <div class="limit-card partial">
-    <div class="label">🟡 部分擋住</div>
-    <h3>裝置物理位置（"地圖上標出各分店設備"）</h3>
-    <p class="detail">
-      Network / device 沒有 GPS / address 欄位。hierarchy_view 名稱可能含地點線索（如 "Taipei"、"LA"），但需要 geocoding 推測。<strong>map widget 因此被延後</strong>，要等 RD 加 location 欄位。
-    </p>
-    <div class="blocker">RD action（nice-to-have）: device/network 加 location 欄位（address / lat / lon）</div>
-  </div>
-
-  <h3 style="margin-top: 28px;">現在能做的 widget 類型</h3>
-  <p>受限於上述限制，dashboard-builder library 目前聚焦 <strong>「當前狀態的多維呈現」</strong>：</p>
-  <ul>
-    <li>✅ <strong>單一指標</strong>（kpi_grid）— "現在有 10 台設備"</li>
-    <li>✅ <strong>分類 / 構成</strong>（bar_list, donut）— "AP 9 / Switch 1"、"40% accessible / 40% partial"</li>
-    <li>✅ <strong>清單明細</strong>（table）— "列出所有 stale members"</li>
-    <li>✅ <strong>結構關係</strong>（topology_tree）— "Org → Network → Device 階層"</li>
-    <li>✅ <strong>單點時間軸</strong>（timeline）— "license 何時到期"（不是「過去到現在的趨勢」，是「現在到未來的點」）</li>
-    <li>❌ <strong>連續趨勢線</strong>（line_chart / sparkline）— 需要歷史 API</li>
-    <li>❌ <strong>即時跳動</strong>（live_meter / activity_feed）— 需要 streaming API</li>
-    <li>❌ <strong>地理</strong>（map）— 需要 location 欄位</li>
+    <li><strong>AI 自主從 API 發想新 skill</strong> — 我們提供 API surface（食材），AI + PM 一起腦力激盪能組合出哪些 scenario（菜色），可能衍生出我們沒想過的新 skill</li>
+    <li><strong>History aggregation API</strong> — 解鎖 line_chart / sparkline 等趨勢類 widget</li>
+    <li><strong>OSS release</strong> — 上 GitHub 公開（<a href="../README.oss-draft.md">README.oss-draft.md</a> 已 ready），讓 partner / SI 自由整合</li>
   </ul>
 </section>
 
 <section id="status">
-  <h2><span class="num-tag">07</span>現況 vs Roadmap</h2>
+  <h2><span class="num-tag">§09</span>Status 速覽</h2>
   <table class="tbl">
-    <thead><tr><th>元件</th><th>狀態</th><th>備註</th></tr></thead>
+    <thead>
+      <tr><th>區塊</th><th>狀態</th><th>備註</th></tr>
+    </thead>
     <tbody>
-      <tr><td>L2 EnGenius Cloud</td><td class="ok">✅ 上線</td><td>falcon.staging 可用</td></tr>
-      <tr><td>L3 data skills × 10</td><td class="ok">✅ 可跑</td><td>共 ~46 個 op 可呼叫</td></tr>
-      <tr><td>L3 troubleshoot × 3</td><td class="crit">🔴 規劃中</td><td>47 個 op 沒 script，要 RD 補</td></tr>
-      <tr><td>L3 dashboard-builder skill</td><td class="warn">🟡 prototype</td><td><strong>10 widget</strong> + compose.py + 6 個 spec 範例已 work，待整合進 api-skills</td></tr>
-      <tr><td>Widget reference docs（10 份）</td><td class="ok">✅</td><td>每個 widget 一份 spec doc（alert/kpi_grid/table/bar_list/donut/gauge/chip_strip/topology_tree/timeline/heatmap）</td></tr>
-      <tr><td>L4 Claude Code orchestration</td><td class="ok">✅</td><td>對話 → skill → spec → compose 已驗證</td></tr>
-      <tr><td>L1 canvas + live-data</td><td class="ok">✅</td><td>5 個 canvas 已 work，auto-poll 已驗證</td></tr>
-      <tr><td>L1 manifest log</td><td class="ok">✅</td><td>generated-log.html 自動 refresh</td></tr>
-      <tr><td>L5 booth playbook</td><td class="ok">✅</td><td>docs/booth-presenter-cheatsheet.md</td></tr>
-      <tr><td>refresh-all.sh 統一刷新</td><td class="warn">🟡</td><td>已有 build_topology.sh，需擴成全部 6 個 JSON</td></tr>
-      <tr><td>Widget reference docs（每個 widget 一份 spec）</td><td class="warn">🟡</td><td>給 LLM 看的 widget API 文件</td></tr>
+      <tr><td>13 個 data skill（api-skills/）</td><td class="ok">✅</td><td>10 完整 / 3 troubleshoot 缺 scripts</td></tr>
+      <tr><td>12 個 widget（dashboard-builder/）</td><td class="ok">✅</td><td>全部完成，跨 light/dark theme</td></tr>
+      <tr><td>5 個 validated 情境</td><td class="ok">✅</td><td>跨 zh-TW / EN / JA</td></tr>
+      <tr><td>17 張 live dashboard canvas</td><td class="ok">✅</td><td>真實 staging API snapshot</td></tr>
+      <tr><td>OpenAPI 3.1 spec + Swagger UI</td><td class="ok">✅</td><td>auto-generated from SKILL.md</td></tr>
+      <tr><td>persona.md + design.md</td><td class="ok">✅</td><td>9 條 hard prohibitions + 升級條件矩陣</td></tr>
+      <tr><td>house-rules.md / playbooks/</td><td class="warn">🔜</td><td>規劃中，下個 session</td></tr>
+      <tr><td>memory/&lt;org-id&gt;.md</td><td class="warn">🔜</td><td>等真實 SI 用 1-2 個月再設計</td></tr>
+      <tr><td>47 個 troubleshoot op（RPC / Subscribe）</td><td class="crit">🔴</td><td>卡 RD 給 dolphin URL pattern</td></tr>
+      <tr><td>歷史 aggregation API</td><td class="warn">🟡</td><td>RD P1，line_chart / sparkline 等著用</td></tr>
     </tbody>
   </table>
+  <p style="margin-top: 16px;">完整 RD 阻擋項目：<a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/dashboard-builder/docs/rd-meeting/06-api-doc-questions.md">06-api-doc-questions.md</a></p>
+</section>
+
+<section id="appendix-skills">
+  <h2 style="font-size: 24px; color: var(--text-2);">📚 Appendix A · Skills × Scenarios 對應表</h2>
+  <p class="section-lede">
+    哪個 skill 服務哪個 scenario — 一張表看清楚目前已驗證 / 候選情境對 skill 的依賴。沒被任何 scenario 用過的 skill = 潛在新菜色機會。
+  </p>
+
+  <table class="tbl">
+    <thead>
+      <tr>
+        <th style="width:24%">Skill</th>
+        <th style="width:10%">Ops</th>
+        <th style="width:14%">Status</th>
+        <th>用在哪些 scenarios</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><code class="mono">init-orgs</code></td><td>2</td><td class="ok">✅</td><td>S2, S3, S5, S7, S12（基本起手式）</td></tr>
+      <tr><td><code class="mono">hvs</code></td><td>1</td><td class="ok">✅</td><td>S1, S2, S3, S5, S7, S8, S12（健康分數 + 階層）</td></tr>
+      <tr><td><code class="mono">org-devices</code></td><td>9</td><td class="ok">✅</td><td>S3, S5, S7, S12, M1, M2（inventory / 跨 org 調撥）</td></tr>
+      <tr><td><code class="mono">org-licenses</code></td><td>7</td><td class="ok">✅</td><td>S5, S7（到期預警 / 跨 org 移轉）</td></tr>
+      <tr><td><code class="mono">team-members</code></td><td>5</td><td class="ok">✅</td><td>S4, S11（離職清算 / 跨 org 權限）</td></tr>
+      <tr><td><code class="mono">networks</code></td><td>10</td><td class="ok">✅</td><td>S2, S6, S8（ACL / policy / country）</td></tr>
+      <tr><td><code class="mono">org-network-templates</code></td><td>6</td><td class="ok">✅</td><td>S1（新分店 onboarding）</td></tr>
+      <tr><td><code class="mono">org-backups</code></td><td>5</td><td class="ok">✅</td><td>S3（RMA 設定遷移）· M4（DR drill 候選）</td></tr>
+      <tr><td><code class="mono">org-network-groups</code></td><td>4</td><td class="ok">✅</td><td><em>尚未用於任何 scenario</em> — 新菜色機會</td></tr>
+      <tr><td><code class="mono">engenius-env</code></td><td>0 ops</td><td class="ok">✅</td><td>所有 scenario 都依賴 env 設好（環境切換）</td></tr>
+      <tr><td><code class="mono">network-ap-troubleshoot</code></td><td>25</td><td class="warn">🔜</td><td>S8, S9, S10, T1-T6（pending RD）</td></tr>
+      <tr><td><code class="mono">network-gateway-troubleshoot</code></td><td>15</td><td class="warn">🔜</td><td>T2, T3, T4（VPN / firewall log）pending RD</td></tr>
+      <tr><td><code class="mono">network-switch-troubleshoot</code></td><td>7</td><td class="warn">🔜</td><td>T1（port forensics）pending RD</td></tr>
+    </tbody>
+  </table>
+
+  <h3>怎麼讀這張表</h3>
+  <ul>
+    <li><strong>「用在哪些 scenarios」空白的 row</strong> = 潛在的新菜色機會（例：org-network-groups 還沒被任何 scenario 用過）</li>
+    <li><strong>S1-S10</strong> 是 scenario-candidates.md 的腦力激盪情境（含已 validated）</li>
+    <li><strong>S11/S12</strong> 是 2026-05-17 新加的「多 mode 升級」示範情境</li>
+    <li><strong>M / T / N 系列</strong> 是 management / troubleshooting / monitoring 新菜色提案（規劃中）</li>
+  </ul>
+</section>
+
+<section id="appendix-glossary">
+  <h2 style="font-size: 24px; color: var(--text-2);">📚 Appendix B · Glossary</h2>
+  <p class="section-lede">這頁出現的術語對外讀者可能不熟悉，這裡一行解釋。</p>
+
+  <table class="tbl">
+    <tbody>
+      <tr><td style="width:24%"><strong>Falcon / Dolphin / Lark</strong></td><td>EnGenius Cloud 3 個後端服務代號 — Falcon = 管理系統 API（CRUD）· Dolphin = troubleshoot 服務（RPC / streaming）· Lark = membership invitation redirect</td></tr>
+      <tr><td><strong>HVS</strong></td><td>Hierarchy View Score — org 的整體健康分數，0-100</td></tr>
+      <tr><td><strong>RPC / Subscribe / Polling</strong></td><td>三種 op 互動模式 — RPC 是一次性遠端命令（如 led_dance）· Subscribe 是串流訂閱（如 client_list 每 6 秒）· Polling 是輪詢 REST 模擬即時</td></tr>
+      <tr><td><strong>Wedge product</strong></td><td>切入市場用的產品定位 — 楔子型產品，最小可贏的競爭差異點</td></tr>
+      <tr><td><strong>Plugin / Marketplace</strong></td><td>Claude Code 的安裝機制 — 用 <code class="mono">/plugins</code> 指令 install skill bundle</td></tr>
+      <tr><td><strong>Persona / Playbook / Memory</strong></td><td>我們知識架構分層的詞 — persona 是 voice、playbook 是 mental model、memory 是跨 session 記憶</td></tr>
+      <tr><td><strong>Spec JSON</strong></td><td>Dashboard 的「配方」— 描述要哪些 section、用哪些 widget、餵什麼資料。AI 寫出 spec、<code class="mono">compose.py</code> 轉成 HTML</td></tr>
+      <tr><td><strong>SMB IT / SI / MSP</strong></td><td>SMB IT = 中小企業的內部 IT · SI = system integrator · MSP = managed service provider（為多個客戶代管網路的廠商）</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="appendix-resources">
+  <h2 style="font-size: 24px; color: var(--text-2);">📚 Appendix C · Resources</h2>
+  <p class="section-lede">看完此頁後最該去的下一站 — 跨頁出口、深度文件、實際 demo。完整全站 URL 索引見 <a href="../URLS.md">URLS.md</a>。</p>
+
+  <h3>🛠 技術細節</h3>
+  <ul>
+    <li><a href="technical.html">Dashboard Builder · Technical Deep-Dive</a> — Widget / spec / compose.py / Design System / Demo Readiness</li>
+    <li><a href="widget-catalog.html">Widget Catalog (markdown viewer)</a> — 12 widget 詳細規格</li>
+    <li><a href="../api-docs.html">API Docs (Swagger UI)</a> — 94 ops 互動式文件，Try it out</li>
+    <li><a href="../openapi.json">openapi.json</a> — OpenAPI 3.1 spec（給 Postman / SDK generator）</li>
+  </ul>
+
+  <h3>👀 看實際 demo</h3>
+  <ul>
+    <li><a href="org-health.html">S3 Org 健康總覽（主秀）</a></li>
+    <li><a href="offboarding-audit.html">S4 Off-boarding Audit</a></li>
+    <li><a href="license-renewal.html">S5 License Renewal Planning</a></li>
+    <li><a href="multi-org-governance.html">S2 Multi-Org Governance</a></li>
+    <li><a href="cross-org-reallocation.html">S7 Cross-Org Reallocation</a></li>
+  </ul>
+
+  <h3>📖 文件與規範</h3>
+  <ul>
+    <li><a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/dashboard-builder/skill/references/network-admin-persona.md">persona.md</a> — Voice + 升級條件矩陣</li>
+    <li><a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/dashboard-builder/skill/references/design.md">design.md</a> — Design System 守則 + 9 條 hard prohibitions</li>
+    <li><a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/dashboard-builder/docs/scenario-candidates.md">scenario-candidates.md</a> — 12 個 scenario 候選清單</li>
+  </ul>
+
+  <h3>📩 給 RD 的 ask</h3>
+  <ul>
+    <li><a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/dashboard-builder/docs/rd-meeting/06-api-doc-questions.md">06-api-doc-questions.md</a> — 10 個明確問題（P0/P1/P2 排序），拿到 Q1+Q2 答案就解鎖 47 pending op</li>
+  </ul>
 </section>
 
 </main>

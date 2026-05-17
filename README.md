@@ -36,7 +36,8 @@
 | **[`index.html`](./index.html)** | 主站首頁 · 直接帶進 dashboard-builder |
 | **[`api-docs.html`](./api-docs.html)** | **互動式 API 文件（Swagger UI）** · 94 ops · 47 完整可試打 · 47 pending RD docs |
 | **[`openapi.json`](./openapi.json)** | OpenAPI 3.1 spec · 自動從 `api-skills/skills/*/SKILL.md` 生成 |
-| **[`dashboard-builder/architecture.html`](./dashboard-builder/architecture.html)** | 完整架構說明 + dashboard gallery |
+| **[`dashboard-builder/architecture.html`](./dashboard-builder/architecture.html)** | ★ 主架構頁 · 你的 AI 專業網管定位 + 6 面向 + Roadmap + Appendix |
+| **[`dashboard-builder/technical.html`](./dashboard-builder/technical.html)** | Technical Deep-Dive · widget / spec / compose / design system |
 | **[`dashboard-builder/widget-catalog.html`](./dashboard-builder/widget-catalog.html)** | 12 widget spec viewer |
 | **[`dashboard-builder/skill/`](./dashboard-builder/skill/)** | Skill 本體（SKILL.md + persona + design + compose.py） |
 

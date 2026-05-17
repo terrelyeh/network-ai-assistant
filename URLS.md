@@ -10,7 +10,8 @@
 | **[network-ai-assistant.vercel.app](https://network-ai-assistant.vercel.app)** | ★ 主站首頁 — 「專業 AI 網管」入口 |
 | [/api-docs.html](https://network-ai-assistant.vercel.app/api-docs.html) | ★ 互動式 API 文件（Swagger UI · 94 ops） |
 | [/openapi.json](https://network-ai-assistant.vercel.app/openapi.json) | OpenAPI 3.1 spec（給 Postman / SDK generator 用） |
-| [/dashboard-builder/architecture.html](https://network-ai-assistant.vercel.app/dashboard-builder/architecture.html) | Dashboard Builder 完整架構說明 + gallery |
+| [/dashboard-builder/architecture.html](https://network-ai-assistant.vercel.app/dashboard-builder/architecture.html) | ★ 主架構 · 你的 AI 專業網管定位 + 6 面向 + Roadmap + Appendix |
+| [/dashboard-builder/technical.html](https://network-ai-assistant.vercel.app/dashboard-builder/technical.html) | Dashboard Builder Technical Deep-Dive · widget / spec / compose / design system |
 | [/dashboard-builder/widget-catalog.html](https://network-ai-assistant.vercel.app/dashboard-builder/widget-catalog.html) | 12 widget spec viewer |
 | [/proposal-archive/](https://network-ai-assistant.vercel.app/proposal-archive/) | 📚 早期 proposal 歷史檔案 |
 
