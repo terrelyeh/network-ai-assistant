@@ -991,7 +991,7 @@
   <p class="lede">
     把 EnGenius Cloud 整套 API 變成 AI 可動手做事的能力 — 一個有 voice、有判斷、會記憶的 AI 同事，而不是又一個 chatbot、又一張 BI dashboard。
     <br><br>
-    Claude Code 在對話中編排 <span class="hl">13 個 data skill</span>（最小 primitive 單位）+ <span class="hl">persona / design / playbook / memory / house-rules</span> 5 層知識架構，依使用者問題即時組合資訊，自己判斷該回 <span class="hl">文字 / dashboard / 動手操作</span>。
+    Claude Code 在對話中編排 <span class="hl">目前 13 個 data skill</span>（最小 primitive 單位、持續擴增）+ <span class="hl">persona / design / playbook / memory / house-rules</span> 5 層知識架構，依使用者問題即時組合資訊，自己判斷該回 <span class="hl">文字 / dashboard / 動手操作</span>。
     <br><br>
     <strong>所有 dashboard 都是 AI 即時組裝的</strong> — 沒有預先寫好的模板，每次都是 AI 從 skills 即時拉資料、依情境組出當下最該呈現的視覺。
   </p>
@@ -1029,7 +1029,15 @@
   <h3>整體架構一張圖</h3>
   <p>使用者問問題 → AI 諮詢 5 個知識層 + 使用 skill primitives → 自己挑 output 形式：</p>
 
-  <div class="arch-diagram" style="margin: 28px 0;">
+  <div class="arch-diagram" style="margin: 28px 0; padding: 28px; gap: 12px;">
+  <style scoped>
+    .arch-diagram .layer { grid-template-columns: 70px 1fr 96px !important; padding: 20px 22px !important; gap: 22px !important; }
+    .arch-diagram .layer .lvl { font-size: 13px; }
+    .arch-diagram .layer .lvl b { font-size: 22px; }
+    .arch-diagram .layer .what .title { font-size: 17px !important; margin-bottom: 8px !important; }
+    .arch-diagram .layer .what .desc { font-size: 14px !important; line-height: 1.65 !important; }
+    .arch-diagram .arrow { font-size: 22px; margin: 4px 0 !important; }
+  </style>
 
     <!-- User -->
     <div class="layer" style="background: var(--surface-2);">
@@ -1049,21 +1057,21 @@
       <div class="what">
         <div class="title">Claude Code · 編排 · 諮詢 5 個知識層</div>
         <div class="desc" style="margin-bottom:10px;">每次回應前 AI 都會「諮詢」下面 5 個 .md 檔，依情境決定該怎麼回。</div>
-        <div style="display:grid; grid-template-columns: repeat(5,1fr); gap:6px;">
-          <div style="border:1px solid rgba(16,185,129,0.4); border-radius:8px; padding:10px 8px; background:rgba(16,185,129,0.06); font-size:11.5px; line-height:1.5;">
-            <strong>persona.md</strong><br><span style="color:var(--text-3); font-size:10.5px;">怎麼講話</span><br><span class="ok" style="font-size:11px;">✅ 358 行</span>
+        <div style="display:grid; grid-template-columns: repeat(5,1fr); gap:10px;">
+          <div style="border:1px solid rgba(16,185,129,0.4); border-radius:8px; padding:14px 12px; background:rgba(16,185,129,0.06); font-size:12.5px; line-height:1.65;">
+            <strong>persona.md</strong><br><span style="color:var(--text-3); font-size:11.5px;">怎麼講話</span><br><span class="ok" style="font-size:11px;">✅ 358 行</span>
           </div>
-          <div style="border:1px solid rgba(16,185,129,0.4); border-radius:8px; padding:10px 8px; background:rgba(16,185,129,0.06); font-size:11.5px; line-height:1.5;">
-            <strong>design.md</strong><br><span style="color:var(--text-3); font-size:10.5px;">生圖規範</span><br><span class="ok" style="font-size:11px;">✅ 341 行</span>
+          <div style="border:1px solid rgba(16,185,129,0.4); border-radius:8px; padding:14px 12px; background:rgba(16,185,129,0.06); font-size:12.5px; line-height:1.65;">
+            <strong>design.md</strong><br><span style="color:var(--text-3); font-size:11.5px;">生圖規範</span><br><span class="ok" style="font-size:11px;">✅ 341 行</span>
           </div>
-          <div style="border:1px solid rgba(245,158,11,0.4); border-radius:8px; padding:10px 8px; background:rgba(245,158,11,0.06); font-size:11.5px; line-height:1.5;">
-            <strong>house-rules.md</strong><br><span style="color:var(--text-3); font-size:10.5px;">專業意見</span><br><span class="warn" style="font-size:11px;">🔜 規劃</span>
+          <div style="border:1px solid rgba(245,158,11,0.4); border-radius:8px; padding:14px 12px; background:rgba(245,158,11,0.06); font-size:12.5px; line-height:1.65;">
+            <strong>house-rules.md</strong><br><span style="color:var(--text-3); font-size:11.5px;">專業意見</span><br><span class="warn" style="font-size:11px;">🔜 規劃</span>
           </div>
-          <div style="border:1px solid rgba(245,158,11,0.4); border-radius:8px; padding:10px 8px; background:rgba(245,158,11,0.06); font-size:11.5px; line-height:1.5;">
-            <strong>playbooks/</strong><br><span style="color:var(--text-3); font-size:10.5px;">思考骨架 ×3</span><br><span class="warn" style="font-size:11px;">🔜 下 session</span>
+          <div style="border:1px solid rgba(245,158,11,0.4); border-radius:8px; padding:14px 12px; background:rgba(245,158,11,0.06); font-size:12.5px; line-height:1.65;">
+            <strong>playbooks/</strong><br><span style="color:var(--text-3); font-size:11.5px;">思考骨架 ×3</span><br><span class="warn" style="font-size:11px;">🔜 下 session</span>
           </div>
-          <div style="border:1px solid rgba(245,158,11,0.4); border-radius:8px; padding:10px 8px; background:rgba(245,158,11,0.06); font-size:11.5px; line-height:1.5;">
-            <strong>memory/&lt;org&gt;.md</strong><br><span style="color:var(--text-3); font-size:10.5px;">長期記憶</span><br><span class="warn" style="font-size:11px;">🔜 post-launch</span>
+          <div style="border:1px solid rgba(245,158,11,0.4); border-radius:8px; padding:14px 12px; background:rgba(245,158,11,0.06); font-size:12.5px; line-height:1.65;">
+            <strong>memory/&lt;org&gt;.md</strong><br><span style="color:var(--text-3); font-size:11.5px;">長期記憶</span><br><span class="warn" style="font-size:11px;">🔜 post-launch</span>
           </div>
         </div>
       </div>
@@ -1078,14 +1086,15 @@
       <div class="what">
         <div class="title">Skill Bundle · AI 能做什麼（最小 unit）</div>
         <div class="desc" style="margin-bottom:10px;">AI 自由組合這些 primitives — 沒有預先規劃，由 AI 即時挑用。</div>
-        <div style="display:grid; grid-template-columns: 1.1fr 1fr; gap:10px;">
-          <div style="border:1px solid var(--border-strong); border-radius:8px; padding:12px 14px; background: var(--surface);">
-            <div style="font-weight:700; color:var(--cyan); margin-bottom:4px;">api-skills/ <span style="color:var(--text-3); font-weight:500; font-size:12px;">13 skills · 94 ops</span></div>
-            <div style="font-size:12px; color:var(--text-2); line-height:1.55;">打 EnGenius Cloud REST API：<code class="mono" style="font-size:11px;">hvs</code> · <code class="mono" style="font-size:11px;">networks</code> · <code class="mono" style="font-size:11px;">org-devices</code> · <code class="mono" style="font-size:11px;">org-licenses</code> · <code class="mono" style="font-size:11px;">team-members</code> · <code class="mono" style="font-size:11px;">network-{ap,gateway,switch}-troubleshoot</code> …</div>
+        <div style="display:grid; grid-template-columns: 1.1fr 1fr; gap:16px;">
+          <div style="border:1px solid var(--border-strong); border-radius:8px; padding:16px 18px; background: var(--surface);">
+            <div style="font-weight:700; color:var(--cyan); margin-bottom:4px;">api-skills/ <span style="color:var(--text-3); font-weight:500; font-size:12.5px;">目前 13 skills · 94 ops</span></div>
+            <div style="font-size:12.5px; color:var(--text-2); line-height:1.65; margin-bottom: 8px;">打 EnGenius Cloud REST API：<code class="mono" style="font-size:11px;">hvs</code> · <code class="mono" style="font-size:11px;">networks</code> · <code class="mono" style="font-size:11px;">org-devices</code> · <code class="mono" style="font-size:11px;">org-licenses</code> · <code class="mono" style="font-size:11px;">team-members</code> · <code class="mono" style="font-size:11px;">network-{ap,gateway,switch}-troubleshoot</code> …</div>
+            <div style="font-size:11.5px; color:var(--accent); font-weight:600;">📈 持續擴增中 — RD 會繼續增加、AI 也可以基於現有 API 自己發想新 skill</div>
           </div>
-          <div style="border:1px solid var(--border-strong); border-radius:8px; padding:12px 14px; background: var(--surface);">
+          <div style="border:1px solid var(--border-strong); border-radius:8px; padding:16px 18px; background: var(--surface);">
             <div style="font-weight:700; color:var(--warn); margin-bottom:4px;">dashboard-builder/ <span style="color:var(--text-3); font-weight:500; font-size:12px;">1 skill · 12 widgets</span></div>
-            <div style="font-size:12px; color:var(--text-2); line-height:1.55;">把 api-skills 拿到的資料即時組成 self-contained HTML dashboard — <strong>沒有預寫模板，每次都即時組裝</strong>。</div>
+            <div style="font-size:12.5px; color:var(--text-2); line-height:1.65;">把 api-skills 拿到的資料即時組成 self-contained HTML dashboard — <strong>沒有預寫模板，每次都即時組裝</strong>。</div>
           </div>
         </div>
       </div>
@@ -1100,18 +1109,18 @@
       <div class="what">
         <div class="title">三種 Output 形式 · AI 依 persona 自己挑</div>
         <div class="desc" style="margin-bottom:10px;">同一個 query、不同情境 → 不同 output 形式。Dashboard 是其中一個選項，不是預設。</div>
-        <div style="display:grid; grid-template-columns: repeat(3,1fr); gap:10px;">
-          <div style="border:1px solid var(--border-strong); border-radius:8px; padding:14px 10px; background:var(--surface); text-align:center;">
+        <div style="display:grid; grid-template-columns: repeat(3,1fr); gap:14px;">
+          <div style="border:1px solid var(--border-strong); border-radius:8px; padding:18px 12px; background:var(--surface); text-align:center;">
             <div style="font-size:26px; line-height:1;">📝</div>
             <div style="font-weight:700; margin-top:6px; font-size:13.5px;">Text</div>
             <div style="font-size:11px; color:var(--text-3); margin-top:3px;">資料簡單時</div>
           </div>
-          <div style="border:1px solid var(--border-strong); border-radius:8px; padding:14px 10px; background:var(--surface); text-align:center;">
+          <div style="border:1px solid var(--border-strong); border-radius:8px; padding:18px 12px; background:var(--surface); text-align:center;">
             <div style="font-size:26px; line-height:1;">📊</div>
             <div style="font-weight:700; margin-top:6px; font-size:13.5px;">Dashboard</div>
             <div style="font-size:11px; color:var(--text-3); margin-top:3px;">需對比視覺時</div>
           </div>
-          <div style="border:1px solid var(--border-strong); border-radius:8px; padding:14px 10px; background:var(--surface); text-align:center;">
+          <div style="border:1px solid var(--border-strong); border-radius:8px; padding:18px 12px; background:var(--surface); text-align:center;">
             <div style="font-size:26px; line-height:1;">🔧</div>
             <div style="font-weight:700; margin-top:6px; font-size:13.5px;">Action</div>
             <div style="font-size:11px; color:var(--text-3); margin-top:3px;">使用者要動手時</div>
@@ -1134,9 +1143,9 @@
     </thead>
     <tbody>
       <tr>
-        <td><strong>Skills · 13 個</strong><br><code class="mono">api-skills/skills/</code></td>
+        <td><strong>Skills · 目前 13 個（持續擴增）</strong><br><code class="mono">api-skills/skills/</code></td>
         <td class="ok">✅ ready</td>
-        <td>他<strong>能做什麼</strong> — 看設備、改設定、診斷、視覺化、（未來）動手操作。13 skills 含 94 個 op</td>
+        <td>他<strong>能做什麼</strong> — 看設備、改設定、診斷、視覺化、（未來）動手操作。目前 13 skills 含 94 個 op，RD 持續新增、AI 也能基於 API 自己發想新 skill</td>
       </tr>
       <tr>
         <td><strong><code class="mono">persona.md</code></strong></td>
@@ -1308,7 +1317,7 @@
 
   <div class="pull" style="border-left-color: var(--cyan);">
     <span class="badge" style="color: var(--cyan);">核心 punch line</span>
-    沒有預先做好的 dashboard 模板。每次使用者問問題，AI 都是<strong>從 13 個 skill 即時拼出當下最該呈現的資訊</strong> — 同樣的問題在不同情境下會產出完全不同的 output。
+    沒有預先做好的 dashboard 模板。每次使用者問問題，AI 都是<strong>從目前可用的 skill 即時拼出當下最該呈現的資訊</strong> — 同樣的問題在不同情境下會產出完全不同的 output。
   </div>
 
   <h3>三種 output 形式 · AI 自己挑</h3>
@@ -1357,7 +1366,7 @@
     我們提供 <strong>primitives</strong>（最小可用單位），AI 自由組合。架構止於 skill 層 — 上面那些 layer（persona / design / playbook / memory / house-rules）由 AI 在 run-time 自己判斷怎麼使用。
   </p>
 
-  <h3>13 個 skill ready · 94 個 op</h3>
+  <h3>目前 13 個 skill ready · 94 個 op（持續擴增）</h3>
   <p>Skills 是 Claude Code 的安裝單位。每個 skill 包含：</p>
   <ul>
     <li><code class="mono">SKILL.md</code> — op 定義（method / path / params / 描述）</li>
@@ -1365,7 +1374,7 @@
     <li><code class="mono">scripts/call_api.py</code> — 5 行 delegation 到共用 framework</li>
   </ul>
 
-  <p>13 skills 涵蓋 5 大類：</p>
+  <p>目前 13 skills 涵蓋 5 大類（RD 會持續新增；AI 也可基於 API 自己組合新 skill — 詳見「未來」段）：</p>
   <table class="tbl">
     <thead>
       <tr><th>分類</th><th>Skills</th><th>用途</th></tr>
@@ -1381,7 +1390,7 @@
   <p style="margin-top: 12px;">看完整列表：<a href="../api-skills/">api-skills 總覽</a></p>
 
   <h3>OpenAPI 公開 · AI-agent-friendly</h3>
-  <p>我們把 13 個 skill 的 94 個 op 自動生成 <strong>OpenAPI 3.1 spec</strong>，這讓整套 skill suite 對 AI agent 特別友善：</p>
+  <p>我們把目前 13 個 skill 的 94 個 op 自動生成 <strong>OpenAPI 3.1 spec</strong>，這讓整套 skill suite 對 AI agent 特別友善：</p>
   <ul>
     <li><strong>AI 自動發現</strong> — 任何 LLM agent 抓 <code class="mono"><a href="../openapi.json">openapi.json</a></code> 就懂全部 API</li>
     <li><strong>Swagger UI 互動式</strong> — <a href="../api-docs.html">api-docs.html</a> 可點按、可 Try it out、可看 schema</li>
