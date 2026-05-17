@@ -113,6 +113,31 @@ network-ai-assistant/
 - 檔名：kebab-case
 - 新加 .html 頁要更新 index.html quicklink + URLS.md + README.md「主入口」表
 
+## ★ openapi.json · Universal API Index（Claude Code 內外都用得上）
+
+之前的誤解：「openapi.json 只給外部 AI / SDK generator 用」。**修正**：
+
+| | Claude Code skill loader（runtime 引擎） | Claude Code AI（在跟使用者對話的我） |
+|---|---|---|
+| 讀什麼 | SKILL.md（為了 invoke skill） | **任何檔案** — 用 Read tool |
+| 用 openapi.json 嗎？ | ❌ 不用（有自己的 skill schema） | ✅ **可以**，當作 universal API index |
+
+**AI 在對話中用 openapi.json 的最佳場景**（比讀 13 個 SKILL.md + N 個 references/ 快很多）：
+
+- **跨 skill 探索**：「找跟 license 相關的所有 op」→ 1 個 grep 搞定
+- **快速寫 curl / 範例 code**：拿 method/path/auth header → 直接 output
+- **schema 速查**：「`patch_general_policy_plus` 的 body 長怎樣」→ 1 個檔內找
+- **Gap 分析**：「列所有 `x-rd-pending` 的 op」→ 1 個 jq query
+- **跨 method filter**：「列出所有 GET / POST」→ openapi.json paths 結構直接 filter
+
+**SKILL.md 才有的（openapi.json 沒有）**：persona / design 守則、flow modules、constraints、用法注意事項。
+
+**所以兩個 source 是互補不是 parallel**：
+- 要 invoke skill + 遵守 persona 規範 → SKILL.md 機制
+- 要 cross-skill 查 / 快速 metadata 速查 → 讀 openapi.json
+
+每次跑 `python3 scripts/build-openapi.py` 後 openapi.json 反映最新 SKILL.md — AI 查的永遠是最新版本。
+
 ## ★ Dashboard Builder Skill workflow
 
 **雙 script workflow**（不打雲端 / 不生 HTML 兩個分工乾淨）：
