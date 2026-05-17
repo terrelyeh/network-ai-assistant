@@ -283,14 +283,20 @@ git diff --stat api-skills/
 
 ## ⚠️ RD 端阻擋項目
 
-**P0（阻 booth 戲劇性 demo）**：
-- `network-{ap,gateway,switch}-troubleshoot` 三個 skill 缺 `scripts/`
-- 47 個 op 不能執行（subscribe_* / rpc_*）→ 阻 rpc_led_dance / rpc_kick_clients / cable_diag / 即時 client list 等
-- 4 份推 RD 會議材料在 [`dashboard-builder/docs/rd-meeting/`](dashboard-builder/docs/rd-meeting/)
+**P0（阻 booth 戲劇性 demo · 2026-05-17 重新框架）**：
+- ~~47 個 troubleshoot script 全部要 RD 寫~~ ← 已重新評估，**真正需要 RD 的只剩 1-2 個關鍵資訊**：
+  - dolphin 的 URL pattern + 一個 working curl 範例
+  - subscribe 的 streaming protocol（或 polling 替代方案）
+- 詳見 [`dashboard-builder/docs/rd-meeting/06-api-doc-questions.md`](dashboard-builder/docs/rd-meeting/06-api-doc-questions.md) — 10 個明確問題，按 P0/P1/P2 排序
 
 **P1（阻新 widget 類型）**：
 - 沒有 history aggregation API → line_chart / sparkline / area_chart widget 沒法做
 - 提議 endpoint shape 在 [`dashboard-builder/docs/rd-meeting/04-history-api-proposal.md`](dashboard-builder/docs/rd-meeting/04-history-api-proposal.md)
+
+**OpenAPI gap visualization（自助工具）**：
+- 跑 `python3 scripts/build-openapi.py` 自動掃 `api-skills/skills/*/SKILL.md` → 生 `openapi.json`
+- `api-docs.html` 用 Swagger UI 渲染 → 47 個 `x-rd-pending` op 視覺化顯示為「⚠ TBD」
+- **這就是給 RD 看的 gap 報告**，比文字訴求直觀
 
 完整優先序表：[`dashboard-builder/docs/rd-priorities.md`](dashboard-builder/docs/rd-priorities.md)
 

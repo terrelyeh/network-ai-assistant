@@ -33,9 +33,19 @@
 | URL | 用途 |
 |---|---|
 | **[`index.html`](./index.html)** | 主站首頁 · 直接帶進 dashboard-builder |
+| **[`api-docs.html`](./api-docs.html)** | **互動式 API 文件（Swagger UI）** · 94 ops · 47 完整可試打 · 47 pending RD docs |
+| **[`openapi.json`](./openapi.json)** | OpenAPI 3.1 spec · 自動從 `api-skills/skills/*/SKILL.md` 生成 |
 | **[`dashboard-builder/architecture.html`](./dashboard-builder/architecture.html)** | 完整架構說明 + dashboard gallery |
 | **[`dashboard-builder/widget-catalog.html`](./dashboard-builder/widget-catalog.html)** | 12 widget spec viewer |
 | **[`dashboard-builder/skill/`](./dashboard-builder/skill/)** | Skill 本體（SKILL.md + persona + design + compose.py） |
+
+### 重新生 OpenAPI
+
+```bash
+# 改完 api-skills/skills/*/SKILL.md 後重跑這個一次：
+python3 scripts/build-openapi.py
+# → 重生 openapi.json，api-docs.html 自動讀新版
+```
 
 ### 雙 script workflow
 
@@ -73,13 +83,16 @@ python dashboard-builder/skill/scripts/compose.py \
 ```
 network-ai-assistant/
 ├── index.html              ← 主站首頁（專業 AI 網管 entry）
+├── api-docs.html           ← ★ 互動式 API 文件（Swagger UI 讀 openapi.json）
+├── openapi.json            ← ★ OpenAPI 3.1 spec · 94 ops · auto-generated
 ├── README.md               ← 你正在看（內部狀態文件）
 ├── README.oss-draft.md     ← OSS release 用的對外版（release 時取代 README.md）
 ├── LICENSE                 ← MIT
 ├── CLAUDE.md               ← AI session 接手導讀
 ├── assets/                 ← 共用 logo / 架構圖
 ├── scripts/
-│   └── sync-refs.sh        ← 同步 persona/design.md → api-skills/references/
+│   ├── sync-refs.sh        ← 同步 persona/design.md → api-skills/references/
+│   └── build-openapi.py    ← 從 api-skills/skills/*/SKILL.md 重生 openapi.json
 ├── dashboard-builder/      ← ★ 主軸：完整 skill + 17 張 dashboard + docs
 │   ├── architecture.html
 │   ├── widget-catalog.html
