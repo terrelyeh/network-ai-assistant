@@ -1,0 +1,37 @@
+{
+  "ids": [],
+  "network_candidates": [
+    {
+      "source_path": "$.clients.*",
+      "target_bucket": "network_acl_candidates",
+      "field_map": {
+        "mac": "mac",
+        "device_type": "device_type",
+        "scope": "scope",
+        "description": "description",
+        "is_mld_client": "is_mld_client",
+        "device_name": "device_name",
+        "network_id": "$memory.ids.network_id",
+        "org_id": "$memory.ids.org_id"
+      },
+      "display_fields": [
+        "mac",
+        "device_type",
+        "scope",
+        "description",
+        "is_mld_client"
+      ],
+      "required_fields": ["mac"],
+      "required_output_field": "mac",
+      "replace_scope_field": "network_id",
+      "replace_scope_value_source": "$memory.ids.network_id",
+      "defaults": {
+        "network_id": "$memory.ids.network_id",
+        "org_id": "$memory.ids.org_id"
+      }
+    }
+  ],
+  "clear_buckets_before_extract": ["network_acl_candidates"],
+  "evidence_limit": 30,
+  "candidate_limit": 50
+}

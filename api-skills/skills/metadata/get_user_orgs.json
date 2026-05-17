@@ -1,0 +1,30 @@
+{
+  "ids": [
+    {
+      "memory_key": "org_id",
+      "source_path": "*",
+      "value_field": "id",
+      "required_fields": ["id", "name"],
+      "take": "first"
+    }
+  ],
+  "network_candidates": [
+    {
+      "source_path": "*",
+      "target_bucket": "org_candidates",
+      "field_map": {
+        "org_id": "id",
+        "org_name": "name",
+        "country": "country",
+        "time_zone": "time_zone"
+      },
+      "display_fields": ["org_id", "org_name", "country", "time_zone"],
+      "required_fields": ["id", "name"],
+      "required_output_field": "org_id",
+      "defaults": {}
+    }
+  ],
+  "clear_buckets_before_extract": ["org_candidates"],
+  "evidence_limit": 30,
+  "candidate_limit": 500
+}

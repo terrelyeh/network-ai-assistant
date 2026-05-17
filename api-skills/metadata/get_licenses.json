@@ -1,0 +1,59 @@
+{
+  "ids": [],
+  "network_candidates": [
+    {
+      "source_path": "$",
+      "target_bucket": "license_response_meta",
+      "field_map": {
+        "response_size": "size",
+        "available_ai_tokens": "available_ai_tokens"
+      },
+      "display_fields": ["response_size", "available_ai_tokens"],
+      "required_fields": ["size"],
+      "required_output_field": "response_size",
+      "defaults": {}
+    },
+    {
+      "source_path": "licenses.*",
+      "target_bucket": "license_candidates",
+      "field_map": {
+        "license_id": "id",
+        "license_key": "license_key",
+        "license_key_model": "license_key_model",
+        "license_type": "license_type",
+        "license_category": "license_category",
+        "status": "status",
+        "mac": "mac",
+        "duration": "duration",
+        "seats": "seats",
+        "shareable_units": "shareable_units",
+        "time_remaining": "time_remaining",
+        "issued_date": "issued_date",
+        "activated_date": "activated_date",
+        "note": "note"
+      },
+      "display_fields": [
+        "license_id",
+        "license_key",
+        "license_key_model",
+        "license_type",
+        "license_category",
+        "status",
+        "mac",
+        "duration",
+        "seats",
+        "shareable_units",
+        "time_remaining",
+        "issued_date",
+        "activated_date",
+        "note"
+      ],
+      "required_fields": ["id", "license_key"],
+      "required_output_field": "license_id",
+      "defaults": {}
+    }
+  ],
+  "clear_buckets_before_extract": [],
+  "evidence_limit": 30,
+  "candidate_limit": 500
+}

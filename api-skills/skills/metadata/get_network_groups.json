@@ -1,0 +1,19 @@
+{
+  "network_candidates": [
+    {
+      "source_path": "groups.*",
+      "target_bucket": "org_network_group_candidates",
+      "field_map": {
+        "group_id": "id",
+        "name": "name"
+      },
+      "display_fields": ["group_id", "name"],
+      "required_fields": ["id", "name"],
+      "required_output_field": "group_id",
+      "defaults": {}
+    }
+  ],
+  "clear_buckets_before_extract": ["org_network_group_candidates"],
+  "evidence_limit": 30,
+  "candidate_limit": 500
+}

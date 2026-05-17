@@ -1,0 +1,33 @@
+{
+  "ids": [
+    {
+      "memory_key": "ap_speedtest_device",
+      "source_path": "$",
+      "value_field": "device"
+    }
+  ],
+  "network_candidates": [
+    {
+      "source_path": "content.history.*",
+      "target_bucket": "ap_speedtest_result_candidates",
+      "field_map": {
+        "device_mac": "$memory.ids.ap_speedtest_device",
+        "download_speed": "Download speed",
+        "upload_speed": "Upload speed",
+        "timestamp": "timestamp"
+      },
+      "display_fields": [
+        "device_mac",
+        "download_speed",
+        "upload_speed"
+      ],
+      "required_fields": [],
+      "required_output_field": "timestamp"
+    }
+  ],
+  "clear_buckets_before_extract": [
+    "ap_speedtest_result_candidates"
+  ],
+  "evidence_limit": 30,
+  "candidate_limit": 20
+}

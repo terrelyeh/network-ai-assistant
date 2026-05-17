@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Network AI-Assistant — 專案入口</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-1: #0a1628;
+    --bg-2: #0f1e3a;
+    --surface: rgba(255,255,255,0.04);
+    --surface-2: rgba(255,255,255,0.08);
+    --border: rgba(255,255,255,0.12);
+    --border-strong: rgba(255,255,255,0.22);
+    --text: #f8fafc;
+    --muted: #cbd5e1;
+    --dim: #64748b;
+    --accent: #ff6b35;
+    --cyan: #00d9c5;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%);
+    color: var(--text);
+    font-family: 'Inter', 'Noto Sans TC', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    padding: 80px 32px;
+    line-height: 1.55;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .container { max-width: 1100px; width: 100%; margin: 0 auto; }
+
+  /* HERO */
+  .hero { text-align: center; margin-bottom: 56px; }
+  .hero .tag {
+    color: var(--accent);
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .hero h1 {
+    font-size: clamp(40px, 5vw, 64px);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+  .hero h1 .accent { color: var(--accent); }
+  .hero h1 .cyan { color: var(--cyan); }
+  .hero .lead {
+    margin-top: 22px;
+    color: var(--muted);
+    font-size: 18px;
+    max-width: 720px;
+    margin-left: auto; margin-right: auto;
+    line-height: 1.6;
+  }
+  .hero .lead strong { color: var(--text); }
+  .hero .meta {
+    margin-top: 28px;
+    display: inline-flex;
+    gap: 18px;
+    padding: 9px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 12.5px;
+    color: var(--muted);
+    flex-wrap: wrap;
+  }
+  .hero .meta strong { color: var(--text); }
+  .hero .meta .dot { color: var(--cyan); }
+
+  /* CHOOSER CARDS */
+  .chooser {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    margin-bottom: 36px;
+  }
+  .choice {
+    position: relative;
+    background: rgba(0,0,0,0.18);
+    border: 1px solid var(--border-strong);
+    border-radius: 22px;
+    padding: 36px 32px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .choice::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 5px;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s;
+  }
+  .choice:hover::before { transform: scaleX(1); }
+  .choice.product::before { background: var(--accent); }
+  .choice.engineering::before { background: var(--cyan); }
+  .choice:hover {
+    background: rgba(0,0,0,0.32);
+    transform: translateY(-4px);
+  }
+  .choice.product:hover { border-color: var(--accent); box-shadow: 0 20px 48px rgba(255,107,53,0.18); }
+  .choice.engineering:hover { border-color: var(--cyan); box-shadow: 0 20px 48px rgba(0,217,197,0.18); }
+
+  .choice-emoji { font-size: 56px; margin-bottom: 18px; }
+  .choice-tag {
+    display: inline-block;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 5px;
+    margin-bottom: 12px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .choice.product .choice-tag {
+    color: var(--accent);
+    background: rgba(255,107,53,0.12);
+    border: 1px solid rgba(255,107,53,0.3);
+  }
+  .choice.engineering .choice-tag {
+    color: var(--cyan);
+    background: rgba(0,217,197,0.12);
+    border: 1px solid rgba(0,217,197,0.3);
+  }
+
+  .choice-title {
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+    line-height: 1.15;
+  }
+  .choice-sub {
+    color: var(--muted);
+    font-size: 14.5px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  .choice-sub strong { color: var(--text); }
+
+  .choice-list {
+    list-style: none;
+    margin-bottom: 22px;
+    padding-left: 4px;
+  }
+  .choice-list li {
+    color: var(--muted);
+    font-size: 13.5px;
+    padding: 4px 0;
+    display: flex;
+    align-items: start;
+    gap: 8px;
+    line-height: 1.5;
+  }
+  .choice-list li::before {
+    content: '→';
+    color: var(--dim);
+    flex-shrink: 0;
+  }
+  .choice.product .choice-list li:hover::before { color: var(--accent); }
+  .choice.engineering .choice-list li:hover::before { color: var(--cyan); }
+
+  .choice-cta {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .choice.product .choice-cta { color: var(--accent); }
+  .choice.engineering .choice-cta { color: var(--cyan); }
+  .choice-cta .arrow { transition: transform 0.2s; }
+  .choice:hover .choice-cta .arrow { transform: translateX(6px); }
+
+  .choice-meta {
+    font-size: 11.5px;
+    color: var(--dim);
+    font-family: 'JetBrains Mono', monospace;
+    margin-top: 8px;
+  }
+
+  /* SECONDARY LINKS */
+  .secondary {
+    text-align: center;
+    color: var(--muted);
+    font-size: 13.5px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+  .secondary a {
+    color: var(--cyan);
+    text-decoration: none;
+    margin: 0 6px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    transition: all 0.15s;
+  }
+  .secondary a:hover { background: var(--surface); color: var(--text); }
+
+  .foot {
+    margin-top: 36px;
+    text-align: center;
+    color: var(--dim);
+    font-size: 12px;
+    font-style: italic;
+  }
+
+  @media (max-width: 800px) {
+    .chooser { grid-template-columns: 1fr; }
+    body { padding: 40px 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- ARCHIVE BANNER -->
+<div style="background:rgba(251,191,36,0.08);border:1px dashed rgba(251,191,36,0.4);border-radius:12px;padding:14px 20px;margin-bottom:32px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+  <div style="font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#fbbf24;font-family:'JetBrains Mono',monospace;">📚 ARCHIVE</div>
+  <div style="flex:1;min-width:260px;color:#cbd5e1;font-size:13.5px;line-height:1.55;">
+    這是 2026-04 ~ 05 早期 proposal 階段的歷史檔案。<strong style="color:#f8fafc;">最終收斂的產品是「專業 AI 網管」</strong>（Dashboard Builder Skill）。
+  </div>
+  <a href="../index.html" style="color:#00d9c5;text-decoration:none;font-weight:700;font-size:13px;padding:8px 14px;border:1px solid rgba(0,217,197,0.4);border-radius:8px;white-space:nowrap;">← 回主站</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="tag">PROPOSAL ARCHIVE · 2026-04 ~ 05</div>
+  <h1>Network <span class="accent">AI-Assistant</span></h1>
+  <p class="lead">
+    早期 AI 網管助理產品提案<br>
+    依您的角色挑一個入口：<span class="accent">產品</span> 或 <span class="cyan">技術</span>。
+  </p>
+</section>
+
+<!-- CHOOSER -->
+<div class="chooser">
+
+  <a class="choice product" href="home-product.html">
+    <div class="choice-emoji">🎯</div>
+    <div class="choice-tag">FOR PM · MKT · 業務 · 經營層</div>
+    <div class="choice-title">產品 / 行銷</div>
+    <div class="choice-sub">
+      客戶故事、產品定位、UI mockup、銷售簡報。<br>
+      <strong>不需技術細節就能講完整套產品價值。</strong>
+    </div>
+    <ul class="choice-list">
+      <li>PM/MKT 客戶故事（4 階段 + KPI + persona）</li>
+      <li>兩模式定位（Mode A 員工 / Mode B SMB IT）</li>
+      <li>4×2 使用案例矩陣（給 PM 排 roadmap）</li>
+      <li>4 個互動式 UI mockup</li>
+      <li>Dashboard Builder demo（wedge 主推）</li>
+      <li>10-slide sales pitch deck</li>
+      <li>高層次系統圖</li>
+    </ul>
+    <div class="choice-cta">
+      進入產品入口 <span class="arrow">→</span>
+    </div>
+    <div class="choice-meta">home-product.html · 7 頁 + 4 mockup + 1 deck</div>
+  </a>
+
+  <a class="choice engineering" href="home-engineering.html">
+    <div class="choice-emoji">🛠</div>
+    <div class="choice-tag">FOR Tech Lead · 工程師 · CIO</div>
+    <div class="choice-title">工程 / 技術</div>
+    <div class="choice-sub">
+      完整架構、實作指南、Playbook、工程盲點。<br>
+      <strong>從 ring system 到 MCP，全部展開。</strong>
+    </div>
+    <ul class="choice-list">
+      <li>系統架構（互動版）· 6 層 · 繁中 / EN</li>
+      <li>Dashboard Builder 實作指南（4-tab）</li>
+      <li>Playbook 範例集（3 個真實案例）</li>
+      <li>12 個工程盲點與對策</li>
+      <li>高層次系統圖（從技術視角）</li>
+    </ul>
+    <div class="choice-cta">
+      進入工程入口 <span class="arrow">→</span>
+    </div>
+    <div class="choice-meta">home-engineering.html · 5 個技術頁</div>
+  </a>
+
+</div>
+
+<!-- SECONDARY -->
+<div class="secondary">
+  不確定？<a href="overview-pm-mkt.html">先看 1 頁客戶故事</a> · <a href="mockup-gallery.html">直接看 UI mockup</a> · <a href="architecture-v2-zh.html">直接看技術架構</a>
+</div>
+
+<div class="foot">
+  📌 Mockup · Live: network-ai-assistant.vercel.app
+</div>
+
+</div>
+</body>
+</html>

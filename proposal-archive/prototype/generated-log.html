@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>AI Builder · Generated Files Log</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-1:#f5f2ea; --bg-2:#ebe6da; --surface:#fff; --surface-2:#faf8f3;
+    --border:rgba(60,50,35,0.12); --border-strong:rgba(60,50,35,0.25);
+    --text:#1a2332; --muted:#5a6878; --dim:#97a3b3;
+    --accent:#ff6b35; --cyan:#03a9f4; --good:#10b981; --warn:#f59e0b; --bad:#ef4444;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:linear-gradient(135deg,var(--bg-1),var(--bg-2));
+    color:var(--text);
+    font-family:'Inter','Noto Sans TC',-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    font-size:16px; line-height:1.55; min-height:100vh;
+  }
+  .container { max-width:1480px; margin:0 auto; padding:36px 40px 80px; }
+
+  /* HEADER */
+  .header {
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:24px 30px;
+    margin-bottom:22px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:18px;
+    box-shadow:0 1px 3px rgba(60,50,35,0.05);
+  }
+  .header h1 {
+    font-size:26px;
+    font-weight:800;
+    letter-spacing:-0.01em;
+    display:flex; align-items:center; gap:14px;
+  }
+  .header h1 img { width:32px; height:32px; }
+  .header .sub {
+    color:var(--muted);
+    font-size:13.5px;
+    margin-top:4px;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .header .live-status {
+    display:flex; align-items:center; gap:14px;
+  }
+  .header .counter {
+    background:var(--cyan);
+    color:#fff;
+    padding:10px 18px;
+    border-radius:12px;
+    font-family:'JetBrains Mono',monospace;
+    font-weight:800;
+    font-size:14px;
+    letter-spacing:0.05em;
+  }
+  .header .counter .num {
+    font-size:24px;
+    font-weight:900;
+    margin-right:4px;
+  }
+  .header .auto-refresh {
+    font-family:'JetBrains Mono',monospace;
+    font-size:11.5px;
+    color:var(--muted);
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .header .auto-refresh .dot {
+    width:8px; height:8px;
+    background:var(--good);
+    border-radius:50%;
+    animation:pulse 2s infinite;
+  }
+  @keyframes pulse { 50% { opacity:0.3; } }
+
+  /* INFO BANNER */
+  .info-banner {
+    background:#0f1e3a;
+    border-radius:12px;
+    padding:14px 22px;
+    margin-bottom:26px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:12px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12.5px;
+    color:#d8e2f3;
+  }
+  .info-banner .label { color:#6ee7b7; font-weight:700; letter-spacing:0.18em; font-size:11px; }
+  .info-banner .info strong { color:#fbbf24; }
+  .info-banner code {
+    background:rgba(255,255,255,0.06);
+    padding:2px 8px;
+    border-radius:4px;
+    color:#a78bfa;
+  }
+
+  /* ENTRY LIST */
+  .entries {
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .entry {
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:18px 24px;
+    display:grid;
+    grid-template-columns:auto 1fr auto;
+    gap:22px;
+    align-items:center;
+    box-shadow:0 1px 3px rgba(60,50,35,0.04);
+    transition:all 0.2s;
+    text-decoration:none;
+    color:inherit;
+  }
+  .entry:hover {
+    border-color:var(--cyan);
+    transform:translateX(4px);
+    box-shadow:0 8px 24px rgba(60,50,35,0.08);
+  }
+  .entry.fresh {
+    border-color:var(--good);
+    background:linear-gradient(135deg, var(--surface), rgba(16,185,129,0.04));
+    animation:fresh-glow 1.5s ease-out;
+  }
+  @keyframes fresh-glow {
+    0% { box-shadow:0 0 0 0 rgba(16,185,129,0.4), 0 1px 3px rgba(60,50,35,0.04); transform:translateX(0); }
+    30% { box-shadow:0 0 0 10px rgba(16,185,129,0); }
+    100% { box-shadow:0 1px 3px rgba(60,50,35,0.04); }
+  }
+
+  .entry .time {
+    text-align:center;
+    width:78px;
+  }
+  .entry .time .hhmm {
+    font-family:'JetBrains Mono',monospace;
+    font-size:22px;
+    font-weight:800;
+    color:var(--text);
+    line-height:1;
+  }
+  .entry .time .date {
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    color:var(--dim);
+    margin-top:4px;
+  }
+  .entry .time .ago {
+    font-size:10.5px;
+    color:var(--cyan);
+    margin-top:5px;
+    font-weight:600;
+  }
+
+  .entry .body { min-width:0; }
+  .entry .scenario-tag {
+    display:inline-block;
+    background:rgba(3,169,244,0.10);
+    color:var(--cyan);
+    padding:2px 10px;
+    border-radius:6px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    font-weight:700;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    margin-bottom:6px;
+  }
+  .entry .scenario-tag.security { background:rgba(245,158,11,0.10); color:#b45309; }
+  .entry .scenario-tag.access { background:rgba(167,139,250,0.10); color:#a78bfa; }
+  .entry .scenario-tag.audit { background:rgba(3,169,244,0.10); color:var(--cyan); }
+  .entry .scenario-tag.live { background:rgba(16,185,129,0.10); color:var(--good); }
+
+  .entry h3 {
+    font-size:18px;
+    font-weight:800;
+    letter-spacing:-0.01em;
+    margin-bottom:4px;
+  }
+  .entry .q {
+    color:var(--muted);
+    font-size:13.5px;
+    font-style:italic;
+    margin-bottom:8px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .entry .meta {
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+    font-size:11.5px;
+    color:var(--dim);
+    font-family:'JetBrains Mono',monospace;
+  }
+  .entry .meta .item {
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+  }
+  .entry .meta .item.ops { color:var(--accent); }
+  .entry .meta .item.widgets { color:var(--cyan); }
+  .entry .meta .item.time-ms { color:var(--good); font-weight:700; }
+  .entry .meta .item.file { color:var(--muted); }
+
+  .entry .arrow {
+    font-size:24px;
+    color:var(--dim);
+    font-weight:300;
+    transition:transform 0.2s, color 0.2s;
+  }
+  .entry:hover .arrow { color:var(--cyan); transform:translateX(4px); }
+
+  /* Empty state */
+  .empty {
+    text-align:center;
+    padding:64px 24px;
+    color:var(--muted);
+    font-size:15px;
+  }
+  .empty h2 {
+    font-size:22px;
+    color:var(--text);
+    font-weight:700;
+    margin-bottom:8px;
+  }
+
+  /* Footer */
+  .footer {
+    margin-top:36px;
+    padding-top:20px;
+    border-top:1px solid var(--border);
+    text-align:center;
+    color:var(--dim);
+    font-size:12px;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .footer code {
+    background:var(--surface);
+    border:1px solid var(--border);
+    padding:2px 6px;
+    border-radius:4px;
+    color:var(--text);
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<div class="header">
+  <div>
+    <h1>
+      <img src="../../assets/engenius-logo.png" alt="">
+      Generated Files Log
+    </h1>
+    <div class="sub">AI Dashboard Builder · this booth session · localhost:3460</div>
+  </div>
+  <div class="live-status">
+    <div class="auto-refresh">
+      <span class="dot"></span> auto-refresh every 2s
+    </div>
+    <div class="counter"><span class="num" id="total-count">0</span>dashboards generated</div>
+  </div>
+</div>
+
+<div class="info-banner">
+  <span class="label">📂 LOCAL FILES</span>
+  <div class="info">
+    All HTML written to <code>/Users/terrelyeh/.../prototype/</code> ·
+    JSON data from <strong>falcon.staging.engenius.ai</strong> ·
+    served by <code>python -m http.server :3460</code>
+  </div>
+</div>
+
+<div class="entries" id="entries-list">
+  <div class="empty">
+    <h2>Waiting for first generation...</h2>
+    <p>等 AI 第一個 dashboard 出來</p>
+  </div>
+</div>
+
+<div class="footer">
+  Manifest source: <code>prototype/generated-manifest.json</code> ·
+  Each AI generation appends an entry · auto-polled every 2 seconds
+</div>
+
+</div>
+
+<script>
+const TAG_LABELS = {
+  audit: 'AUDIT',
+  security: 'SECURITY',
+  access: 'ACCESS',
+  live: 'LIVE',
+  inventory: 'INVENTORY',
+  license: 'LICENSE'
+};
+
+let prevCount = 0;
+
+function relativeAgo(ts) {
+  const seconds = Math.floor((Date.now() - new Date(ts).getTime()) / 1000);
+  if (seconds < 60) return `${seconds}s ago`;
+  const m = Math.floor(seconds / 60);
+  if (m < 60) return `${m}m ago`;
+  const h = Math.floor(m / 60);
+  return `${h}h ${m % 60}m ago`;
+}
+
+async function refresh() {
+  try {
+    const r = await fetch('./generated-manifest.json', { cache: 'no-store' });
+    const data = await r.json();
+    const entries = data.entries || [];
+
+    document.getElementById('total-count').textContent = entries.length;
+    const list = document.getElementById('entries-list');
+
+    if (entries.length === 0) {
+      list.innerHTML = '<div class="empty"><h2>Waiting for first generation...</h2><p>等 AI 第一個 dashboard 出來</p></div>';
+      return;
+    }
+
+    // newest first
+    const sorted = [...entries].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    const isNewBatch = entries.length > prevCount;
+
+    list.innerHTML = sorted.map((e, idx) => {
+      const t = new Date(e.timestamp);
+      const hhmm = t.toTimeString().slice(0, 8);
+      const date = t.toISOString().slice(5, 10);
+      const ops = (e.ops_called || []).join(' · ');
+      const widgets = (e.widgets || []).join(', ');
+      const tag = (e.tag || 'audit').toLowerCase();
+      const tagLabel = TAG_LABELS[tag] || tag.toUpperCase();
+      const isFresh = isNewBatch && idx === 0;
+      return `
+        <a class="entry${isFresh ? ' fresh' : ''}" href="${e.filename}" target="_blank">
+          <div class="time">
+            <div class="hhmm">${hhmm}</div>
+            <div class="date">${date}</div>
+            <div class="ago">${relativeAgo(e.timestamp)}</div>
+          </div>
+          <div class="body">
+            <div class="scenario-tag ${tag}">${tagLabel}</div>
+            <h3>${e.scenario}</h3>
+            <div class="q">「${e.question}」</div>
+            <div class="meta">
+              <span class="item file">📄 ${e.filename}</span>
+              <span class="item ops">⚙️ ${(e.ops_called || []).length} ops</span>
+              <span class="item widgets">📊 ${(e.widgets || []).length} widgets</span>
+              <span class="item time-ms">⚡ ${e.gen_time_ms}ms</span>
+            </div>
+          </div>
+          <div class="arrow">→</div>
+        </a>
+      `;
+    }).join('');
+
+    prevCount = entries.length;
+  } catch (err) {
+    console.error('Manifest fetch failed:', err);
+  }
+}
+
+refresh();
+setInterval(refresh, 2000);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,65 @@
+{
+  "ids": [
+    {
+      "memory_key": "root_hv_id",
+      "source_path": "*",
+      "value_field": "id",
+      "required_fields": ["org_id", "id"],
+      "take": "first"
+    },
+    {
+      "memory_key": "hv_id",
+      "source_path": "*",
+      "value_field": "id",
+      "required_fields": ["parent_hierarchy_view_id", "id"],
+      "take": "first"
+    },
+    {
+      "memory_key": "network_id",
+      "source_path": "*.networks.*",
+      "value_field": "id",
+      "required_fields": ["id"],
+      "take": "first"
+    }
+  ],
+  "network_candidates": [
+    {
+      "source_path": "*",
+      "target_bucket": "hv_candidates",
+      "field_map": {
+        "hv_id": "id",
+        "hv_name": "name",
+        "parent_hierarchy_view_id": "parent_hierarchy_view_id",
+        "org_id": "org_id"
+      },
+      "display_fields": ["org_id", "hv_id", "hv_name", "parent_hierarchy_view_id"],
+      "required_fields": ["id", "name"],
+      "required_output_field": "hv_id",
+      "replace_scope_field": "org_id",
+      "replace_scope_value_source": "$memory.ids.org_id",
+      "defaults": {
+        "org_id": "$memory.ids.org_id"
+      }
+    },
+    {
+      "source_path": "*.networks.*",
+      "target_bucket": "network_candidates",
+      "field_map": {
+        "network_id": "id",
+        "name": "name",
+        "network_name": "name",
+        "hierarchy_view_id": "parent_hierarchy_view_id",
+        "org_id": "$memory.ids.org_id"
+      },
+      "display_fields": ["org_id", "network_id", "network_name", "hierarchy_view_id"],
+      "required_fields": ["id"],
+      "required_output_field": "network_id",
+      "replace_scope_field": "org_id",
+      "replace_scope_value_source": "$memory.ids.org_id",
+      "defaults": {}
+    }
+  ],
+  "clear_buckets_before_extract": [],
+  "evidence_limit": 30,
+  "candidate_limit": 500
+}

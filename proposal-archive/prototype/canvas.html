@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Dashboard Builder · Live Canvas (REAL DATA)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-1: #f5f2ea;
+    --bg-2: #ebe6da;
+    --surface: #ffffff;
+    --surface-2: #faf8f3;
+    --border: rgba(60,50,35,0.12);
+    --border-strong: rgba(60,50,35,0.25);
+    --text: #1a2332;
+    --muted: #5a6878;
+    --dim: #97a3b3;
+    --accent: #ff6b35;
+    --cyan: #03a9f4;
+    --good: #10b981;
+    --warn: #f59e0b;
+    --bad: #ef4444;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 100%);
+    color: var(--text);
+    font-family: 'Inter', 'Noto Sans TC', -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    font-size: 16px;
+    line-height: 1.55;
+    min-height: 100vh;
+  }
+  .canvas { max-width: 1680px; margin: 0 auto; padding: 28px 40px 60px; }
+
+  /* HEADER */
+  .canvas-header {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px 28px;
+    margin-bottom: 22px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 24px;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(60,50,35,0.05);
+  }
+  .canvas-header .brand {
+    display: flex; align-items: center; gap: 12px;
+    border-right: 1px solid var(--border); padding-right: 24px;
+  }
+  .canvas-header .brand img { width: 38px; height: 38px; }
+  .canvas-header .brand-name {
+    font-size: 13px; color: var(--cyan); font-weight: 700;
+    font-family: 'JetBrains Mono', monospace; letter-spacing: 0.05em;
+  }
+  .canvas-header .brand-sub {
+    font-size: 11px; color: var(--dim);
+    font-family: 'JetBrains Mono', monospace; letter-spacing: 0.04em; margin-top: 2px;
+  }
+  .canvas-header .question { display: flex; flex-direction: column; gap: 4px; }
+  .canvas-header .q-label {
+    font-size: 10.5px; color: var(--dim);
+    letter-spacing: 0.25em; text-transform: uppercase;
+    font-weight: 700; font-family: 'JetBrains Mono', monospace;
+  }
+  .canvas-header .q-text {
+    font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: -0.01em;
+  }
+  .canvas-header .gen-info {
+    text-align: right; font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px; color: var(--muted); line-height: 1.5;
+  }
+  .canvas-header .gen-info .ok { color: var(--good); font-weight: 700; }
+  .canvas-header .gen-info .ts { color: var(--cyan); font-weight: 700; font-size: 12.5px; }
+
+  /* TRACE STRIP */
+  .trace-strip {
+    background: #0f1e3a;
+    border-radius: 10px;
+    padding: 12px 18px;
+    margin-bottom: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    color: #d8e2f3;
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .trace-strip .label { color: #6ee7b7; font-weight: 700; letter-spacing: 0.1em; font-size: 11px; }
+  .trace-strip .op { color: #a78bfa; background: rgba(167,139,250,0.10); padding: 2px 8px; border-radius: 4px; font-size: 11.5px; }
+  .trace-strip .arrow { color: #475569; }
+  .trace-strip .result { color: #fbbf24; font-weight: 700; }
+
+  .real-banner {
+    background: rgba(16,185,129,0.08);
+    border: 1px solid rgba(16,185,129,0.4);
+    border-radius: 10px;
+    padding: 10px 16px;
+    margin-bottom: 22px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--good);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .real-banner strong { color: var(--good); }
+  .real-banner .src {
+    color: var(--muted);
+    font-size: 11px;
+  }
+
+  /* MAIN GRID */
+  .dash-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .widget {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 26px;
+    box-shadow: 0 1px 3px rgba(60,50,35,0.05);
+    opacity: 0;
+    transform: translateY(12px);
+    animation: reveal 0.5s ease forwards;
+  }
+  @keyframes reveal { to { opacity: 1; transform: translateY(0); } }
+  .widget:nth-child(1) { animation-delay: 0.05s; }
+  .widget:nth-child(2) { animation-delay: 0.13s; }
+  .widget:nth-child(3) { animation-delay: 0.21s; }
+  .widget:nth-child(4) { animation-delay: 0.29s; }
+  .widget:nth-child(5) { animation-delay: 0.37s; }
+  .widget:nth-child(6) { animation-delay: 0.45s; }
+  .widget:nth-child(7) { animation-delay: 0.53s; }
+  .w-title {
+    font-size: 11px; color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    font-weight: 700; margin-bottom: 14px;
+  }
+
+  /* KPI */
+  .kpi-num {
+    font-size: clamp(40px, 4.4vw, 64px);
+    font-weight: 900; line-height: 1;
+    letter-spacing: -0.04em; color: var(--text);
+  }
+  .kpi-num .unit { font-size: 0.32em; color: var(--muted); font-weight: 600; margin-left: 4px; }
+  .kpi-num.bad { color: var(--bad); }
+  .kpi-num.warn { color: var(--warn); }
+  .kpi-num.good { color: var(--good); }
+  .kpi-sub { margin-top: 8px; font-size: 13px; color: var(--muted); }
+  .kpi-sub.bad { color: var(--bad); }
+  .kpi-sub.warn { color: var(--warn); }
+  .kpi-sub.good { color: var(--good); }
+
+  /* Org access table */
+  .widget.orgs-w { grid-column: span 2; }
+  .org-row {
+    display: grid;
+    grid-template-columns: 1fr 90px auto;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 14px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--good);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+  .org-row.warn { border-left-color: var(--warn); background: rgba(245,158,11,0.05); }
+  .org-row.bad { border-left-color: var(--bad); background: rgba(239,68,68,0.04); }
+  .org-row.cyan { border-left-color: var(--cyan); background: rgba(3,169,244,0.04); }
+  .org-row .name { font-weight: 700; }
+  .org-row .id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--dim);
+    margin-top: 2px;
+  }
+  .org-row .nets {
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    color: var(--cyan);
+  }
+  .org-row .nets-label {
+    font-size: 10.5px;
+    color: var(--muted);
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+  }
+  .badge {
+    display: inline-block;
+    padding: 2.5px 9px;
+    border-radius: 999px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .badge.good { background: rgba(16,185,129,0.12); color: var(--good); border: 1px solid rgba(16,185,129,0.4); }
+  .badge.warn { background: rgba(245,158,11,0.12); color: #b45309; border: 1px solid rgba(245,158,11,0.4); }
+  .badge.bad  { background: rgba(239,68,68,0.10); color: var(--bad); border: 1px solid rgba(239,68,68,0.4); }
+  .badge.cyan { background: rgba(3,169,244,0.10); color: var(--cyan); border: 1px solid rgba(3,169,244,0.4); }
+  .badge.dim  { background: var(--surface); color: var(--dim); border: 1px solid var(--border); }
+
+  /* License row */
+  .widget.lic-w { grid-column: span 2; }
+  .lic-row {
+    display: grid;
+    grid-template-columns: 1fr auto 100px;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 14px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 8px;
+  }
+  .lic-row.expired { border-color: rgba(239,68,68,0.4); background: rgba(239,68,68,0.04); }
+  .lic-row .model {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700; font-size: 13px;
+  }
+  .lic-row .key {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--muted); margin-top: 2px;
+  }
+  .lic-row .mac {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px; color: var(--dim); margin-top: 1px;
+  }
+  .lic-row .days {
+    font-family: 'JetBrains Mono', monospace;
+    text-align: right;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .lic-row .days strong { color: var(--text); font-size: 16px; font-weight: 800; }
+  .lic-row.expired .days strong { color: var(--bad); }
+  .lic-row .progress-bar {
+    height: 6px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 999px;
+    overflow: hidden; margin-top: 6px;
+  }
+  .lic-row .progress-bar .fill {
+    height: 100%; background: var(--good);
+    width: 0; animation: barfill 0.8s ease-out forwards; animation-delay: 0.6s;
+  }
+  .lic-row .progress-bar .fill.bad { background: var(--bad); }
+  .lic-row .progress-bar .fill.warn { background: var(--warn); }
+  @keyframes barfill { to { width: var(--target); } }
+
+  /* AI observations row spans full */
+  .widget.ai-w { grid-column: span 4; }
+  .ai-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .ai-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--cyan);
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+  .ai-card.critical { border-left-color: var(--bad); background: rgba(239,68,68,0.04); }
+  .ai-card.warning { border-left-color: var(--warn); background: rgba(245,158,11,0.04); }
+  .ai-card .level {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    margin-bottom: 8px; color: var(--cyan);
+  }
+  .ai-card.critical .level { color: var(--bad); }
+  .ai-card.warning .level { color: var(--warn); }
+  .ai-card .text {
+    font-size: 14px; color: var(--text);
+    line-height: 1.55; margin-bottom: 8px;
+  }
+  .ai-card .text code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px; background: var(--surface);
+    padding: 1px 6px; border-radius: 3px; color: var(--cyan);
+    border: 1px solid var(--border);
+  }
+  .ai-card .text strong { color: var(--text); font-weight: 700; }
+  .ai-card.critical .text strong { color: var(--bad); }
+  .ai-card .roi {
+    font-size: 12px; color: var(--muted);
+    font-style: italic; padding-top: 6px;
+    border-top: 1px dashed var(--border);
+  }
+
+  .toolbar {
+    margin-top: 22px;
+    display: flex; gap: 8px; flex-wrap: wrap;
+    padding-top: 18px;
+    border-top: 1px solid var(--border);
+    align-items: center;
+  }
+  .toolbar .lbl {
+    font-size: 10.5px; color: var(--dim);
+    letter-spacing: 0.18em; text-transform: uppercase;
+    font-weight: 700; font-family: 'JetBrains Mono', monospace; margin-right: 6px;
+  }
+  .tb-btn {
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    color: var(--text);
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 13px; font-weight: 600;
+    font-family: inherit; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .tb-btn:hover { background: var(--surface-2); border-color: var(--cyan); color: var(--cyan); }
+  .tb-btn.primary { background: var(--cyan); border-color: var(--cyan); color: #fff; }
+  .tb-btn.primary:hover { background: #0288d1; color: #fff; }
+
+  .chips {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--border);
+    display: flex; gap: 8px; flex-wrap: wrap;
+  }
+  .chips .lbl {
+    flex-basis: 100%;
+    font-size: 10.5px; color: var(--dim);
+    letter-spacing: 0.18em; text-transform: uppercase;
+    font-weight: 700; margin-bottom: 2px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .chip {
+    background: rgba(3,169,244,0.07);
+    border: 1px solid rgba(3,169,244,0.40);
+    color: var(--cyan);
+    padding: 6px 13px;
+    border-radius: 16px;
+    font-size: 12.5px; font-weight: 600;
+    cursor: pointer; font-family: inherit;
+    transition: all 0.15s;
+  }
+  .chip:hover { background: rgba(3,169,244,0.16); transform: translateY(-1px); }
+  .chip.action { background: rgba(255,107,53,0.07); border-color: rgba(255,107,53,0.40); color: var(--accent); }
+  .chip.action:hover { background: rgba(255,107,53,0.16); }
+</style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <!-- HEADER · Question + Brand + Gen Info -->
+  <div class="canvas-header">
+    <div class="brand">
+      <img src="../../assets/engenius-logo.png" alt="EnGenius Cloud">
+      <div>
+        <div class="brand-name">EnGenius Cloud · AI Builder</div>
+        <div class="brand-sub">live · falcon.staging.engenius.ai</div>
+      </div>
+    </div>
+    <div class="question">
+      <div class="q-label">USER ASKED</div>
+      <div class="q-text">我管的這些 org 跟 license 狀況怎樣？有沒有要注意的？</div>
+    </div>
+    <div class="gen-info">
+      <span class="ok">✓ Generated</span> from <span class="ts">REAL API</span><br>
+      <span style="color:var(--dim);">6 skill ops · 4 widgets · 2026-05-13 17:42</span>
+    </div>
+  </div>
+
+  <!-- REAL DATA BANNER -->
+  <div class="real-banner">
+    <div>✓ <strong>This dashboard is built from 100% real API responses</strong> — not mock data</div>
+    <div class="src">source: <strong>falcon.staging.engenius.ai/v2/*</strong> · auth: viewer · saved → prototype/live-data/</div>
+  </div>
+
+  <!-- TOOL TRACE (transparency) -->
+  <div class="trace-strip">
+    <span class="label">AI CALLED:</span>
+    <span class="op">get_user_orgs</span><span class="arrow">→</span><span class="result">5 orgs</span>
+    <span class="op">get_hierarchy_views</span><span class="arrow">→</span><span class="result">14 networks</span>
+    <span class="op">get_inventory</span><span class="arrow">→</span><span class="result">1 device</span>
+    <span class="op">get_licenses</span><span class="arrow">→</span><span class="result">3 (1 expired)</span>
+    <span class="op">get_ssid_profiles</span><span class="arrow">→</span><span class="result">1 SSID</span>
+    <span class="op">get_general_policy_plus</span><span class="arrow">→</span><span class="result">32 fields</span>
+  </div>
+
+  <!-- MAIN DASHBOARD GRID -->
+  <div class="dash-grid">
+
+    <!-- KPI ROW -->
+    <div class="widget">
+      <div class="w-title">Total Orgs</div>
+      <div class="kpi-num">5</div>
+      <div class="kpi-sub">staging 環境</div>
+    </div>
+    <div class="widget">
+      <div class="w-title">Networks</div>
+      <div class="kpi-num">14</div>
+      <div class="kpi-sub">跨所有 org</div>
+    </div>
+    <div class="widget">
+      <div class="w-title">Devices Visible</div>
+      <div class="kpi-num">1<span class="unit">台</span></div>
+      <div class="kpi-sub">受權限限制（1/5 orgs）</div>
+    </div>
+    <div class="widget">
+      <div class="w-title">License 警示</div>
+      <div class="kpi-num bad">1<span class="unit">張</span></div>
+      <div class="kpi-sub bad">已過期 — 需處理</div>
+    </div>
+
+    <!-- ORG ACCESS MATRIX (span 2) -->
+    <div class="widget orgs-w">
+      <div class="w-title">🏢 Org Access · 真實權限狀況</div>
+      <div class="org-row bad">
+        <div>
+          <div class="name">Main_Org</div>
+          <div class="id">5e410f44e91984972fd50a22</div>
+        </div>
+        <div class="nets">10<div class="nets-label">networks</div></div>
+        <div><span class="badge bad">N/A</span></div>
+      </div>
+      <div class="org-row warn">
+        <div>
+          <div class="name">terrel</div>
+          <div class="id">605d957f88ec783796d18b8a</div>
+        </div>
+        <div class="nets">–<div class="nets-label">basic plan</div></div>
+        <div><span class="badge warn">PLAN</span></div>
+      </div>
+      <div class="org-row good">
+        <div>
+          <div class="name">Vertical Solution Wizard Demo</div>
+          <div class="id">671a1fa12103d1fdf8485781</div>
+        </div>
+        <div class="nets">2<div class="nets-label">networks</div></div>
+        <div><span class="badge good">✓ FULL</span></div>
+      </div>
+      <div class="org-row bad">
+        <div>
+          <div class="name">ann-AP</div>
+          <div class="id">5edef0cdc06b40405bf43ee3</div>
+        </div>
+        <div class="nets">1<div class="nets-label">network</div></div>
+        <div><span class="badge bad">N/A</span></div>
+      </div>
+      <div class="org-row cyan">
+        <div>
+          <div class="name">Gordon</div>
+          <div class="id">642e46559e9da83590cb9a07</div>
+        </div>
+        <div class="nets">1<div class="nets-label">network (viewer)</div></div>
+        <div><span class="badge cyan">VIEWER</span></div>
+      </div>
+    </div>
+
+    <!-- LICENSE LIFECYCLE (span 2) -->
+    <div class="widget lic-w">
+      <div class="w-title">🎟 License Lifecycle (Vertical Demo)</div>
+      <div class="lic-row expired">
+        <div>
+          <div class="model">GW-1LW-EDU</div>
+          <div class="key">661500-0EB554-099CAE-8AB85E</div>
+          <div class="mac">MAC 00:03:7f:66:69:71 · gateway · 365-day</div>
+        </div>
+        <div><span class="badge bad">EXPIRED</span></div>
+        <div class="days"><strong>0</strong> days<div class="progress-bar"><div class="fill bad" style="--target: 2%;"></div></div></div>
+      </div>
+      <div class="lic-row">
+        <div>
+          <div class="model">SPC-Senao-3YR</div>
+          <div class="key">subscription · 3-year</div>
+          <div class="mac">3-year duration</div>
+        </div>
+        <div><span class="badge good">ACTIVE</span></div>
+        <div class="days"><strong>551</strong> days<div class="progress-bar"><div class="fill warn" style="--target: 50%;"></div></div></div>
+      </div>
+      <div class="lic-row">
+        <div>
+          <div class="model">GW-5LW-EDU</div>
+          <div class="key">661500-566437-08596E-8AE85F</div>
+          <div class="mac">MAC 00:03:7f:66:69:71 · gateway · 5-year</div>
+        </div>
+        <div><span class="badge good">ACTIVE</span></div>
+        <div class="days"><strong>1,790</strong> days<div class="progress-bar"><div class="fill" style="--target: 98%;"></div></div></div>
+      </div>
+    </div>
+
+    <!-- AI OBSERVATIONS (full width) -->
+    <div class="widget ai-w">
+      <div class="w-title">🤖 AI 觀察 · 從真實 API 回應推導</div>
+      <div class="ai-grid">
+        <div class="ai-card critical">
+          <div class="level">🔴 CRITICAL</div>
+          <div class="text"><strong>GW-1LW-EDU 已過期</strong> — 對應 gateway <code>ESG610-6971</code> (MAC 00:03:7f:66:69:71)。但同 device 有第二張 license <code>GW-5LW-EDU</code> 仍有效（1,790 天），所以裝置實際運作不受影響。可考慮停掉 1LW 整理 license 列表。</div>
+          <div class="roi">💰 不影響服務，但建議清理避免帳目混亂</div>
+        </div>
+        <div class="ai-card warning">
+          <div class="level">🟡 WARNING</div>
+          <div class="text"><strong>SPC-Senao-3YR 將於 551 天後到期</strong> — 約 18 個月，建議現在就排提醒：到期前 60 / 30 / 7 天分階段通知。</div>
+          <div class="roi">💰 提前規劃避免服務中斷</div>
+        </div>
+        <div class="ai-card">
+          <div class="level">💡 ADVISORY</div>
+          <div class="text"><strong>4 個 org 受權限/Plan 限制</strong> — Gordon (viewer-only)、terrel (basic plan)、Main_Org / ann-AP (403)。若要做完整 multi-org dashboard，建議跟 admin 申請更高權限。</div>
+          <div class="roi">💰 解鎖 14 個 network 的完整可見度</div>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <span class="lbl">DASHBOARD ACTIONS</span>
+        <button class="tb-btn primary">🛒 取得 GW-1LW-EDU 續約報價</button>
+        <button class="tb-btn">📅 排 SPC 60 天前提醒</button>
+        <button class="tb-btn">💾 儲存到首頁</button>
+        <button class="tb-btn">📤 PDF 匯出</button>
+      </div>
+
+      <div class="chips">
+        <span class="lbl">下一步建議</span>
+        <button class="chip">💬 看 Vertical Demo 的 SSID 設定</button>
+        <button class="chip">💬 對比所有 org 的 device 分布</button>
+        <button class="chip action">📩 通知 admin 申請 Main_Org viewer 權限</button>
+        <button class="chip action">🎫 提案：升級 terrel 到 PRO plan</button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>

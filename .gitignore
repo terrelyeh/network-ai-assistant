@@ -17,8 +17,12 @@ dist/
 *.log
 .vercel
 
-# RD-provided skills package (separate repo, do not vendor)
-api-skills/
+# api-skills/ is vendored; exclude only its runtime artifacts
+api-skills/.venv/
+api-skills/.claude/
+api-skills/**/__pycache__/
+api-skills/**/*.pyc
+api-skills/.env*
 
 # Playwright CLI session artifacts
 .playwright-cli/

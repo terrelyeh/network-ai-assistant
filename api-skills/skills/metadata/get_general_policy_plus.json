@@ -1,0 +1,138 @@
+{
+  "ids": [],
+  "network_candidates": [
+    {
+      "source_path": "$",
+      "target_bucket": "general_policy_snapshot_candidates",
+      "field_map": {
+        "name": "name",
+        "country": "country",
+        "time_zone": "time_zone",
+        "custom_ntp_server": "custom_ntp_server",
+        "local_credential": "local_credential",
+        "local_web_page": "local_web_page",
+        "snmp": "snmp",
+        "snmp_v3": "snmp_v3",
+        "blocked_message_setting": "blocked_message_setting",
+        "blocked_random_mac_setting": "blocked_random_mac_setting",
+        "system_reserved_ip_range": "system_reserved_ip_range",
+        "is_ap_led_enable": "is_ap_led_enable",
+        "is_switch_led_enable": "is_switch_led_enable",
+        "is_switch_extender_led_enable": "is_switch_extender_led_enable",
+        "is_camera_led_enable": "is_camera_led_enable",
+        "is_nvs_led_enable": "is_nvs_led_enable",
+        "is_multicast_to_unicast": "is_multicast_to_unicast",
+        "is_gateway_lldp_enable": "is_gateway_lldp_enable",
+        "lan_ports": "lan_ports",
+        "lan_ports_by_model": "lan_ports_by_model",
+        "lan_port_settings": "lan_port_settings",
+        "presence_reporting": "presence_reporting",
+        "url_recording": "url_recording",
+        "ap_wifi_calling": "ap_wifi_calling",
+        "ap_schedule_reboot": "ap_schedule_reboot",
+        "switch_schedule_reboot": "switch_schedule_reboot",
+        "ap_malicious_url_filtering": "ap_malicious_url_filtering",
+        "syslog_server": "syslog_server",
+        "security_event_syslog_server": "security_event_syslog_server",
+        "nvs_onvif_init_credentials": "nvs_onvif_init_credentials",
+        "network_id": "$memory.ids.network_id",
+        "org_id": "$memory.ids.org_id"
+      },
+      "display_fields": [
+        "name",
+        "country",
+        "time_zone",
+        "custom_ntp_server",
+        "local_credential",
+        "local_web_page",
+        "snmp",
+        "snmp_v3",
+        "blocked_message_setting",
+        "blocked_random_mac_setting",
+        "system_reserved_ip_range",
+        "is_ap_led_enable",
+        "is_switch_led_enable",
+        "is_switch_extender_led_enable",
+        "is_camera_led_enable",
+        "is_nvs_led_enable",
+        "is_multicast_to_unicast",
+        "is_gateway_lldp_enable",
+        "lan_ports",
+        "lan_ports_by_model",
+        "lan_port_settings",
+        "presence_reporting",
+        "url_recording",
+        "ap_wifi_calling",
+        "ap_schedule_reboot",
+        "switch_schedule_reboot",
+        "ap_malicious_url_filtering",
+        "syslog_server",
+        "security_event_syslog_server",
+        "nvs_onvif_init_credentials",
+        "network_id",
+        "org_id"
+      ],
+      "required_fields": ["name"],
+      "required_output_field": "name",
+      "replace_scope_field": "network_id",
+      "replace_scope_value_source": "$memory.ids.network_id",
+      "defaults": {
+        "network_id": "$memory.ids.network_id",
+        "org_id": "$memory.ids.org_id"
+      }
+    },
+    {
+      "source_path": "$.ap_wifi_calling.providers.*",
+      "target_bucket": "wifi_calling_provider_candidates",
+      "field_map": {
+        "name": "name",
+        "address": "address",
+        "description": "description",
+        "network_id": "$memory.ids.network_id"
+      },
+      "display_fields": [
+        "name",
+        "address",
+        "description",
+        "network_id"
+      ],
+      "required_fields": ["name", "address"],
+      "required_output_field": "name",
+      "replace_scope_field": "network_id",
+      "replace_scope_value_source": "$memory.ids.network_id",
+      "defaults": {
+        "network_id": "$memory.ids.network_id"
+      }
+    },
+    {
+      "source_path": "$.snmp_v3.users.*",
+      "target_bucket": "snmp_v3_user_candidates",
+      "field_map": {
+        "username": "username",
+        "authorized_protocol": "authorized_protocol",
+        "private_protocol": "private_protocol",
+        "network_id": "$memory.ids.network_id"
+      },
+      "display_fields": [
+        "username",
+        "authorized_protocol",
+        "private_protocol",
+        "network_id"
+      ],
+      "required_fields": ["username"],
+      "required_output_field": "username",
+      "replace_scope_field": "network_id",
+      "replace_scope_value_source": "$memory.ids.network_id",
+      "defaults": {
+        "network_id": "$memory.ids.network_id"
+      }
+    }
+  ],
+  "clear_buckets_before_extract": [
+    "general_policy_snapshot_candidates",
+    "wifi_calling_provider_candidates",
+    "snmp_v3_user_candidates"
+  ],
+  "evidence_limit": 30,
+  "candidate_limit": 20
+}
