@@ -1324,7 +1324,7 @@
     <li><span class="warn">🔜</span> 下個 session 起跑（<code class="mono">configure.md</code> 跟 <code class="mono">monitor.md</code> 先做，<code class="mono">troubleshoot.md</code> 等 RD 補 dolphin URL 後再寫 — 因為 troubleshoot 強烈依賴 subscribe / rpc ops）</li>
   </ul>
 
-  <h3 id="layer-memory" style="margin-top: 40px;">§03.5 · memory/&lt;org-id&gt;.md · 記得跟你講過什麼 <span class="warn" style="font-size:13px; font-weight:600;">🔜 post-launch</span></h3>
+  <h3 id="layer-memory" style="margin-top: 40px;">§03.5 · memory/&lt;org-id&gt;.md · 記得跟你講過什麼 <span class="warn" style="font-size:13px; font-weight:600;">📐 Spec ready · 🔜 post-launch impl</span></h3>
   <p><strong>將寫什麼</strong>：跨 session 的記憶 — per-org-id namespace 的記事本。內容可能包含：</p>
   <ul>
     <li><strong>Open follow-ups</strong> — 「上次說要重啟 AP-7F 但客戶說沒空、約這週」</li>
@@ -1361,8 +1361,18 @@
     ↑ 3 個 section（待追蹤 / 已知 quirks / 最近發生）涵蓋大部分跨 session 記憶需求。每次 AI 開新對話時 load，session 結束時把該記的 append 回去。
   </p>
 
-  <h4 style="margin-top: 28px;">為什麼還沒設計</h4>
-  <p>4 種可能類型（project / conversation / customer / user memory）都有道理。SI 場景最需要 customer memory（上面的 by-org 設計就是這個），但具體該 namespace 怎麼分、TTL 多長、privacy boundary 怎麼劃 — 沒有真實使用就會猜錯。<strong>等真實 SI 用 1-2 個月、收集踩坑後再實作</strong>，避免閉門造車。</p>
+  <h4 style="margin-top: 28px;">📐 Spec 鎖定（2026-05-18）· 實作 🔜 post-launch</h4>
+  <p>Spec 已定下來，等真實 SI 用 1-2 個月、收集踩坑後再實作：</p>
+  <ul>
+    <li><strong>Namespace</strong>：per-org（不是 per-network / per-device — 太細）</li>
+    <li><strong>Loading</strong>：Lazy — AI 第一次 resolve 到 <code class="mono">org_id</code> 時自動載入；不存在就跳過</li>
+    <li><strong>Write 機制</strong>：Hybrid — SI 隨時手改 + AI session 結束時提議補充，<strong>絕不 silent write</strong></li>
+    <li><strong>Trust direction</strong>：API &gt; memory（memory 是 soft prior，推薦前 sanity-check）</li>
+    <li><strong>Override 規則</strong>：per-customer memory 永遠 override universal 4 層</li>
+    <li><strong>Hygiene</strong>：Open follow-ups 完成移走 / Recent context 上限 10 條 / quirks 永久但失效就刪</li>
+    <li><strong>Sensitivity</strong>：v0 不存敏感事（投訴 / politics）— SI 自己用其他工具記</li>
+  </ul>
+  <p>Dispatcher 接好 — persona <code class="mono">§3.4 Org context 載入</code> 已寫好載入指示。memory 檔案還沒存在時 AI 安全跳過。</p>
 
   <div class="pull" style="margin-top: 24px;">
     <span class="badge">總結 · 為什麼這 5 個 layer 是「colleague 而不是 tool」的關鍵</span>

@@ -1,6 +1,6 @@
 # CLAUDE.md — 你的專業 AI 網管 · EnGenius Cloud AI Agent Skill Suite
 
-> Last updated: 2026-05-17（架構語言收斂 + UI polish + RD 對話策略收斂 · 完成 PR #9–#26）
+> Last updated: 2026-05-18（persona v0.1 角色 + 模糊先澄清 + 任務&memory dispatcher · playbooks v0.1 思考骨架 · memory spec 鎖定 · 完成 PR #9–#27+）
 
 ## Project Overview
 
@@ -221,11 +221,19 @@ rsync -av --delete \
 
 功能清單與 demo 細節詳見 [README.md](README.md) 跟 [`dashboard-builder/architecture.html`](dashboard-builder/architecture.html)（§08 Status 速覽表）。
 
+### ✅ 2026-05-18 完成（這次 session）
+
+- **persona.md v0.1** — §1.1 角色定位（資深 SMB 網管、多廠牌通、EnGenius 動手）· §1.3 ④ 模糊先澄清 · §3.3 task type dispatcher · §3.4 memory dispatcher · §5.1 改為同意階梯 pointer
+- **playbooks v0.1**（共 211 行）— configure / monitor / troubleshoot 三本，思考骨架格式（TL;DR 容易踩什麼 + 3 層思考骨架 + 3 定問 + 反直覺紀律），device-agnostic（涵蓋 AP / Switch / Firewall / Camera / PDU）
+- **memory spec 鎖定** — 3-section 結構（Open follow-ups / 已知 quirks / Recent context）+ lazy load + hybrid write + API>memory trust + hygiene 規則 + per-customer override universal · 實作 🔜 post-launch
+- **scripts/sync-refs.sh** — 加 playbooks/ 目錄鏡像
+- **architecture.html §03.5** — memory spec badge 升級為「📐 Spec ready · 🔜 post-launch impl」
+
 ### 🔜 Next Steps
 
 **獨立可做（不等 RD）**：
-1. **寫 `house-rules.md` v0** — 5 層知識架構最後 ready 拼圖。內容：EnGenius 平台**硬性規則與規範**（HVS 分數定義、license-device 綁定、plan 限制、設備支援矩陣、平台 quirks）。**注意 framing**：是事實層面，不是主觀建議。需 RD 整理 + 業務協助梳理
-2. **`playbooks/{configure,monitor,troubleshoot}.md` v0** — Mental model 不是 script。Configure 跟 Monitor 可以先做（不卡 RD），Troubleshoot 等 RD 補 dolphin URL 後再寫
+1. **寫 `house-rules.md` v0** — 5 層知識架構最後 ready 拼圖。內容：EnGenius 平台**硬性規則與規範**（HVS 分數定義、license-device 綁定、plan 限制、設備支援矩陣、平台 quirks · **configure write-op 的靜態 dependency 也住這**）。**注意 framing**：是事實層面，不是主觀建議。需 RD 整理 + 業務協助梳理
+2. **試跑 playbooks v0.1** — 開新 session 用真實 troubleshoot / configure / monitor 情境驗證 dispatcher 真載 playbook、playbook 真改變 AI 行為。看到不對的再迭代
 3. **新情境腦力激盪** — 走 validated path pipeline 加 examples/，可從 [`docs/scenario-candidates.md`](dashboard-builder/docs/scenario-candidates.md) 中 S8-S12 / N/T/M 系列挑
 
 **Critical（仍卡 RD）**：
@@ -235,7 +243,7 @@ rsync -av --delete \
 **Pending（次優先）**：
 - 日文版需 native speaker review（目前 LLM 草稿）
 - `dashboard-builder/skill/` 整合進 `api-skills/skills/dashboard-builder/`（[`docs/rd-handoff.md`](dashboard-builder/docs/rd-handoff.md)）
-- **Memory.md** — 等真實 SI 使用 1-2 個月後再實作（避免閉門造車）
+- **Memory 實作** — spec 已鎖定（見 architecture.html §03.5）· 等真實 SI 使用 1-2 個月後再寫 write-back + AI 提議 UX，避免閉門造車
 
 ## Common Pitfalls
 

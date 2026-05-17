@@ -34,4 +34,14 @@ for f in network-admin-persona.md design.md; do
   echo "  synced: $f"
 done
 
+# Sync playbooks/ dir (mental-model docs loaded on-demand via persona §3.3)
+if [[ -d "$SRC/playbooks" ]]; then
+  mkdir -p "$DST/playbooks"
+  for f in "$SRC/playbooks"/*.md; do
+    [[ -f "$f" ]] || continue
+    cp "$f" "$DST/playbooks/$(basename "$f")"
+    echo "  synced: playbooks/$(basename "$f")"
+  done
+fi
+
 echo "done. mirror = $DST"
