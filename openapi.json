@@ -3,7 +3,7 @@
   "info": {
     "title": "EnGenius Cloud AI Agent API",
     "version": "0.1.0",
-    "description": "Auto-generated from `api-skills/skills/*/SKILL.md` (canonical operation registry parsed at runtime by `_shared/manage_system/skill_loader.py`).\n\n**Build script**: `scripts/build-openapi.py`.\n\n**Coverage**: ops with `- method:` and `- path:` in SKILL.md are fully documented. RPC, Subscribe, and a handful of others are marked `x-rd-pending` until RD answers `dashboard-builder/docs/rd-meeting/06-api-doc-questions.md`.\n\n**Servers**: Falcon (manage system, falcon.<env>.engenius.ai) for READ/MUT/DL. Dolphin (troubleshoot, dolphin.<env>.engenius.ai) for RPC/Subscribe — paths TBD.",
+    "description": "**EnGenius Cloud AI Agent Skill Suite** 對外 API 文件（互動式 OpenAPI 規格）— 你的 AI 專業網管能呼叫的所有 op 都在這。\n\n**自動生成**：從 `api-skills/skills/*/SKILL.md`（canonical 來源）由 `scripts/build-openapi.py` 產出。改完 SKILL.md 跑一次 script 就同步、文件不會落後 code。\n\n**覆蓋度**：目前 **47/94 個 op 完整文件化**（GET/POST/PATCH/DELETE/DOWNLOAD）· 剩下 **47 個 RPC + Subscribe op** 標 `x-rd-pending`（在 troubleshoot 系列 skill 下，顯示 ⚠ TBD 前綴）— 等 RD 給 dolphin URL pattern 後重跑 script 自動補完。細節見 [`rd-meeting/06-api-doc-questions.md`](https://github.com/terrelyeh/network-ai-assistant/blob/main/dashboard-builder/docs/rd-meeting/06-api-doc-questions.md)。\n\n**兩個後端服務**：\n- **Falcon** (`falcon.<env>.engenius.ai`) — manage system · 47 個 op 跑這個 · auth `api-key` header\n- **Dolphin** (`dolphin.<env>.engenius.ai`) — troubleshoot · 47 個 pending op 之後跑這個 · path 待 RD 補\n\n**怎麼用這頁**：上方 4 步驟卡片教你 ① 按 Authorize 填 api-key → ② 找 skill tag → ③ 點開 op 看 method/path/schema → ④ Try it out 實打。",
     "x-source": "https://github.com/terrelyeh/network-ai-assistant"
   },
   "servers": [

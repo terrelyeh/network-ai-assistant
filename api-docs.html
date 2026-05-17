@@ -549,36 +549,76 @@
     border: none !important;
   }
 
-  /* Info title row · cleaner */
+  /* Info title row · cleaner + readable version pills */
   .swagger-ui .info .title {
     font-size: 32px !important;
     font-weight: 800 !important;
     letter-spacing: -0.02em !important;
     color: var(--text) !important;
+    line-height: 1.2 !important;
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+    margin-bottom: 12px !important;
   }
-  .swagger-ui .info .title small {
+  .swagger-ui .info .title small,
+  .swagger-ui .info hgroup.main .title small {
     background: var(--surface-2) !important;
-    color: var(--text-2) !important;
-    border: 1px solid var(--border) !important;
+    color: var(--text) !important;
+    border: 1px solid var(--border-strong) !important;
     border-radius: 6px !important;
-    padding: 3px 10px !important;
-    font-weight: 600 !important;
-    font-size: 12px !important;
-    margin-left: 8px !important;
+    padding: 4px 12px !important;
+    font-weight: 700 !important;
+    font-size: 13px !important;
+    margin-left: 0 !important;
+    vertical-align: middle !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    height: auto !important;
   }
+  /* Inner <pre> inside <small> · don't double-style */
+  .swagger-ui .info .title small pre,
+  .swagger-ui .info .title small .version {
+    background: transparent !important;
+    color: inherit !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: inherit !important;
+    font-weight: inherit !important;
+    line-height: 1 !important;
+  }
+  /* OAS version stamp · subtle green tint */
   .swagger-ui .info .title small.version-stamp {
     background: rgba(16,185,129,0.1) !important;
     color: var(--success) !important;
-    border-color: rgba(16,185,129,0.3) !important;
+    border-color: rgba(16,185,129,0.35) !important;
   }
   .swagger-ui .info .description {
     color: var(--text-2) !important;
-    line-height: 1.7 !important;
+    line-height: 1.75 !important;
+    font-size: 14.5px !important;
+  }
+  .swagger-ui .info .description p { margin-bottom: 10px !important; }
+  .swagger-ui .info .description strong { color: var(--text) !important; }
+  .swagger-ui .info .description ul {
+    margin-bottom: 10px !important;
+    padding-left: 22px !important;
+  }
+  .swagger-ui .info .description ul li {
+    color: var(--text-2) !important;
+    margin-bottom: 4px !important;
   }
   .swagger-ui .info .description a {
     color: var(--accent) !important;
     text-decoration: none !important;
     border-bottom: 1px dotted var(--accent) !important;
+  }
+  .swagger-ui .info .description a:hover {
+    color: var(--text) !important;
+    border-bottom-color: var(--text) !important;
   }
 </style>
 </head>
