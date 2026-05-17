@@ -1,14 +1,26 @@
-# History Aggregation API · 提案文件
+# History Aggregation API · 提案文件 · 🔶 PLAN B Fallback
 
-> 給：下次 RD meeting（troubleshoot scripts 處理完之後 ~2 週）
-> Priority: P1（不阻擋 booth，但阻擋整個 dashboard category）
+> ⚠ **這份文件的定位 reframed（2026-05-17）**：
+>
+> 原本以為「RD 還沒做歷史 API，所以要從零提議建一套」。但**仔細想想 EnGenius Cloud GUI 已經有顯示 throughput / client count / HVS 趨勢 chart**，代表 backend **必然已經持久化歷史數據 + 已經有 GUI 在 call 的 endpoint**。
+>
+> 所以 **Plan A** 是 [`06-api-doc-questions.md` Q9](06-api-doc-questions.md#q9-history-data-api--應該是-documentation-gap不是-architecture-gap) — 5 分鐘的 ask：「請告訴我 GUI 用哪個 endpoint 拿歷史數據？」
+>
+> **這份 04 是 Plan B** — 萬一真的問下去發現 GUI 是用內部微服務拼出來的、沒有對外乾淨的 history API，才會走這條 3 工作週的 backend 投資路線。
+
+---
+
+> 給：下次 RD meeting · Plan B 情境用
+> Priority（fallback）: P2 — 只在 Plan A 失敗時觸發
 > 預估 backend: 2-3 工作週
 
-## TL;DR
+## TL;DR · Plan B 情境
 
-現有 EnGenius Cloud API 都只回「現在快照」——沒辦法問「過去 7 天 throughput」「本月 license 過期速度」「上週 client 數變化」。**這個限制阻擋整個「趨勢類 dashboard」品類**。
+如果 RD 確認 **沒有對外可用的 history API** 給我們包成 skill，那就需要走這份提案的方向 — 從零建一條 time-series persistence + aggregation 的 pipeline。
 
 提議：新增一個 history aggregation endpoint，讓 dashboard-builder 解鎖 line_chart / sparkline / area_chart 三個 widget。
+
+> **但請先確認**：Plan A（GUI 用的 endpoint 分享出來）是不是 5 分鐘就能解決的事？大部分情況答案是 yes，這份 Plan B 就用不到。
 
 ---
 
