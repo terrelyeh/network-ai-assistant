@@ -1,18 +1,28 @@
 # 給 RD 的 API 文件補充請求
 
 > Last updated: 2026-05-17
-> 目的：拿到這些資訊後，我們能**自己包**剩下 47 個 troubleshoot op，不用 RD 寫 script
+> 目的：拿到這些資訊後，我們能**自己包**剩下的 op，不用 RD 寫 script
 
 ---
 
 ## TL;DR
 
-我們已經盤點完 `api-skills/` 全部 96 個 op，其中：
+我們已經盤點完 `api-skills/` 全部 96 個 op，狀況：
 
 - ✅ **53 個 op 可以今天就 DIY**（READ / MUT / DL — 文件齊全 + framework 已有）
 - ⚠️ **43 個 op 缺關鍵資訊**（RPC 19 個 + Subscribe 24 個）
+- ⚠️ **history API 沒被包成 skill**（但 GUI 已在用，所以 backend 必然存在）
 
-**我們不需要你們寫 47 個 script**，只需要下面這些資訊就能自己包。
+**我們不需要你們寫任何新 script、不需要建任何新 backend**，只需要下面這些資訊就能自己包。
+
+### ⚠ 重要區分 · 兩種 ask 的本質不同
+
+| 類型 | 例 | RD 工作量 | 期待 |
+|---|---|---|---|
+| **Documentation gap**（這份文件大部分）| Q1+Q2 dolphin URL · Q5-Q8 文件補強 · Q9 GUI 用的 history endpoint | **5 分鐘**（寫 curl 範例 / 補一兩行 markdown） | 同 meeting 內可答 |
+| **Architecture gap**（這份文件**沒有**這類）| 真的要 RD 從零建新 backend service | 數工作週 | 這份文件**不要求**這類 |
+
+⚠ 04-history-api-proposal.md 是 **Plan B fallback** — 萬一 Q9 拿不到 GUI 用的 endpoint，才會走那條重投資路線。先預設你們已經有，就是 5 分鐘的 ask。
 
 ---
 
@@ -158,20 +168,25 @@ Return hierarchy views and networks of the organization.
 
 ---
 
-## P2 · 長期 / 策略性（不卡 booth demo，但會限制 widget 類型）
+## P2 · 長期 / 策略性
 
-### Q9. History aggregation API — 跟之前討論的是同一件事
+### Q9. History data API — 應該是 documentation gap，不是 architecture gap
 
-> **背景**：這個就是 [`rd-meeting/04-history-api-proposal.md`](04-history-api-proposal.md) 裡提的歷史聚合 API。目前 dashboard 卡在「所有 op 都是現在的快照」沒有時間序列資料，導致這些做不到：
-> - `line_chart` / `sparkline` / `area_chart` 三個 widget 完全無法做
-> - 「過去 24 小時 CPU 趨勢」「上週 vs 這週流量對比」這種對話答不出來
-> - 容量規劃、anomaly detection、SLA 報告全部做不出來
+> **背景重要 reframing（2026-05-17）**：原本我們把這當成「請 RD 從零建 time-series store + aggregation pipeline」（3 工作週的大投資）。但**仔細想想**：EnGenius Cloud GUI 已經有顯示各種歷史趨勢圖（HVS 分數變化 / throughput / client count history / alert timeline），代表 backend **必然已經持久化歷史數據 + 已經有 GUI 在 call 的 API endpoint**。只是這個 API 沒被包成 skill 給我們用。
+>
+> 所以 Q9 跟 Q1+Q2 是**同一類問題** — documentation gap，不是 architecture gap。
 
-請確認：
+請告訴我們：
 
-1. 上次討論之後有沒有具體 plan？例如什麼時候會做、要排在哪個 quarter？
-2. 如果要做，是會在 falcon 加 endpoint，還是新建第三個服務？
-3. 我們提議的 endpoint shape（在 04-history-api-proposal.md 第三節）有沒有方向上的問題？
+1. **Cloud GUI 顯示歷史 chart 時，frontend 在 call 哪個 endpoint？**（throughput / client count / HVS 趨勢 任一個的 URL pattern + 範例就行）
+2. **Auth 跟 manage system 一樣是 `api-key` header 嗎？**
+3. **Endpoint 是 falcon 還是某個專屬服務（例如 `metrics.<env>.engenius.ai`）？**
+
+我們對 endpoint shape 的期待（給你參考、不一定要照做）寫在 [`rd-meeting/04-history-api-proposal.md`](04-history-api-proposal.md) — 那份是 **Plan B**（萬一真的沒有 clean API），實際 5 分鐘的 ask 就是把 GUI 用的 endpoint 文件分享給我們。
+
+**估計工作量**：5 分鐘 RD 寫一個 curl 範例（同 Q1+Q2 性質），不是 3 工作週的 backend 工程。
+
+> **🚀 替代驗證路徑**：產品端可以自己打開 cloud.engenius.ai → DevTools Network tab → 找有 timestamp + value 陣列的 XHR/Fetch → 直接抓 URL pattern。如果 GUI 的 endpoint 設計乾淨，我們甚至不用問 RD。
 
 ### Q10. 有沒有規劃公開 OpenAPI / Swagger 文件？
 
@@ -200,7 +215,7 @@ Return hierarchy views and networks of the organization.
 ## 寄出前 checklist
 
 - [ ] 確認 staging API key 有效（可以順便提供 working sample 用）
-- [ ] 把 Q1-Q4 列為**這次要回的**（解鎖 booth demo 必要），Q5-Q8 可以晚一週，Q9-Q10 可以下季再聊
+- [ ] 把 Q1-Q4 列為**這次要回的**（解鎖 booth demo 必要），Q9 也建議這次答（reframe 後是 5 分鐘的 ask），Q5-Q8 可以晚一週，Q10 可以下季再聊
 - [ ] 如果 Q1+Q2 一時答不上，可以提議：「我提供準備好的 device + network_id，請 RD 用 staging 環境跑一次 `rpc_speedtest_serverlist` 並把 curl 命令貼回給我」— 這是最低成本驗證方式
 
 ---
@@ -213,7 +228,7 @@ Return hierarchy views and networks of the organization.
 | Q3（streaming 協定）| 24 subscribe op 真即時 |
 | Q4（polling 對應）| 即使沒 streaming 也能跑大部分 monitoring scenario |
 | Q5-Q8（文件一致性）| AI 自動 retrieve 新 op 時不踩坑、加新 op 路徑清楚 |
-| Q9（history API）| line_chart / sparkline widget 解鎖、趨勢類對話可行 |
+| Q9（history endpoint URL · GUI 已在用）| line_chart / sparkline / area_chart widget 解鎖、「過去 7 天趨勢」對話可行 — 跟 Q1+Q2 同性質的 5 分鐘 ask |
 | Q10（OpenAPI 公開）| 未來零維護成本、所有工具自動相容 |
 
 **只要 Q1+Q2 就足以 unblock booth demo 全套。**
