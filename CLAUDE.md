@@ -229,8 +229,9 @@ cp $SRC/examples/*.json $CACHE/examples/
 ### 🔜 Next Steps（下個 session 焦點）
 
 **下個 session 主軸（user 指定）**：
-1. **任務型 playbooks 思考模型細節討論** — 設計 `references/playbooks/{configure,troubleshoot,monitor}.md` 的具體內容。原則：寫成 **mental model**（思考骨架 / 診斷維度 / 詢問三定問）而非 **script**（first do X, then Y）— script 會凍結 AI 判斷 = 蓋 scenario skill 層 = 殺 wedge。
-2. **memory.md 方向與細節** — 設計跨 session 記憶機制。4 種 memory 類型已釐清（project / conversation / customer / user）。SI 場景最需要 ③ customer memory，但需設計：per-org-id namespace、stale TTL、隱私 / 多客戶切換、何時讀 / 何時寫。**等真實 SI 使用 1-2 個月後再實作**比較不會猜錯。
+1. **architecture.html 內容重整** — 目前內容**疊床架屋**（多 session 不同角度堆疊累積：§00 產品全貌 / §01 兩原則 / §02 5 層執行 / §02b 3 層分工 / §02c 5 層知識 / §03 widget / §03b catalog / §03c library / §03d gallery / §03e skill 內部 / §03f Design System / §04 howto / §04b demo readiness / §05 demo flow / §06 limits / §07 status）。需要重新規劃**資訊層級 + 邏輯脈絡**：哪些是定位故事、哪些是技術細節、哪些是規範守則、哪些是執行手冊。目標是「讀者依角色順序往下讀」而非「所有概念平鋪」。
+2. **任務型 playbooks 思考模型細節討論** — 設計 `references/playbooks/{configure,troubleshoot,monitor}.md` 的具體內容。原則：寫成 **mental model**（思考骨架 / 診斷維度 / 詢問三定問）而非 **script**（first do X, then Y）— script 會凍結 AI 判斷 = 蓋 scenario skill 層 = 殺 wedge。
+3. **memory.md 方向與細節** — 設計跨 session 記憶機制。4 種 memory 類型已釐清（project / conversation / customer / user）。SI 場景最需要 ③ customer memory，但需設計：per-org-id namespace、stale TTL、隱私 / 多客戶切換、何時讀 / 何時寫。**等真實 SI 使用 1-2 個月後再實作**比較不會猜錯。
 
 **Critical（仍卡 RD）**：
 3. **RD 補 troubleshoot scripts**（5 個 P0 op：rpc_led_dance / rpc_kick_clients / subscribe_client_list / subscribe_cable_diag / rpc_reboot）+ **history aggregation API** — 解鎖 P0 demo + line_chart / sparkline widget 類型
