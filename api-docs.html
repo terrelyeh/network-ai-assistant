@@ -531,6 +531,55 @@
   /* Hide some less useful chrome */
   .swagger-ui .info hgroup.main a { display: none !important; }
   .swagger-ui .info .base-url { color: var(--text-3) !important; font-size: 12px !important; }
+
+  /* Hide the black Swagger topbar (with SMARTBEAR branding + openapi.json input + Explore button) */
+  .swagger-ui .topbar { display: none !important; }
+
+  /* Inline code in description — override default Swagger purple */
+  .swagger-ui .markdown code,
+  .swagger-ui .renderedMarkdown code,
+  .swagger-ui .info code,
+  .swagger-ui .info .markdown code {
+    background: rgba(60,50,35,0.07) !important;
+    color: var(--text) !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    padding: 1px 6px !important;
+    border-radius: 4px !important;
+    font-size: 0.92em !important;
+    border: none !important;
+  }
+
+  /* Info title row · cleaner */
+  .swagger-ui .info .title {
+    font-size: 32px !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.02em !important;
+    color: var(--text) !important;
+  }
+  .swagger-ui .info .title small {
+    background: var(--surface-2) !important;
+    color: var(--text-2) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 6px !important;
+    padding: 3px 10px !important;
+    font-weight: 600 !important;
+    font-size: 12px !important;
+    margin-left: 8px !important;
+  }
+  .swagger-ui .info .title small.version-stamp {
+    background: rgba(16,185,129,0.1) !important;
+    color: var(--success) !important;
+    border-color: rgba(16,185,129,0.3) !important;
+  }
+  .swagger-ui .info .description {
+    color: var(--text-2) !important;
+    line-height: 1.7 !important;
+  }
+  .swagger-ui .info .description a {
+    color: var(--accent) !important;
+    text-decoration: none !important;
+    border-bottom: 1px dotted var(--accent) !important;
+  }
 </style>
 </head>
 <body>
