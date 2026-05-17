@@ -279,21 +279,59 @@
     padding: 8px 12px !important;
   }
 
-  /* Filter / search box */
-  .swagger-ui .filter-container { padding: 14px 0 !important; }
+  /* Filter / search box · clearly searchable */
+  .swagger-ui .filter-container {
+    padding: 18px 0 8px !important;
+    max-width: 520px !important;
+  }
+  .swagger-ui .filter {
+    position: relative !important;
+  }
+  /* Magnifying glass icon · SVG inline data URI */
+  .swagger-ui .filter::before {
+    content: '' !important;
+    position: absolute !important;
+    left: 16px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 18px !important;
+    height: 18px !important;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3e%3ccircle cx='11' cy='11' r='8'/%3e%3cline x1='21' y1='21' x2='16.65' y2='16.65'/%3e%3c/svg%3e") !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    pointer-events: none !important;
+    z-index: 2 !important;
+  }
   .swagger-ui .filter .operation-filter-input {
     border: 1px solid var(--border-strong) !important;
     border-radius: 10px !important;
-    padding: 12px 16px !important;
+    padding: 12px 16px 12px 46px !important;
     background: var(--surface) !important;
     color: var(--text) !important;
     font-size: 14px !important;
     box-shadow: var(--shadow-sm) !important;
+    width: 100% !important;
+    max-width: 520px !important;
+  }
+  .swagger-ui .filter .operation-filter-input::placeholder {
+    color: var(--text-3) !important;
+    font-size: 13.5px !important;
   }
   .swagger-ui .filter .operation-filter-input:focus {
     border-color: var(--accent) !important;
     outline: none !important;
     box-shadow: 0 0 0 3px rgba(255,107,53,0.12) !important;
+  }
+  /* Hint label above filter */
+  .swagger-ui .filter-container::before {
+    content: '🔍 搜尋（即時過濾 tag + op）';
+    display: block;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-3);
+    margin-bottom: 6px;
   }
 
   /* Tag headers (skill groups) */
@@ -729,10 +767,21 @@
       });
     };
 
+    // Override the filter input's default placeholder with a more helpful one.
+    const updateFilterPlaceholder = () => {
+      const input = document.querySelector('.operation-filter-input');
+      if (input && input.placeholder !== '輸入關鍵字過濾 tag + op... 例如「license」「troubleshoot」') {
+        input.placeholder = '輸入關鍵字過濾 tag + op... 例如「license」「troubleshoot」';
+      }
+    };
+
     // Run after initial render + on any DOM mutation (tag toggle re-renders).
-    setTimeout(markPending, 600);
-    setTimeout(markPending, 1500);
-    const observer = new MutationObserver(() => markPending());
+    setTimeout(() => { markPending(); updateFilterPlaceholder(); }, 600);
+    setTimeout(() => { markPending(); updateFilterPlaceholder(); }, 1500);
+    const observer = new MutationObserver(() => {
+      markPending();
+      updateFilterPlaceholder();
+    });
     const swaggerRoot = document.getElementById('swagger-ui');
     if (swaggerRoot) {
       observer.observe(swaggerRoot, { childList: true, subtree: true });
