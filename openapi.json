@@ -94,12 +94,24 @@
     "/license-keys/{licenseKey}": {
       "get": {
         "operationId": "get_license_key",
-        "summary": "Return metadata for a license key.",
+        "summary": "Return metadata for a license key (no `orgId` needed). Use to preview a license key before binding it to an org. Add flo",
         "tags": [
           "org-licenses"
         ],
         "x-op-type": "READ",
         "x-skill": "org-licenses",
+        "description": "Return metadata for a license key (no `orgId` needed). Use to preview a license key before binding it to an org. Add flow should be: `get_license_key` → show summary to user → explicit confirmation → `add_license_key`.",
+        "parameters": [
+          {
+            "name": "licenseKey",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "License key string (for example `AAAAAA-BBBBBB-CCCCCC-DDDDDD`)."
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success",
@@ -159,7 +171,7 @@
         },
         "security": [
           {
-            "apiKeyAuth": []
+            "xAuthToken": []
           }
         ]
       }

@@ -68,6 +68,26 @@ For each operation below, full request/response schema details are in `reference
 
 (EMPTY)
 
+### get_license_key
+- method: GET
+- path: /license-keys/{licenseKey}
+- auth: x-auth-token header
+- description: Return metadata for a license key (no `orgId` needed). Use to preview a license key before binding it to an org. Add flow should be: `get_license_key` → show summary to user → explicit confirmation → `add_license_key`.
+
+#### Path Parameters
+
+| name | type | required | description |
+| ---- | ---- | -------- | ----------- |
+| licenseKey | string | true | License key string (for example `AAAAAA-BBBBBB-CCCCCC-DDDDDD`). |
+
+#### Query Parameters
+
+(EMPTY)
+
+#### Request Body
+
+(EMPTY)
+
 ### add_license_key
 - method: POST
 - path: /orgs/{orgId}/license-keys/{licenseKey}
