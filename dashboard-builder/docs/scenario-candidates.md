@@ -1,7 +1,19 @@
 # Scenario Candidates — Live Demo Brainstorm
 
-> 基於 13 skills / 93 ops（46 runnable + 47 troubleshoot 規劃中）排列組合
-> Last updated: 2026-05-15
+> 基於 13 skills / 94 ops（47 runnable + 47 troubleshoot 規劃中）排列組合
+> Last updated: 2026-05-17（+S11/S12 強調 AI orchestration · 不是「每次都 dashboard」）
+
+## ★ 重要架構提醒（2026-05-17 加）
+
+我們的架構**止於 skill 層**。Skill = primitives（AI 能做什麼）。
+上面這些 layer 由 AI 在 run-time 自己判斷：
+
+- **Persona**（[`skill/references/network-admin-persona.md`](../skill/references/network-admin-persona.md)）— Voice + **升級條件**（text → dashboard → action 三種 output 形式何時挑哪個）
+- **Design**（[`skill/references/design.md`](../skill/references/design.md)）— 如果 AI 決定走 dashboard，視覺守則怎麼套
+- **House-rules**（規劃中）— EnGenius 品牌觀點（HVS 分數推薦邏輯等）
+- **Playbook**（規劃中）— 任務型 mental model（configure / troubleshoot / monitor）
+
+**所以新 scenario 不等於新 dashboard**。同一個 user query，AI 可能回 text、可能組 dashboard、可能直接動手 — **由 persona 升級條件決定**。下面新加的 S11/S12 兩個情境特別示範這個原則。
 
 ## 可行性標記
 
@@ -158,11 +170,57 @@
 
 ---
 
+### 🟢 S11. 員工離職的「最後一日清算」（多 mode 升級示範）— B / C
+
+**故事**：「John 明天最後一天，幫我準備清算清單，看他在哪些 org / network 還有權限。」
+
+**Skill 組合**（1 skill / 2 op，全 🟢 today-doable）：
+- `team-members.get_org_memberships_overall` — 查 John 在所有 org / network 的角色
+- `team-members.delete_org_user_membership` — 確認後才用
+
+**AI 編排決策**（這個 scenario 真正想示範的）：
+
+| 情境 | AI 挑哪個 output | 為什麼（依 persona 升級條件）|
+|---|---|---|
+| John 只在 1-2 個 network 有 viewer 角色 | **Text reply** | 「John 在 Main_Org/Lab_Net 是 viewer，要我移除嗎？」訊息簡短直接 |
+| John 有 5+ 個 org / network 權限，含 admin | **Dashboard**（pivot_table：org × network × role）| 資料量大、需要對比、user 要 review 後決定 |
+| User 說「都拿掉吧」確認後 | **Action mode**（delete_org_user_membership × N）| 每個 admin 角色獨立 confirmation gate；viewer 可批次 |
+
+**Wow 點**：同一個 user query，AI 自動判斷該回 text 還是組 dashboard 還是動手 — 不是 reflex 永遠生 dashboard。
+**對應 persona 章節**：persona.md「升級條件矩陣」 + 「多步驟流程的 confirmation gate」
+**戰略意涵**：證明 dashboard-builder 不是每次都會被呼叫；很多時候 AI text 答完就結束，這才是好 UX。
+
+---
+
+### 🟢 S12. 早安網路健檢 — B
+
+**故事**：「早安，今天網路怎麼樣？」（每天上班前的 30 秒 brief）
+
+**Skill 組合**（4 skill / 4 op，全 🟢）：
+- `init-orgs.get_user_orgs`
+- `hvs.get_hierarchy_views` — 跨 org 健康
+- `org-devices.get_inventory` — 找 offline 設備
+- `org-licenses.get_licenses` — 找 30 天內到期
+
+**AI 編排決策**（資料品質決定 output 形式）：
+
+| 資料狀況 | AI 挑哪個 output | 對應內容 |
+|---|---|---|
+| 全部健康 · HVS > 85 · 無 offline · 無近期到期 | **Text reply（30 字內）**| 「9 個 org 全綠燈、沒事，喝杯咖啡吧 ☕」 |
+| 1-2 個 minor issue（如 1 台 offline、1 張 license 28 天到期）| **Text reply + alert chip**（不開 dashboard）| 「整體 OK，但 AP-LAB-03 從昨晚 offline、需要看一下」+ 連結 |
+| 多重 issue 或某個 org HVS < 70 | **Dashboard**（KPI grid + offline timeline + license expiry timeline）| 預設展開 issue summary、提供「跟我說細節」follow-up prompt |
+
+**Wow 點**：「今天網路怎麼樣？」這個問題的**理想答案**是 30 字 text，不是 1 張 dashboard。AI 知道情況好就不開 dashboard。
+**對應 persona 章節**：persona.md「網管的 cognitive load」+「summary first, drill-down on request」
+**戰略意涵**：dashboard 是「複雜度的 escape hatch」，不是預設 output。
+
+---
+
 ## 統計
 
 | 可行性 | 數量 | 用途 |
 |---|---|---|
-| 🟢 今天能做 | 7 (S1-S7) | 展會主秀候選 |
+| 🟢 今天能做 | 9 (S1-S7, S11, S12) | 展會主秀候選 |
 | 🟡 缺 1-2 op | 2 (S8, S9) | RD 高 ROI action item |
 | 🔴 要大改 | 1 (S10) | 願景示意（給 RD 看潛力）|
 
@@ -171,12 +229,21 @@
 | 模式 | 涵蓋情境 |
 |---|---|
 | A 員工 | S8, S9 |
-| B SMB IT | S1, S3, S4, S5, S8, S10 |
-| C Partner/SI | S1, S2, S6, S7 |
+| B SMB IT | S1, S3, S4, S5, S8, S10, S11, S12 |
+| C Partner/SI | S1, S2, S6, S7, S11 |
 
 ## 跨 skill 程度
 
-- 4 skill 組合: S1
+- 4 skill 組合: S1, S12
 - 3 skill 組合: S2, S3, S8
 - 2 skill 組合: S4, S5, S6, S7, S9
-- 1 skill 內: S10
+- 1 skill 內: S10, S11
+
+## Output 形式分布（2026-05-17 新加維度）
+
+| 預設 output | 涵蓋情境 |
+|---|---|
+| 主要 text | S11（簡單）, S12（健康時）|
+| Dashboard | S1, S2, S3, S5, S6, S7, S8, S10, S11（複雜時）, S12（有 issue 時）|
+| Action（一鍵動手）| S4, S7, S8, S9, S11 |
+| **多 mode 升級（依資料 / 情境動態決定）** | **S11, S12** ← 新加的兩個重點示範 |
