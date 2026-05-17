@@ -1391,27 +1391,42 @@
     有了 persona，同一份 API 結果變成「廚房那台 AP 從 14:23 開始失聯，可能是斷電。要我幫你查嗎？」——直接拉開 wedge 跟其他「LLM + API」工具的差距。
   </div>
 
-  <h3 style="margin-top: 32px;">三層知識架構</h3>
-  <p>Persona 不是孤立的一份文件——它是「給 Claude 的知識體系」的第 1 層。v0.2 起共 3 層（持久化的 Playbook 文件）：</p>
+  <h3 style="margin-top: 32px;">五層知識架構 · 2 ready + 3 未來規劃</h3>
+  <p>Persona 不是孤立的一份文件——它是「給 Claude 的知識體系」的第 1 層。完整知識架構共 5 層（持久化的 Playbook 文件，跟 §02 執行架構是不同概念）：</p>
 
   <div class="tl-grid" style="margin-top: 16px;">
-    <div class="tl-item" style="background: rgba(251,191,36,0.10); border-color: rgba(251,191,36,0.3);">
-      <div class="key" style="color: #d97706;">① <a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/dashboard-builder/skill/references/network-admin-persona.md" target="_blank" style="color: #d97706; text-decoration: underline;">persona.md ↗</a> <span style="font-weight: 400; font-size: 10px; color: var(--text-3); margin-left: 6px;">已 commit · 358 行 · 點擊閱讀</span></div>
+    <div class="tl-item" style="background: rgba(16,185,129,0.06); border-color: rgba(16,185,129,0.3);">
+      <div class="key" style="color: #047857;">✅ ① <a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/dashboard-builder/skill/references/network-admin-persona.md" target="_blank" style="color: #047857; text-decoration: underline;">persona.md ↗</a> <span style="font-weight: 400; font-size: 10px; color: var(--text-3); margin-left: 6px;">已 commit · 358 行 · 點擊閱讀</span></div>
       <div class="val"><strong>Voice + 輸出形式判斷</strong>。Claude 每次被任何 skill 觸發都載入。4 條 voice 原則、15 個詞彙翻譯、6 個 SMB vertical 適應、6×3 升級矩陣（text / dashboard / action）、3 種輸出模板。</div>
     </div>
-    <div class="tl-item" style="background: rgba(251,191,36,0.10); border-color: rgba(251,191,36,0.3);">
-      <div class="key" style="color: #d97706;">② <a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/dashboard-builder/skill/references/design.md" target="_blank" style="color: #d97706; text-decoration: underline;">design.md ↗</a> <span style="font-weight: 400; font-size: 10px; color: var(--text-3); margin-left: 6px;">已 commit · 341 行 · v0.2 新增</span></div>
+    <div class="tl-item" style="background: rgba(16,185,129,0.06); border-color: rgba(16,185,129,0.3);">
+      <div class="key" style="color: #047857;">✅ ② <a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/dashboard-builder/skill/references/design.md" target="_blank" style="color: #047857; text-decoration: underline;">design.md ↗</a> <span style="font-weight: 400; font-size: 10px; color: var(--text-3); margin-left: 6px;">已 commit · 341 行 · v0.2 新增</span></div>
       <div class="val"><strong>Dashboard 視覺設計守則</strong>。Claude 觸發 dashboard-builder skill 時載入。3 層架構（Frame / Tokens / Body）、9 條 🚫 hard prohibitions、raw_html escape hatch 規則、filename convention、quality bar。<strong>詳見 <a href="#design-system">§03f Design System</a></strong>。</div>
     </div>
     <div class="tl-item">
-      <div class="key">③ house-rules.md <span style="font-weight: 400; font-size: 10px; color: var(--text-3); margin-left: 6px;">未來 P2 · ~120 行</span></div>
+      <div class="key">🔜 ③ house-rules.md <span style="font-weight: 400; font-size: 10px; color: var(--text-3); margin-left: 6px;">未來 P2 · ~120 行</span></div>
       <div class="val"><strong>EnGenius 品牌觀點</strong>。HVS 分數解讀區間、永遠不推薦的反 pattern、平台特有 gotcha（例：cloud show offline 但現場正常 = cloud-agent 沒同步）。需 RD + 業務 + PMM 共寫。</div>
+    </div>
+    <div class="tl-item">
+      <div class="key">🔜 ④ playbooks/{configure,troubleshoot,monitor}.md <span style="font-weight: 400; font-size: 10px; color: var(--text-3); margin-left: 6px;">下個 session 設計</span></div>
+      <div class="val"><strong>任務型 mental model · 條件式載入</strong>。寫成思考骨架（診斷維度 / 詢問三定問）而非 script。例：troubleshoot.md 教 AI 把問題拆成 client side / radio side / uplink side 3 層思考。不是 step-by-step 腳本（那會凍結 AI 判斷 = 蓋 scenario skill = 殺 wedge）。</div>
+    </div>
+    <div class="tl-item">
+      <div class="key">🔜 ⑤ memory/&lt;org-id&gt;.md <span style="font-weight: 400; font-size: 10px; color: var(--text-3); margin-left: 6px;">post-launch · 等真實 SI 使用後再設計</span></div>
+      <div class="val"><strong>跨 session 長期記憶 · per-org namespace</strong>。把「一次性 AI 工具」升級成「長期管你網路的 AI 網管朋友」。內容：open follow-ups、客戶 quirks、recent observations。3 個設計難題：誰擁有 / 怎麼避免 stale 毒化判斷 / 多客戶切換。等 SI 真實用 1-2 個月後再實作，避免猜錯介面。</div>
     </div>
   </div>
 
   <div class="tl-rel-card" style="margin-top: 18px; background: var(--surface-2);">
     <strong>為什麼不把 troubleshooting 寫死成「網管百科」？</strong>
-    Claude 訓練資料已含一般網管知識；EnGenius 產品細節在 Help Center / Gitbook 才是 single source of truth，但那是另一個系統，<strong>目前不在本專案 scope</strong>。若未來要讓 Claude 能查 EnGenius 內部文件，需要單獨打通 RAG 整合（屬於 future work）。重點是：硬抄到 skill ref → 兩份 doc drift；token 成本高；過度約束會殺掉「即時判斷」的 wedge。
+    Claude 訓練資料已含一般網管知識；EnGenius 產品細節在 Help Center / Gitbook 才是 single source of truth，但那是另一個系統，<strong>目前不在本專案 scope</strong>。若未來要讓 Claude 能查 EnGenius 內部文件，需要單獨打通 RAG 整合（屬於 future work）。重點是：硬抄到 skill ref → 兩份 doc drift；token 成本高；過度約束會殺掉「即時判斷」的 wedge。Layer ④ playbooks 解決的是不同問題（mental model 而非 reference）。
+  </div>
+
+  <div class="pull" style="background: rgba(59,130,246,0.06); border-color: rgba(59,130,246,0.3); margin-top: 16px;">
+    <span class="badge" style="background: #3b82f6; color: white;">不要跟 §02 「5 層架構」搞混</span>
+    §02 講的「5 層」是<strong>執行架構</strong>（人 → AI → Skills → Cloud → Filesystem 的執行流）。<br>
+    這裡講的「5 層知識架構」是<strong>給 Claude 的 Playbook 文件層次</strong>（§02b 3 層分工裡的 Playbook 那層內部分結構）。<br>
+    兩個概念正交、不衝突。
   </div>
 
   <h3 style="margin-top: 36px;">升級條件矩陣 · text / dashboard / action</h3>
