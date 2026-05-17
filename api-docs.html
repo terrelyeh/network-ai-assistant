@@ -8,56 +8,168 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Noto+Sans+TC:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+  :root {
+    --bg-1: #f5f2ea;
+    --bg-2: #ebe6da;
+    --surface: #ffffff;
+    --surface-2: #fbfaf7;
+    --border: rgba(60,50,35,0.12);
+    --border-strong: rgba(60,50,35,0.22);
+    --text: #1a2332;
+    --text-2: #475569;
+    --text-3: #94a3b8;
+    --accent: #ff6b35;
+    --cyan: #03a9f4;
+    --warn: #f59e0b;
+    --success: #10b981;
+    --shadow-sm: 0 1px 2px rgba(15,23,42,.04), 0 0 0 1px rgba(15,23,42,.04);
+    --shadow-md: 0 6px 18px rgba(15,23,42,.08), 0 1px 2px rgba(15,23,42,.04);
+  }
   body {
     margin: 0;
-    background: #f5f7fb;
+    background: var(--bg-1);
+    background-image: radial-gradient(at 0% 0%, var(--bg-2) 0%, var(--bg-1) 50%);
     font-family: 'Inter', 'Noto Sans TC', sans-serif;
+    color: var(--text);
   }
 
-  /* Top banner */
+  /* Top banner — light theme matching architecture.html */
   .banner {
-    background: linear-gradient(135deg, #0a1628 0%, #0f1e3a 100%);
-    color: #f8fafc;
-    padding: 28px 32px 24px;
-    border-bottom: 3px solid #fbbf24;
+    background: var(--surface);
+    border-bottom: 3px solid var(--accent);
+    padding: 32px 32px 28px;
+    box-shadow: var(--shadow-sm);
   }
   .banner-inner { max-width: 1460px; margin: 0 auto; }
-  .banner h1 {
-    font-size: 24px;
-    font-weight: 800;
-    letter-spacing: -0.01em;
-    margin: 0 0 6px;
-  }
-  .banner h1 .warn { color: #fbbf24; }
-  .banner h1 .accent { color: #ff6b35; }
-  .banner .sub {
-    color: #cbd5e1;
-    font-size: 14px;
-    line-height: 1.6;
+  .banner .eyebrow {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 4px 10px;
+    background: rgba(255,107,53,0.08);
+    border-radius: 999px;
     margin-bottom: 14px;
+  }
+  .banner h1 {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.015em;
+    margin: 0 0 8px;
+    color: var(--text);
+  }
+  .banner h1 .accent { color: var(--accent); }
+  .banner .sub {
+    color: var(--text-2);
+    font-size: 14px;
+    line-height: 1.65;
+    margin-bottom: 16px;
   }
   .banner .meta {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     flex-wrap: wrap;
-    font-size: 12px;
-    color: #94a3b8;
+    font-size: 12.5px;
+    color: var(--text-2);
   }
   .banner .meta span {
-    padding: 4px 10px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
+    padding: 5px 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
     border-radius: 999px;
   }
-  .banner .meta strong { color: #f8fafc; }
-  .banner .meta .ok { color: #00d9c5; }
-  .banner .meta .pending { color: #fbbf24; }
+  .banner .meta strong { color: var(--text); font-weight: 700; }
+  .banner .meta .ok { color: var(--success); }
+  .banner .meta .pending { color: var(--warn); }
   .banner a {
-    color: #00d9c5;
+    color: var(--accent);
     text-decoration: none;
-    border-bottom: 1px dotted #00d9c5;
+    border-bottom: 1px dotted var(--accent);
   }
-  .banner a:hover { color: #fbbf24; border-bottom-color: #fbbf24; }
+  .banner a:hover { color: var(--text); border-bottom-color: var(--text); }
+  .banner code {
+    background: rgba(60,50,35,0.07);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    color: var(--text-2);
+  }
+
+  /* How-to-read guide */
+  .howto {
+    max-width: 1460px;
+    margin: 24px auto 0;
+    padding: 0 32px;
+  }
+  .howto-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 28px;
+    box-shadow: var(--shadow-sm);
+  }
+  .howto-card h2 {
+    font-size: 17px;
+    font-weight: 700;
+    margin: 0 0 6px;
+    color: var(--text);
+  }
+  .howto-card .intro {
+    color: var(--text-2);
+    font-size: 13.5px;
+    line-height: 1.7;
+    margin-bottom: 18px;
+  }
+  .howto-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+  .howto-step {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 14px;
+  }
+  .howto-step .num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .howto-step .step-title {
+    font-weight: 700;
+    font-size: 13.5px;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .howto-step .step-body {
+    font-size: 12.5px;
+    color: var(--text-2);
+    line-height: 1.6;
+  }
+  .howto-step code {
+    background: rgba(60,50,35,0.07);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+  }
+  @media (max-width: 900px) {
+    .howto-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 600px) {
+    .howto-grid { grid-template-columns: 1fr; }
+  }
 
   /* Note panel */
   .note {
@@ -66,10 +178,10 @@
     padding: 14px 22px;
     background: #fef9e7;
     border: 1px solid #f0d674;
-    border-left: 4px solid #fbbf24;
+    border-left: 4px solid var(--warn);
     border-radius: 8px;
     font-size: 13.5px;
-    line-height: 1.6;
+    line-height: 1.65;
     color: #5a4a16;
   }
   .note strong { color: #3d3105; }
@@ -80,6 +192,7 @@
     font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
   }
+  .note a { color: #5a4a16; border-bottom: 1px dotted; }
 
   /* Swagger UI wrapper */
   #swagger-ui {
@@ -93,7 +206,7 @@
   }
   .opblock[data-path*="x-rd-pending"] .opblock-summary-path::before {
     content: "⚠ TBD · ";
-    color: #fbbf24;
+    color: var(--warn);
     font-weight: 700;
   }
 </style>
@@ -102,26 +215,65 @@
 
 <header class="banner">
   <div class="banner-inner">
-    <h1>EnGenius Cloud · <span class="warn">AI Agent</span> <span class="accent">API Docs</span></h1>
+    <span class="eyebrow">EnGenius Cloud · AI Agent Skill Suite</span>
+    <h1>API Docs · <span class="accent">互動式 OpenAPI 文件</span></h1>
     <div class="sub">
-      Auto-generated from <code style="background:rgba(255,255,255,0.08);padding:1px 6px;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:12px;">api-skills/skills/*/SKILL.md</code> · 互動式 API 文件 powered by Swagger UI
+      由 <code>scripts/build-openapi.py</code> 從 <code>api-skills/skills/*/SKILL.md</code> 自動生成 · 用 Swagger UI 渲染 · 可以直接在頁面上試打 API
     </div>
     <div class="meta">
       <span><strong>94</strong> total ops</span>
       <span class="ok"><strong>47</strong> fully documented ✓</span>
       <span class="pending"><strong>47</strong> ⚠ pending RD docs</span>
-      <span><strong>12</strong> skills (tags)</span>
+      <span><strong>13</strong> skills (tags)</span>
       <span>OpenAPI <strong>3.1.0</strong></span>
-      <span>·</span>
       <span>spec: <a href="openapi.json">openapi.json</a></span>
-      <span>·</span>
-      <span><a href="index.html">← back to project hub</a></span>
+      <span><a href="index.html">← 回主站</a></span>
     </div>
   </div>
 </header>
 
+<!-- HOW TO READ THIS PAGE -->
+<div class="howto">
+  <div class="howto-card">
+    <h2>📖 怎麼讀這個頁面？</h2>
+    <p class="intro">
+      下面是 <strong>Swagger UI</strong> 自動生成的 API 互動文件。每個 EnGenius Cloud API 都列出來了，可以一邊看 schema 一邊真的試打 — 像 Postman 但在網頁裡。<strong>4 步驟操作</strong>：
+    </p>
+    <div class="howto-grid">
+      <div class="howto-step">
+        <div class="num">1</div>
+        <div class="step-title">找你要的 skill</div>
+        <div class="step-body">
+          下方分組顯示 <strong>13 個 skill 標籤</strong>（<code>hvs</code> / <code>networks</code> / <code>org-devices</code>…）。按一下 tag 名稱展開該 skill 底下所有 op。
+        </div>
+      </div>
+      <div class="howto-step">
+        <div class="num">2</div>
+        <div class="step-title">點開某個 op</div>
+        <div class="step-body">
+          展開 op 後會看到 <strong>HTTP method（GET/POST...）+ URL path</strong>、参數說明、Request body schema、Response example。GET 是讀取、POST/PATCH/DELETE 是改設定。
+        </div>
+      </div>
+      <div class="howto-step">
+        <div class="num">3</div>
+        <div class="step-title">「Try it out」實際打打看</div>
+        <div class="step-body">
+          op 右上角有 <strong>Try it out</strong> 按鈕 → 填參數 → <strong>Execute</strong> → 看真實回應。需要先按右上 <code>Authorize</code> 輸入 api-key header。
+        </div>
+      </div>
+      <div class="howto-step">
+        <div class="num">4</div>
+        <div class="step-title">注意 ⚠ TBD 標記</div>
+        <div class="step-body">
+          有 <strong>⚠ TBD</strong> 前綴的 op 在 <code>/x-rd-pending/</code> 路徑下 — 表示 RD 還沒提供 dolphin URL pattern，現在<strong>還不能打</strong>。可以看 schema 但 Try it out 不會 work。
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="note">
-  ⚠ <strong>關於 47 個 <code>x-rd-pending</code> ops</strong> — RPC / Subscribe / 5 個 stragglers 還沒拿到 HTTP method/path 文件，所以暫時放在 <code>/x-rd-pending/&lt;skill&gt;/&lt;op&gt;</code> pseudo-path 下，UI 上會看到 ⚠ TBD 前綴。RD 補完文件後重跑 <code>scripts/build-openapi.py</code> 自動補完。具體缺什麼見 <a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/dashboard-builder/docs/rd-meeting/06-api-doc-questions.md">rd-meeting/06-api-doc-questions.md</a>。
+  ⚠ <strong>關於 47 個 <code>x-rd-pending</code> ops</strong> — RPC / Subscribe op 還沒拿到 HTTP method/path 文件，所以暫時放在 <code>/x-rd-pending/&lt;skill&gt;/&lt;op&gt;</code> pseudo-path 下，UI 上看到 ⚠ TBD 前綴。RD 補完後重跑 <code>scripts/build-openapi.py</code> 自動補完。詳見 <a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/dashboard-builder/docs/rd-meeting/06-api-doc-questions.md">rd-meeting/06-api-doc-questions.md</a>。
 </div>
 
 <div id="swagger-ui"></div>
