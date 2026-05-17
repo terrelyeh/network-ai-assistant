@@ -1014,7 +1014,7 @@
   <ul>
     <li><strong>有 voice</strong> — persona.md 規範語氣，不是冰冷的 datasheet</li>
     <li><strong>有判斷</strong> — 同一個問題會根據資料複雜度決定回 text 還是 dashboard 還是直接動手</li>
-    <li><strong>有專業意見</strong> — house-rules 規範 EnGenius 平台特有的推薦邏輯（規劃中）</li>
+    <li><strong>懂平台規則</strong> — house-rules 紀錄 EnGenius 產品獨有的硬性規範與 quirks（規劃中）</li>
     <li><strong>有思考骨架</strong> — playbook 給 configure / troubleshoot / monitor 各自的 mental model（規劃中）</li>
     <li><strong>會記得</strong> — memory/&lt;org-id&gt;.md 跨 session 記錄客戶 quirks 跟 open follow-ups（規劃中）</li>
   </ul>
@@ -1065,7 +1065,7 @@
             <strong>design.md</strong><br><span style="color:var(--text-3); font-size:11.5px;">生圖規範</span><br><span class="ok" style="font-size:11px;">✅ 341 行</span>
           </div>
           <div style="border:1px solid rgba(245,158,11,0.4); border-radius:8px; padding:14px 12px; background:rgba(245,158,11,0.06); font-size:12.5px; line-height:1.65;">
-            <strong>house-rules.md</strong><br><span style="color:var(--text-3); font-size:11.5px;">專業意見</span><br><span class="warn" style="font-size:11px;">🔜 規劃</span>
+            <strong>house-rules.md</strong><br><span style="color:var(--text-3); font-size:11.5px;">平台規則</span><br><span class="warn" style="font-size:11px;">🔜 規劃</span>
           </div>
           <div style="border:1px solid rgba(245,158,11,0.4); border-radius:8px; padding:14px 12px; background:rgba(245,158,11,0.06); font-size:12.5px; line-height:1.65;">
             <strong>playbooks/</strong><br><span style="color:var(--text-3); font-size:11.5px;">思考骨架 ×3</span><br><span class="warn" style="font-size:11px;">🔜 下 session</span>
@@ -1160,7 +1160,7 @@
       <tr>
         <td><strong><code class="mono">house-rules.md</code></strong></td>
         <td class="warn">🔜 規劃中</td>
-        <td>他<strong>有什麼專業意見</strong> — HVS 分數怎麼解讀、什麼絕對不該推薦、EnGenius 平台特有 gotcha</td>
+        <td>他<strong>懂哪些平台規則與規範</strong> — EnGenius 產品獨有的硬性規則：HVS 分數計算與區間定義、license-device 綁定規則、plan 限制、設備支援矩陣、平台 quirks</td>
       </tr>
       <tr>
         <td><strong><code class="mono">playbooks/</code></strong></td>
@@ -1233,20 +1233,32 @@
     <li>實作細節：<a href="technical.html#design-system">technical.html · §5 Design System</a></li>
   </ul>
 
-  <h3 id="layer-house-rules" style="margin-top: 40px;">§03.3 · house-rules.md · 有什麼專業意見 <span class="warn" style="font-size:13px; font-weight:600;">🔜 規劃中</span></h3>
-  <p><strong>將寫什麼</strong>：EnGenius 平台特有的「專業意見」— persona 是 <em>HOW</em>（怎麼講話），house-rules 是 <em>WHAT</em>（有什麼立場 / 推薦）。例如：</p>
+  <h3 id="layer-house-rules" style="margin-top: 40px;">§03.3 · house-rules.md · EnGenius 平台規則與規範 <span class="warn" style="font-size:13px; font-weight:600;">🔜 規劃中</span></h3>
+  <p><strong>將寫什麼</strong>：EnGenius 產品獨有的<strong>硬性規則與規範</strong> — 都是平台層面的事實，不是主觀偏好。Persona 是 <em>HOW</em>（怎麼講話），house-rules 是 <em>WHAT FACTS</em>（這套系統的規矩是什麼）。例如：</p>
   <ul>
-    <li>HVS 分數區間怎麼解讀（< 70 緊急 / 70-85 注意 / > 85 健康）</li>
-    <li>當客戶問「我該買 AP-Pro 還是 AP-基本」時的推薦邏輯</li>
-    <li>EnGenius 平台特有 gotcha — 例：什麼設定組合不合作、什麼 license 不能混用</li>
-    <li>什麼絕對不該推薦（deprecated 設定、有安全風險的設定）</li>
+    <li><strong>HVS 分數定義</strong> — 計算公式、區間意義（&lt; 70 / 70–85 / &gt; 85 各代表什麼）</li>
+    <li><strong>License-Device 綁定規則</strong> — AP-Pro license 必須綁 Pro 設備、Basic 不能跨 model 共用、co-term 規則、什麼能 stackable 什麼不能</li>
+    <li><strong>Plan 限制</strong> — BASIC vs PRO 哪些 endpoint 會 402 Payment Required、哪些功能要 PRO 才能用</li>
+    <li><strong>設備支援矩陣</strong> — Dakota platform 不支援 spectrum scan、ESG 系列 vs Cloud 系列差異、哪些 model 支援 WiFi 7</li>
+    <li><strong>平台 quirks / 已知 edge case</strong> — Switch port PoE+ 並用衝突、某些 ACL 規則會被 Country 設定 override、設定組合不相容</li>
   </ul>
 
-  <h4>AI 將怎麼用</h4>
-  <p>規劃成 context 文件，由 dashboard-builder 跟 troubleshoot skills 在「給建議」時 load。Persona 規範了「怎麼說」，house-rules 規範了「該不該說 / 該推薦什麼」。</p>
+  <h4>AI 怎麼用</h4>
+  <p>當使用者問「為什麼…」「我這個能做嗎」「會不會壞」時，AI 引用 house-rules 給<strong>「事實正確」的答案</strong>而不是「我猜」。例：</p>
+  <ul>
+    <li>Q「為什麼 Gordon org 的 inventory 拿不到？」→ A「Gordon 是 BASIC plan，<code class="mono">get_inventory</code> 在 BASIC 會回 402」（依 house-rule: BASIC plan endpoint 限制）</li>
+    <li>Q「這張 AP-1YR-Basic license 可以給 EWS357AP 用嗎？」→ A「不行，EWS357AP 必須綁 AP-Pro license」（依 house-rule: license-device 綁定）</li>
+  </ul>
+
+  <h4>跟 persona 怎麼分</h4>
+  <p>同樣是 AI 回答的「材料」，差別是：</p>
+  <ul>
+    <li><strong>Persona</strong> = HOW · 怎麼回答、用什麼語氣、什麼時候改 output 形式</li>
+    <li><strong>House-rules</strong> = WHAT FACTS · 這套系統的硬性事實、規則、限制（不是主觀推薦）</li>
+  </ul>
 
   <h4>為什麼還沒寫</h4>
-  <p>需要 <strong>RD（工程觀點）+ 業務（市場觀點）一起共寫</strong>。RD 知道平台 gotcha，業務知道哪些推薦會幫客戶賺到 vs 害他踩坑。光 RD 寫會偏技術正確、光業務寫會偏 sales。Schedule 在 P2。</p>
+  <p>需要 <strong>RD 整理</strong>（他們最清楚平台規則、license matrix、設備 quirks）+ <strong>業務協助梳理</strong>（哪些限制客戶常踩、哪些 edge case 影響成交）。光看 code 拼湊容易漏，需要一份「official 化」的文件。Schedule 在 P2。</p>
 
   <h3 id="layer-playbooks" style="margin-top: 40px;">§03.4 · playbooks/ · 怎麼思考各種任務 <span class="warn" style="font-size:13px; font-weight:600;">🔜 下個 session</span></h3>
   <p><strong>將寫什麼</strong>：3 個檔案，對應網管 3 大類任務 — 每個是 <strong>mental model 而非 step-by-step script</strong>。</p>
@@ -1305,7 +1317,7 @@
 
   <div class="pull" style="margin-top: 24px;">
     <span class="badge">總結 · 為什麼這 5 個 layer 是「colleague 而不是 tool」的關鍵</span>
-    <strong>Persona</strong> 給 AI <em>voice</em>、<strong>Design</strong> 給 AI <em>視覺品味</em>、<strong>House-rules</strong> 給 AI <em>專業立場</em>、<strong>Playbook</strong> 給 AI <em>思考骨架</em>、<strong>Memory</strong> 給 AI <em>跨 session 記憶</em>。每一層都對應一個「真實同事」的特質。少任何一層，AI 就退化成一個會打 API 的 chatbot。
+    <strong>Persona</strong> 給 AI <em>voice</em>、<strong>Design</strong> 給 AI <em>視覺品味</em>、<strong>House-rules</strong> 給 AI <em>平台事實知識</em>、<strong>Playbook</strong> 給 AI <em>思考骨架</em>、<strong>Memory</strong> 給 AI <em>跨 session 記憶</em>。每一層都對應一個「真實同事」的特質。少任何一層，AI 就退化成一個會打 API 的 chatbot。
   </div>
 </section>
 

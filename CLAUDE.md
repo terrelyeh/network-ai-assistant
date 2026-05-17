@@ -204,7 +204,7 @@ python dashboard-builder/skill/scripts/compose.py \
 |---|---|---|
 | ✅ 1 | `references/network-admin-persona.md` (358 行) | Voice + 升級條件 · 每次 skill 觸發都載入 |
 | ✅ 2 | `references/design.md` (341 行) | 視覺設計守則 · §🚫 9 條 hard prohibitions + raw_html 規則 · dashboard-builder 觸發時載入 |
-| 🔜 3 | `references/house-rules.md` (未寫) | EnGenius 品牌觀點（HVS 分數、推薦原則）· 需 RD + 業務共寫 |
+| 🔜 3 | `references/house-rules.md` (未寫) | EnGenius 平台規則與規範 — 硬性事實（HVS 分數定義、license-device 綁定、plan 限制、設備支援矩陣、平台 quirks）· 需 RD 整理 + 業務協助梳理 |
 | 🔜 4 | `references/playbooks/{configure,troubleshoot,monitor}.md` (未寫) | 任務型 mental model · 條件式載入 |
 | 🔜 5 | `memory/<org-id>.md` (未設計) | 跨 session 記憶 · 等真實 SI 使用後再設計 |
 
@@ -317,7 +317,7 @@ git diff --stat api-skills/
 4. RD ready 後排第 2 次 meeting（[`rd-meeting/04-history-api-proposal.md`](dashboard-builder/docs/rd-meeting/04-history-api-proposal.md) + 第 2 次帶 [`rd-meeting/05-persona-proposal.md`](dashboard-builder/docs/rd-meeting/05-persona-proposal.md)）
 
 **獨立可做（不等 RD）**：
-5. **寫 `house-rules.md` v0** — Layer 3 知識架構最後拼圖（EnGenius 品牌觀點 · HVS 分數區間 / 平台特有 gotcha）
+5. **寫 `house-rules.md` v0** — Layer 3 知識架構最後拼圖（EnGenius 平台規則與規範 — 硬性事實：HVS 分數定義 / license-device 綁定 / plan 限制 / 設備支援矩陣 / 平台 quirks。**不是**主觀建議或品牌觀點）
 6. 新情境腦力激盪 — 找更吸睛的新 demo 故事，走 validated path pipeline 加 examples/
 
 ### 🟡 Pending（次優先）
