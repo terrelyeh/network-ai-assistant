@@ -1496,50 +1496,59 @@
     跑真實 EnGenius Cloud staging API 的 dashboard 範例。每個情境跨 3 個語言（zh-TW / EN / JA）+ light/dark theme，共 17 張 canvas。腦力激盪中還有 S8-S12 + N/T/M 新菜色約 20 個情境（見 <a href="https://github.com/terrelyeh/network-ai-assistant/blob/main/dashboard-builder/docs/scenario-candidates.md">scenario-candidates.md</a>）。
   </p>
 
-  <div class="gallery">
-    <a class="gallery-card" href="org-health.html">
-      <div class="gallery-thumb"><img src="assets/shots/org-health.png" alt="Org Health"></div>
-      <div class="gallery-meta">
-        <div class="gallery-title">S3 · Org 健康總覽</div>
-        <div class="gallery-sub">HVS + inventory + alert · 主秀</div>
-      </div>
-    </a>
-    <a class="gallery-card" href="offboarding-audit.html">
-      <div class="gallery-thumb"><img src="assets/shots/offboarding-audit.png" alt="Offboarding"></div>
-      <div class="gallery-meta">
-        <div class="gallery-title">S4 · Off-boarding Audit</div>
-        <div class="gallery-sub">SOC2 視角離職權限稽核</div>
-      </div>
-    </a>
-    <a class="gallery-card" href="license-renewal.html">
-      <div class="gallery-thumb"><img src="assets/shots/license-renewal.png" alt="License Renewal"></div>
-      <div class="gallery-meta">
-        <div class="gallery-title">S5 · License Renewal</div>
-        <div class="gallery-sub">跨 org license 到期 timeline</div>
-      </div>
-    </a>
-    <a class="gallery-card" href="multi-org-governance.html">
-      <div class="gallery-thumb"><img src="assets/shots/multi-org-governance.png" alt="Multi-Org Governance"></div>
-      <div class="gallery-meta">
-        <div class="gallery-title">S2 · Multi-Org Governance</div>
-        <div class="gallery-sub">MSP partner 跨 5 個 org 治理</div>
-      </div>
-    </a>
-    <a class="gallery-card" href="cross-org-reallocation.html">
-      <div class="gallery-thumb"><img src="assets/shots/cross-org-reallocation.png" alt="Cross-Org Reallocation"></div>
-      <div class="gallery-meta">
-        <div class="gallery-title">S7 · Cross-Org Reallocation</div>
-        <div class="gallery-sub">跨 org 設備調撥規劃</div>
-      </div>
-    </a>
-    <a class="gallery-card" href="org-health-dark.html">
-      <div class="gallery-thumb"><img src="assets/shots/org-health-dark.png" alt="Org Health Dark Theme"></div>
-      <div class="gallery-meta">
-        <div class="gallery-title">S3 · Dark theme variant</div>
-        <div class="gallery-sub"><code class="mono">--theme dark</code> 一指令切換</div>
-      </div>
-    </a>
-  </div>
+  <table class="tbl" style="margin-top: 20px;">
+    <thead>
+      <tr>
+        <th style="width:8%">編號</th>
+        <th style="width:25%">情境</th>
+        <th>解決什麼 / 用什麼 skill</th>
+        <th style="width:14%; text-align: right;">看 demo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>S3</strong></td>
+        <td><strong>Org 健康總覽</strong> <span style="display:inline-block; padding:2px 7px; border-radius:4px; background:rgba(255,107,53,0.12); color:var(--accent); font-size:11px; font-weight:700; margin-left:4px;">主秀</span></td>
+        <td>單一 org 的 HVS 分數 + 設備狀態 + alert 一覽 · <code class="mono">hvs</code> + <code class="mono">org-devices</code> + <code class="mono">org-licenses</code></td>
+        <td style="text-align: right;"><a href="org-health.html">org-health ↗</a></td>
+      </tr>
+      <tr>
+        <td><strong>S4</strong></td>
+        <td><strong>Off-boarding Audit</strong></td>
+        <td>SOC2 視角的離職權限稽核 — 列誰還在哪些 org 有 admin · <code class="mono">team-members</code></td>
+        <td style="text-align: right;"><a href="offboarding-audit.html">offboarding-audit ↗</a></td>
+      </tr>
+      <tr>
+        <td><strong>S5</strong></td>
+        <td><strong>License Renewal Planning</strong></td>
+        <td>跨 org license 到期 timeline + 續約成本估算 · <code class="mono">org-licenses</code> + <code class="mono">hvs</code></td>
+        <td style="text-align: right;"><a href="license-renewal.html">license-renewal ↗</a></td>
+      </tr>
+      <tr>
+        <td><strong>S2</strong></td>
+        <td><strong>Multi-Org Governance</strong></td>
+        <td>MSP partner 跨 5 個 org 治理 dashboard · <code class="mono">hvs</code> + <code class="mono">org-devices</code> + <code class="mono">team-members</code></td>
+        <td style="text-align: right;"><a href="multi-org-governance.html">multi-org-governance ↗</a></td>
+      </tr>
+      <tr>
+        <td><strong>S7</strong></td>
+        <td><strong>Cross-Org Reallocation</strong></td>
+        <td>跨 org 閒置設備調撥規劃 · <code class="mono">org-devices</code> + <code class="mono">org-licenses</code> 的 <code class="mono">move_*</code> ops</td>
+        <td style="text-align: right;"><a href="cross-org-reallocation.html">cross-org-reallocation ↗</a></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 style="margin-top: 32px;">代表圖 · S3 Org 健康總覽（主秀）</h3>
+  <a href="org-health.html" style="display: block; margin: 14px 0; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-md); border: 1px solid var(--border); text-decoration: none;">
+    <img src="assets/shots/org-health.png" alt="S3 Org 健康總覽（主秀）" style="display: block; width: 100%; height: auto;">
+  </a>
+  <p style="font-size: 13.5px; color: var(--text-3); margin-top: 6px;">
+    ↑ 點圖看完整可互動 dashboard（連真實 staging API）· 同情境另有
+    <a href="org-health-dark.html">dark theme</a> ·
+    <a href="org-health-en.html">English</a> ·
+    <a href="org-health-ja.html">日本語</a> 三個變體
+  </p>
 </section>
 
 <section id="roadmap">
