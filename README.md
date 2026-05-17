@@ -9,11 +9,14 @@
 
 ## 🚀 開始這裡
 
-### ⭐ Dashboard Builder（主秀，2026-05 新建）
-**[`dashboard-builder/architecture.html`](./dashboard-builder/architecture.html)** — 完整架構說明 + 10 widget catalog + 7 張 live dashboard + RD 待補項目
+### ⭐ Dashboard Builder（主秀，v0.2 · 2026-05-17 升級）
+**[`dashboard-builder/architecture.html`](./dashboard-builder/architecture.html)** — 完整架構說明 v5（Persona + Design System）
 
 - 跨真實 EnGenius Cloud staging API · 雙 script workflow（refresh-all + compose.py）
-- **10 widget** · **5 validated 情境** · **3 locale**（zh-TW / EN / JA） · **light + dark theme**
+- **12 widget**（含 v0.2 新增 `pivot_table` + `stacked_bar_list`）· **6 validated 情境** · **3 locale**（zh-TW / EN / JA） · **light + dark theme**
+- **AI 網管 persona**（[`skill/references/network-admin-persona.md`](./dashboard-builder/skill/references/network-admin-persona.md)）— Voice + 升級條件矩陣（文字 / dashboard / 動手 三種輸出形式自動選）
+- **Design System 守則**（[`skill/references/design.md`](./dashboard-builder/skill/references/design.md)）— 3 層架構 + 9 條 hard prohibitions + raw_html escape hatch
+- **Plugin install** — `dashboard-builder/skill/` 含 `.claude-plugin/` manifest，可被 Claude Code `/plugins install`
 - 整套 skill 自包含在 [`dashboard-builder/skill/`](./dashboard-builder/skill/)（將來移交 RD 整合進 api-skills）
 
 ### 主要 hub 頁
